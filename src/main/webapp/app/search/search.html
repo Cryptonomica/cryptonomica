@@ -1,0 +1,103 @@
+<div>
+    <!-- Navigation -->
+    <div class="btn-group" role="group" ng-show="currentUser.registeredCryptonomicaUser">
+        <a class="btn btn-secondary" href="/#" role="button">Home</a>
+        <a class="btn btn-secondary" href="/#/dashboard" role="button">Dashboard</a>
+        <a class="btn btn-secondary" href="/#/registration" role="button">Registration</a>
+        <a class="btn btn-secondary active" href="/#/search" role="button">Search</a>
+    </div>
+    <!-- -->
+
+    <div class="card card-block">
+        <h2>Search for users:</h2>
+        <!--  -->
+        <div ng-show="resp.error.message" class="alert alert-danger" role="alert">
+            <!--            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">×</span></button>
+            -->
+            {{resp.error.message}}
+        </div>
+        <div ng-show="resp.messageToUser" class="alert alert-success" role="alert">
+            <!--            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">×</span></button>
+            -->
+            {{resp.messageToUser}}
+        </div>
+
+        <!-- search form begin -->
+        <form>
+            <fieldset class="form-group">
+                <label for="firstName">First Name</label>
+                <div class="row">
+                    <div class="col-xs-5">
+                        <input type="text" class="form-control" id="firstName" name="firstName"
+                               ng-model="form.firstName">
+                    </div>
+                    <div class="col-xs-5">
+                        <!--{{form.firstName}}-->
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset class="form-group">
+                <label for="lastName">Last Name</label>
+                <div class="row">
+                    <div class="col-xs-5">
+                        <input type="text" class="form-control" id="lastName" name="lastName" ng-model="form.lastName">
+                    </div>
+                    <div class="col-xs-5">
+                        <!--{{form.lastName}}-->
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset class="form-group">
+                <label for="email">email</label>
+                <div class="row">
+                    <div class="col-xs-5">
+                        <input type="email" class="form-control" id="email" name="email" ng-model="form.email">
+                    </div>
+                    <div class="col-xs-5">
+                        <!--{{form.email}}-->
+                    </div>
+                </div>
+            </fieldset>
+            <button type="submit" class="btn btn-default" ng-click="doSearch()">Search</button>
+        </form>
+        <!-- search form end -->
+
+
+        <!--  https://docs.angularjs.org/api/ng/directive/ngRepeat#iterating-over-object-properties
+        <div ng-repeat="obj in collection track by $id(obj)">
+                {{obj.prop}}
+            </div>
+        see: http://stackoverflow.com/questions/30907131/how-to-make-html-table-from-an-array-with-angular-js  -->
+        <br>
+        <table class="table table-bordered table-hover" ng-show="resp.profilesList">
+            <!-- for Bootstrap 4 table see:
+            http://www.quackit.com/bootstrap/bootstrap_4/tutorial/bootstrap_tables.cfm -->
+            <thead class="thead-default">
+            <tr>
+                <th>Last name</th>
+                <th>First name</th>
+                <th>Bithdate</th>
+                <th>email</th>
+                <th>Information</th>
+                <th>More info</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="userProfileGeneralView in resp.profilesList">
+                <td>{{userProfileGeneralView.lastName}}</td>
+                <td>{{userProfileGeneralView.firstName}}</td>
+                <td>{{userProfileGeneralView.birthday | date}}</td>
+                <td>{{userProfileGeneralView.email}}</td>
+                <td>{{userProfileGeneralView.userInfo}}</td>
+                <td>
+                    <!--<a href="/#/viewprofile/{{userProfileGeneralView.userId}}" ng-click="">Show Profile</a>-->
+                    <a href="" ui-sref="viewprofile({ userId: userProfileGeneralView.userId })">Show Profile</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>

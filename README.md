@@ -1,2 +1,14 @@
-# cryptonomica
-Cryptonomica key server
+# Cryptonomica
+
+Testing sandbox server with mockup database works on
+[cryptonomica.work](https://cryptonomica.work), his code is in
+['sandbox' branch](https://github.com/Cryptonomica/cryptonomica/tree/sandbox).
+
+For the legal part of the project see
+[IACC Arbitration Rules](https://github.com/Cryptonomica/arbitration-rules)
+
+For info about using Cryptonomica keys server see our
+[wiki](https://github.com/Cryptonomica/cryptonomica/wiki).
+
+To talk to Cryptonomica team and users join our slack server
+[![Slack Status](http://slack.cryptonomica.net/badge.svg)](http://slack.cryptonomica.net/).

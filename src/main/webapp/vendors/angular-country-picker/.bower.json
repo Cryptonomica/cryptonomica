@@ -1,0 +1,39 @@
+{
+  "name": "angular-country-picker",
+  "version": "2.0.1",
+  "authors": [
+    "Pablo Villoslada Puigcerber <pablo85@gmail.com> (http://pablovilloslada.com/)"
+  ],
+  "description": "AngularJS directive to generate a list of countries as options of the select element.",
+  "main": "country-picker.js",
+  "keywords": [
+    "AngularJS",
+    "directive",
+    "select",
+    "country picker"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "karma.conf.js",
+    "**/*.json",
+    "index.js"
+  ],
+  "dependencies": {
+    "angular": "^1.3.10"
+  },
+  "homepage": "https://github.com/Puigcerber/angular-country-picker",
+  "_release": "2.0.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "2.0.1",
+    "commit": "d98c43afa1815c40afe537c3f7a63c89122c0f8a"
+  },
+  "_source": "git://github.com/Puigcerber/angular-country-picker.git",
+  "_target": "~2.0.1",
+  "_originalSource": "angular-country-picker",
+  "_direct": true
+}

@@ -1,0 +1,32 @@
+{
+  "name": "angular-country-select",
+  "version": "1.0.0",
+  "description": "AngularJS country select",
+  "main": "dist/angular-country-select.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/alexcheng1982/angular-country-select.git"
+  },
+  "keywords": [
+    "angular",
+    "country",
+    "select"
+  ],
+  "author": "Fu Cheng <alexcheng1982@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alexcheng1982/angular-country-select/issues"
+  },
+  "homepage": "https://github.com/alexcheng1982/angular-country-select",
+  "devDependencies": {
+    "lodash": "latest",
+    "uglify-js": "latest",
+    "grunt": "latest",
+    "grunt-contrib-uglify": "latest",
+    "grunt-contrib-copy": "latest",
+    "grunt-string-replace": "~1.0.0"
+  }
+}
