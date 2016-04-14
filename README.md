@@ -1,7 +1,7 @@
 # Cryptonomica
 
 Testing sandbox server with mockup database works on
-[cryptonomica.work](https://cryptonomica.work), his code is in
+[cryptonomica.work](https://cryptonomica.work), it's code is in
 ['sandbox' branch](https://github.com/Cryptonomica/cryptonomica/tree/sandbox).
 
 For the legal part of the project see
