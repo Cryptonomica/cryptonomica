@@ -4,8 +4,11 @@ Testing sandbox server with mockup database works on
 [cryptonomica.work](https://cryptonomica.work), his code is in
 ['sandbox' branch](https://github.com/Cryptonomica/cryptonomica/tree/sandbox).
 
+Send bug reports, questions or feature suggestions on
+[Issues](https://github.com/Cryptonomica/cryptonomica/issues).
+
 For the legal part of the project see
-[IACC Arbitration Rules](https://github.com/Cryptonomica/arbitration-rules)
+[IACC Arbitration Rules](https://github.com/Cryptonomica/arbitration-rules).
 
 For info about using Cryptonomica keys server see our
 [wiki](https://github.com/Cryptonomica/cryptonomica/wiki).
