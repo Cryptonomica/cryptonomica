@@ -74,6 +74,16 @@
         <url-pattern>/_ah/SendGridServlet</url-pattern>
     </servlet-mapping>
 
+    <!-- GAE Mail servlet-->
+    <servlet>
+        <servlet-name>SendCustomMessageToEmailGAE</servlet-name>
+        <servlet-class>net.cryptonomica.mail.SendCustomMessageToEmailGAE</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SendCustomMessageToEmailGAE</servlet-name>
+        <url-pattern>/_ah/SendCustomMessageToEmailGAE</url-pattern>
+    </servlet-mapping>
+
     <!-- GAE Remote API for Java -->
     <!-- https://cloud.google.com/appengine/docs/java/tools/remoteapi -->
     <servlet>

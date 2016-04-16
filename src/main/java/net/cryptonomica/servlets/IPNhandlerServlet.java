@@ -32,7 +32,9 @@ public class IPNhandlerServlet extends HttpServlet {
         queue.add(
                 TaskOptions.Builder
                         .withUrl(
-                                "/_ah/SendGridServlet")
+                                // "/_ah/SendGridServlet")
+                                "/_ah/SendCustomMessageToEmailGAE") // see:
+                        // https://cloud.google.com/appengine/docs/quotas#Mail
                         .param("email",
                                 "admin@cryptonomica.net"
                         )
@@ -46,13 +48,15 @@ public class IPNhandlerServlet extends HttpServlet {
 
         /* --- log request headers: */
         Enumeration headerNames = req.getHeaderNames();
-        LOG.warning("[Headers names start]: ");
+        LOG.warning("[Headers start]: ");
         while (headerNames.hasMoreElements()) {
             Object nextElement = headerNames.nextElement();
-            LOG.warning(nextElement.toString());
-            LOG.warning(new Gson().toJson(nextElement));
+            String headerName = nextElement.toString();
+            LOG.warning(headerName + req.getHeader(nextElement.toString()));
         }
-        LOG.warning("[Headers names end]// ");
+        LOG.warning("[Headers end]// ");
+        LOG.warning("[Parameters]");
+        LOG.warning(new Gson().toJson(req.getParameterMap()));
 
         /* --- read and log request body: */
         // http://stackoverflow.com/questions/14525982/getting-request-payload-from-post-request-in-java-servlet
