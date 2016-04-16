@@ -53,6 +53,15 @@
         <url-pattern>/cs-user-image-upload</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>IPNhandlerServlet</servlet-name>
+        <servlet-class>net.cryptonomica.servlets.IPNhandlerServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>IPNhandlerServlet</servlet-name>
+        <url-pattern>/ipnhandler</url-pattern>
+    </servlet-mapping>
+
     <!-- SendGridServlet-->
     <!-- https://github.com/sendgrid/google-java-sample-app -->
     <!-- https://cloud.google.com/appengine/docs/java/mail/sendgrid -->

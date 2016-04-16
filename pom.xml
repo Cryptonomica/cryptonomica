@@ -20,10 +20,9 @@
     <prerequisites>
         <maven>3.3.3</maven>
     </prerequisites>
-    
+
+    <!-- Compile/runtime dependencies -->
     <dependencies>
-        <!-- Compile/runtime dependencies -->
-        <!-- //// -->
         <!-- -->
         <dependency>
             <groupId>com.sendgrid</groupId>
