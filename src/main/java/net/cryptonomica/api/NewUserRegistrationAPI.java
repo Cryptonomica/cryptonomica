@@ -32,9 +32,6 @@ import static net.cryptonomica.service.OfyService.ofy;
 
 /**
  * explore on: cryptonomica-test.appspot.com/_ah/api/explorer
- * in this API:
- * 1) register new user
- * <p/>
  * ! - API should be registered in  web.xml (<param-name>services</param-name>)
  * ! - API should be loaded in app.js - app.run()
  */

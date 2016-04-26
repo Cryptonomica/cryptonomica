@@ -18,27 +18,27 @@ public class PGPPublicKeyGeneralView implements Serializable {
     private static final Logger LOG = Logger.getLogger(PGPPublicKeyGeneralView.class.getName());
     /* ----- */
     // @Id
-    private String fingerprint; //.....................1
-    private String webSafeString; //...................2
-    private String cryptonomicaUserId; //..............3
-    private String keyID; //...........................4
-    private String userID; //..........................5
-    private String firstName; //.......................6
-    private String lastName; //........................7
-    private String userEmail; //.......................8
-    private Date created; //...........................9
-    private Date exp; //..............................10
-    private Integer bitStrength; //...................11
-    private String asciiArmored; //...................12
-    private Boolean verified; //......................13
-    private Boolean active; //........................14
+    private String fingerprint; //.........................1
+    private String webSafeString; //.......................2
+    private String cryptonomicaUserId; //..................3
+    private String keyID; //...............................4
+    private String userID; //..............................5
+    private String firstName; //...........................6
+    private String lastName; //............................7
+    private String userEmail; //...........................8
+    private Date created; //...............................9
+    private Date exp; //..................................10
+    private Integer bitStrength; //.......................11
+    private String asciiArmored; //.......................12
+    private Boolean verified; //..........................13
+    private Boolean active; //............................14
     private List<String> verificationsWebSafeStrings; //..15
+    private List<Long> verificationIDs; // ...............16
     // PGPPublicKeyData has also: @Parent private Key<CryptonomicaUser> cryptonomicaUserKey;
     // we have cryptonomicaUserId + webSafeString and not need it
 
     /* ----- Constructors: */
     public PGPPublicKeyGeneralView() {
-        // this.verificationsWebSafeStrings = new ArrayList<>();
     }
 
     public PGPPublicKeyGeneralView(PGPPublicKeyData pgpPublicKeyData) {
@@ -207,5 +207,13 @@ public class PGPPublicKeyGeneralView implements Serializable {
 
     public void setVerificationsWebSafeStrings(List<String> verificationsWebSafeStrings) {
         this.verificationsWebSafeStrings = verificationsWebSafeStrings;
+    }
+
+    public List<Long> getVerificationIDs() {
+        return verificationIDs;
+    }
+
+    public void setVerificationIDs(List<Long> verificationIDs) {
+        this.verificationIDs = verificationIDs;
     }
 }

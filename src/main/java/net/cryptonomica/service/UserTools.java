@@ -117,8 +117,9 @@ public class UserTools {
         }
     }
 
+    /* --- Check if user is registered user: */
     public static CryptonomicaUser ensureCryptonomicaRegisteredUser(final User googleUser)
-            throws Exception, UnauthorizedException {
+            throws UnauthorizedException {
 
         ensureGoogleAuth(googleUser);
 
@@ -138,6 +139,7 @@ public class UserTools {
         return cryptonomicaUser;
     } // end of ensureCryptonomicaRegisteredUser method
 
+    /* --- Check if user is a notary or IACC officer: */
     public static CryptonomicaUser ensureNotaryOrCryptonomicaOfficer(final User googleUser)
             throws Exception, UnauthorizedException {
         //

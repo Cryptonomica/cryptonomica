@@ -64,6 +64,7 @@ app.run([
             GApi.load('visitorAPI', 'v1', BASE);            // 5
             GApi.load('newUserRegistrationAPI', 'v1', BASE);// 6
             GApi.load('cryptonomicaUserAPI', 'v1', BASE);   // 7
+            GApi.load('verificationAPI', 'v1', BASE);       // 8
 
             //
             GAuth.setClient(CLIENT);

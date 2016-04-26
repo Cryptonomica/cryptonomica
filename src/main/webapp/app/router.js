@@ -54,6 +54,12 @@ router
                     templateUrl: 'app/showkey/showkey.html'
                 })
 
+                .state('verification', {
+                    url: '/verification/{verificationWebSafeString}',
+                    controller: 'cryptonomica.controller.verification',
+                    templateUrl: 'app/verification/verification.html'
+                })
+
                 .state('arbitrationrules', {
                     url: '/arbitrationrules',
                     // controller: '',
