@@ -58,12 +58,20 @@
                     <!--// Date licenceIssuedOn;-->
                     <label for="licenceIssuedOn">Licence issued on: </label>
                     <!--<input ui-date id="licenceIssuedOn" ng-model="AddNotaryForm.licenceIssuedOn">-->
-                    <input type="date" id="licenceIssuedOn" ng-model="AddNotaryForm.licenceIssuedOn" ng-required="true">
+                    <input
+
+                            ui-date="dateOptions"
+                            id="licenceIssuedOn"
+                            ng-model="AddNotaryForm.licenceIssuedOn"
+                            ng-required="true">
                     <br>
                     <!--// Date licenceValidUntil;-->
                     <label for="licenceValidUntil">Licence valid until:</label>
                     <!--<input ui-date id="licenceValidUntil" ng-model="AddNotaryForm.licenceValidUntil">-->
-                    <input type="date" id="licenceValidUntil" ng-model="AddNotaryForm.licenceValidUntil">
+                    <input
+                            ui-date="dateOptions"
+                            id="licenceValidUntil"
+                            ng-model="AddNotaryForm.licenceValidUntil">
                     <span>(only if applicable)</span>
                     <br>
                     <!--// String licenceInfo;-->
@@ -158,7 +166,9 @@
         <tr>
             <td>fingerprint</td>
             <td>
-                <a href="" title="Show key info" ui-sref="showkey({ websafestring: key.webSafeString })">
+                <a href=""
+                   title="Show key info"
+                   ui-sref="showkey({ websafestring: key.webSafeString })">
                     {{key.fingerprint}}
                 </a>
             </td>

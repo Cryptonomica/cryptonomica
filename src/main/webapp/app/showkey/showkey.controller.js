@@ -52,6 +52,11 @@ controller.controller(controller_name, [
                 }
             );
             //
+            $scope.dateOptions = {
+                changeYear: true,
+                changeMonth: true,
+                yearRange: '1900:-0'};
+            //
             $log.info("$stateParams.websafestring : " + $stateParams.websafestring);
             var showKey = function () {
                 $scope.key = {};

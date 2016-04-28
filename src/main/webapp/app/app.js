@@ -10,7 +10,7 @@ var app = angular.module('cryptonomica', [
     'ngclipboard', // https://sachinchoolur.github.io/ngclipboard/
     'ngFileSaver', // http://alferov.github.io/angular-file-saver/#demo
     // 'angular-country-select', // http://alexcheng1982.github.io/angular-country-select/
-    // 'ui.date', // https://github.com/angular-ui/ui-date 
+    'ui.date', // https://github.com/angular-ui/ui-date
     'puigcerber.countryPicker',
     // my:
     'cryptonomica.ui.router',

@@ -48,6 +48,8 @@ controller.controller(controller_name, [
                 }
             );
             //
+            $scope.dateOptions = {changeYear: true, changeMonth: true, yearRange: '1900:-0'};
+            //
             $scope.download = function (text) {
                 var data = new Blob([text], {type: 'text/plain;charset=utf-8'});
                 FileSaver.saveAs(data, 'key.asc');

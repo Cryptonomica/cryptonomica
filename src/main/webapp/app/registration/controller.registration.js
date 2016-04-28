@@ -47,6 +47,8 @@
                         $scope.alert = "User not logged in";
                     }
                 );
+                //
+                $scope.dateOptions = {changeYear: true, changeMonth: true, yearRange: '1900:-0'};
 
                 // --------------------------------------------------------------
                 $scope.getCsUploadURL = function () {
@@ -137,16 +139,17 @@
                 };
 
                 $scope.registerNewUser = function () {
+                    $log.info($scope.regForm);
                     GApi.executeAuth('newUserRegistrationAPI', 'registerNewUser', $scope.regForm)
                         .then(
                             function (resp) {
                                 $scope.resp = resp; // net.cryptonomica.returns.NotaryGeneralView array in resp.items
                                 $rootScope.currentUser = resp.userProfileGeneralView;
                                 console.log("resp: ");
-                                console.log(resp);
+                                $log.info(resp);
                             }, function (resp) {
                                 console.log("error: ");
-                                console.log(resp);
+                                $log.info(resp);
                                 $scope.resp = resp; // resp.message or resp.error.message - java.lang.Exception:
                             }
                         );

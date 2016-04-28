@@ -71,8 +71,10 @@
             <form ng-show="!currentUser.registeredCryptonomicaUser">
                 <fieldset class="form-group">
                     <legend>For registration upload your
-                        <a href="https://github.com/Cryptonomica/cryptonomica/wiki/Public-PGP-Key">public OpenPGP key</a>
-                        and some info about you</legend>
+                        <a href="https://github.com/Cryptonomica/cryptonomica/wiki/Public-PGP-Key">public OpenPGP
+                            key</a>
+                        and some info about you
+                    </legend>
                     <p>Key should have first name, last name and e-mail (the same as in account) in "user id"</p>
                     <p>Key Strength: min 2,048 bits; valid not longer that 2 years;</p>
 
@@ -94,7 +96,7 @@
                         <p>
                             <input
                                     class="form-control col-xs-9 col-md-9"
-                                    type="date"
+                                    ui-date="dateOptions"
                                     ng-model="regForm.birthday">
                         </p>
                     </label>
