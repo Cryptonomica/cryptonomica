@@ -63,11 +63,19 @@ router
                 .state('arbitrationrules', {
                     url: '/arbitrationrules',
                     // controller: '',
-                    templateUrl: 'app/arbitrationrules/arbitration-rules.html',
-                    // resolve: {
-                    //     arbitrationRulesURL:
-                    //         'https://raw.githubusercontent.com/Cryptonomica/arbitration-rules/master/Arbitration_Rules/IACC/IACC-Arbitration-Rules.EN.signed.md'
-                    // }
+                    templateUrl: 'app/arbitrationrules/arbitration-rules.html'
+                })
+
+                .state('termsOfService', {
+                    url: '/termsOfService',
+                    // controller: '',
+                    templateUrl: 'app/termsOfService/termsOfService.html'
+                })
+
+                .state('privacyPolicy', {
+                    url: '/privacyPolicy',
+                    // controller: '',
+                    templateUrl: 'app/termsOfService/privacyPolicy.html'
                 })
 
                 .state('dashboard', {
