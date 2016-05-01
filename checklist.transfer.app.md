@@ -19,7 +19,8 @@
 - [ ] add custom domains
 - [ ] add SSL Certificates
 - [ ] add Permissions - for other developers, and webmaster account
-- [ ] add credentials: APIs & auth > Credentials > Add Credentials > OAuth 2.0 Client ID > Configure consent screen.
+- [ ] APIs & auth > Credentials > Add Credentials > OAuth 2.0 Client ID > Configure consent screen.
+- [ ] APIs & auth > Credentials > Add Credentials > OAuth 2.0 Client ID > Web application
 - [ ] add email(s) of in "Email API authorized senders" in:
 GAE -> Settings -> Application Settings
 - [ ] create first user with 'Cryptonomica officer' rights

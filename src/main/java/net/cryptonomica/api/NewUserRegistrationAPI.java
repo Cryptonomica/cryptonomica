@@ -24,6 +24,7 @@ import org.bouncycastle.openpgp.PGPPublicKey;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Logger;
 
 import static net.cryptonomica.service.OfyService.ofy;
@@ -58,9 +59,9 @@ public class NewUserRegistrationAPI {
             final User googleUser,
             final NewUserRegistrationForm newUserRegistrationForm
     ) throws Exception {
-        // ensure 1) user login, 2) not already registered:
+        /* --- Ensure 1) user login, 2) not already registered:: */
         UserTools.ensureNewCryptonomicaUser(googleUser);
-        // check form:
+        /* --- Check form:*/
         if (newUserRegistrationForm.getArmoredPublicPGPkeyBlock() == null) {
             throw new Exception("ASCII-armored PGP public key can not be empty");
         } else if (newUserRegistrationForm.getUserInfo() == null) {
@@ -68,7 +69,9 @@ public class NewUserRegistrationAPI {
         } else if (newUserRegistrationForm.getBirthday() == null) {
             throw new Exception("Birthdate can not be empty");
         }
-        // create PGPPublicKeyData from armored PGP key block :
+        Date userBirthDate = newUserRegistrationForm.getBirthday();
+
+        /* --- create PGPPublicKey from armored PGP key block: */
         String userId = googleUser.getUserId();
         String armoredPublicPGPkeyBlock = newUserRegistrationForm.getArmoredPublicPGPkeyBlock();
         LOG.warning("[armoredPublicPGPkeyBlock]:");
@@ -76,6 +79,15 @@ public class NewUserRegistrationAPI {
                 armoredPublicPGPkeyBlock
         );
         PGPPublicKey pgpPublicKey = PGPTools.readPublicKeyFromString(armoredPublicPGPkeyBlock);
+        /* --- Check PGPPublic Key: */
+        Date creationTime = pgpPublicKey.getCreationTime();
+        // -- key validity period check
+        Integer validDays = pgpPublicKey.getValidDays();
+        if (validDays > 366 * 2){
+            throw new Exception("This key valid for more than 2 years");
+        }
+
+        // create PGPPublicKeyData (Entity in DS) from PGPPublicKey:
         PGPPublicKeyData pgpPublicKeyData = new PGPPublicKeyData(
                 pgpPublicKey,
                 armoredPublicPGPkeyBlock,
