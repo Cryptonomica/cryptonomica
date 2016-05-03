@@ -13,6 +13,7 @@
 - [ ] app.js : $sceDelegateProvider.resourceUrlWhitelist - change
 - [ ] app.js :  var CLIENT = '602780521094-jim3gi59m9d2clhsi2kvuvad59c9m57l.apps.googleusercontent.com'; -> to production
                 var BASE = 'https://cryptonomica-test.appspot.com/_ah/api'; -> to production
+- [ ] dashboard.html : replace test payment buttons for real payment buttons
 
 ## for first run on new GAE project:
 
