@@ -21,7 +21,8 @@ var app = angular.module('cryptonomica', [
 app.config(function ($sceDelegateProvider) {
     $sceDelegateProvider.resourceUrlWhitelist([
         'self', // Allow same origin resource loads
-        'https://cryptonomica-test.appspot.com/**',
+        // 'https://cryptonomica-test.appspot.com/**',
+        'https://cryptonomica-server.appspot.com/**',
         'https://raw.githubusercontent.com/Cryptonomica/arbitration-rules/**' // works!
     ]);
 });
@@ -53,9 +54,12 @@ app.run([
 
             $rootScope.gdata = GData;
 
-            var CLIENT = '602780521094-jim3gi59m9d2clhsi2kvuvad59c9m57l.apps.googleusercontent.com';
-            var BASE = 'https://cryptonomica-test.appspot.com/_ah/api';
-            $rootScope.gaeProjectDomain = "cryptonomica-test.appspot.com";
+            // var CLIENT = '602780521094-jim3gi59m9d2clhsi2kvuvad59c9m57l.apps.googleusercontent.com';
+            var CLIENT = '762021407984-9ab8gugumsg30rrqgvma9htfkqd3uid5.apps.googleusercontent.com';
+            // var BASE = 'https://cryptonomica-test.appspot.com/_ah/api';
+            var BASE = 'https://cryptonomica-server.appspot.com/_ah/api';
+            // $rootScope.gaeProjectDomain = "cryptonomica-test.appspot.com";
+            $rootScope.gaeProjectDomain = "cryptonomica-server.appspot.com";
             //
             GApi.load('notaryAPI', 'v1', BASE);             // 1
             GApi.load('pgpPublicKeyAPI', 'v1', BASE);       // 2

@@ -6,7 +6,7 @@
     <!-- https://cloud.google.com/appengine/docs/java/config/appconfig#Java_appengine_web_xml_About_appengine_web_xml
     -->
 
-    <application>cryptonomica-test</application>
+    <application>cryptonomica-server</application>
     <version>v-1-0</version>
     <threadsafe>true</threadsafe>
     <!--<warmup-requests-enabled>false</warmup-requests-enabled>-->
