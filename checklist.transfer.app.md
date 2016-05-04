@@ -2,6 +2,7 @@
 ## Moving from sandbox to prodution;
 
 - [ ] change app id in appengine-web.xml
+- [ ] change app id in pom.xml
 - [ ] change WEB_CLIENT_ID in net.cryptonomica.constants.Constants
 - [ ] make changes to header (i.e.: Cryptonomica Key Server // Pre-alpha (v. 0.01))
 
