@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<web-app version="2.5"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+    <!-- docs: -->
+    <!-- https://cloud.google.com/appengine/docs/java/endpoints/required_files#webxml -->
+
+    <!-- Objectify -->
+    <filter>
+        <filter-name>ObjectifyFilter</filter-name>
+        <filter-class>com.googlecode.objectify.ObjectifyFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>ObjectifyFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!-- SystemServiceServlet -->
+    <servlet>
+        <servlet-name>SystemServiceServlet</servlet-name>
+        <servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
+        <init-param>
+            <param-name>services</param-name>
+            <param-value>
+                net.cryptonomica.api.CryptonomicaUserAPI,
+                net.cryptonomica.api.NewUserRegistrationAPI,
+                net.cryptonomica.api.NotaryAPI,
+                net.cryptonomica.api.UploadAPI,
+                net.cryptonomica.api.PGPPublicKeyAPI,
+                net.cryptonomica.api.UserSearchAndViewAPI,
+                net.cryptonomica.api.VisitorAPI
+                net.cryptonomica.api.VerificationAPI
+            </param-value>
+        </init-param>
+        <!-- https://cloud.google.com/appengine/docs/java/config/appconfig#Java_Warmup_requests -->
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SystemServiceServlet</servlet-name>
+        <url-pattern>/_ah/spi/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- CSUploadHandlerServlet -->
+    <servlet>
+        <servlet-name>CSUploadHandlerServlet</servlet-name>
+        <servlet-class>net.cryptonomica.servlets.CSUploadHandlerServlet</servlet-class>
+        <!-- https://cloud.google.com/appengine/docs/java/config/appconfig#Java_Warmup_requests -->
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CSUploadHandlerServlet</servlet-name>
+        <url-pattern>/cs-user-image-upload</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>IPNhandlerServlet</servlet-name>
+        <servlet-class>net.cryptonomica.servlets.IPNhandlerServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>IPNhandlerServlet</servlet-name>
+        <url-pattern>/ipnhandler</url-pattern>
+    </servlet-mapping>
+
+    <!-- SendGridServlet-->
+    <!-- https://github.com/sendgrid/google-java-sample-app -->
+    <!-- https://cloud.google.com/appengine/docs/java/mail/sendgrid -->
+    <servlet>
+        <servlet-name>SendGridServlet</servlet-name>
+        <servlet-class>net.cryptonomica.mail.SendGridServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SendGridServlet</servlet-name>
+        <url-pattern>/_ah/SendGridServlet</url-pattern>
+    </servlet-mapping>
+
+    <!-- GAE Mail servlet-->
+    <servlet>
+        <servlet-name>SendCustomMessageToEmailGAE</servlet-name>
+        <servlet-class>net.cryptonomica.mail.SendCustomMessageToEmailGAE</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SendCustomMessageToEmailGAE</servlet-name>
+        <url-pattern>/_ah/SendCustomMessageToEmailGAE</url-pattern>
+    </servlet-mapping>
+
+    <!-- GAE Remote API for Java -->
+    <!-- https://cloud.google.com/appengine/docs/java/tools/remoteapi -->
+    <servlet>
+        <display-name>Remote API Servlet</display-name>
+        <servlet-name>RemoteApiServlet</servlet-name>
+        <servlet-class>com.google.apphosting.utils.remoteapi.RemoteApiServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RemoteApiServlet</servlet-name>
+        <url-pattern>/remote_api</url-pattern>
+    </servlet-mapping>
+
+    <!-- Force SSL for entire site -->
+    <!-- (server automatically redirects the requests to the SSL port
+     if you try to use HTTP ) -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Entire Application</web-resource-name>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+
+    <!-- -->
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+        <!--<welcome-file>index.jsp</welcome-file>-->
+    </welcome-file-list>
+
+</web-app>

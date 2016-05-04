@@ -1,0 +1,26 @@
+{
+  "name": "angular-country-select",
+  "version": "1.0.0",
+  "homepage": "https://github.com/alexcheng1982/angular-country-select",
+  "authors": [
+    "Fu Cheng <alexcheng1982@gmail.com>"
+  ],
+  "description": "Country select for AngularJS",
+  "main": "dist/angular-country-select.js",
+  "keywords": [
+    "country",
+    "select"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.3.8",
+    "select2": "~3.5.2"
+  }
+}

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en" data-ng-app="countrySelectExample">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Angular country select example</title>
+    <link rel="stylesheet" href="./bower_components/select2/select2.css">
+    <style>
+      .country-select {
+        min-width: 300px;
+      }
+    </style>
+    <script src="./bower_components/jquery/dist/jquery.js"></script>
+    <script src="./bower_components/angular/angular.js"></script>
+    <script src="./bower_components/select2/select2.js"></script>
+    <script src="./dist/angular-country-select.js"></script>
+    <script type="text/javascript">
+      angular.module('countrySelectExample', ['angular-country-select']);
+    </script>
+  </head>
+  <body>
+    <input class="country-select" country-select data-ng-model="country">
+    <div>Selected: {{ country }}</div>
+  </body>
+</html>

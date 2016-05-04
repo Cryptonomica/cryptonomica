@@ -1,0 +1,73 @@
+<!--
+after login user, if already registered, will be redirected to dashboard
+if not registered - redirected to registration page with message:
+"You are not yet registered member of Cryptonomica"
+-->
+<div>
+    <!-- Navigation -->
+    <div class="btn-group" role="group" ng-show="currentUser.registeredCryptonomicaUser">
+        <a class="btn btn-secondary" href="/#" role="button">Home</a>
+        <a class="btn btn-secondary active" href="/#/dashboard" role="button">Dashboard</a>
+        <a class="btn btn-secondary" href="/#/registration" role="button">Registration</a>
+        <a class="btn btn-secondary" href="/#/search" role="button">Search</a>
+    </div>
+    <!-- -->
+
+    <div class="card card-block">
+        <h4 class="card-title">Dashboard</h4>
+        <p class="card-text">
+            This is the users's dashboard.
+            As for now we use this to test some site features.
+        </p>
+        <a href="#" class="btn btn-secondary-outline">Home</a>
+        <hr>
+        <!--<input class="country-select" country-select data-ng-model="country">-->
+        <!--<div>Selected: {{ country }}</div>-->
+
+        <h3>Bitcoin payment test</h3>
+        <form action="https://bitpay.com/checkout" method="post">
+            <input type="hidden" name="action" value="checkout"/>
+            <input type="hidden" name="posData" value=""/>
+            <input type="hidden" name="data"
+                   value="bTsQtQE8HjeIsVwZJiR7xOwtWlwPzVoWrJdg1WThA5ctTjFow/R4kQTWswGcTT/+lxdu4z1o45W3KEVmu/AS/LMBDE1gCjusqYZCCtqIc4bqaE21Ms1MzKAXbpH+qnyt1lCar6lMePOYJ0HQbC2l7GJyQPvXr7jWAyK6vg74XIG6rcITPUxTZbIK+8O3clDjY+hOSg3q+Xud+DYtwA83+0Ah5SwzIgY2apdcfDCW9g6Y2A7e4yOzkecLWkg42RdvecrKQsHRYaYiR/fAiQpqGA=="/>
+            <input type="image" src="https://bitpay.com/img/button-large.png" border="0" name="submit"
+                   alt="BitPay, the easy way to pay with bitcoins.">
+        </form>
+        <hr>
+        <h3>PayPal payment test ($)</h3>
+        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+            <input type="hidden" name="cmd" value="_s-xclick">
+            <input type="hidden" name="hosted_button_id" value="6UDCSZM4E3WDL">
+            <table>
+                <tr><td><input type="hidden" name="on0" value="Select your option">Select your option</td></tr><tr><td><select name="os0">
+                <option value="Option 1">Option 1 $1.00 USD</option>
+                <option value="Option 2">Option 2 $2.00 USD</option>
+                <option value="Option 3">Option 3 $3.00 USD</option>
+            </select> </td></tr>
+            </table>
+            <input type="hidden" name="currency_code" value="USD">
+            <input type="image" src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal – The safer, easier way to pay online.">
+            <img alt="" border="0" src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif" width="1" height="1">
+        </form>
+        <hr>
+        <h3>PayPal payment test (10€)</h3>
+        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+            <input type="hidden" name="cmd" value="_s-xclick">
+            <input type="hidden" name="hosted_button_id" value="CKW3RDXVMD952">
+            <input type="image" src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal – The safer, easier way to pay online.">
+            <img alt="" border="0" src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif" width="1" height="1">
+        </form>
+
+        <hr>
+        <!--
+        <h3>Test countries select</h3>
+        <select ng-model="selectedCountry" pvp-country-picker></select>
+        <p>
+            {{selectedCountry}}
+        </p>-->
+
+    </div>
+
+</div>
+
+
