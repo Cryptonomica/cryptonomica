@@ -25,7 +25,7 @@ public class PGPTools {
 //     * @throws IOException
 //     * @throws PGPException
 //     */
-//    public static PGPPublicKey readPublicKey(InputStream input) throws IOException, PGPException {
+//    public static PGPPublicKey readPublicKeyFromInputStream (InputStream input) throws IOException, PGPException {
 //        PGPPublicKeyRingCollection pgpPub = new PGPPublicKeyRingCollection(
 //                PGPUtil.getDecoderStream(input), new JcaKeyFingerprintCalculator());
 //        //
@@ -47,7 +47,7 @@ public class PGPTools {
 //
 //        throw new IllegalArgumentException("Can't find encryption key in key ring.");
 //    }
-//    <!-- was a but reading userID in key DSA + ElGamal -->
+//    <!-- was a bug reading userID in key DSA + ElGamal -->
 
     /// NEW:
     public static PGPPublicKey readPublicKey(InputStream iKeyStream) throws IOException {

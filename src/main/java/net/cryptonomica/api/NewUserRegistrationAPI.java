@@ -83,9 +83,11 @@ public class NewUserRegistrationAPI {
         Date creationTime = pgpPublicKey.getCreationTime();
         // -- key validity period check
         Integer validDays = pgpPublicKey.getValidDays();
+        // <<<<<----------------------------------------------------------------------------- TEMPORARY : turned off
+        /*
         if (validDays > 366 * 2){
             throw new Exception("This key valid for more than 2 years");
-        }
+        }*/
 
         // create PGPPublicKeyData (Entity in DS) from PGPPublicKey:
         PGPPublicKeyData pgpPublicKeyData = new PGPPublicKeyData(
