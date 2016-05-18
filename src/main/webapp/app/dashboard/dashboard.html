@@ -22,22 +22,25 @@ if not registered - redirected to registration page with message:
             <br>
         <h2>Make payments to cryptonomica:</h2>
         <hr>
+        Support: support@cryptonomica.net
+        <hr>
+
         <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
             <input type="hidden" name="cmd" value="_s-xclick">
-            <input type="hidden" name="hosted_button_id" value="S5B46BP5TPXW6">
+            <input type="hidden" name="hosted_button_id" value="F2TWXSUFWZEUS">
             <table>
                 <tr>
-                    <td><input type="hidden" name="on0" value="Pay using PayPal:">Pay using PayPal:</td>
+                    <td><input type="hidden" name="on0" value="Pay with PayPal:">Pay with PayPal:</td>
                 </tr>
                 <tr>
                     <td><select name="os0">
-                        <option value="pay">pay $1.00 USD</option>
-                        <option value="pay">pay $5.00 USD</option>
-                        <option value="pay">pay $10.00 USD</option>
-                        <option value="pay">pay $20.00 USD</option>
-                        <option value="pay">pay $50.00 USD</option>
-                        <option value="pay">pay $100.00 USD</option>
-                        <option value="pay">pay $200.00 USD</option>
+                        <option value="(1) pay:">(1) pay: $1.00 USD</option>
+                        <option value="(2) pay:">(2) pay: $5.00 USD</option>
+                        <option value="(3) pay:">(3) pay: $10.00 USD</option>
+                        <option value="(4) pay:">(4) pay: $20.00 USD</option>
+                        <option value="(5) pay:">(5) pay: $50.00 USD</option>
+                        <option value="(6) pay:">(6) pay: $100.00 USD</option>
+                        <option value="(7) pay:">(7) pay: $200.00 USD</option>
                     </select></td>
                 </tr>
                 <tr>
@@ -52,19 +55,32 @@ if not registered - redirected to registration page with message:
                    name="submit" alt="PayPal – The safer, easier way to pay online.">
             <img alt="" border="0" src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif" width="1" height="1">
         </form>
-
         <hr>
-        <h3>Bitcoin payment</h3>
-
-        <form action="https://bitpay.com/checkout" method="post">
-            <input type="hidden" name="action" value="checkout"/>
-            <input type="hidden" name="posData" value=""/>
-            <input type="hidden" name="data"
-                   value="bTsQtQE8HjeIsVwZJiR7xOwtWlwPzVoWrJdg1WThA5ctTjFow/R4kQTWswGcTT/+ZKeN4/LQrN7LvHCxTYy0sAV9z/fTWNlkSVwTeZ3whZAA2sYvM7QzQEReE2Lgb6lkDTNARROLA1LweqA1/Cbv5SoVT1pMcdy6GQl6K7gcEwwryvS1G8V67yQG8G0vFxQKH/fPRUdwn1kj8QTuo61/Qr+8kTQGKI3nIc6wMfq3WLXOwJYb5D11keyFdWc4Mkq4bgd21+P5WU0U3WfGJ74mg/4o+QjmjTTHI/yNHaT9LpTK7bnZ34WhKCTuUpX9FcwGMlslbcGnuuCQJfyWQlp+rFOlGxmGI8F4F9Vw43dP/F8="/>
-            <input type="image" src="https://bitpay.com/img/button-large.png" border="0" name="submit"
-                   alt="BitPay, the easy way to pay with bitcoins.">
+        <h3>Bitcoin payments:</h3>
+        $5
+        <form action="https://bitpay.com/checkout" method="post" >
+            <input type="hidden" name="action" value="checkout" />
+            <input type="hidden" name="posData" value="" />
+            <input type="hidden" name="data" value="bTsQtQE8HjeIsVwZJiR7xOwtWlwPzVoWrJdg1WThA5ctTjFow/R4kQTWswGcTT/+CIVvoFz47OPkypvSkvALBfNooAJvALSbnNIHSxAif3jirfj/9tqlCS+avxrx8B91HLP3ns3tKJAD/AHlzZDPTA1R2YMy79JDERXZkcY3lCKgsNw1BgnhDUWsH3P/1H3KNIy2jne6+Du/Wb/WaV3LvVttusKlMGWhouM2tUmik/qd1K1oQOUUZ2dXRbH9TcqVo5Qe4mtKwvrXR8Glg1i+ERCPxxze6zCbzJ21KZY4bfsbkkjuEliOIrEdxiyBKta3" />
+            <input type="image" src="https://bitpay.com/img/button-small.png" border="0" name="submit" alt="BitPay, the easy way to pay with bitcoins." >
         </form>
 
+        <hr>
+        $50
+        <form action="https://bitpay.com/checkout" method="post" >
+            <input type="hidden" name="action" value="checkout" />
+            <input type="hidden" name="posData" value="" />
+            <input type="hidden" name="data" value="bTsQtQE8HjeIsVwZJiR7xOwtWlwPzVoWrJdg1WThA5ctTjFow/R4kQTWswGcTT/+x22aWO9zA6ZHvGYzFACSkT1oeD3ZiyaifCJJzplfwW2XiyRop06UBxGjX4xRoOIVbHBJ7tHqDG1yTNWUkBFEen4yBRl5UdrxK4b4I5WcAQC6FB97EaYhLqyCe3qGD0bIJDtRMwJykJfAfbdehsZucLoBBDMvMoKW3lZEql3LE3lu8Tjw4xXNCcKC0jgrrc1OOLNB5RWGMtKa1fxtDxp0MF9VEJ4pfQ4XI4gyDH80Gu58FoeD+Tdv4o1UGbM35Qr0" />
+            <input type="image" src="https://bitpay.com/img/button-medium.png" border="0" name="submit" alt="BitPay, the easy way to pay with bitcoins." >
+        </form>
+        <hr>
+        $90
+        <form action="https://bitpay.com/checkout" method="post" >
+            <input type="hidden" name="action" value="checkout" />
+            <input type="hidden" name="posData" value="" />
+            <input type="hidden" name="data" value="bTsQtQE8HjeIsVwZJiR7xOwtWlwPzVoWrJdg1WThA5ctTjFow/R4kQTWswGcTT/+wyAZDfBeu7W9+G0Sv0HQ4ShQKk3YuAN+rjxzsAIaPLFkRhp2D/3rjye6n7hrYFcJTv3Ni6kBM988jwWFv9r7dH46sdZ5qPEF3yc4FxGXsMfPAyebxR4LX+otXDcVvrT5vdTP6cdJaDmBvu66yyO78W8isWRKCcQVpsnWf7BbRZwnVKFbu/dau9xAOovcKf/8IkTXg477dFFnXENXmTVbB4u31QMQGDtLugouAHOEs4y8Mm4DeTou+z+CkLKbepYR" />
+            <input type="image" src="https://bitpay.com/img/button-large.png" border="0" name="submit" alt="BitPay, the easy way to pay with bitcoins." >
+        </form>
         <hr>
 
     </div>
