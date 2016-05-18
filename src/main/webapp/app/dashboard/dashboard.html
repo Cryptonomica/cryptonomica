@@ -7,20 +7,52 @@ if not registered - redirected to registration page with message:
     <!-- Navigation -->
     <div class="btn-group" role="group" ng-show="currentUser.registeredCryptonomicaUser">
         <a class="btn btn-secondary" href="/#" role="button">Home</a>
-        <a class="btn btn-secondary active" href="/#/dashboard" role="button">Dashboard</a>
+        <a class="btn btn-secondary active" href="/#/dashboard" role="button">Dashboard/Payments</a>
         <a class="btn btn-secondary" href="/#/registration" role="button">Registration</a>
         <a class="btn btn-secondary" href="/#/search" role="button">Search</a>
     </div>
     <!-- -->
 
     <div class="card card-block">
-        <h1 class="card-title">Dashboard</h1>
+        <h1 class="card-title">Dashboard and payments</h1>
         <p class="card-text">
 
             <!--<input class="country-select" country-select data-ng-model="country">-->
             <!--<div>Selected: {{ country }}</div>-->
-        <br>
+            <br>
         <h2>Make payments to cryptonomica:</h2>
+        <hr>
+        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+            <input type="hidden" name="cmd" value="_s-xclick">
+            <input type="hidden" name="hosted_button_id" value="S5B46BP5TPXW6">
+            <table>
+                <tr>
+                    <td><input type="hidden" name="on0" value="Pay using PayPal:">Pay using PayPal:</td>
+                </tr>
+                <tr>
+                    <td><select name="os0">
+                        <option value="pay">pay $1.00 USD</option>
+                        <option value="pay">pay $5.00 USD</option>
+                        <option value="pay">pay $10.00 USD</option>
+                        <option value="pay">pay $20.00 USD</option>
+                        <option value="pay">pay $50.00 USD</option>
+                        <option value="pay">pay $100.00 USD</option>
+                        <option value="pay">pay $200.00 USD</option>
+                    </select></td>
+                </tr>
+                <tr>
+                    <td><input type="hidden" name="on1" value="Payment for: (KeyID etc.)">Payment for: (KeyID etc.)</td>
+                </tr>
+                <tr>
+                    <td><input type="text" name="os1" maxlength="200"></td>
+                </tr>
+            </table>
+            <input type="hidden" name="currency_code" value="USD">
+            <input type="image" src="https://www.paypalobjects.com/en_GB/i/btn/btn_paynowCC_LG.gif" border="0"
+                   name="submit" alt="PayPal – The safer, easier way to pay online.">
+            <img alt="" border="0" src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif" width="1" height="1">
+        </form>
+
         <hr>
         <h3>Bitcoin payment</h3>
 
@@ -33,29 +65,6 @@ if not registered - redirected to registration page with message:
                    alt="BitPay, the easy way to pay with bitcoins.">
         </form>
 
-        <hr>
-        <h3>PayPal payment</h3>
-
-        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-            <input type="hidden" name="cmd" value="_s-xclick">
-            <input type="hidden" name="hosted_button_id" value="V2HTNZXCRT2RA">
-            <table>
-                <tr>
-                    <td><input type="hidden" name="on0" value="Choose sum to pay">Choose sum to pay</td>
-                </tr>
-                <tr>
-                    <td><select name="os0">
-                        <option value="Option 1:">Option 1: €50.00 EUR</option>
-                        <option value="Option 2:">Option 2: €100.00 EUR</option>
-                        <option value="Option 3:">Option 3: €200.00 EUR</option>
-                    </select></td>
-                </tr>
-            </table>
-            <input type="hidden" name="currency_code" value="EUR">
-            <input type="image" src="https://www.paypalobjects.com/en_GB/i/btn/btn_paynowCC_LG.gif" border="0"
-                   name="submit" alt="PayPal – The safer, easier way to pay online.">
-            <img alt="" border="0" src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif" width="1" height="1">
-        </form>
         <hr>
 
     </div>

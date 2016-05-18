@@ -17,7 +17,7 @@ import java.util.Date;
  */
 
 @Entity
-@Cache // -- ? in testing may be should not stored in cashe to be able view changes faster
+// @Cache // -- may be should not stored in cache to be able view changes faster
 public class CryptonomicaUser {
     /* Logger */
 

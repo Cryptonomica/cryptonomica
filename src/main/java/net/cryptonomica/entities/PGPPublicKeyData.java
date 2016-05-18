@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 @Entity
-@Cache // --- ? in testing can be turned off
+// @Cache // --- ? can be turned off to show changes faster
 public class PGPPublicKeyData {
     /* ---- Logger */
     private static final Logger LOG = Logger.getLogger(PGPPublicKeyData.class.getName());
