@@ -97,7 +97,16 @@
         <!--<span class="mega-octicon octicon-key"></span>-->
 
         <ul class="nav navbar-nav pull-right">
-            <!--  -->
+            <!-- KeyFinder-->
+            <li class="nav-item" ng-show="currentUser.registeredCryptonomicaUser">
+                <a href="" ui-sref="search()"
+                   class="btn btn-secondary-outline" title="Find keys and users">
+                    <i class="fa fa-key"></i>
+                    <br>KeyFinder
+                </a>
+            </li>
+            <!-- -->
+            <!-- Help -->
             <li class="nav-item">
                 <a href="https://github.com/Cryptonomica/cryptonomica/wiki"
                    class="btn btn-secondary-outline" ng-click="help()" title="Help">
@@ -105,6 +114,7 @@
                     <br>Help
                 </a>
             </li>
+
             <li class="nav-item" ng-show="gdata.getUser()">
                 <a href="https://accounts.google.com/AccountChooser"
                    title="Change account">{{gdata.getUser().email}}</a>
@@ -175,9 +185,12 @@
         registered in The United Kingdom, Registration No. 9392597.
         <br> International House, 24 Holborn Viaduct, EC1A 2BN London, United Kingdom.
         <div class="text-xs-right">
-            <a href="" ui-sref="privacyPolicy">Privacy Policy</a>&nbsp;|&nbsp;<a href="" ui-sref="termsOfService">Terms
-            of
-            Service</a>
+            <i class="fa fa-envelope-o"></i>&nbsp;
+            <a href="mailto:support@cryptonomica.net" target="_top">support@cryptonomica.net</a>
+            &nbsp;| &nbsp;
+            <a href="" ui-sref="privacyPolicy">Privacy Policy</a>
+            &nbsp;|&nbsp;
+            <a href="" ui-sref="termsOfService">Terms of Service</a>
         </div>
     </nav>
     <!-- ------- **** ------ -->
