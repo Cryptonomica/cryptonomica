@@ -1,5 +1,7 @@
 # Cryptonomica
 
+Working service on [cryptonomica.net](https://cryptonomica.net)
+
 Testing sandbox server with mockup database works on
 [cryptonomica.work](https://cryptonomica.work), it's code is in
 ['sandbox' branch](https://github.com/Cryptonomica/cryptonomica/tree/sandbox).
