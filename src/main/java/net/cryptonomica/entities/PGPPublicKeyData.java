@@ -22,7 +22,7 @@ public class PGPPublicKeyData {
     private static final Logger LOG = Logger.getLogger(PGPPublicKeyData.class.getName());
     /*------------ */
     // Key owner's key.
-    // Tt's make possible to store the same key to different users - for testing
+    // It makes possible to store the same key to different users - for testing
     @Parent
     private Key<CryptonomicaUser> cryptonomicaUserKey; // .....1
     @Id
@@ -65,8 +65,10 @@ public class PGPPublicKeyData {
     // by pressing button "show verification"
     // on the same page, or passed as parameter to
     // show-verification page
-
-    private List<String> verificationsWebSafeStrings; //.16
+    private List<String> verificationsWebSafeStrings; //......16
+    @Index
+    private Boolean paid; //..................................17
+    private Long PaymentDataID; //............................18
 
     /* --- Constructors: */
     public PGPPublicKeyData() {
@@ -299,5 +301,26 @@ public class PGPPublicKeyData {
     public void setVerificationsWebSafeStrings(ArrayList<String> verificationsWebSafeStrings) {
         this.verificationsWebSafeStrings = verificationsWebSafeStrings;
     }
+
+    public void setVerificationsWebSafeStrings(List<String> verificationsWebSafeStrings) {
+        this.verificationsWebSafeStrings = verificationsWebSafeStrings;
+    }
+
+    public Boolean getPaid() {
+        return paid;
+    }
+
+    public void setPaid(Boolean paid) {
+        this.paid = paid;
+    }
+
+    public Long getPaymentDataID() {
+        return PaymentDataID;
+    }
+
+    public void setPaymentDataID(Long paymentDataID) {
+        PaymentDataID = paymentDataID;
+    }
+
     // end getters and setters
 }

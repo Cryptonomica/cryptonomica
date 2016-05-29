@@ -291,6 +291,12 @@ public class NotaryAPI {
                 .load()
                 .key(pgpPublicKeyDataKEY)
                 .now();
+
+        /* Check if key paid */
+        if (pgpPublicKeyData.getPaid() == null || pgpPublicKeyData.getPaid() == Boolean.FALSE) {
+            throw new Exception("This key is unpaid, and can not be verified. Please make a payment first.");
+        }
+
         // create verification
         Verification verification = new Verification(
                 verifyPGPPublicKeyForm, // verification data

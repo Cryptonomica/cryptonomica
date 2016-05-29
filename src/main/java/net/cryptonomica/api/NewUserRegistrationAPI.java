@@ -25,6 +25,7 @@ import org.bouncycastle.openpgp.PGPPublicKey;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 
 import static net.cryptonomica.service.OfyService.ofy;
@@ -79,19 +80,33 @@ public class NewUserRegistrationAPI {
                 armoredPublicPGPkeyBlock
         );
         PGPPublicKey pgpPublicKey = PGPTools.readPublicKeyFromString(armoredPublicPGPkeyBlock);
-        /* --- Check PGPPublic Key: */
-        Date creationTime = pgpPublicKey.getCreationTime();
-        // -- key validity period check
-        Integer validDays = pgpPublicKey.getValidDays();
-        if (validDays > 366 * 2){
-            throw new Exception("This key valid for more than 2 years");
-        }
 
         // create PGPPublicKeyData (Entity in DS) from PGPPublicKey:
         PGPPublicKeyData pgpPublicKeyData = new PGPPublicKeyData(
                 pgpPublicKey,
                 armoredPublicPGPkeyBlock,
                 userId);
+
+        /* --- Check PGPPublic Key: */
+        Date creationTime = pgpPublicKey.getCreationTime();
+        // -- key validity period check
+        Integer validDays = pgpPublicKey.getValidDays();
+        if (validDays > 366 * 2) {
+            throw new Exception("This key valid for more than 2 years");
+        } else if (validDays <= 0) { //
+            throw new Exception("This key's validity term is incorrect");
+        }
+        // --- check for dublicates in DS:
+        List<PGPPublicKeyData> duplicates = ofy().load()
+                .type(PGPPublicKeyData.class)
+                .filter("fingerprint", pgpPublicKeyData.getFingerprint())
+                .list();
+        if (!duplicates.isEmpty()) {
+            throw new Exception("The key with fingerprint"
+                    + pgpPublicKeyData.getFingerprint()
+                    + "already registered");
+        }
+
         // create CryptonomicaUser:
         CryptonomicaUser cryptonomicaUser = new CryptonomicaUser(
                 googleUser,

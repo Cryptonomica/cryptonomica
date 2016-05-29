@@ -70,6 +70,8 @@ public class CryptonomicaUser {
     @Index
     Boolean active; // will be shown in search results (// paid for verification)
 
+    /* --- Constructors: */
+
     public CryptonomicaUser() {
     }
 
