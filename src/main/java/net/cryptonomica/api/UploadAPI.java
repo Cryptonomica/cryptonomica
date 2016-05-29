@@ -21,8 +21,10 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 
 /**
  * API for uploading files and images
- * * explore on: cryptonomica-test.appspot.com/_ah/api/explorer
+ * explore on: cryptonomica-{test || server}.appspot.com/_ah/api/explorer
  * ! - API should be registered in  web.xml (<param-name>services</param-name>)
+ * ! - API should be loaded in app.js - app.run()
+ *  * in this API:
  */
 @Api(
         name = "uploadAPI",
