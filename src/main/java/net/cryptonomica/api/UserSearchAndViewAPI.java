@@ -73,6 +73,7 @@ public class UserSearchAndViewAPI {
         if (generalSearchUserProfilesForm.getEmail() != null && generalSearchUserProfilesForm.getEmail().equals("")) {
             generalSearchUserProfilesForm.setEmail(null);
         }
+
         // search: first name + last name
         if (generalSearchUserProfilesForm.getFirstName() != null
                 && generalSearchUserProfilesForm.getLastName() != null
@@ -81,14 +82,15 @@ public class UserSearchAndViewAPI {
                     .type(CryptonomicaUser.class)
                     .filter(
                             "firstName",
-                            generalSearchUserProfilesForm.getFirstName()
+                            generalSearchUserProfilesForm.getFirstName().toLowerCase()
                     )
                     .filter(
                             "lastName",
-                            generalSearchUserProfilesForm.getLastName()
+                            generalSearchUserProfilesForm.getLastName().toLowerCase()
                     )
                     .list();
         }
+
         // first name + last name + email
         else if (generalSearchUserProfilesForm.getFirstName() != null
                 && generalSearchUserProfilesForm.getLastName() != null
@@ -97,13 +99,18 @@ public class UserSearchAndViewAPI {
                     .type(CryptonomicaUser.class)
                     .filter(
                             "firstName",
-                            generalSearchUserProfilesForm.getFirstName())
+                            generalSearchUserProfilesForm.getFirstName().toLowerCase()
+                    )
                     .filter(
                             "lastName",
-                            generalSearchUserProfilesForm.getLastName())
+                            generalSearchUserProfilesForm.getLastName().toLowerCase()
+                    )
                     .filter(
                             "email",
-                            new Email(generalSearchUserProfilesForm.getEmail()))
+                            new Email(
+                                    generalSearchUserProfilesForm.getEmail().toLowerCase()
+                            )
+                    )
                     .list();
         }
         // first name + email
@@ -114,12 +121,17 @@ public class UserSearchAndViewAPI {
                     .type(CryptonomicaUser.class)
                     .filter(
                             "firstName",
-                            generalSearchUserProfilesForm.getFirstName())
+                            generalSearchUserProfilesForm.getFirstName().toLowerCase()
+                    )
                     .filter(
                             "email",
-                            new Email(generalSearchUserProfilesForm.getEmail()))
+                            new Email(
+                                    generalSearchUserProfilesForm.getEmail().toLowerCase()
+                            )
+                    )
                     .list();
         }
+
         // last name + email
         else if (generalSearchUserProfilesForm.getFirstName() == null
                 && generalSearchUserProfilesForm.getLastName() != null
@@ -128,13 +140,18 @@ public class UserSearchAndViewAPI {
                     .type(CryptonomicaUser.class)
                     .filter(
                             "lastName",
-                            generalSearchUserProfilesForm.getLastName())
+                            generalSearchUserProfilesForm.getLastName().toLowerCase()
+                    )
                     .filter(
                             "email",
-                            new Email(generalSearchUserProfilesForm.getEmail()))
+                            new Email(
+                                    generalSearchUserProfilesForm.getEmail().toLowerCase()
+                            )
+                    )
                     .list();
         }
-        // email
+
+        // email only
         else if (generalSearchUserProfilesForm.getFirstName() == null
                 && generalSearchUserProfilesForm.getLastName() == null
                 && generalSearchUserProfilesForm.getEmail() != null) {
@@ -142,19 +159,23 @@ public class UserSearchAndViewAPI {
                     .type(CryptonomicaUser.class)
                     .filter(
                             "email",
-                            new Email(generalSearchUserProfilesForm.getEmail())
+                            new Email(
+                                    generalSearchUserProfilesForm.getEmail().toLowerCase()
+                            )
                     )
                     .list();
         }
-        // first name
+
+        // first name only
         else if (generalSearchUserProfilesForm.getFirstName() != null
                 && generalSearchUserProfilesForm.getLastName() == null
                 && generalSearchUserProfilesForm.getEmail() == null) {
+
             cryptonomicaUsersList = ofy().load()
                     .type(CryptonomicaUser.class)
                     .filter(
                             "firstName",
-                            generalSearchUserProfilesForm.getFirstName()
+                            generalSearchUserProfilesForm.getFirstName().toLowerCase()
                     )
                     .list();
         }

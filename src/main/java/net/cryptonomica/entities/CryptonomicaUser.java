@@ -7,13 +7,17 @@ import com.google.appengine.api.users.User;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.*;
 import net.cryptonomica.forms.NewUserRegistrationForm;
-import net.cryptonomica.forms.UserRegistrationForm;
 
 import java.util.ArrayList;
 import java.util.Date;
 
 /**
  * Entity: user (a human)
+ * first name and last name should be stored as lowercase string for searching,
+ * see: https://groups.google.com/forum/#!topic/objectify-appengine/q5X3OSICiLM
+ * https://code.google.com/p/googleappengine/issues/detail?id=5136
+ * http://stackoverflow.com/questions/1658163/case-insensitive-where-clause-in-gql-query-for-stringproperty/1660385
+ * http://stackoverflow.com/questions/6201082/case-insensitive-filter-query-with-objectify-google-appengine
  */
 
 @Entity
@@ -75,16 +79,6 @@ public class CryptonomicaUser {
     public CryptonomicaUser() {
     }
 
-    public CryptonomicaUser(User googleUser, UserRegistrationForm userRegistrationForm) {
-        this.userId = googleUser.getUserId();
-        this.firstName = userRegistrationForm.getFirstName();
-        this.lastName = userRegistrationForm.getLastName();
-        this.birthday = userRegistrationForm.getBirthday();
-        this.googleUser = googleUser;
-        this.email = new Email(googleUser.getEmail());
-        this.userInfo = new Text(userRegistrationForm.getUserInfo());
-    } // constructor from user registration Form
-
     public CryptonomicaUser(User googleUser,
                             PGPPublicKeyData pgpPublicKeyData,
                             NewUserRegistrationForm newUserRegistrationForm) {
@@ -92,12 +86,12 @@ public class CryptonomicaUser {
         this.webSafeStringKey = Key.create(
                 CryptonomicaUser.class, googleUser.getUserId()
         ).toWebSafeString();
-        this.firstName = pgpPublicKeyData.getFirstName();
-        this.lastName = pgpPublicKeyData.getLastName();
+        this.firstName = pgpPublicKeyData.getFirstName().toLowerCase();
+        this.lastName = pgpPublicKeyData.getLastName().toLowerCase();
         this.birthday = newUserRegistrationForm.getBirthday();
         this.googleUser = googleUser;
         if (googleUser.getEmail() != null) {
-            this.email = new Email(googleUser.getEmail()); // or email = pgpPublicKeyData.getUserEmail()
+            this.email = new Email(googleUser.getEmail().toLowerCase()); // or email = pgpPublicKeyData.getUserEmail()
         }
         if (newUserRegistrationForm.getUserInfo() != null) {
             this.userInfo = new Text(newUserRegistrationForm.getUserInfo());

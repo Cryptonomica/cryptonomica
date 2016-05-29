@@ -8,6 +8,14 @@ footer {
     background-color: #dddddd;
 }
 
+/* http://stackoverflow.com/a/36426886/1697878 */
+/* Then, simply wrap the expression (for ex) in your html:
+<span class="capitalize">{{ uppercase_expression }}</span>
+No js needed */
+.capitalize {
+    text-transform: capitalize;
+}
+
 .nav-tabs .nav-link.active, .nav-tabs .nav-link.active:focus, .nav-tabs .nav-link.active:hover, .nav-tabs .nav-item.open .nav-link, .nav-tabs .nav-item.open .nav-link:focus, .nav-tabs .nav-item.open .nav-link:hover,
 .card {
     background-color: #fafafa;
