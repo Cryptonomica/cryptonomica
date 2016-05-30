@@ -78,6 +78,12 @@ router
                     templateUrl: 'app/termsOfService/privacyPolicy.html'
                 })
 
+                .state('showallarbitrators', {
+                    url: '/showallarbitrators',
+                    controller: 'cryptonomica.controller.showallarbitrators',
+                    templateUrl: 'app/arbitrators/showallarbitrators.html'
+                })
+
                 .state('dashboard', {
                     url: '/dashboard',
                     controller: 'cryptonomica.controller.dashboard',

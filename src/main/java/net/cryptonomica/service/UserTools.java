@@ -139,26 +139,30 @@ public class UserTools {
         return cryptonomicaUser;
     } // end of ensureCryptonomicaRegisteredUser method
 
+    /* --- Check if user is an IACC officer: */
+    public static CryptonomicaUser ensureCryptonomicaOfficer(final User googleUser)
+            throws UnauthorizedException {
+        //
+        CryptonomicaUser cryptonomicaUser = ensureCryptonomicaRegisteredUser(googleUser);
+
+        LOG.warning("cryptonomicaUser.getCryptonomicaOfficer(): " + cryptonomicaUser.getCryptonomicaOfficer());
+
+        if (cryptonomicaUser.getCryptonomicaOfficer() == null || !cryptonomicaUser.getCryptonomicaOfficer()) {
+            throw new UnauthorizedException("You are not a Cryptonomica officer");
+        }
+
+        return cryptonomicaUser;
+    } // end of ensureCryptonomicaOfficer method
+
     /* --- Check if user is a notary or IACC officer: */
     public static CryptonomicaUser ensureNotaryOrCryptonomicaOfficer(final User googleUser)
-            throws Exception, UnauthorizedException {
+            throws UnauthorizedException {
         //
         CryptonomicaUser cryptonomicaUser = ensureCryptonomicaRegisteredUser(googleUser);
         //
         LOG.warning("cryptonomicaUser: ");
         LOG.warning(new Gson().toJson(cryptonomicaUser));
-/*
-        CryptonomicaOfficer cryptonomicaOfficer = ofy()
-                .load()
-                .key(Key.create(CryptonomicaOfficer.class, cryptonomicaUser.getUserId()))
-                .now();
 
-        Notary notary = ofy()
-                .load()
-                .key(Key.create(Notary.class, cryptonomicaUser.getUserId()))
-                .now();
-*/
-        //
         // if (cryptonomicaOfficer == null && notary == null) {
         LOG.warning("cryptonomicaUser.getCryptonomicaOfficer(): " + cryptonomicaUser.getCryptonomicaOfficer());
         LOG.warning("cryptonomicaUser.getNotary(): " + cryptonomicaUser.getNotary());
@@ -168,5 +172,5 @@ public class UserTools {
             throw new UnauthorizedException("You are not a Notary or Cryptonomica officer");
         }
         return cryptonomicaUser;
-    } // end of ensureCryptonomicaRegisteredUser method
+    } // end of ensureNotaryOrCryptonomicaOfficer method
 }

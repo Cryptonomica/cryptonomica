@@ -36,7 +36,7 @@ import static net.cryptonomica.service.OfyService.ofy;
  * explore on: cryptonomica-{test || server}.appspot.com/_ah/api/explorer
  * ! - API should be registered in  web.xml (<param-name>services</param-name>)
  * ! - API should be loaded in app.js - app.run()
- *  * in this API:
+ * * in this API:
  */
 
 @Api(name = "newUserRegistrationAPI", // The api name must match '[a-z]+[A-Za-z0-9]*'
@@ -90,6 +90,14 @@ public class NewUserRegistrationAPI {
 
         /* --- Check PGPPublic Key: */
         Date creationTime = pgpPublicKey.getCreationTime();
+        // -- email check:
+        if (!pgpPublicKeyData.getUserEmail().getEmail().toLowerCase().equals(
+                googleUser.getEmail().toLowerCase()
+        )
+                ) {
+            throw new Exception("Email in the key's user ID should be the same as in account");
+        }
+
         // -- key validity period check
         Integer validDays = pgpPublicKey.getValidDays();
         if (validDays > 366 * 2) {
