@@ -5,12 +5,21 @@ import java.io.Serializable;
 /**
  * Simple String Wrapper Object
  */
-public class StringWrapperObject implements Serializable{
+public class StringWrapperObject implements Serializable {
     private String message;
     private String error;
 
+    /* --- Constructors: */
+
+
     public StringWrapperObject() {
     }
+
+    public StringWrapperObject(String message) {
+        this.message = message;
+    }
+
+    /* --- Getters and Setters: */
 
     public String getMessage() {
         return message;

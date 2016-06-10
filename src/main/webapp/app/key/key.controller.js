@@ -1,11 +1,11 @@
 'use strict';
 
 /**
- *  get and showes key by key websafestring
+ *  get and showes  by key fingerprint
  *  TODO: if user is a notary or crytonomimica user - offer to add verification
  */
 
-var controller_name = "cryptonomica.controller.showkey";
+var controller_name = "cryptonomica.controller.key";
 
 var controller = angular.module(controller_name, []);
 
@@ -57,22 +57,22 @@ controller.controller(controller_name, [
                 changeMonth: true,
                 yearRange: '1900:-0'};
             //
-            $log.info("$stateParams.websafestring : " + $stateParams.websafestring);
+            $log.info("$stateParams.fingerprint : " + $stateParams.fingerprint);
             var showKey = function () {
                 $scope.key = {};
                 GApi.executeAuth(
                     'pgpPublicKeyAPI',
-                    'getPGPPublicKeyByWebSafeString',
-                    {"websafestring": $stateParams.websafestring}
+                    'getPGPPublicKeyByFingerprint', //
+                    {"fingerprint": $stateParams.fingerprint}
                 ).then(
                     function (resp) {
-                        $log.info("[showkey.controller.js] showKey() - resp: ");
+                        $log.info("[key.controller.js] showKey() - resp: ");
                         $log.info(resp);
                         $scope.key = resp;
                         $scope.alert = null;
                     },
                     function (error) {
-                        $log.error("[showkey.controller.js] showKey() - error: ");
+                        $log.error("[key.controller.js] showKey() - error: ");
                         $log.error(error);
                         $scope.alert = error;
                         $scope.key.error = error;
@@ -81,7 +81,7 @@ controller.controller(controller_name, [
             };
             showKey();
 
-            $log.info("[showkey.controller.js] $scope.key: ");
+            $log.info("[key.controller.js] $scope.key: ");
             $log.info($scope.key);
             //
             $scope.download = function (text) {
@@ -134,7 +134,7 @@ controller.controller(controller_name, [
                         // VerificationGeneralView verificationGeneralView;
                         // PGPPublicKeyGeneralView pgpPublicKeyGeneralView;
                         // UserProfileGeneralView userProfileGeneralView;                        
-                        $log.info("[showkey.controller.js] $scope.verifyKey() - resp: ");
+                        $log.info("[key.controller.js] $scope.verifyKey() - resp: ");
                         $log.info(resp);
                         $scope.VerifyPGPPublicKeyForm = {}; // clear form
                         $scope.VerifyPGPPublicKeyReturn = resp;
@@ -142,7 +142,7 @@ controller.controller(controller_name, [
                         $timeout($rootScope.progressbar.complete(), 1000);
                     },
                     function (error) {
-                        $log.error("[showkey.controller.js] $scope.verifyKey() - error: ");
+                        $log.error("[key.controller.js] $scope.verifyKey() - error: ");
                         $log.error(error);
                         $scope.verifyKeyError = error;
                         $timeout($rootScope.progressbar.complete(), 1000);

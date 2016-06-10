@@ -6,6 +6,7 @@ var controller = angular.module('cryptonomica.controller', [
         'cryptonomica.controller.search',
         'cryptonomica.controller.viewprofile',
         'cryptonomica.controller.showkey',
+        'cryptonomica.controller.key',
         'cryptonomica.controller.verification',
         'cryptonomica.controller.showallarbitrators'
     ]

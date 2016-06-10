@@ -17,11 +17,13 @@ import net.cryptonomica.pgp.PGPTools;
 import net.cryptonomica.returns.PGPPublicKeyGeneralView;
 import net.cryptonomica.returns.PGPPublicKeyUploadReturn;
 import net.cryptonomica.returns.SearchPGPPublicKeysReturn;
+import net.cryptonomica.returns.StringWrapperObject;
 import net.cryptonomica.service.UserTools;
 import org.bouncycastle.openpgp.PGPPublicKey;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import static net.cryptonomica.service.OfyService.ofy;
@@ -32,7 +34,7 @@ import static net.cryptonomica.service.OfyService.ofy;
  * explore on: cryptonomica-{test || server}.appspot.com/_ah/api/explorer
  * ! - API should be registered in  web.xml (<param-name>services</param-name>)
  * ! - API should be loaded in app.js - app.run()
- *  * in this API:
+ * * in this API:
  */
 
 @Api(name = "pgpPublicKeyAPI", // The api name must match '[a-z]+[A-Za-z0-9]*'
@@ -85,43 +87,68 @@ public class PGPPublicKeyAPI {
         return new PGPPublicKeyGeneralView(pgpPublicKeyData);
     }
 
-//    --- 
-//    @ApiMethod(
-//            name = "getKeyById",
-//            path = "getKeyById",
-//            httpMethod = ApiMethod.HttpMethod.POST
-//    )
-//    @SuppressWarnings("unused")
-//    // get key by fingerprint ( @Id in PGPPublicKeyData)
-//    public PGPPublicKeyGeneralView getKeyById(
-//            final User googleUser,
-//            final @Named("fingerprint") String fingerprint
-//    ) throws Exception {
-//        // authorization
-//        UserTools.ensureCryptonomicaRegisteredUser(googleUser);
-//        //
-//        LOG.warning("@Named(\"fingerprint\") : " + fingerprint);
-//        //
-//        PGPPublicKeyGeneralView pgpPublicKeyGeneralView = null;
-//        PGPPublicKeyData pgpPublicKeyData = null;
-//        try {
-//            pgpPublicKeyData = ofy()
-//                    .load()
-//                    .key(Key.create(PGPPublicKeyData.class, fingerprint))
-//                    .now();
-//        } catch (Exception e) {
-//            LOG.warning("load pgpPublicKeyData - Exception:");
-//            LOG.warning(e.getMessage());
-//        }
-//
-//        if (pgpPublicKeyData != null) {
-//            pgpPublicKeyGeneralView = new PGPPublicKeyGeneralView(pgpPublicKeyData);
-//        }
-//        LOG.warning("pgpPublicKeyData: " + new Gson().toJson(pgpPublicKeyData));
-//        LOG.warning("pgpPublicKeyGeneralView: " + new Gson().toJson(pgpPublicKeyGeneralView));
-//
-//        return pgpPublicKeyGeneralView;
-//    }
+    @ApiMethod(
+            name = "getPGPPublicKeyByFingerprint",
+            path = "getPGPPublicKeyByFingerprint",
+            httpMethod = ApiMethod.HttpMethod.GET
+    )
+    @SuppressWarnings("unused")
+    // get key by by fingerprint
+    public PGPPublicKeyGeneralView getPGPPublicKeyByFingerprint(
+            final User googleUser,
+            final @Named("fingerprint") String fingerprint
+    ) throws Exception {
+
+        /* Log request: */
+        LOG.warning("Request: @Named(\"fingerprint\") : " + fingerprint);
+
+        /* Check authorization: */
+        UserTools.ensureCryptonomicaRegisteredUser(googleUser);
+
+        /* Validate form: */
+
+        if (fingerprint == null || fingerprint.length() < 40 || fingerprint.length() > 40) {
+            throw new Exception("Invalid public key in request");
+        }
+
+        /* Load PGPPublicKeyData from DB*/
+
+        List<PGPPublicKeyData> pgpPublicKeyDataList = null;
+        pgpPublicKeyDataList = ofy()
+                .load()
+                .type(PGPPublicKeyData.class)
+                // <--- "fingerprintStr"
+                // @Id fields cannot be filtered on
+                .filter("fingerprintStr", fingerprint.toUpperCase())
+                .list();
+
+        LOG.warning("DS search result: " + new Gson().toJson(pgpPublicKeyDataList));
+
+        // if key not found trow an exception
+        if (pgpPublicKeyDataList == null || pgpPublicKeyDataList.size() == 0) {
+            throw new Exception("Public PGP key not found");
+        }
+
+        // check if there is only one key with given fingerprint in the database
+        if (pgpPublicKeyDataList.size() > 1) {
+            throw new Exception("there are "
+                    + pgpPublicKeyDataList.size()
+                    + " different keys with fingerprint "
+                    + fingerprint.toUpperCase()
+                    + "in the database"
+            );
+        }
+
+        // get key from the list
+        PGPPublicKeyData pgpPublicKeyData = pgpPublicKeyDataList.get(0);
+
+        // make key representation, return result
+        PGPPublicKeyGeneralView pgpPublicKeyGeneralView = new PGPPublicKeyGeneralView(pgpPublicKeyData);
+
+        LOG.warning("Result: " + new Gson().toJson(pgpPublicKeyGeneralView));
+
+        return pgpPublicKeyGeneralView;
+    }
 
     @ApiMethod(
             name = "uploadNewPGPPublicKey",
@@ -312,6 +339,47 @@ public class PGPPublicKeyAPI {
         );
 
         return searchPGPPublicKeysReturn;
+    }
+
+    @ApiMethod(
+            name = "addFingerprintStrProperties",
+            path = "addFingerprintStrProperties",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    @SuppressWarnings("unused")
+    // temporary method to add new properties to existing entities
+    // (fingerprint -> fingerprintStr)
+    public StringWrapperObject addFingerprintStrProperties(
+            final User googleUser
+    ) throws Exception {
+
+        /* Check authorization: */
+        UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        /* Load PGPPublicKeyData from DB*/
+
+        List<PGPPublicKeyData> pgpPublicKeyDataList = ofy()
+                .load()
+                .type(PGPPublicKeyData.class)
+                .limit(20)
+                .list();
+
+        if (pgpPublicKeyDataList.size() > 10) {
+            throw new Exception("there are to many keys in the database");
+        }
+
+        for (PGPPublicKeyData pgpPublicKeyData : pgpPublicKeyDataList) {
+            pgpPublicKeyData.setFingerprintStr(pgpPublicKeyData.getFingerprint());
+        }
+
+        Map<Key<PGPPublicKeyData>, PGPPublicKeyData> result = ofy()
+                .save()
+                .entities(pgpPublicKeyDataList)
+                .now();
+
+        String resultJSON = new Gson().toJson(result);
+
+        return new StringWrapperObject(resultJSON);
     }
 
 }

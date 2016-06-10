@@ -89,8 +89,10 @@ public class NewUserRegistrationAPI {
                 userId);
 
         /* --- Check PGPPublic Key: */
+
         Date creationTime = pgpPublicKey.getCreationTime();
         // -- email check:
+
         if (!pgpPublicKeyData.getUserEmail().getEmail().toLowerCase().equals(
                 googleUser.getEmail().toLowerCase()
         )
@@ -105,10 +107,11 @@ public class NewUserRegistrationAPI {
         } else if (validDays <= 0) { //
             throw new Exception("This key's validity term is incorrect");
         }
+
         // --- check for dublicates in DS:
         List<PGPPublicKeyData> duplicates = ofy().load()
                 .type(PGPPublicKeyData.class)
-                .filter("fingerprint", pgpPublicKeyData.getFingerprint())
+                .filter("fingerprintStr", pgpPublicKeyData.getFingerprint())
                 .list();
         if (!duplicates.isEmpty()) {
             throw new Exception("The key with fingerprint"

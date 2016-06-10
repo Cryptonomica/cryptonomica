@@ -54,6 +54,12 @@ router
                     templateUrl: 'app/showkey/showkey.html'
                 })
 
+                .state('key', {
+                    url: '/key/{fingerprint}',
+                    controller: 'cryptonomica.controller.key',
+                    templateUrl: 'app/key/key.html'
+                })
+
                 .state('verification', {
                     url: '/verification/{verificationWebSafeString}',
                     controller: 'cryptonomica.controller.verification',

@@ -26,49 +26,53 @@ public class PGPPublicKeyData {
     @Parent
     private Key<CryptonomicaUser> cryptonomicaUserKey; // .....1
     @Id
-    // unic for each key
+    // @Id fields cannot be filtered on !!!!
     private String fingerprint; //.............................2
+    @Index
+    // --- for filters:
+    // .filter("fingerprintStr", fingerprint.toUpperCase())
+    private String fingerprintStr; //..........................3
     @Index
     // key of this entity as a website string,
     // can be used easy get a key
-    private String webSafeString; //...........................3
+    private String webSafeString; //...........................4
     @Index
     // cryptonomicaUserId of the key owner
     // (same as in @Parent )
-    private String cryptonomicaUserId; //......................4
+    private String cryptonomicaUserId; //......................5
     @Index
     // keyID, like [0xE77173E5]
-    private String keyID; // ..................................5
+    private String keyID; // ..................................6
     @Index
     // key userID,
     // like: John Silver <jonh.silver@gmail.com>;
-    private String userID; //..................................6
+    private String userID; //..................................7
     @Index
-    private String firstName; //...............................7
+    private String firstName; //...............................8
     @Index
-    private String lastName; //................................8
+    private String lastName; //................................9
     @Index
-    private Email userEmail; //................................9
+    private Email userEmail; //...............................10
     @Index
-    private Date created; //..................................10
+    private Date created; //..................................11
     @Index
-    private Date exp; //......................................11
+    private Date exp; //......................................12
     @Index
-    private int bitStrength; //...............................12
-    private Text asciiArmored; //.............................13
+    private int bitStrength; //...............................13
+    private Text asciiArmored; //.............................14
     @Index
-    private Boolean verified; //..............................14
+    private Boolean verified; //..............................15
     @Index
     // can be used to filter what to show
-    private Boolean active; //................................15
+    private Boolean active; //................................16
     // verification info can be shown
     // by pressing button "show verification"
     // on the same page, or passed as parameter to
     // show-verification page
-    private List<String> verificationsWebSafeStrings; //......16
+    private List<String> verificationsWebSafeStrings; //......17
     @Index
-    private Boolean paid; //..................................17
-    private Long PaymentDataID; //............................18
+    private Boolean paid; //..................................18
+    private Long PaymentDataID; //............................19
 
     /* --- Constructors: */
     public PGPPublicKeyData() {
@@ -80,6 +84,7 @@ public class PGPPublicKeyData {
         this.fingerprint = DatatypeConverter.printHexBinary(
                 pgpPublicKey.getFingerprint()
         );
+        this.fingerprintStr = this.fingerprint; //
         //
         this.cryptonomicaUserKey = Key.create(CryptonomicaUser.class, cryptonomicaUserId);
         this.webSafeString = Key.create(this.cryptonomicaUserKey, PGPPublicKeyData.class, this.fingerprint)
@@ -188,6 +193,14 @@ public class PGPPublicKeyData {
 
     public void setFingerprint(String fingerprint) {
         this.fingerprint = fingerprint;
+    }
+
+    public String getFingerprintStr() {
+        return fingerprintStr;
+    }
+
+    public void setFingerprintStr(String fingerprintStr) {
+        this.fingerprintStr = fingerprintStr;
     }
 
     public String getWebSafeString() {

@@ -20,12 +20,14 @@
                 <!--{{alert}}-->
                 You are already registered. You can upload/change your photo.
             </div>
+            <!-- alerts on top -->
             <div ng-show="resp.error.message" class="alert alert-danger" role="alert">
                 {{resp.error.message}}
             </div>
             <div ng-show="resp.messageToUser" class="alert alert-success" role="alert">
                 {{resp.messageToUser}}
             </div>
+
             <!--  Image upload START -->
 
             <img ng-src="{{userCurrentImageLink || 'https://placehold.it/100x100?text=No+Image+Uploaded'}}"
@@ -123,6 +125,14 @@
                 </button>
             </form>
         </div>
+    </div>
+
+    <!-- alerts on bottom -->
+    <div ng-show="resp.error.message" class="alert alert-danger" role="alert">
+        {{resp.error.message}}
+    </div>
+    <div ng-show="resp.messageToUser" class="alert alert-success" role="alert">
+        {{resp.messageToUser}}
     </div>
     <!-- ~~~~~~~~~~~~~~~~~~~~~~ -->
     <div class="card" ng-show="resp">
