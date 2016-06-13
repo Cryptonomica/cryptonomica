@@ -66,8 +66,8 @@ public class NewUserRegistrationAPI {
         /* --- Check form:*/
         if (newUserRegistrationForm.getArmoredPublicPGPkeyBlock() == null) {
             throw new Exception("ASCII-armored PGP public key can not be empty");
-        } else if (newUserRegistrationForm.getUserInfo() == null) {
-            throw new Exception("Info can not be empty");
+        // } else if (newUserRegistrationForm.getUserInfo() == null) {
+        //    throw new Exception("Info can not be empty");
         } else if (newUserRegistrationForm.getBirthday() == null) {
             throw new Exception("Birthdate can not be empty");
         }
