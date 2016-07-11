@@ -136,7 +136,7 @@ public class EthNodeAPI {
                                 "Hello! \n\n"
                                         + WordUtils.capitalize(cryptonomicaUser.getFirstName()) + " "
                                         + WordUtils.capitalize(cryptonomicaUser.getLastName()) + ",\n\n"
-                                        + "You have stored document on blockchain!" + "\n\n"
+                                        + "You sent a document to the blockchain!" + "\n\n"
                                         + "Document text: " + "\n"
                                         + ethAddDocForm.getDocText() + "\n\n"
                                         + "with the following result: " + "\n"
