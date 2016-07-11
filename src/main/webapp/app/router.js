@@ -90,6 +90,12 @@ router
                     templateUrl: 'app/arbitrators/showallarbitrators.html'
                 })
 
+                .state('proofOfExistence', {
+                    url: '/proofOfExistence',
+                    controller: 'cryptonomica.controller.proofOfExistence',
+                    templateUrl: 'app/proofOfExistence/proofOfExistence.html'
+                })
+
                 .state('dashboard', {
                     url: '/dashboard',
                     controller: 'cryptonomica.controller.dashboard',

@@ -70,6 +70,7 @@ app.run([
             GApi.load('cryptonomicaUserAPI', 'v1', BASE);   // 7
             GApi.load('verificationAPI', 'v1', BASE);       // 8
             GApi.load('arbitratorsAPI', 'v1', BASE);        // 9
+            GApi.load('ethNodeAPI', 'v1', BASE);            // 10
 
             //
             GAuth.setClient(CLIENT);

@@ -3,23 +3,28 @@ package net.cryptonomica.returns;
 import java.io.Serializable;
 
 /**
- * Simple String Wrapper Object
+ * simple Integer wrapper object;
  */
-public class StringWrapperObject implements Serializable {
+public class IntegerWrapperObject implements Serializable {
 
+    private Integer number;
     private String message;
     private String error;
 
-    /* --- Constructors: */
+    /* ---- Constructors: */
 
-    public StringWrapperObject() {
+    public IntegerWrapperObject() {
     }
 
-    public StringWrapperObject(String message) {
-        this.message = message;
+    /* ---- Getters and Setters: */
+
+    public Integer getNumber() {
+        return number;
     }
 
-    /* --- Getters and Setters: */
+    public void setNumber(Integer number) {
+        this.number = number;
+    }
 
     public String getMessage() {
         return message;

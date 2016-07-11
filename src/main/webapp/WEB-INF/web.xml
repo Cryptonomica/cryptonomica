@@ -26,6 +26,7 @@
             <param-value>
                 net.cryptonomica.api.ArbitratorsAPI
                 net.cryptonomica.api.CryptonomicaUserAPI,
+                net.cryptonomica.api.EthNodeAPI,
                 net.cryptonomica.api.NewUserRegistrationAPI,
                 net.cryptonomica.api.NotaryAPI,
                 net.cryptonomica.api.UploadAPI,

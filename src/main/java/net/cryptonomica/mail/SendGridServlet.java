@@ -21,8 +21,8 @@ import static net.cryptonomica.service.OfyService.ofy;
 public class SendGridServlet extends HttpServlet {
     /* --- Logger: */
     private static final Logger LOG = Logger.getLogger(SendGridServlet.class.getName());
-    /* -----------*/
 
+    /* -----------*/
     private static final String SENDGRID_API_KEY = ofy()
             .load()
             .key(Key.create(AppSettings.class, "SendGridApiKey"))

@@ -29,7 +29,7 @@ public class ArbitratorGeneralView implements Serializable {
     public ArbitratorGeneralView(CryptonomicaUser arbitratorCryptonomicaUser, Arbitrator arbitrator) {
         this.id = arbitrator.getId();
         if (arbitrator.getArbitratorInfo() != null) {
-            this.arbitratorInfo = arbitrator.getArbitratorInfo().toString();
+            this.arbitratorInfo = arbitrator.getArbitratorInfo().getValue();
         }
         this.active = arbitrator.getActive();
         if (arbitrator.getLinkedInProfileLink() != null) {

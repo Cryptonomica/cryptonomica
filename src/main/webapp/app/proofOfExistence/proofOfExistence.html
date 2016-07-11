@@ -1,0 +1,186 @@
+<!-- Navigation -->
+<div class="btn-group" role="group" ng-show="currentUser.registeredCryptonomicaUser">
+    <a class="btn btn-secondary" href="/#" role="button">Home</a>
+    <a class="btn btn-secondary" href="/#/dashboard" role="button">Dashboard/Payments</a>
+    <a class="btn btn-secondary" href="/#/registration" role="button">Registration</a>
+    <a class="btn btn-secondary" href="/#/search" role="button">Search</a>
+    <a class="btn btn-secondary" href="/#/showallarbitrators" role="button">Show arbitrators</a>
+    <a class="btn btn-secondary active" href="/#/proofOfExistence" role="button">Proof of existence</a>
+</div>
+<!-- -->
+
+<div class="card card-block">
+
+    <h2> Storing signatures and documents on blockchain</h2>
+
+    <div>Using smart-contract on Ethereum blockchain on the address:
+        <a href="https://etherscan.io/address/0x80f84866d4872f1ea412ddf10e2ed7af0b8ca8fb">
+            0x80f84866d4872f1ea412ddf10e2ed7af0b8ca8fb</a>
+    </div>
+
+    <!--  ============== Alerts: ===============  -->
+    <!-- Errror -->
+    <div ng-show="alert" class="alert alert-danger" role="alert">
+        <button type="button"
+                class="close"
+                data-dismiss="alert"
+                aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+        {{alert}}
+    </div>
+    <!-- Success -->
+    <div ng-show="resp.messageToUser" class="alert alert-success" role="alert">
+        <button type="button"
+                class="close"
+                data-dismiss="alert"
+                aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+        {{resp.messageToUser}}
+    </div>
+
+    <!-- =========== Form: store sig/doc on Blockchain ( ethAddDoc ) ====== -->
+    <hr>
+    <form id="ethAddDocForm">
+
+        <fieldset class="form-group">
+
+            <label for="ethAddDocFormDocText">Enter signature, document hash or document text (max. 1700 symbols):</label>
+
+            <!--<div class="row">-->
+
+                    <textarea
+                            id="ethAddDocFormDocText"
+                            class="form-control col-xs-11 col-md-11"
+                            maxlength="1700"
+                            ng-model="ethAddDocForm.docText"
+                            required>
+                    </textarea>
+
+            <div class="row">
+                <div class="col-xs-11 col-md-11"><span class="label label-warning">Warning</span>:
+                    What you enter will be stored on blockchain and accessible
+                    for everyone forever. There is no way to remove data from the blockchain, this is technically
+                    impossible.
+                </div>
+            </div>
+
+            <!--</div>-->
+        </fieldset>
+
+        <button
+                type="submit"
+                class="btn btn-default"
+                ng-click="ethAddDoc()"
+        > Submit
+        </button>
+
+    </form>
+
+    <!--  ethAddDoc Result: -->
+    <div ng-show="resp1.txHash">
+        <br>
+        <h3>Sent to blockchain</h3>
+        <table class="table table-bordered table-hover">
+            <tbody>
+            <tr>
+                <td>sha256</td>
+                <td>{{resp1.sha256}}</td>
+            </tr>
+            <tr>
+                <td>Transaction Hash</td>
+                <td><a href="//etherscan.io/tx/{{resp1.txHash}}">
+                    {{resp1.txHash}}
+                </a>
+                </td>
+            </tr>
+            <tr>
+                <td>Note:</td>
+                <td> Due to nature of blockchain there is no guarantee that data already stored,
+                    you have to check transaction
+                    <a href="//etherscan.io/tx/{{resp1.txHash}}">
+                        {{resp1.txHash}}
+                    </a>
+
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <hr>
+
+    <!-- =========== Form: get sig/doc from the Blockchain by sha256 ( ethGetDocBySha256 ) ====== -->
+    <form id="ethGetDocBySha256Form">
+
+        <fieldset class="form-group">
+
+            <label for="sha256">Enter sha256 hash of stored signature or document:</label>
+
+            <div class="row">
+
+            <div class="col-xs-11 col-md-11">
+                <div class="input-group">
+                    <span class="input-group-addon" id="0x">0x</span>
+                    <input type="text"
+                           class="form-control"
+                           id="sha256"
+                           name="sha256"
+                           ng-model="ethGetDocBySha256Form.sha256"
+                           placeholder="975f8c3065a5a6e0a81434add148b7f2b44065cc7dc09ff96f662df442c259ca"
+                           required>
+                </div>
+            </div>
+            <div class="col-xs-11 col-md-11">
+                You can also use
+                <a href="https://emn178.github.io/online-tools/sha256.html" target="_blank">this service</a>
+                to calculate sha256 of your document
+            </div>
+
+            </div>
+        </fieldset>
+
+        <button
+                type="submit"
+                class="btn btn-default"
+                ng-click="ethGetDocBySha256()"
+        > Search
+        </button>
+
+    </form>
+    <!-- ethGetDocBySha256Form Result: -->
+
+    <div id="ethGetDocBySha256FormResult" ng-show="resp2.docText">
+        <br>
+        <h3>Result:</h3>
+        <div>(If empty, probably no signature or text in this smart-contract with provided hash)</div>
+        <table class="table table-bordered table-hover">
+            <tbody>
+            <tr>
+                <td>Stored text:</td>
+                <td>{{resp2.docText}}</td>
+            </tr>
+            <tr>
+                <td>Published:</td>
+                <td>{{resp2.publishedDate}}</td>
+            </tr>
+            <tr>
+                <td>Published by:</td>
+                <td>
+                    {{resp2.publishedBy}}
+                </td>
+            </tr>
+            <tr>
+                <td>Published in block number:</td>
+                <td>
+                    <a href="//etherscan.io/block/{{resp2.publishedInBlockNumber}}">
+                        {{resp2.publishedInBlockNumber}}
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
