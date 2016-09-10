@@ -188,7 +188,7 @@ public class UserSearchAndViewAPI {
                     .type(CryptonomicaUser.class)
                     .filter(
                             "lastName",
-                            generalSearchUserProfilesForm.getLastName()
+                            generalSearchUserProfilesForm.getLastName().toLowerCase()
                     )
                     .list();
         } else {
