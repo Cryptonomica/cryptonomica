@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title> Media Stream Recorder Test </title>
+    <!-- Bootstrap 4 -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css">
+    <!-- JS  -->
+    <!-- https://github.com/streamproc/MediaStreamRecorder -->
+    <script src="https://cdn.webrtc-experiment.com/MediaStreamRecorder.js"></script>
+    <!-- CSS -->
+    <style media="screen" type="text/css">
+        @keyframes blink {
+            50% {
+                border-color: #ff0000;
+            }
+        }
+
+        .recording {
+            border: 7px solid #ffffff;
+            animation: blink .5s step-end infinite alternate;
+        }
+
+        video {
+            border: 7px solid #ffffff;
+        }
+    </style>
+</head>
+
+<body>
+<!-- HTML -->
+<div class="container">
+    <div>
+        <center>
+            <h4>video from camera:</h4>
+            <video id="video" src="" autoplay class="card-img-top"></video>
+            <br>
+            <button id="record" name="button" class="btn btn-secondary">start recording</button>
+            <button id="stop" name="button" class="btn btn-secondary">stop recording</button>
+        </center>
+    </div>
+    <hr>
+    <div>
+        <center>
+            <h4>recorded video:</h4>
+            <video id="blob-video" controls></video>
+            <br>
+            <button id="save" name="button" class="btn btn-secondary">save recording</button>
+        </center>
+    </div>
+</div>
+<!-- JS -->
+<script type="text/javascript">
+    var mediaConstraints = {
+        audio: true,
+        video: true
+    };
+
+    var mediaRecorder;
+
+    navigator.getUserMedia(mediaConstraints, onMediaSuccess, onMediaError);
+
+    function onMediaSuccess(stream) {
+
+        mediaRecorder = new MediaStreamRecorder(stream);
+        console.log(JSON.stringify(mediaRecorder));
+        mediaRecorder.mimeType = 'video/webm';
+
+        document.getElementById('video').setAttribute('src', window.URL.createObjectURL(stream));
+
+        mediaRecorder.ondataavailable = function (blob) {
+            // POST/PUT "Blob" using FormData/XHR2
+            var blobURL = URL.createObjectURL(blob);
+            console.log(JSON.stringify(blob));
+            console.log("blobURL: " + blobURL);
+            //
+            document.getElementById('blob-video').setAttribute('src', window.URL.createObjectURL(blob));
+            //
+        };
+
+    } // end onMediaSuccess
+
+    function onMediaError(e) {
+        console.error('media error', e);
+    } // end onMediaError
+
+    var recordButton = document.getElementById('record');
+    recordButton.addEventListener('click', function (e) {
+        // mediaRecorder.start();
+        mediaRecorder.start();
+        document.getElementById('video').setAttribute('class', 'recording');
+    });
+
+    var stopButton = document.getElementById('stop');
+    stopButton.addEventListener('click', function (e) {
+        mediaRecorder.stop();
+        document.getElementById('video').setAttribute('class', '');
+    })
+
+    var saveButton = document.getElementById('save');
+    saveButton.addEventListener('click', function (e) {
+        mediaRecorder.save();
+    })
+</script>
+</body>
+
+</html>

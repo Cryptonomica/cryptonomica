@@ -1,8 +1,12 @@
 /* cryptonomica css */
 
-body {
-    background-color: #bbbbbb;
-}
+/*body {
+    background: #bbbbbb url(img/background.big.001.png) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}*/
 
 footer {
     background-color: #dddddd;
