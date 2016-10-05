@@ -81,6 +81,7 @@
         mediaRecorder = new MediaStreamRecorder(stream);
         console.log(JSON.stringify(mediaRecorder));
         mediaRecorder.mimeType = 'video/webm';
+        var formData; //
 
         document.getElementById('video').setAttribute('src', window.URL.createObjectURL(stream));
 
@@ -92,33 +93,42 @@
             //
             document.getElementById('blob-video').setAttribute('src', window.URL.createObjectURL(blob));
             //
-        };
+            formData = new FormData();
+            // formData.append(name, value, filename);
+            // see: https://developer.mozilla.org/en-US/docs/Web/API/FormData/append
+            var name = "file"; // The name of the field whose data is contained in value.
+            var value = blob; // The field's value. This can be a USVString or Blob (including subclasses such as File)
+            var filename = "videofile.webm";// Optional. The filename reported to the server (a USVString),
+            // when a Blob or File is passed as the second parameter. The default filename for Blob objects is "blob".
+            // The default filename for File objects is the file's filename.
+            formData.append(name, value);
+        }; // end: mediaRecorder.ondataavailable
 
-    } // end onMediaSuccess
+        var recordButton = document.getElementById('record');
+        recordButton.addEventListener('click', function (e) {
+            mediaRecorder.start();
+            document.getElementById('video-frame').classList.add('recording');
+        });
+
+        var stopButton = document.getElementById('stop');
+        stopButton.addEventListener('click', function (e) {
+            mediaRecorder.stop();
+//        document.getElementById('video').setAttribute('class', '');
+            document.getElementById('video-frame').classList.remove('recording');
+        });
+
+        var saveButton = document.getElementById('save');
+        saveButton.addEventListener('click', function (e) {
+            mediaRecorder.save();
+        });
+
+    } // end: onMediaSuccess(stream)
 
     function onMediaError(e) {
         console.error('media error', e);
     } // end onMediaError
 
-    var recordButton = document.getElementById('record');
-    recordButton.addEventListener('click', function (e) {
-        // mediaRecorder.start();
-        mediaRecorder.start();
-//        document.getElementById('video').setAttribute('class', 'recording');
-        document.getElementById('video-frame').classList.add('recording');
-    });
 
-    var stopButton = document.getElementById('stop');
-    stopButton.addEventListener('click', function (e) {
-        mediaRecorder.stop();
-//        document.getElementById('video').setAttribute('class', '');
-        document.getElementById('video-frame').classList.remove('recording');
-    });
-
-    var saveButton = document.getElementById('save');
-    saveButton.addEventListener('click', function (e) {
-        mediaRecorder.save();
-    })
 </script>
 </body>
 
