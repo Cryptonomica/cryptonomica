@@ -7,8 +7,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css"
+          integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
     <!-- JS  -->
     <!-- https://github.com/streamproc/MediaStreamRecorder -->
     <script src="https://cdn.webrtc-experiment.com/MediaStreamRecorder.js"></script>
@@ -16,18 +16,20 @@
     <style media="screen" type="text/css">
         @keyframes blink {
             50% {
-                border-color: #ff0000;
+                border-color: rgba(255, 0, 0, 0.77);
+                background-color: rgba(255, 0, 0, 0.77);
+                color: rgba(255, 255, 255, 1);
             }
         }
 
         .recording {
-            border: 7px solid #ffffff;
             animation: blink .5s step-end infinite alternate;
         }
 
-        video {
-            border: 7px solid #ffffff;
+        .video-frame {
+            color: rgba(255, 255, 255, 0) !important;
         }
+
     </style>
 </head>
 
@@ -37,8 +39,14 @@
     <div>
         <center>
             <h4>video from camera:</h4>
-            <video id="video" src="" autoplay class="card-img-top"></video>
-            <br>
+            <div class="embed-responsive embed-responsive-16by9">
+                <video id="video" src="" autoplay class="embed-responsive-item"></video>
+            </div>
+
+            <div id="video-frame" style="height: 2.5em; width: 30%; color: rgba(255, 255, 255, 0); font-weight: bolder">
+                recording
+            </div>
+
             <button id="record" name="button" class="btn btn-secondary">start recording</button>
             <button id="stop" name="button" class="btn btn-secondary">stop recording</button>
         </center>
@@ -47,11 +55,14 @@
     <div>
         <center>
             <h4>recorded video:</h4>
-            <video id="blob-video" controls></video>
+            <div class="embed-responsive embed-responsive-16by9">
+                <video id="blob-video" controls class="embed-responsive-item"></video>
+            </div>
             <br>
             <button id="save" name="button" class="btn btn-secondary">save recording</button>
         </center>
     </div>
+    <br>
 </div>
 <!-- JS -->
 <script type="text/javascript">
@@ -92,14 +103,16 @@
     recordButton.addEventListener('click', function (e) {
         // mediaRecorder.start();
         mediaRecorder.start();
-        document.getElementById('video').setAttribute('class', 'recording');
+//        document.getElementById('video').setAttribute('class', 'recording');
+        document.getElementById('video-frame').classList.add('recording');
     });
 
     var stopButton = document.getElementById('stop');
     stopButton.addEventListener('click', function (e) {
         mediaRecorder.stop();
-        document.getElementById('video').setAttribute('class', '');
-    })
+//        document.getElementById('video').setAttribute('class', '');
+        document.getElementById('video-frame').classList.remove('recording');
+    });
 
     var saveButton = document.getElementById('save');
     saveButton.addEventListener('click', function (e) {
