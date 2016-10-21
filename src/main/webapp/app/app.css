@@ -1,8 +1,57 @@
-/* cryptonomica css */
+/* BASE
+******************************/
+
+html {
+  font-size: 10px;
+}
 
 body {
-    background-color: #bbbbbb;
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.6em; // currently ems cause chrome bug misinterpreting rems on body element
+  font-weight: 400;
+  line-height: 2.4em;
+  color: #111111;
 }
+
+/* NAVBAR
+******************************/
+.navbar {
+  border: 0px;
+}
+
+.navbar-brand {
+  padding: 4px 0;
+}
+.navbar-header a img.logo-img {
+  height: 40px;
+}
+
+.icon-bar {
+  background-color: white;
+}
+
+.nav-item a {
+  color: white;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.nav-item a:hover {
+  color: purple;
+  background-color: white;
+}
+
+@media (min-width: 544px) {
+  .navbar {
+      border-radius: 0px;
+  }
+}
+
+
+/* cryptonomica css */
+
+
 
 footer {
     background-color: #dddddd;
@@ -16,56 +65,29 @@ No js needed */
     text-transform: capitalize;
 }
 
-.nav-tabs .nav-link.active, .nav-tabs .nav-link.active:focus, .nav-tabs .nav-link.active:hover, .nav-tabs .nav-item.open .nav-link, .nav-tabs .nav-item.open .nav-link:focus, .nav-tabs .nav-item.open .nav-link:hover,
-.card {
-    background-color: #fafafa;
+
+
+.navbar-static-top {
+  background-color: purple;
 }
 
-.navbar {
-    /*background-color: #DD4500;*/
-    border-color: #DD4500;
-    margin-bottom: 0.3em;
-}
+.stickyFooter {
+  min-height: calc(100vh - 120px); }
 
-.navbar-default {
-  background-color: black;
-}
 
-.container {
-    border-width: 0;
-}
 
-.logo-background {
-    /*background-image: url("images/logo.004.crop.gray.svg");*/
-    background-position: center;
-    background-repeat: no-repeat;
-}
 
-.card-tab-panel {
-    border-top-width: 0;
-}
 
-.whitelink {
-    color: white;
-}
+
+
+
 
 /* Links */
 
-a,
-a:visited,
-a:focus,
-a:hover {
-    color: orangered;
-    /*color: red;*/
-    /*color: #dd4814;*/
-}
+
 
 /*----- Icons ------------- */
 
-.orangeicon {
-    /*color: #dd4500; */
-    /*color: orangered;*/
-}
 
 .fa-key {
     /*color: orangered;*/

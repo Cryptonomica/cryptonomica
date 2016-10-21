@@ -154,3 +154,8 @@ sftp-config.json
 
 # KDE directory preferences
 .directory
+
+# NodeJS plugins for CSS workflow
+src/main/webapp/node_modules
+src/main/webapp/package.json
+src/main/webapp/gulpfile.js

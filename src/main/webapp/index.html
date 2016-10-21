@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <link rel="shortcut icon" href="favicon.ico?"/>
+    <!-- FONT -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700,900" rel="stylesheet">
     <!-- Octicons -->
     <!-- https://octicons.github.com/usage/ -->
     <link rel="stylesheet" href="vendors/octicons/octicons.css">
@@ -16,8 +18,8 @@
     <!-- JQUERY -->
     <script src="vendors/jquery/jquery-2.2.0.min.js"></script>
     <!-- Bootstrap 4.0.0-alpha.2 -->
-    <link rel="stylesheet" href="vendors/bootstrap/dist/css/bootstrap.min.css">
-    <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <!-- AngularJS 1.4.9 -->
     <script src="vendors/angularjs/angular.min.js"></script>
     <script src="vendors/angularjs/angular-cookies.min.js"></script>
@@ -88,93 +90,115 @@
 
 <body ng-cloak>
 
+  <!-- STICKYFOOTER
+  ////////////////////////////////////////////////// -->
+  <div class="stickyFooter">
+
     <!-- ------- HEADER ------ -->
+    <!-- NAVBAR
+    ////////////////////////////////////////////////// -->
+    <nav class="navbar navbar-static-top">
+      <!--<span class="octicon octicon-shield"></span>-->
+      <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-id" aria-expanded="false">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">
+              <img src="http://i.imgur.com/Nv9IEaH.png" class="img-responsive logo-img">
+                <span ng-show="working==true">
+                    <i class="fa fa-spinner fa-pulse"></i></span></a>
+            <!--<i class="fa fa-key"></i>-->
+            <!--<span class="mega-octicon octicon-key"></span>-->
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="navbar-collapse-id">
+            <ul class="nav navbar-nav navbar-right">
+              <li class="nav-item" ng-show="currentUser.registeredCryptonomicaUser">
+                  <a href="#" ui-sref="search()"
+                     class="" title="Find keys and users">
+                      KeyFinder
+                  </a>
+              </li>
+              <!-- Help -->
+              <li class="nav-item">
+                  <a href="https://github.com/Cryptonomica/cryptonomica/wiki"
+                     class="" ng-click="help()" title="Help">
+                      Help
+                  </a>
+              </li>
+              <!-- Change permissions -->
+              <li class="nav-item" ng-show="gdata.getUser()">
+                  <a href="https://accounts.google.com/AccountChooser"
+                     title="Change account">{{gdata.getUser().email}}</a>
+                  <br>
+                  <a href="https://security.google.com/settings/security/permissions"
+                     title="Manage google account permissions">Change permissions</a>
+              </li>
+              <!-- Login -->
+              <li class="nav-item" ng-show="!gdata.getUser()" ng-hide="">
+                  <a class="" ng-click="login()">
+                      Login
+                  </a>
+              </li>
+              <li class="nav-item" ng-show="gdata.getUser()">
+                  <!--
+                                  <button class="btn btn-secondary-outline" ng-click="logout()"><i class="fa fa-sign-out"></i>
+                                      <br>
+                                      <span>Logout</span>
+                                  </button>
+                                  -->
+                  <a href="https://accounts.google.com/logout"
+                     role="button"
+                     class="">
+                     Logout
+                  </a>
 
-    <nav class="navbar navbar-default">
-        <!--<span class="octicon octicon-shield"></span>-->
+              </li>
+              <li class="nav-item" ng-show="!currentUser.registeredCryptonomicaUser"
+                  ng-hide="currentUser.registeredCryptonomicaUser">
+                  <a class="" ng-click="register()">
 
-        <a class="navbar-brand" href="#">
-            <!--Cryptonomica Key Server // Pre-alpha (v. 0.01)&nbsp;&nbsp;&nbsp;-->
-            Cryptonomica // Beta &nbsp;&nbsp;&nbsp;
-            <span ng-show="working==true">
-                <i class="fa fa-spinner fa-pulse"></i></span></a>
-        <!--<i class="fa fa-key"></i>-->
-        <!--<span class="mega-octicon octicon-key"></span>-->
+                      Register
+                  </a>
+              </li>
+              <li class="nav-item navbar-brand" ng-show="gdata.getUser()">
+                  <!--<img src="{{gapi.user.picture}}" height="57" style="">-->
+                  <img ng-src="{{userCurrentImageLink || 'https://placehold.it/57x57?text=No+Image'}}"
+                       style="height: 57px">
+              </li>
+            </ul>
+        </div>
 
-        <ul class="nav navbar-nav pull-right">
-            <!-- KeyFinder-->
-            <li class="nav-item" ng-show="currentUser.registeredCryptonomicaUser">
-                <a href="" ui-sref="search()"
-                   class="btn btn-secondary-outline" title="Find keys and users">
-                    <i class="fa fa-key"></i>
-                    <br>KeyFinder
-                </a>
-            </li>
-            <!-- -->
-            <!-- Help -->
-            <li class="nav-item">
-                <a href="https://github.com/Cryptonomica/cryptonomica/wiki"
-                   class="btn btn-secondary-outline" ng-click="help()" title="Help">
-                    <i class="fa fa-question-circle"></i>
-                    <br>Help
-                </a>
-            </li>
 
-            <li class="nav-item" ng-show="gdata.getUser()">
-                <a href="https://accounts.google.com/AccountChooser"
-                   title="Change account">{{gdata.getUser().email}}</a>
-                <br>
-                <a href="https://security.google.com/settings/security/permissions"
-                   title="Manage google account permissions">Change permissions</a>
-            </li>
-            <li class="nav-item" ng-show="!gdata.getUser()" ng-hide="">
-                <button class="btn btn-secondary-outline" ng-click="login()">
-                    <i class="fa fa-sign-in"></i>
-                    <br> Login
-                </button>
-            </li>
-            <!--  -->
-            <li class="nav-item" ng-show="gdata.getUser()">
-                <!--
-                                <button class="btn btn-secondary-outline" ng-click="logout()"><i class="fa fa-sign-out"></i>
-                                    <br>
-                                    <span>Logout</span>
-                                </button>
-                                -->
-                <a href="https://accounts.google.com/logout"
-                   role="button"
-                   class="btn btn-secondary-outline">
-                    <i class="fa fa-sign-out"></i>
-                    <br>
-                    <span>Logout</span>
-                </a>
 
-            </li>
-            <li class="nav-item" ng-show="!currentUser.registeredCryptonomicaUser"
-                ng-hide="currentUser.registeredCryptonomicaUser">
-                <button class="btn btn-secondary-outline" ng-click="register()">
-                    <i class="fa fa-pencil-square-o"></i>
-                    <br> Register
-                </button>
-            </li>
 
-            <li class="nav-item navbar-brand" ng-show="gdata.getUser()">
-                <!--<img src="{{gapi.user.picture}}" height="57" style="">-->
-                <img ng-src="{{userCurrentImageLink || 'https://placehold.it/57x57?text=No+Image'}}"
-                     style="height: 57px">
-            </li>
-            <!--  -->
-        </ul>
+
+
+
+
+
+
+
+
+
+
+      </div>
     </nav>
 
     <!-- ------- **** ------ -->
 
 
-    <!---->
-    <div ui-view></div>
-    <!---->
+  <!---->
+  <div ui-view></div>
+  <!---->
+</div> <!-- ///// stickyFooter ///// -->
+
     <!-- ------- FOOTER ------ -->
-    <nav class="navbar navbar-light bg-faded text-muted">
+    <footer class="">
+      <div class="container">
         <!--
         <i class="fa fa-cog fa-spin" style="" title="Under Development"></i>
         <span>2016.</span> .
@@ -199,7 +223,8 @@
             &nbsp;|&nbsp;
             <a href="" ui-sref="termsOfService">Terms of Service</a>
         </div>
-    </nav>
+      </div>
+    </footer>
     <!-- ------- **** ------ -->
 
 
