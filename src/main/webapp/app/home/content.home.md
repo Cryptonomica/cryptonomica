@@ -2,8 +2,7 @@ Cryptonomica keys server provide for it's user information about registered Cryp
 
 To become member of Cryptonomica:
 
-1) Generate your [OpenPGP]() keys using
-[recommended software](https://github.com/Cryptonomica/arbitration-rules/blob/master/Arbitration_Rules/IACC/IACC-Arbitration-Rules.EN.signed.md#recommended-pgp-software).
+1) Generate your [OpenPGP]() keys using [recommended software](https://github.com/Cryptonomica/arbitration-rules/blob/master/Arbitration_Rules/IACC/IACC-Arbitration-Rules.EN.signed.md#recommended-pgp-software).
 Public PGP Key should have one user ID with fist name, last name and user e-mail.
 E-mail in the key should be the same as in Google account, that You use to login to Cryptonomica server  (
 You can have Google account with any e-mail, or just use @gmail.com - it's not the worst choice)
@@ -29,15 +28,14 @@ and thus such contract, agreement or obligation will be *legally* (yes, [we](htt
 2. Encrypt a message (any file) to key's owner, that only he/she can decrypt it.
 
 3. File a case for online dispute resolution in
-[The International Arbitration and Cryptography Centre (IACC)](https://international-arbitration.online).
+[The International Arbitration and Cryptography Centre (IACC)](https://cryptonomica.net).
 IACC is a permanent arbitration court registered in London, U.K.,
 providing online dispute resolution using modern information technologies.
 
 -------------------------------------
 
-For get more info on Cryptonomica visit [international-arbitration.online](https://international-arbitration.online)
-or [international-arbitration.info](http://international-arbitration.info),
+For get more info on Cryptonomica visit [cryptonomica.net](https://cryptonomica.net),
 join our [#Slack server](http://slack.cryptonomica.net),
-or find us on [linkedIn](https://www.linkedin.com/company/9552383) or [facebook](https://www.facebook.com/internationalarbitrationonline)
+find us on [linkedIn](https://www.linkedin.com/company/9552383) or [facebook](https://www.facebook.com/internationalarbitrationonline)
 
 
