@@ -20,5 +20,45 @@
 </head>
 <body>
 
+<script>
+
+    function successCallback(stream) {
+        // RecordRTC usage goes here
+        var options = {
+            type: 'video',
+            frameInterval: 20 // minimum time between pushing frames to Whammy (in milliseconds)
+        };
+        var recordRTC = RecordRTC(mediaStream, options);
+        recordRTC.startRecording();
+        recordRTC.stopRecording(function (videoURL) {
+            video.src = videoURL;
+
+            var recordedBlob = recordRTC.getBlob();
+            recordRTC.getDataURL(function (dataURL) {
+            });
+        });
+    }
+
+    function errorCallback(error) {
+        // maybe another application is using the device
+    }
+
+    var mediaConstraints = {
+        audio: {
+            mandatory: {
+                echoCancellation: false,
+                googAutoGainControl: false,
+                googNoiseSuppression: false,
+                googHighpassFilter: false
+            },
+            optional: [{
+                googAudioMirroring: false
+            }]
+        },
+    };
+
+    navigator.mediaDevices.getUserMedia(mediaConstraints).then(successCallback).catch(errorCallback);
+</script>
+
 </body>
 </html>
