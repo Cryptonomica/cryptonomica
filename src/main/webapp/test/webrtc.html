@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebRTC</title>
+</head>
+<body>
+
+
+<script>
+
+    // see: https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
+    var myConstraints = { audio: true, video: true };
+    navigator
+            .mediaDevices //
+            .getUserMedia(myConstraints)
+            .then(function (mediaStream) { //  MediaStream object
+                                           // https://developer.mozilla.org/en-US/docs/Web/API/MediaStream
+                        /* use the stream */
+
+                    }
+            ).catch(function (err) {
+                /* handle the error */
+
+            }
+    );
+
+
+</script>
+
+</body>
+</html>

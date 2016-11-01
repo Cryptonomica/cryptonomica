@@ -39,9 +39,17 @@
     <div>
         <center>
             <h4>video from camera:</h4>
-            <p>(please use headphones)</p>
+            <p></p>
             <div class="embed-responsive embed-responsive-16by9">
-                <video id="video" src="" autoplay class="embed-responsive-item"></video>
+                <!-- https://github.com/muaz-khan/RecordRTC#echo-issues -->
+                <video
+                        muted=true
+                        id="video"
+                        src=""
+                        autoplay
+                        class="embed-responsive-item">
+
+                </video>
             </div>
 
             <div id="video-frame" style="height: 2.5em; width: 30%; color: rgba(255, 255, 255, 0); font-weight: bolder">
