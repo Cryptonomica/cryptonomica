@@ -24,7 +24,6 @@
 
         .recording {
             animation: blink .5s step-end infinite alternate;
-
         }
 
         .paused {
@@ -35,8 +34,8 @@
         .video-status {
             color: rgba(255, 255, 255, 0) !important;
         }
-
     </style>
+
 </head>
 
 <body>
@@ -54,7 +53,6 @@
                         src=""
                         autoplay
                         class="embed-responsive-item">
-
                 </video>
             </div>
 
@@ -84,8 +82,6 @@
 </div>
 <!-- JS -->
 <script type="text/javascript">
-
-
 
     var mediaConstraints = {
         audio: true,
@@ -128,6 +124,7 @@
         recordButton.addEventListener('click', function (e) {
             mediaRecorder.start();
             document.getElementById('video-status').innerHTML = "RECORDING";
+
             document.getElementById('video-status').classList.remove('paused');
             document.getElementById('video-status').classList.add('recording');
 
@@ -140,6 +137,7 @@
         var pauseButton = document.getElementById('pause');
         pauseButton.addEventListener('click', function (e) {
             mediaRecorder.pause();
+
             document.getElementById('video-status').innerHTML = "PAUSED";
             document.getElementById('video-status').classList.remove('recording');
             document.getElementById('video-status').classList.add('paused');
@@ -151,6 +149,7 @@
         var resumeButton = document.getElementById('resume');
         resumeButton.addEventListener('click', function (e) {
             mediaRecorder.resume();
+
             document.getElementById('video-status').innerHTML = "RECORDING";
             document.getElementById('video-status').classList.remove('paused');
             document.getElementById('video-status').classList.add('recording');
@@ -161,7 +160,8 @@
         var stopButton = document.getElementById('stop');
         stopButton.addEventListener('click', function (e) {
             mediaRecorder.stop();
-//        document.getElementById('video').setAttribute('class', '');
+
+            // document.getElementById('video').setAttribute('class', '');
             document.getElementById('video-status').classList.remove('paused');
             document.getElementById('video-status').classList.remove('recording');
 
@@ -183,8 +183,8 @@
         console.error('media error', e);
     } // end onMediaError
 
-
 </script>
+
 </body>
 
 </html>
