@@ -24,9 +24,15 @@
 
         .recording {
             animation: blink .5s step-end infinite alternate;
+
         }
 
-        .video-frame {
+        .paused {
+            background-color: yellow;
+            color: black !important;
+        }
+
+        .video-status {
             color: rgba(255, 255, 255, 0) !important;
         }
 
@@ -52,12 +58,15 @@
                 </video>
             </div>
 
-            <div id="video-frame" style="height: 2.5em; width: 30%; color: rgba(255, 255, 255, 0); font-weight: bolder">
-                recording
+            <div id="video-status"
+                 style="height: 2.5em; width: 30%; color: rgba(255, 255, 255, 0); font-weight: bolder">
             </div>
 
             <button id="record" name="button" class="btn btn-secondary">start recording</button>
-            <button id="stop" name="button" class="btn btn-secondary">stop recording</button>
+            <button id="pause" name="button" class="btn btn-secondary disabled">pause recording</button>
+            <button id="resume" name="button" class="btn btn-secondary disabled">resume recording</button>
+            <button id="stop" name="button" class="btn btn-secondary disabled">stop recording</button>
+
         </center>
     </div>
     <hr>
@@ -115,14 +124,49 @@
         var recordButton = document.getElementById('record');
         recordButton.addEventListener('click', function (e) {
             mediaRecorder.start();
-            document.getElementById('video-frame').classList.add('recording');
+            document.getElementById('video-status').innerHTML = "RECORDING";
+            document.getElementById('video-status').classList.remove('paused');
+            document.getElementById('video-status').classList.add('recording');
+
+            document.getElementById('record').classList.add('disabled');
+            document.getElementById('resume').classList.add('disabled');
+            document.getElementById('pause').classList.remove('disabled');
+            document.getElementById('stop').classList.remove('disabled');
+        });
+
+        var pauseButton = document.getElementById('pause');
+        pauseButton.addEventListener('click', function (e) {
+            mediaRecorder.pause();
+            document.getElementById('video-status').innerHTML = "PAUSED";
+            document.getElementById('video-status').classList.remove('recording');
+            document.getElementById('video-status').classList.add('paused');
+
+            document.getElementById('pause').classList.add('disabled');
+            document.getElementById('resume').classList.remove('disabled');
+        });
+
+        var resumeButton = document.getElementById('resume');
+        resumeButton.addEventListener('click', function (e) {
+            mediaRecorder.resume();
+            document.getElementById('video-status').innerHTML = "RECORDING";
+            document.getElementById('video-status').classList.remove('paused');
+            document.getElementById('video-status').classList.add('recording');
+
+            document.getElementById('pause').classList.remove('disabled');
         });
 
         var stopButton = document.getElementById('stop');
         stopButton.addEventListener('click', function (e) {
             mediaRecorder.stop();
 //        document.getElementById('video').setAttribute('class', '');
-            document.getElementById('video-frame').classList.remove('recording');
+            document.getElementById('video-status').classList.remove('paused');
+            document.getElementById('video-status').classList.remove('recording');
+
+            document.getElementById('record').classList.remove('disabled');
+            document.getElementById('pause').classList.add('disabled');
+            document.getElementById('resume').classList.add('disabled');
+            document.getElementById('stop').classList.add('disabled');
+
         });
 
         var saveButton = document.getElementById('save');
