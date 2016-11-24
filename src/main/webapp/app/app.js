@@ -12,9 +12,12 @@ var app = angular.module('cryptonomica', [
     // 'angular-country-select', // http://alexcheng1982.github.io/angular-country-select/
     'ui.date', // https://github.com/angular-ui/ui-date
     'puigcerber.countryPicker',
-    // my:
+    // ---- my:
     'cryptonomica.ui.router',
-    'cryptonomica.controller'
+    'cryptonomica.controller',
+    'cryptonomica.directives',
+    'cryptonomica.controller.test' // http://www.w3schools.com/angular/angular_directives.asp
+    // https://weblogs.asp.net/dwahlin/creating-custom-angularjs-directives-part-i-the-fundamentals
 ]);
 
 

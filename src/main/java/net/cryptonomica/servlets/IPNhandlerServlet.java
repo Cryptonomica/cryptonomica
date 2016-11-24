@@ -15,6 +15,9 @@ import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.logging.Logger;
 
+// https://cloud.google.com/appengine/docs/java/javadoc/com/google/appengine/api/taskqueue/Queue
+// https://cloud.google.com/appengine/docs/java/javadoc/com/google/appengine/api/taskqueue/QueueFactory
+
 /**
  * This servlet receives a HTTP POST request,
  * reads its headers and parameters and sends them to admin's email
@@ -58,7 +61,24 @@ public class IPNhandlerServlet extends HttpServlet {
                                 "admin@cryptonomica.net"
                         )
                         .param("messageSubject",
-                                "New payment info"
+                                "New payment info (EmailGAE)"
+                        )
+                        .param("messageText",
+                                "HEADERS: \n" + headers + "\n"
+                                        + "PARAMETERS: \n" + parameters + "\n"
+                        )
+        );
+        queue.add(
+                TaskOptions.Builder
+                        .withUrl(
+                                "/_ah/SendGridServlet")
+                        // "/_ah/SendCustomMessageToEmailGAE") // see:
+                        // https://cloud.google.com/appengine/docs/quotas#Mail
+                        .param("email",
+                                "admin@cryptonomica.net"
+                        )
+                        .param("messageSubject",
+                                "New payment info (SendGrid)"
                         )
                         .param("messageText",
                                 "HEADERS: \n" + headers + "\n"
@@ -89,5 +109,62 @@ public class IPNhandlerServlet extends HttpServlet {
                 )
         );
         pw.close(); //closing the stream
+
+        /* --- send email with headers ans parameters: */
+                /* --- Read and log request headers: */
+//        Enumeration headerNames = req.getHeaderNames(); // see above
+        LOG.warning("[Headers]: ");
+        StringBuilder stringBuilderHeaders = new StringBuilder();
+        while (headerNames.hasMoreElements()) {
+            Object nextElement = headerNames.nextElement();
+            String headerName = nextElement.toString();
+            String header = headerName + ": " + req.getHeader(headerName) + " \n";
+            stringBuilderHeaders.append(header);
+        }
+        String headers = stringBuilderHeaders.toString();
+        LOG.warning(headers);
+
+        /* --- Read and log request parameters: */
+        LOG.warning("[Parameters]:");
+        String parameters = new Gson().toJson(req.getParameterMap());
+        LOG.warning(parameters);
+
+        final Queue queue = QueueFactory.getDefaultQueue();
+        queue.add(
+                TaskOptions.Builder
+                        .withUrl(
+                                "/_ah/SendGridServlet")
+                        // "/_ah/SendCustomMessageToEmailGAE") // see:
+                        // https://cloud.google.com/appengine/docs/quotas#Mail
+                        .param("email",
+                                "admin@cryptonomica.net"
+                        )
+                        .param("messageSubject",
+                                "from doGet (IPNhandlerServlet) - SendGridServlet"
+                        )
+                        .param("messageText",
+                                "HEADERS: \n" + headers + "\n"
+                                        + "PARAMETERS: \n" + parameters + "\n"
+                        )
+        );
+        queue.add(
+                TaskOptions.Builder
+                        .withUrl(
+                                // "/_ah/SendGridServlet")
+                                "/_ah/SendCustomMessageToEmailGAE") // see:
+                        // https://cloud.google.com/appengine/docs/quotas#Mail
+                        .param("email",
+                                "admin@cryptonomica.net"
+                        )
+                        .param("messageSubject",
+                                "from doGet (IPNhandlerServlet) - SendCustomMessageToEmailGAE"
+                        )
+                        .param("messageText",
+                                "HEADERS: \n" + headers + "\n"
+                                        + "PARAMETERS: \n" + parameters + "\n"
+                        )
+        );
+
     }
 }
+

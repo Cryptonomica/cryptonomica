@@ -9,6 +9,7 @@ var controller = angular.module('cryptonomica.controller', [
         'cryptonomica.controller.key',
         'cryptonomica.controller.verification',
         'cryptonomica.controller.showallarbitrators',
-        'cryptonomica.controller.proofOfExistence'
+        'cryptonomica.controller.proofOfExistence',
+        'cryptonomica.controller.test'
     ]
 );

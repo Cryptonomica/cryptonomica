@@ -96,6 +96,12 @@ router
                     templateUrl: 'app/proofOfExistence/proofOfExistence.html'
                 })
 
+                .state('test', {
+                    url: '/test',
+                    controller: 'cryptonomica.controller.test',
+                    templateUrl: 'app/test/test.html'
+                })
+
                 .state('dashboard', {
                     url: '/dashboard',
                     controller: 'cryptonomica.controller.dashboard',
