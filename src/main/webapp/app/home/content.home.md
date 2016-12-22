@@ -1,3 +1,8 @@
+
+For the detailed idea and project description see: [Cryptonomica White Paper](https://github.com/Cryptonomica/cryptonomica/wiki/Cryptonomica-White-Paper)
+
+-------------------------------------
+
 Cryptonomica keys server provide for it's user information about registered Cryptonomica members and their verified public [PGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy) keys.
 
 To become member of Cryptonomica:
@@ -34,7 +39,6 @@ providing online dispute resolution using modern information technologies.
 
 -------------------------------------
 
-For get more info on Cryptonomica visit [cryptonomica.net](https://cryptonomica.net),
 join our [#Slack server](http://slack.cryptonomica.net),
 find us on [linkedIn](https://www.linkedin.com/company/9552383) or [facebook](https://www.facebook.com/internationalarbitrationonline)
 
