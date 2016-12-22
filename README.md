@@ -1,5 +1,8 @@
 # Cryptonomica
 
+For the detailed idea and project description see:
+[Cryptonomica White Paper](https://github.com/Cryptonomica/cryptonomica/wiki/Cryptonomica-White-Paper)
+
 Working service on [cryptonomica.net](https://cryptonomica.net)
 
 Testing sandbox server with mockup database works on
