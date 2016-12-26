@@ -25,6 +25,21 @@
 
     <!-- Compile/runtime dependencies -->
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/com.google.appengine/gcloud-maven-plugin -->
+        <dependency>
+            <groupId>com.google.appengine</groupId>
+            <artifactId>gcloud-maven-plugin</artifactId>
+            <version>2.0.9.133.v201611104</version>
+        </dependency>
+
+        <!-- Stripe -->
+        <!-- https://github.com/stripe/stripe-java -->
+        <!-- https://stripe.com/docs/api/java -->
+        <dependency>
+            <groupId>com.stripe</groupId>
+            <artifactId>stripe-java</artifactId>
+            <version>3.5.0</version>
+        </dependency>
         <!-- -->
         <dependency>
             <groupId>com.sendgrid</groupId>
@@ -203,15 +218,18 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- see: http://mvnrepository.com/artifact/com.google.appengine/gcloud-maven-plugin -->
+
             <plugin>
                 <groupId>com.google.appengine</groupId>
                 <artifactId>gcloud-maven-plugin</artifactId>
-                <!-- see: http://mvnrepository.com/artifact/com.google.appengine/gcloud-maven-plugin -->
+
                 <version>${gcloud.plugin.version}</version>
                 <configuration>
-                    <set_default>true</set_default>
+                    <!--<set_default>true</set_default>-->
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 </project>

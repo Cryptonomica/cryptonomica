@@ -14,14 +14,12 @@ import net.cryptonomica.entities.CryptonomicaUser;
 import net.cryptonomica.entities.ImageData;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -36,15 +34,6 @@ public class CSUploadHandlerServlet extends HttpServlet {
     private final static Logger LOG = Logger.getLogger(CSUploadHandlerServlet.class.getName());
     private final static String HOST = Constants.GAE_PROJECT_URL;
 
-    /* Object to be returned as JSON in HTTP-response (and can be stored in data base) */
-    class UploadedFileData {
-        FileInfo fileInfo;
-        String BlobKey;
-        String fileServeServletLink;
-        String servingUrlFromgsObjectName;
-        String servingUrlFromGsBlobKey;
-    } // end of uploadedFileData
-
     @Override
     public void doPost(
 //            User googleUser, // <<< -- not legal here
@@ -55,31 +44,6 @@ public class CSUploadHandlerServlet extends HttpServlet {
         // UserService userService = UserServiceFactory.getUserService();
         // User googleUser = userService.getCurrentUser();
         //-----------------
-
-        Cookie[] cookies = req.getCookies();
-        if (cookies == null) {
-            LOG.warning("cookies == null");
-        } else if (cookies.length < 1) {
-            LOG.warning("cookies.length < 1");
-        } else {
-            for (Cookie cookie : cookies) {
-                LOG.warning("cookie: "
-                        + cookie.getDomain() + " | "
-                        + cookie.getName() + " | "
-                        + cookie.getValue() + " | "
-                        + cookie.getPath()
-                );
-            }
-        }
-
-        Enumeration headerNames = req.getHeaderNames();
-        LOG.warning("[Headers names start]: ");
-        while (headerNames.hasMoreElements()) {
-            Object nextElement = headerNames.nextElement();
-            LOG.warning(nextElement.toString());
-            LOG.warning(new Gson().toJson(nextElement));
-        }
-        LOG.warning("[Headers names end]: ");
 
         LOG.warning("[Headers values]: ");
         LOG.warning("origin: " + req.getHeader("origin"));
@@ -94,7 +58,7 @@ public class CSUploadHandlerServlet extends HttpServlet {
         // -----------------------------------------------------------------
 
         String imageUploadKey = req.getHeader("imageUploadKey");
-        if (imageUploadKey == null){
+        if (imageUploadKey == null) {
             throw new ServletException("imageUploadKey == null");
         }
         List<CryptonomicaUser> cryptonomicaUserList = ofy()
@@ -200,5 +164,14 @@ public class CSUploadHandlerServlet extends HttpServlet {
         pw.close(); //closing the stream
 
     } // doPost End
+
+    /* Object to be returned as JSON in HTTP-response (and can be stored in data base) */
+    class UploadedFileData {
+        FileInfo fileInfo;
+        String BlobKey;
+        String fileServeServletLink;
+        String servingUrlFromgsObjectName;
+        String servingUrlFromGsBlobKey;
+    } // end of uploadedFileData
 
 }

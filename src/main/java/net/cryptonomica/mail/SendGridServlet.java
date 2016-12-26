@@ -26,7 +26,8 @@ public class SendGridServlet extends HttpServlet {
     private static final String SENDGRID_API_KEY = ofy()
             .load()
             .key(Key.create(AppSettings.class, "SendGridApiKey"))
-            .now().getValue();
+            .now()
+            .getValue();
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         /* --- get parameters */

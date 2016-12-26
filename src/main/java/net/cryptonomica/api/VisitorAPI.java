@@ -41,7 +41,7 @@ import static net.cryptonomica.service.OfyService.ofy;
 )
 @SuppressWarnings("unused")
 public class VisitorAPI {
-
+    /* ---- Logger: */
     private static final Logger LOG = Logger.getLogger(NotaryAPI.class.getName());
 
     @ApiMethod(
