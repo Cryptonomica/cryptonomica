@@ -8,16 +8,24 @@ import java.io.Serializable;
  *
  */
 public class PGPPublicKeyUploadReturn implements Serializable {
-    String messageToUser;
-    PGPPublicKeyGeneralView pgpPublicKeyGeneralView;
+
+    private String messageToUser;
+    private PGPPublicKeyGeneralView pgpPublicKeyGeneralView;
+
+    /* --- Constructors: */
 
     public PGPPublicKeyUploadReturn() {
+    }
+
+    public PGPPublicKeyUploadReturn(String messageToUser, PGPPublicKeyGeneralView pgpPublicKeyGeneralView) {
+        this.messageToUser = messageToUser;
+        this.pgpPublicKeyGeneralView = pgpPublicKeyGeneralView;
     }
 
     public PGPPublicKeyUploadReturn(String messageToUser, PGPPublicKeyData pgpPublicKeyData) {
         this.messageToUser = messageToUser;
         this.pgpPublicKeyGeneralView = new PGPPublicKeyGeneralView(pgpPublicKeyData);
-    } // end of constructor
+    }
 
     // ------- Getters and Setters:
 

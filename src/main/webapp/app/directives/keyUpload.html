@@ -1,0 +1,56 @@
+<div class="card-block">
+    <form ng-show="!currentUser.registeredCryptonomicaUser">
+
+        <fieldset class="form-group">
+            <legend>For registration upload your
+                <a href="https://github.com/Cryptonomica/cryptonomica/wiki/Public-PGP-Key">public OpenPGP
+                    key</a>
+                and some info about you
+            </legend>
+            <p>Key should have first name, last name (in English, exactly as in your passport) and e-mail (the
+                same as in account) in "user id"</p>
+            <p>Key Strength: min 2,048 bits; valid not longer that 2 years;</p>
+
+            <label> Your ASCII-armored
+                <a href="https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/4/html/Step_by_Step_Guide/s1-gnupg-export.html"
+                   target="_blank">
+                    OpenPGP public key
+                </a> (required):
+
+                <p>
+                    <textarea class="form-control col-xs-9 col-md-9"
+                              ng-model="regForm.armoredPublicPGPkeyBlock">
+                    </textarea>
+                </p>
+            </label>
+            <br>
+            <label>
+                Your Birthdate (required):
+                <p>
+                    <input
+                            class="form-control col-xs-9 col-md-9"
+                            ui-date="dateOptions"
+                            ng-model="regForm.birthday">
+                </p>
+            </label>
+            <br>
+            <label>
+                Info about you (optional):
+                <p>
+                        <textarea
+                                class="form-control col-xs-9 col-md-9"
+                                ng-model="regForm.userInfo">
+                        </textarea>
+                </p>
+            </label>
+            <br>
+        </fieldset>
+        <button
+                class="btn btn-secondary"
+                role="button"
+                id="registerNewUserBtn"
+                ng-click="registerNewUser()">
+            Send your data
+        </button>
+    </form>
+</div>

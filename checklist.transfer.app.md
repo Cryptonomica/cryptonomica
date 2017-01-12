@@ -1,15 +1,15 @@
 
 ## Moving from sandbox to prodution;
 
-- [ ] change app id in appengine-web.xml
-- [ ] change app id in pom.xml
-- [ ] change WEB_CLIENT_ID in net.cryptonomica.constants.Constants
-- [ ] make changes to header on index.html (i.e.: Cryptonomica Key Server // Pre-alpha (v. 0.01))
-- [ ] make changes to alert on home.html
+- [ ] change app id in appengine-web.xml ;
+- [ ] change app id in pom.xml ;
+- [ ] change WEB_CLIENT_ID in net.cryptonomica.constants.Constants;
+- [ ] make changes to header on index.html (i.e.: Cryptonomica Key Server // Pre-alpha (v. 0.01));
+- [ ] make changes to alert on home.html;
 
 (log in from GoogleApps administrator to add users form GoogleApps)
-- [ ] put API keys in DS: 1) AppSettings.class, "SendGridApiKey"
-- [ ] check: Cloud Storage bucket name, in sandbox:  "cryptonomica-test.appspot.com" )
+- [ ] put API keys in DS: 1) AppSettings.class, "SendGridApiKey";
+- [ ] check: Cloud Storage bucket name, in sandbox:  "cryptonomica-test.appspot.com" );
 
 
 - [ ] app.js : $sceDelegateProvider.resourceUrlWhitelist - change

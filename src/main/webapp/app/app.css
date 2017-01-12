@@ -1,4 +1,7 @@
-/* cryptonomica css */
+/* useful links:
+
+https://color.adobe.com
+*/
 
 /*body {
     background: #bbbbbb url(img/background.big.001.png) no-repeat center center fixed;
@@ -27,9 +30,22 @@ No js needed */
 
 .navbar {
     /*background-color: #DD4500;*/
-    border-color: #DD4500;
+    /*background-color: #290641;*/
+    /*border-color: #DD4500;*/
     margin-bottom: 0.3em;
 }
+
+.textareaWithKey {
+    font-family: monospace;
+    font-size: 75%;
+}
+
+/*
+.alert-warning {
+    background-color: RGBA(160, 77, 202, 0.23);
+    color: #af3c3c;
+}
+*/
 
 .container {
     border-width: 0;
@@ -56,9 +72,20 @@ a:visited,
 a:focus,
 a:hover {
     color: orangered;
+    /*color: #400656;*/
+    /*color: #4c0664;*/
     /*color: red;*/
     /*color: #dd4814;*/
 }
+
+/*
+nav a,
+nav a:visited,
+nav a:focus,
+nav a:hover {
+
+}
+*/
 
 /*----- Icons ------------- */
 

@@ -11,6 +11,7 @@
     <!-- -->
 
     <div class="card">
+
         <div class="card-block">
             <!-- alerts -->
             <!-- http://www.quackit.com/bootstrap/bootstrap_4/tutorial/bootstrap_alerts.cfm -->
@@ -19,16 +20,15 @@
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
                         aria-hidden="true">×</span></button>
                 <!--{{alert}}-->
-                You are already registered. You can upload/change your photo.
+                You are already registered. You can upload/change your photo or upload new public key.
             </div>
             <!-- alerts on top -->
-            <div ng-show="resp.error.message" class="alert alert-danger" role="alert">
+            <div ng-show="resp.error.message" class="alert alert-danger alert-dismissible" role="alert">
                 {{resp.error.message}}
             </div>
-            <div ng-show="resp.messageToUser" class="alert alert-success" role="alert">
+            <div ng-show="resp.messageToUser" class="alert alert-success alert-dismissible" role="alert">
                 {{resp.messageToUser}}
             </div>
-
             <!--  Image upload START -->
 
             <img ng-src="{{userCurrentImageLink || 'https://placehold.it/100x100?text=No+Image+Uploaded'}}"
@@ -71,8 +71,9 @@
         </div>
         <!--  Image upload END -->
 
-        <div class="card-block">
-            <form ng-show="!currentUser.registeredCryptonomicaUser">
+        <!-- First key upload form BEGIN -->
+        <div class="card-block" id="firstKeyUpload" ng-show="!currentUser.registeredCryptonomicaUser">
+            <form>
                 <fieldset class="form-group">
                     <legend>For registration upload your
                         <a href="https://github.com/Cryptonomica/cryptonomica/wiki/Public-PGP-Key">public OpenPGP
@@ -90,8 +91,11 @@
                         </a> (required):
 
                         <p>
-                    <textarea class="form-control col-xs-9 col-md-9"
-                              ng-model="regForm.armoredPublicPGPkeyBlock">
+                            <!--<textarea class="form-control col-xs-9 col-md-9"-->
+                    <textarea rows="5" cols="71"
+                              class="textareaWithKey form-control"
+                              ng-model="regForm.armoredPublicPGPkeyBlock"
+                              required>
                     </textarea>
                         </p>
                     </label>
@@ -126,23 +130,62 @@
                 </button>
             </form>
         </div>
-    </div>
+        <!-- First key upload form END -->
 
+        <!-- Key upload BEGIN -->
+        <div class="card-block" id="keyUpload">
+            <form ng-show="currentUser.registeredCryptonomicaUser">
+                <fieldset class="form-group">
+                    <legend>Upload your new
+                        <a href="https://github.com/Cryptonomica/cryptonomica/wiki/Public-PGP-Key">public OpenPGP
+                            key</a>
+                    </legend>
+                    <p>Key should have first name, last name (in English, exactly as in your passport) and e-mail (the
+                        same as in account) in "user id"</p>
+                    <p>Key Strength: min 2,048 bits; valid not longer that 2 years;</p>
+
+                    <label> Your ASCII-armored
+                        <a href="https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/4/html/Step_by_Step_Guide/s1-gnupg-export.html"
+                           target="_blank">
+                            OpenPGP public key
+                        </a> (required):
+                        <!--<p>-->
+                        <!--<textarea class="form-control col-xs-9 col-md-9"-->
+                    <textarea rows="5" cols="71"
+                              class="textareaWithKey form-control"
+                              ng-model="pgpPublicKeyUploadForm.asciiArmored"
+                              required>
+                    </textarea>
+                        <!--</p>-->
+                    </label>
+                    <br>
+                </fieldset>
+                <button
+                        class="btn btn-secondary"
+                        role="button"
+                        id="keyUploadBtn"
+                        ng-click="keyUploadFn()">
+                    Upload new key
+                </button>
+            </form>
+
+        </div>
+        <!-- Key upload END -->
+
+    </div>
     <!-- alerts on bottom -->
-    <div ng-show="resp.error.message" class="alert alert-danger" role="alert">
+    <div ng-show="resp.error.message" class="alert alert-danger alert-dismissible" role="alert">
         {{resp.error.message}}
     </div>
-    <div ng-show="resp.messageToUser" class="alert alert-success" role="alert">
+    <div ng-show="resp.messageToUser" class="alert alert-success alert-dismissible" role="alert">
         {{resp.messageToUser}}
     </div>
     <!-- ~~~~~~~~~~~~~~~~~~~~~~ -->
     <div class="card" ng-show="resp">
         <div class="card-block">
-
             <table class="table table-bordered" ng-show="resp.userProfileGeneralView">
                 <!-- for Bootstrap 4 table see:
                 http://www.quackit.com/bootstrap/bootstrap_4/tutorial/bootstrap_tables.cfm -->
-
                 <tbody>
                 <!---->
                 <tr>

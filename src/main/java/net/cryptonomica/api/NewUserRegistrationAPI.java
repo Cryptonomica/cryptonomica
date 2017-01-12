@@ -64,14 +64,17 @@ public class NewUserRegistrationAPI {
         /* --- Ensure 1) user login, 2) not already registered:: */
         UserTools.ensureNewCryptonomicaUser(googleUser);
         /* --- Check form:*/
-        if (newUserRegistrationForm.getArmoredPublicPGPkeyBlock() == null) {
+        if (newUserRegistrationForm.getArmoredPublicPGPkeyBlock() == null
+                || newUserRegistrationForm.getArmoredPublicPGPkeyBlock().length() == 0) {
             throw new Exception("ASCII-armored PGP public key can not be empty");
-        // } else if (newUserRegistrationForm.getUserInfo() == null) {
-        //    throw new Exception("Info can not be empty");
+            // } else if (newUserRegistrationForm.getUserInfo() == null) {
+            //    throw new Exception("Info can not be empty");
         } else if (newUserRegistrationForm.getBirthday() == null) {
             throw new Exception("Birthdate can not be empty");
         }
-        Date userBirthDate = newUserRegistrationForm.getBirthday();
+
+        /* --- check userBirthDate */
+        // Date userBirthDate = newUserRegistrationForm.getBirthday();
 
         /* --- create PGPPublicKey from armored PGP key block: */
         String userId = googleUser.getUserId();
@@ -90,9 +93,18 @@ public class NewUserRegistrationAPI {
 
         /* --- Check PGPPublic Key: */
 
+        // --- check key creation date/time:
         Date creationTime = pgpPublicKey.getCreationTime();
-        // -- email check:
+        if (creationTime.after(new Date())) {
+            throw new Exception("Invalid key creation Date/Time");
+        }
 
+        // -- bits size check:
+        if (pgpPublicKeyData.getBitStrength() < 2048) {
+            throw new Exception("Key Strength (bits size) should be min 2048 bits");
+        }
+
+        // -- email check:
         if (!pgpPublicKeyData.getUserEmail().getEmail().toLowerCase().equals(
                 googleUser.getEmail().toLowerCase()
         )

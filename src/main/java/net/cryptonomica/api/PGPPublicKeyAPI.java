@@ -47,6 +47,8 @@ public class PGPPublicKeyAPI {
 
     /* --- Logger: */
     private static final Logger LOG = Logger.getLogger(PGPPublicKeyAPI.class.getName());
+    /* --- Gson: */
+    private static final Gson GSON = new Gson();
 
     @ApiMethod(
             name = "getPGPPublicKeyByWebSafeString",
@@ -122,7 +124,7 @@ public class PGPPublicKeyAPI {
                 .filter("fingerprintStr", fingerprint.toUpperCase())
                 .list();
 
-        LOG.warning("DS search result: " + new Gson().toJson(pgpPublicKeyDataList));
+        LOG.warning("DS search result: " + GSON.toJson(pgpPublicKeyDataList));
 
         // if key not found trow an exception
         if (pgpPublicKeyDataList == null || pgpPublicKeyDataList.size() == 0) {
@@ -145,7 +147,7 @@ public class PGPPublicKeyAPI {
         // make key representation, return result
         PGPPublicKeyGeneralView pgpPublicKeyGeneralView = new PGPPublicKeyGeneralView(pgpPublicKeyData);
 
-        LOG.warning("Result: " + new Gson().toJson(pgpPublicKeyGeneralView));
+        LOG.warning("Result: " + GSON.toJson(pgpPublicKeyGeneralView));
 
         return pgpPublicKeyGeneralView;
     }
@@ -162,34 +164,38 @@ public class PGPPublicKeyAPI {
             final PGPPublicKeyUploadForm pgpPublicKeyUploadForm
     ) throws Exception {
         // authorization
-        UserTools.ensureCryptonomicaRegisteredUser(googleUser);
-        //
-        LOG.warning(new Gson().toJson(pgpPublicKeyUploadForm));
-        //
-        String asciiArmored;
+        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaRegisteredUser(googleUser);
 
-        if (pgpPublicKeyUploadForm.getAsciiArmored() != null
-                || pgpPublicKeyUploadForm.getAsciiArmored().length() > 0) {
-            asciiArmored = pgpPublicKeyUploadForm.getAsciiArmored();
-        } else {
+        //
+        if (pgpPublicKeyUploadForm == null
+                || pgpPublicKeyUploadForm.getAsciiArmored() == null
+                || pgpPublicKeyUploadForm.getAsciiArmored().length() == 0) {
             throw new Exception("ASCII-armored key is empty");
         }
+        // --- LOG request form: (after check if not null)
+        LOG.warning(GSON.toJson(pgpPublicKeyUploadForm));
 
-        PGPPublicKey pgpPublicKey = PGPTools.readPublicKeyFromString(asciiArmored); // throws IOException, PGPException
+        String asciiArmored = pgpPublicKeyUploadForm.getAsciiArmored();
 
-        PGPPublicKeyData pgpPublicKeyData = new PGPPublicKeyData(
-                pgpPublicKey,
-                asciiArmored,
-                googleUser.getUserId()
-        );
-        // -- add @Parent value: --- ?
+        PGPPublicKey pgpPublicKey = PGPTools.readPublicKeyFromString(asciiArmored);
+        // -> throws IOException, PGPException
+        LOG.warning(GSON.toJson(pgpPublicKey));
+
+        PGPPublicKeyData pgpPublicKeyData = PGPTools.checkPublicKey(pgpPublicKey, asciiArmored, cryptonomicaUser);
+        // -> throws Exception
+
+        // -- add @Parent value: ---
         pgpPublicKeyData.setCryptonomicaUserKey(Key.create(CryptonomicaUser.class, googleUser.getUserId()));
         // save key
         Key<PGPPublicKeyData> pgpPublicKeyDataKey = ofy().save().entity(pgpPublicKeyData).now();
         // load key from DB and and create return object
-        PGPPublicKeyUploadReturn pgpPublicKeyUploadReturn = new PGPPublicKeyUploadReturn(
-                "Key Saved in data base",
+        String messageToUser = "Key " + pgpPublicKeyData.getFingerprint() + " saved in data base";
+        PGPPublicKeyGeneralView pgpPublicKeyGeneralView = new PGPPublicKeyGeneralView(
                 ofy().load().key(pgpPublicKeyDataKey).now()
+        );
+        PGPPublicKeyUploadReturn pgpPublicKeyUploadReturn = new PGPPublicKeyUploadReturn(
+                messageToUser,
+                pgpPublicKeyGeneralView
         );
 
         return pgpPublicKeyUploadReturn;

@@ -78,6 +78,7 @@
 
                 $scope.uploadPic = function () {
                     $rootScope.progressbar.start(); // <<<<<<<<<<<
+                    $scope.resp.error = null;
                     GApi.executeAuth('uploadAPI', 'getCsUploadURL')
                         .then(
                             function (resp) {
@@ -139,23 +140,61 @@
                 };
 
                 $scope.registerNewUser = function () {
+                    $rootScope.progressbar.start(); // <<<<<<<<<<<
+                    if ($scope.resp && $scope.resp.error) {
+                        $scope.resp.error = null;
+                    }
                     $log.info($scope.regForm);
                     GApi.executeAuth('newUserRegistrationAPI', 'registerNewUser', $scope.regForm)
                         .then(
                             function (resp) {
-                                $scope.resp = resp; // net.cryptonomica.returns.NotaryGeneralView array in resp.items
+                                $scope.resp = resp; //
                                 $rootScope.currentUser = resp.userProfileGeneralView;
                                 console.log("resp: ");
                                 $log.info(resp);
+                                $timeout($rootScope.progressbar.complete(), 1000);
+                                $rootScope.checkAuth();
                             }, function (resp) {
                                 console.log("error: ");
                                 $log.info(resp);
                                 $scope.resp = resp; // resp.message or resp.error.message - java.lang.Exception:
+                                $timeout($rootScope.progressbar.complete(), 1000);
+                                $rootScope.checkAuth();
                             }
                         );
-                    $rootScope.checkAuth();
+                    // $rootScope.checkAuth();
                     //$scope.getCsUploadURL();
                 }; // end registerNewUser
+
+                /* ---- NEW KEY UPLOAD */
+                $scope.keyUploadFn = function () {
+                    $rootScope.progressbar.start(); // <<<<<<<<<<<
+                    if ($scope.resp && $scope.resp.error) {
+                        $scope.resp.error = null;
+                    }
+                    $log.info($scope.pgpPublicKeyUploadForm);
+                    GApi.executeAuth('pgpPublicKeyAPI', 'uploadNewPGPPublicKey',
+                        $scope.pgpPublicKeyUploadForm // -> net.cryptonomica.forms.PGPPublicKeyUploadForm
+                    )
+                        .then(
+                            function (resp) {
+                                $scope.resp = resp;
+                                // net.cryptonomica.returns.PGPPublicKeyUploadReturn :
+                                // String messageToUser; // -> resp.messageToUser in alert
+                                // PGPPublicKeyGeneralView pgpPublicKeyGeneralView;
+                                console.log("resp: ");
+                                $log.info(resp);
+                                $timeout($rootScope.progressbar.complete(), 1000);
+                            }, function (resp) {
+                                console.log("error: ");
+                                $log.info(resp);
+                                $scope.resp = resp; // resp.message or resp.error.message - java.lang.Exception:
+                                $timeout($rootScope.progressbar.complete(), 1000);
+                            }
+                        );
+
+                }; // end of $scope.keyUpload
+
             }
         ]
     );

@@ -6,6 +6,7 @@ import java.io.Serializable;
  *
  */
 public class PGPPublicKeyUploadForm implements Serializable {
+
     String asciiArmored;
 
     public PGPPublicKeyUploadForm() {

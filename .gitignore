@@ -1,5 +1,5 @@
 ### cryptonomica project ###
-*.sh
+#*.sh
 cors-json-file.json
 
 ###Java###
