@@ -74,12 +74,12 @@ public class PGPPublicKeyData {
     private Boolean paid; //..................................18
     private Long PaymentDataID; //............................19
     @Index
-    final private Date entityCreated; //......................20
+    private Date entityCreated; //............................20
 
     /* --- Constructors: */
     public PGPPublicKeyData() {
         this.verificationsWebSafeStrings = new ArrayList<>();
-        this.entityCreated = new Date(); // <- final
+        this.entityCreated = new Date();
     } // end: empty constructor
 
     public PGPPublicKeyData(PGPPublicKey pgpPublicKey, String asciiArmored, String cryptonomicaUserId) {

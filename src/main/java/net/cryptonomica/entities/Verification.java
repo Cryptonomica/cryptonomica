@@ -38,10 +38,13 @@ public class Verification {
     private ArrayList<String> paymentsDataWebSafeStringsList; // .7
     private String basedOnDocument; // ...........................8
     private String verificationInfo; // ..........................9
+    @Index
+    private Date entityCreated; //................................10
 
     /* ----- Constructors: */
     public Verification() {
         // this.paymentsDataWebSafeStringsList = new ArrayList<>();
+        this.entityCreated = new Date();
     } // end empty args constructor
 
     public Verification(  // << Notary verification
@@ -72,7 +75,10 @@ public class Verification {
         LOG.warning("basedOnDocument: " + this.basedOnDocument);
         // 9
         this.verificationInfo = addNotaryForm.getVerificationInfo();
-        LOG.warning("verificationInfo: " + verificationInfo);
+        LOG.warning("verificationInfo: " + this.verificationInfo);
+        // 10
+        this.entityCreated = new Date();
+        LOG.warning("entityCreated: " + this.entityCreated);
     } // end of constructor from AddNotaryForm
 
     public Verification( // << PGP Public Key verification
@@ -187,5 +193,13 @@ public class Verification {
 
     public void setVerificationInfo(String verificationInfo) {
         this.verificationInfo = verificationInfo;
+    }
+
+    public Date getEntityCreated() {
+        return entityCreated;
+    }
+
+    public void setEntityCreated(Date entityCreated) {
+        this.entityCreated = entityCreated;
     }
 }
