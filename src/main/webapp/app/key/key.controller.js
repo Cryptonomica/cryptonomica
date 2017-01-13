@@ -59,7 +59,8 @@ controller.controller(controller_name, [
             //
             $log.info("$stateParams.fingerprint : " + $stateParams.fingerprint);
             var showKey = function () {
-                $scope.key = {};
+                $rootScope.progressbar.start(); // <<<<<<<
+                $scope.key = {empty:true};
                 GApi.executeAuth(
                     'pgpPublicKeyAPI',
                     'getPGPPublicKeyByFingerprint', //
@@ -70,12 +71,14 @@ controller.controller(controller_name, [
                         $log.info(resp);
                         $scope.key = resp;
                         $scope.alert = null;
+                        $timeout($rootScope.progressbar.complete(), 1000);
                     },
                     function (error) {
                         $log.error("[key.controller.js] showKey() - error: ");
                         $log.error(error);
-                        $scope.alert = error;
+                        $scope.alert = error.message;
                         $scope.key.error = error;
+                        $timeout($rootScope.progressbar.complete(), 1000);
                     }
                 );
             };
@@ -116,9 +119,10 @@ controller.controller(controller_name, [
                 }
             };
             var verifyKey = function () {
-                $rootScope.progressbar.start();
+                $rootScope.progressbar.start(); // <<<<<<
                 //
-                $scope.VerifyPGPPublicKeyForm.webSafeString = $stateParams.websafestring;
+                // $scope.VerifyPGPPublicKeyForm.webSafeString = $stateParams.websafestring;  // old
+                $scope.VerifyPGPPublicKeyForm.fingerprint = $stateParams.fingerprint;  //
                 // $scope.VerifyPGPPublicKeyForm.verificationInfo - from the form
                 // $scope.VerifyPGPPublicKeyForm.basedOnDocument  - from the form
                 $log.info("$scope.VerifyPGPPublicKeyForm : ");

@@ -2,6 +2,7 @@ package net.cryptonomica.pgp;
 
 import com.google.appengine.api.datastore.Email;
 import com.google.common.base.Splitter;
+import com.google.gson.Gson;
 import net.cryptonomica.entities.CryptonomicaUser;
 import net.cryptonomica.entities.PGPPublicKeyData;
 import org.bouncycastle.bcpg.ArmoredInputStream;
@@ -26,6 +27,8 @@ public class PGPTools {
 
     /* ---- Logger */
     private static final Logger LOG = Logger.getLogger(PGPTools.class.getName());
+    /* --- Gson: */
+    private static final Gson GSON = new Gson();
 
 //    <!-- was a bug reading userID in key DSA + ElGamal --> :
 //    /**
@@ -78,6 +81,9 @@ public class PGPTools {
         return pgpPublicKey;
     }
 
+    /* this can be used to check if provided OpenPGP public key
+    * contains all required information to be stored in DataBase
+    * */
     public static PGPPublicKeyData checkPublicKey(final PGPPublicKey pgpPublicKey,
                                                   final String asciiArmored,
                                                   final CryptonomicaUser cryptonomicaUser)
@@ -102,18 +108,18 @@ public class PGPTools {
         String firstNameFromKey = pgpPublicKeyData.getFirstName().toLowerCase();
         String lastNameFromKey = pgpPublicKeyData.getLastName().toLowerCase();
 
-        if(!firstNameFromAccount.equals(firstNameFromKey) || !lastNameFromAccount.equals(lastNameFromKey)){
+        if (!firstNameFromAccount.equals(firstNameFromKey) || !lastNameFromAccount.equals(lastNameFromKey)) {
             throw new Exception("First and last name in key should be exactly as first and last name in account");
         }
 
         // --- check key creation date/time:
         Date creationTime = pgpPublicKey.getCreationTime();
-        if (creationTime.after(new Date())){
+        if (creationTime.after(new Date())) {
             throw new Exception("Invalid key creation Date/Time");
         }
 
         // -- bits size check:
-        if(pgpPublicKeyData.getBitStrength() < 2048){
+        if (pgpPublicKeyData.getBitStrength() < 2048) {
             throw new Exception("Key Strength (bits size) should be min 2048 bits");
         }
 
@@ -140,4 +146,44 @@ public class PGPTools {
         return pgpPublicKeyData;
 
     } // end of checkPublicKey()
+
+    public static PGPPublicKeyData getPGPPublicKeyDataFromDataBaseByFingerprint(String fingerprint)
+            throws Exception {
+
+        /* Validate fingerprint */
+        if (fingerprint == null || fingerprint.length() < 40 || fingerprint.length() > 40) {
+            throw new Exception("Invalid public key in request (fingerprint not valid)");
+        }
+
+        /* Load PGPPublicKeyData from DB by fingerprint */
+        List<PGPPublicKeyData> pgpPublicKeyDataList = null;
+        pgpPublicKeyDataList = ofy()
+                .load()
+                .type(PGPPublicKeyData.class)
+                // <--- "fingerprintStr"
+                // @Id fields cannot be filtered on
+                .filter("fingerprintStr", fingerprint.toUpperCase())
+                .list();
+
+        LOG.warning("DS search result by fingerprint: " + GSON.toJson(pgpPublicKeyDataList));
+        // if key not found trow an exception
+        if (pgpPublicKeyDataList == null || pgpPublicKeyDataList.size() == 0) {
+            throw new Exception("Public PGP key with firngerprint"
+                    + fingerprint.toUpperCase()
+                    + "not found in DataBase");
+        }
+        // check if there is only one key with given fingerprint in the database
+        if (pgpPublicKeyDataList.size() > 1) {
+            throw new Exception("there are "
+                    + pgpPublicKeyDataList.size()
+                    + " different keys with fingerprint "
+                    + fingerprint.toUpperCase()
+                    + "in the database"
+            );
+        }
+        // get key from the list
+        PGPPublicKeyData pgpPublicKeyData = pgpPublicKeyDataList.get(0);
+        return pgpPublicKeyData;
+    } // end of getPGPPublicKeyDataFromDataBaseByFingerprint()
+
 }

@@ -12,6 +12,7 @@ import net.cryptonomica.constants.Constants;
 import net.cryptonomica.entities.*;
 import net.cryptonomica.forms.AddNotaryForm;
 import net.cryptonomica.forms.VerifyPGPPublicKeyForm;
+import net.cryptonomica.pgp.PGPTools;
 import net.cryptonomica.returns.*;
 import net.cryptonomica.service.UserTools;
 import org.apache.commons.lang3.time.DatePrinter;
@@ -29,7 +30,7 @@ import static net.cryptonomica.service.OfyService.ofy;
  * explore on: cryptonomica-{test || server}.appspot.com/_ah/api/explorer
  * ! - API should be registered in  web.xml (<param-name>services</param-name>)
  * ! - API should be loaded in app.js - app.run()
- *  * in this API:
+ * * in this API:
  */
 @Api(name = "notaryAPI", // The api name must match '[a-z]+[A-Za-z0-9]*'
         version = "v1",
@@ -267,11 +268,19 @@ public class NotaryAPI {
 
         /* Validate form (3 properties): */
         // 1)
+        /*
         if (verifyPGPPublicKeyForm.getWebSafeString() == null
                 || verifyPGPPublicKeyForm.getWebSafeString().length() < 1) {
             LOG.warning("VerifyPGPPublicKeyForm.webSafeString: "
                     + verifyPGPPublicKeyForm.getWebSafeString());
             throw new Exception("PGP public key not not identified");
+        }
+        */
+        if (verifyPGPPublicKeyForm.getFingerprint() == null
+                || verifyPGPPublicKeyForm.getFingerprint().length() < 1) {
+            LOG.warning("VerifyPGPPublicKeyForm.getFingerprint(): "
+                    + verifyPGPPublicKeyForm.getFingerprint());
+            throw new Exception("Key fingerprint missing or empty");
         }
         // 2)
         if (verifyPGPPublicKeyForm.getVerificationInfo() == null
@@ -287,11 +296,17 @@ public class NotaryAPI {
         }
 
         /* Load PGPPublicKeyData */
-        Key<PGPPublicKeyData> pgpPublicKeyDataKEY = Key.create(verifyPGPPublicKeyForm.getWebSafeString());
+        /*
+        Key<PGPPublicKeyData> pgpPublicKeyDataKEY = Key.create(verifyPGPPublicKeyForm.getFingerprint());
         PGPPublicKeyData pgpPublicKeyData = ofy()
                 .load()
                 .key(pgpPublicKeyDataKEY)
                 .now();
+        */
+
+        // GET Key from DataBase by fingerprint:
+        String fingerprint = verifyPGPPublicKeyForm.getFingerprint();
+        PGPPublicKeyData pgpPublicKeyData = PGPTools.getPGPPublicKeyDataFromDataBaseByFingerprint(fingerprint);
 
         /* Check if key paid */
         if (pgpPublicKeyData.getPaid() == null || pgpPublicKeyData.getPaid() == Boolean.FALSE) {
@@ -299,16 +314,24 @@ public class NotaryAPI {
         }
 
         // create verification
+        Key<PGPPublicKeyData> pgpPublicKeyDataKEY = Key.create(pgpPublicKeyData);
+        // from:
+        // http://static.javadoc.io/com.googlecode.objectify/objectify/5.1.12/com/googlecode/objectify/Key.html#create-T-
+        // create
+        //public static <T> Key<T> create(T pojo)
+        // Create a key from a registered POJO entity.
+        // TODO: check if works correctly
         Verification verification = new Verification(
                 verifyPGPPublicKeyForm, // verification data
                 cryptonomicaUser,       // verified by
-                pgpPublicKeyDataKEY     // key to be verified
+                pgpPublicKeyDataKEY     // key of the entity to be verified
         );
         // save in DB and load verification to assign an ID (@Id private Long Id)
         Key<Verification> verificationKey = ofy()
                 .save()
                 .entity(verification)
                 .now();
+        // load saved entity from database:
         verification = ofy() //
                 .load()
                 .key(verificationKey)
@@ -378,5 +401,6 @@ public class NotaryAPI {
         /* ----end email sending */
 
         return verifyPGPPublicKeyReturn;
-    }
+
+    } // end of verifyPGPPublicKey()
 }

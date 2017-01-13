@@ -8,6 +8,7 @@
     <a class="btn btn-secondary" href="/#/proofOfExistence" role="button">Proof of existence</a>
 </div>
 <!-- -->
+
 <div class="card card-block">
     <!--  -->
     <div ng-show="alert" class="alert alert-danger" role="alert">
@@ -107,110 +108,125 @@
         <hr>
         <!--  -->
     </div>
-    <h3>User Data:</h3>
-    <img ng-src="{{userProfileGeneralView.userCurrentImageLink || 'https://placehold.it/100x100?text=No+Image-Uploaded'}}"
-         height="100" width="" class="img-thumbnail pull-xs-left" style="">
-    <table class="table table-bordered table-hover">
-        <!-- for Bootstrap 4 table see:
-            http://www.quackit.com/bootstrap/bootstrap_4/tutorial/bootstrap_tables.cfm -->
-        <tbody>
-        <tr>
-            <td>First Name:</td>
-            <td class="capitalize">{{userProfileGeneralView.firstName}}</td>
-        </tr>
-        <tr>
-            <td>Last Name:</td>
-            <td class="capitalize">{{userProfileGeneralView.lastName}}</td>
-        </tr>
-        <tr>
-            <td>Birthday:</td>
-            <td>{{userProfileGeneralView.birthday | date}}</td>
-        </tr>
-        <tr>
-            <td>email:</td>
-            <td>{{userProfileGeneralView.email}}</td>
-        </tr>
-        <tr>
-            <td>User info:</td>
-            <td>{{userProfileGeneralView.userInfo}}</td>
-        </tr>
-        <tr>
-            <td>Is a lawyer:</td>
-            <td>{{userProfileGeneralView.lawyer}}</td>
-        </tr>
-        <tr>
-            <td>Is a notary:</td>
-            <td>{{userProfileGeneralView.notary}}</td>
-        </tr>
-        <tr>
-            <td>Is an arbitrator</td>
-            <td>{{userProfileGeneralView.arbitrator}}</td>
-        </tr>
-        <tr>
-            <td>Is a IACC officer:</td>
-            <td>{{userProfileGeneralView.cryptonomicaOfficer}}</td>
-        </tr>
-        </tbody>
-    </table>
-    <h4>User PGP public keys:</h4>
-    <div ng-hide="userProfileGeneralView.pgpPublicKeyGeneralViews">No keys uploaded for this user</div>
-    <!-- ArrayList<PGPPublicKeyGeneralView> pgpPublicKeyGeneralViews; -->
-    <table class="table table-bordered table-hover" ng-repeat="key in userProfileGeneralView.pgpPublicKeyGeneralViews">
-        <tbody>
-        <tr>
-            <td>keyID</td>
-            <td>{{key.keyID}}</td>
-        </tr>
-        <tr>
-            <td>userID</td>
-            <td>{{key.userID}}</td>
-        </tr>
-        <tr>
-            <td>fingerprint</td>
-            <td>
-                <a href=""
-                   title="Show key info"
-                   ui-sref="showkey({ websafestring: key.webSafeString })">
-                    {{key.fingerprint}}
-                </a>
-            </td>
-        </tr>
-        <tr>
-            <td>created</td>
-            <td>{{key.created}}</td>
-        </tr>
-        <tr>
-            <td>expires</td>
-            <td>{{key.exp}}</td>
-        </tr>
-        <tr>
-            <td>Bit strength</td>
-            <td>{{key.bitStrength}}</td>
-        </tr>
-        <tr>
-            <td>Verified:</td>
-            <td>{{key.verified}}</td>
-        </tr>
-        <tr>
-            <td>ASCII-armored PGP Public Key</td>
-            <td>
-                <!-- -->
-                <div ng-show="key">
-                    <div ng-hide="key.verified" class="keynotverified">
-                        <span>key not verified</span>
+    <div ng-show="userProfileGeneralView">
+        <h3>User Data:</h3>
+        <img ng-src="{{userProfileGeneralView.userCurrentImageLink || 'https://placehold.it/100x100?text=No+Image-Uploaded'}}"
+             height="100" width="" class="img-thumbnail pull-xs-left" style="">
+        <table class="table table-bordered table-hover">
+            <!-- for Bootstrap 4 table see:
+                http://www.quackit.com/bootstrap/bootstrap_4/tutorial/bootstrap_tables.cfm -->
+            <tbody>
+            <tr>
+                <td>First Name:</td>
+                <td class="capitalize">{{userProfileGeneralView.firstName}}</td>
+            </tr>
+            <tr>
+                <td>Last Name:</td>
+                <td class="capitalize">{{userProfileGeneralView.lastName}}</td>
+            </tr>
+            <tr>
+                <td>Birthday:</td>
+                <td>{{userProfileGeneralView.birthday | date}}</td>
+            </tr>
+            <tr>
+                <td>email:</td>
+                <td>{{userProfileGeneralView.email}}</td>
+            </tr>
+            <tr>
+                <td>User info:</td>
+                <td>{{userProfileGeneralView.userInfo}}</td>
+            </tr>
+            <tr>
+                <td>Is a lawyer:</td>
+                <td>{{userProfileGeneralView.lawyer}}</td>
+            </tr>
+            <tr>
+                <td>Is a notary:</td>
+                <td>{{userProfileGeneralView.notary}}</td>
+            </tr>
+            <tr>
+                <td>Is an arbitrator</td>
+                <td>{{userProfileGeneralView.arbitrator}}</td>
+            </tr>
+            <tr>
+                <td>Is a IACC officer:</td>
+                <td>{{userProfileGeneralView.cryptonomicaOfficer}}</td>
+            </tr>
+            </tbody>
+        </table>
+        <h4>User PGP public keys:</h4>
+        <div ng-hide="userProfileGeneralView.pgpPublicKeyGeneralViews">No keys uploaded for this user</div>
+        <!-- ArrayList<PGPPublicKeyGeneralView> pgpPublicKeyGeneralViews; -->
+        <table class="table table-bordered table-hover"
+               ng-repeat="key in userProfileGeneralView.pgpPublicKeyGeneralViews">
+            <thead>
+            <tr>
+                <th>keyID</th>
+                <th>
+                    <a href=""
+                       title="Show key info"
+                       ui-sref="key({fingerprint:key.fingerprint})">
+                        {{key.keyID}}
+                    </a>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <!--
+            <tr>
+                <td>userID</td>
+                <td>
+                    {{key.userID}}
+                </td>
+            </tr>
+            -->
+            <tr>
+                <td>fingerprint</td>
+                <td>
+                    <a href=""
+                       title="Show key info"
+                       ui-sref="key({fingerprint:key.fingerprint})">
+                        {{key.fingerprint}}
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>created</td>
+                <td>{{key.created}}</td>
+            </tr>
+            <tr>
+                <td>expires</td>
+                <td>{{key.exp}}</td>
+            </tr>
+            <!--
+            <tr>
+                <td>Bit strength</td>
+                <td>{{key.bitStrength}}</td>
+            </tr>
+            <tr>
+                <td>Verified:</td>
+                <td>{{key.verified}}</td>
+            </tr>
+            <tr>
+                <td>ASCII-armored PGP Public Key</td>
+                <td>
+                    <div ng-show="key">
+                        <div ng-hide="key.verified" class="keynotverified">
+                            <span>key not verified</span>
+                        </div>
+                        <div ng-show="key.verified" class="keyverified">
+                            <span>key verified</span>
+                        </div>
+                        <button class="btn" ngclipboard data-clipboard-target="#key{{$index}}">Copy to clipboard</button>
+                        <button class="btn" ng-click="download(key.asciiArmored)">Download as file</button>
+                        <div>
+                            <pre><code id="key{{$index}}" title="Public PGP Key">{{key.asciiArmored}}</code></pre>
+                        </div>
                     </div>
-                    <div ng-show="key.verified" class="keyverified">
-                        <span>key verified</span>
-                    </div>
-                    <!--  -->
-                    <button class="btn" ngclipboard data-clipboard-target="#key{{$index}}">Copy to clipboard</button>
-                    <button class="btn" ng-click="download(key.asciiArmored)">Download as file</button>
-                    <div>
-                        <pre><code id="key{{$index}}" title="Public PGP Key">{{key.asciiArmored}}</code></pre>
-                    </div>
-                </div>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+                </td>
+            </tr>
+            -->
+            </tbody>
+        </table>
+    </div>
 </div>

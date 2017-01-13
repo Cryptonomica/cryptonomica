@@ -107,42 +107,8 @@ public class PGPPublicKeyAPI {
         /* Check authorization: */
         UserTools.ensureCryptonomicaRegisteredUser(googleUser);
 
-        /* Validate form: */
-
-        if (fingerprint == null || fingerprint.length() < 40 || fingerprint.length() > 40) {
-            throw new Exception("Invalid public key in request");
-        }
-
-        /* Load PGPPublicKeyData from DB*/
-
-        List<PGPPublicKeyData> pgpPublicKeyDataList = null;
-        pgpPublicKeyDataList = ofy()
-                .load()
-                .type(PGPPublicKeyData.class)
-                // <--- "fingerprintStr"
-                // @Id fields cannot be filtered on
-                .filter("fingerprintStr", fingerprint.toUpperCase())
-                .list();
-
-        LOG.warning("DS search result: " + GSON.toJson(pgpPublicKeyDataList));
-
-        // if key not found trow an exception
-        if (pgpPublicKeyDataList == null || pgpPublicKeyDataList.size() == 0) {
-            throw new Exception("Public PGP key not found");
-        }
-
-        // check if there is only one key with given fingerprint in the database
-        if (pgpPublicKeyDataList.size() > 1) {
-            throw new Exception("there are "
-                    + pgpPublicKeyDataList.size()
-                    + " different keys with fingerprint "
-                    + fingerprint.toUpperCase()
-                    + "in the database"
-            );
-        }
-
-        // get key from the list
-        PGPPublicKeyData pgpPublicKeyData = pgpPublicKeyDataList.get(0);
+        // GET Key from DataBase by fingerprint:
+        PGPPublicKeyData pgpPublicKeyData = PGPTools.getPGPPublicKeyDataFromDataBaseByFingerprint(fingerprint);
 
         // make key representation, return result
         PGPPublicKeyGeneralView pgpPublicKeyGeneralView = new PGPPublicKeyGeneralView(pgpPublicKeyData);
@@ -150,7 +116,8 @@ public class PGPPublicKeyAPI {
         LOG.warning("Result: " + GSON.toJson(pgpPublicKeyGeneralView));
 
         return pgpPublicKeyGeneralView;
-    }
+
+    } // end of getPGPPublicKeyByFingerprint()
 
     @ApiMethod(
             name = "uploadNewPGPPublicKey",

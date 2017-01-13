@@ -65,7 +65,8 @@
     </div>
 
     <!-- KEY VERIFICATION END -->
-    <table class="table table-bordered table-hover">
+
+    <table ng-hide="key.empty" class="table table-bordered table-hover">
         <tbody>
         <tr>
             <td>keyID</td>
@@ -111,7 +112,7 @@
 
                     <a href=""
                        title="Show verification info"
-                        ui-sref="verification({ verificationWebSafeString: verificationWebSafeString })">
+                       ui-sref="verification({ verificationWebSafeString: verificationWebSafeString })">
                         Show verification info
                     </a>
 

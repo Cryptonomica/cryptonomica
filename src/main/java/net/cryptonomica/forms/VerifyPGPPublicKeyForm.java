@@ -9,7 +9,8 @@ import java.io.Serializable;
  */
 public class VerifyPGPPublicKeyForm implements Serializable {
     //
-    private String webSafeString; // ..............1
+    // private String webSafeString; // ..............1
+    private String fingerprint; // ..............1
     private String verificationInfo; // ...........2
     private String basedOnDocument; // ............3
 
@@ -20,12 +21,12 @@ public class VerifyPGPPublicKeyForm implements Serializable {
 
     /* ----- Getters and Setters: */
 
-    public String getWebSafeString() {
-        return webSafeString;
+    public String getFingerprint() {
+        return fingerprint;
     }
 
-    public void setWebSafeString(String webSafeString) {
-        this.webSafeString = webSafeString;
+    public void setFingerprint(String fingerprint) {
+        this.fingerprint = fingerprint;
     }
 
     public String getVerificationInfo() {
