@@ -1,9 +1,5 @@
 'use strict';
 
-/**
- *
- */
-
 var controller_name = "cryptonomica.controller.dashboard";
 
 var controller = angular.module(controller_name, []);
@@ -17,8 +13,8 @@ controller.controller(controller_name, [
         'GData',
         '$state',
         '$cookies',
-    '$timeout',
-        function dashbCtrl($scope,    // TODO: do i need a name for this function?
+        '$timeout',
+        function dashbCtrl($scope,
                            $rootScope,
                            $http,
                            GApi,
