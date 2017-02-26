@@ -12,6 +12,10 @@
         <app.id>cryptonomica-server</app.id>
         <app.version>v-1-0</app.version>
         <!--<appengine.version>1.9.36</appengine.version>-->
+        <!--<appengine.version>1.9.49</appengine.version>-->
+        <!-- for 1.9.49:
+        http://stackoverflow.com/questions/41989306/after-updating-to-gae-1-9-49-maven-fails-to-execute-goal-endpoints-get-discovery
+        -->
         <appengine.version>1.9.48</appengine.version>
         <!--<gcloud.plugin.version>2.0.9.106.v20160420</gcloud.plugin.version>-->
         <gcloud.plugin.version>2.0.9.133.v201611104</gcloud.plugin.version>
@@ -38,7 +42,7 @@
         <dependency>
             <groupId>com.stripe</groupId>
             <artifactId>stripe-java</artifactId>
-            <version>3.5.0</version>
+            <version>3.10.0</version>
         </dependency>
         <!-- -->
         <dependency>

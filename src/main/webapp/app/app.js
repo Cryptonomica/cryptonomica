@@ -41,7 +41,7 @@ app.run([
         '$sce',
         'ngProgressFactory',
         '$timeout',
-        '$cookies',
+        // '$cookies',
         '$log',
         function (GAuth,
                   GApi,
@@ -52,7 +52,7 @@ app.run([
                   $sce,
                   ngProgressFactory,
                   $timeout,
-                  $cookies,
+                  // $cookies,
                   $log) {
 
             $rootScope.gdata = GData;
@@ -91,13 +91,13 @@ app.run([
                             $log.info("[app.js] $rootScope.currentUser: ");
                             $log.info($rootScope.currentUser);
                             // put data to cookies:
-                            $cookies.put('userId', GData.getUserId());
-                            $cookies.put('arbitrator', resp.arbitrator);
-                            $cookies.put('cryptonomicaOfficer', resp.cryptonomicaOfficer);
-                            $cookies.put('lawyer', resp.lawyer);
-                            $cookies.put('notary', resp.notary);
-                            $cookies.put('registeredCryptonomicaUser', resp.registeredCryptonomicaUser);
-                            $cookies.put('userCurrentImageLink', $sce.trustAsResourceUrl(resp.userCurrentImageLink));
+                            // $cookies.put('userId', GData.getUserId());
+                            // $cookies.put('arbitrator', resp.arbitrator);
+                            // $cookies.put('cryptonomicaOfficer', resp.cryptonomicaOfficer);
+                            // $cookies.put('lawyer', resp.lawyer);
+                            // $cookies.put('notary', resp.notary);
+                            // $cookies.put('registeredCryptonomicaUser', resp.registeredCryptonomicaUser);
+                            // $cookies.put('userCurrentImageLink', $sce.trustAsResourceUrl(resp.userCurrentImageLink));
 
                             //
                             $timeout($rootScope.progressbar.complete(), 1000);
