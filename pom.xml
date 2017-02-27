@@ -61,11 +61,18 @@
         <!-- https://twilio.github.io/twilio-java/ -->
         <!-- JavaDoc: -->
         <!-- https://twilio.github.io/twilio-java/7.5.0/ -->
+        <!--
         <dependency>
             <groupId>com.twilio.sdk</groupId>
             <artifactId>twilio</artifactId>
             <version>7.5.0</version>
             <scope>compile</scope>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>com.twilio.sdk</groupId>
+            <artifactId>twilio-java-sdk</artifactId>
+            <version>6.3.0</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.googlecode.libphonenumber/libphonenumber -->

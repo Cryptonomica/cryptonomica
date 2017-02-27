@@ -3,10 +3,16 @@ package net.cryptonomica.service;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
-import com.twilio.Twilio;
-import com.twilio.rest.api.v2010.account.Message;
-import com.twilio.type.PhoneNumber;
+import com.twilio.sdk.TwilioRestClient;
+import com.twilio.sdk.TwilioRestException;
+import com.twilio.sdk.resource.factory.MessageFactory;
+import com.twilio.sdk.resource.instance.Account;
+import com.twilio.sdk.resource.instance.Message;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -22,7 +28,7 @@ public class TwillioUtils {
     private static final Logger LOG = Logger.getLogger(ApiKeysUtils.class.getName());
 
     public static Message sendSms(final String phoneNumber, final String smsMessage)
-            throws NumberParseException, IllegalArgumentException {
+            throws NumberParseException, IllegalArgumentException, TwilioRestException {
 
         checkPhoneNumber(phoneNumber);
         checkSmsMessage(smsMessage);
@@ -31,17 +37,26 @@ public class TwillioUtils {
         final String authToken = ApiKeysUtils.getApiKey("twilioAuthToken");
         final String twilioPhoneNumber = ApiKeysUtils.getApiKey("twilioPhoneNumber");
 
-        Twilio.init(accountSid, authToken);
+//        Twilio.init(accountSid, authToken);
+//        Message message = Message.creator(
+//                new PhoneNumber(phoneNumber),        // To number
+//                new PhoneNumber(twilioPhoneNumber),  // From number
+//                smsMessage                           // SMS body
+//        ).create();
+//        LOG.warning(message.toString());
 
-        Message message = Message.creator(
-                new PhoneNumber(phoneNumber),        // To number
-                new PhoneNumber(twilioPhoneNumber),  // From number
-                smsMessage                           // SMS body
-        ).create();
+        TwilioRestClient client = new TwilioRestClient(accountSid, authToken);
+        Account account = client.getAccount();
+        MessageFactory messageFactory = account.getMessageFactory();
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("To", phoneNumber));
+        params.add(new BasicNameValuePair("From", twilioPhoneNumber));
+        params.add(new BasicNameValuePair("Body", "Hello from Twilio!"));
+        Message sms = messageFactory.create(params);
 
-        LOG.warning(message.toString());
+        LOG.warning(sms.toString());
 
-        return message;
+        return sms;
 
     }
 

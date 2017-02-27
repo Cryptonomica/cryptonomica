@@ -10,7 +10,8 @@ import com.google.appengine.api.users.User;
 import com.google.gson.Gson;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.googlecode.objectify.Key;
-import com.twilio.rest.api.v2010.account.Message;
+import com.twilio.sdk.TwilioRestException;
+import com.twilio.sdk.resource.instance.Message;
 import net.cryptonomica.constants.Constants;
 import net.cryptonomica.entities.CryptonomicaUser;
 import net.cryptonomica.entities.Verification;
@@ -134,7 +135,7 @@ public class VerificationAPI {
             final @Named("smsMessage") String smsMessage
             // see: https://cloud.google.com/appengine/docs/java/endpoints/exceptions
     ) throws UnauthorizedException, BadRequestException, NotFoundException, NumberParseException,
-            IllegalArgumentException {
+            IllegalArgumentException, TwilioRestException {
 
         /* --- Check authorization: */
         CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
