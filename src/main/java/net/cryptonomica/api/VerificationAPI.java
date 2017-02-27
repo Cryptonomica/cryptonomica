@@ -15,6 +15,7 @@ import com.twilio.sdk.resource.instance.Message;
 import net.cryptonomica.constants.Constants;
 import net.cryptonomica.entities.CryptonomicaUser;
 import net.cryptonomica.entities.Verification;
+import net.cryptonomica.returns.StringWrapperObject;
 import net.cryptonomica.returns.VerificationGeneralView;
 import net.cryptonomica.service.TwilioUtils;
 import net.cryptonomica.service.UserTools;
@@ -128,7 +129,7 @@ public class VerificationAPI {
             httpMethod = ApiMethod.HttpMethod.POST
     )
     @SuppressWarnings("unused")
-    public Message sendTestSms(
+    public StringWrapperObject sendTestSms(
             // final HttpServletRequest httpServletRequest,
             final User googleUser,
             final @Named("phoneNumber") String phoneNumber,
@@ -143,7 +144,7 @@ public class VerificationAPI {
         /* --- Send SMS */
         Message message = TwilioUtils.sendSms(phoneNumber, smsMessage);
 
-        return message;
+        return new StringWrapperObject(message.toJSON());
 
     } // end of sendTestSms();
 
