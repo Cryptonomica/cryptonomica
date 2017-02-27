@@ -8,11 +8,14 @@ import com.google.api.server.spi.response.NotFoundException;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.users.User;
 import com.google.gson.Gson;
+import com.google.i18n.phonenumbers.NumberParseException;
 import com.googlecode.objectify.Key;
+import com.twilio.rest.api.v2010.account.Message;
 import net.cryptonomica.constants.Constants;
 import net.cryptonomica.entities.CryptonomicaUser;
 import net.cryptonomica.entities.Verification;
 import net.cryptonomica.returns.VerificationGeneralView;
+import net.cryptonomica.service.TwillioUtils;
 import net.cryptonomica.service.UserTools;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,9 +27,10 @@ import static net.cryptonomica.service.OfyService.ofy;
 
 /**
  * explore on: cryptonomica-{test || server}.appspot.com/_ah/api/explorer
+ * cryptonomica-server.appspot.com/_ah/api/explorer
  * ! - API should be registered in  web.xml (<param-name>services</param-name>)
  * ! - API should be loaded in app.js - app.run()
- *  * in this API:
+ * * in this API:
  */
 @Api(name = "verificationAPI", // The api name must match '[a-z]+[A-Za-z0-9]*'
         version = "v1",
@@ -115,4 +119,31 @@ public class VerificationAPI {
 
         return verificationGeneralView;
     }
+
+    /* --- Test Amazon SNS service: */
+    @ApiMethod(
+            name = "sendTestSms",
+            path = "sendTestSms",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    @SuppressWarnings("unused")
+    public Message sendTestSms(
+            // final HttpServletRequest httpServletRequest,
+            final User googleUser,
+            final @Named("phoneNumber") String phoneNumber,
+            final @Named("smsMessage") String smsMessage
+            // see: https://cloud.google.com/appengine/docs/java/endpoints/exceptions
+    ) throws UnauthorizedException, BadRequestException, NotFoundException, NumberParseException,
+            IllegalArgumentException {
+
+        /* --- Check authorization: */
+        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        /* --- Send SMS */
+        Message message = TwillioUtils.sendSms(phoneNumber, smsMessage);
+
+        return message;
+
+    } // end of sendTestSms();
+
 }
