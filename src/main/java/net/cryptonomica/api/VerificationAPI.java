@@ -16,7 +16,7 @@ import net.cryptonomica.constants.Constants;
 import net.cryptonomica.entities.CryptonomicaUser;
 import net.cryptonomica.entities.Verification;
 import net.cryptonomica.returns.VerificationGeneralView;
-import net.cryptonomica.service.TwillioUtils;
+import net.cryptonomica.service.TwilioUtils;
 import net.cryptonomica.service.UserTools;
 
 import javax.servlet.http.HttpServletRequest;
@@ -141,7 +141,7 @@ public class VerificationAPI {
         CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
 
         /* --- Send SMS */
-        Message message = TwillioUtils.sendSms(phoneNumber, smsMessage);
+        Message message = TwilioUtils.sendSms(phoneNumber, smsMessage);
 
         return message;
 

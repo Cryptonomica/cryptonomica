@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  * https://www.twilio.com/docs/libraries/java#testing-your-installation
  * JavaDoc: https://twilio.github.io/twilio-java/7.5.0/
  */
-public class TwillioUtils {
+public class TwilioUtils {
 
     /* ---- Logger: */
     private static final Logger LOG = Logger.getLogger(ApiKeysUtils.class.getName());
