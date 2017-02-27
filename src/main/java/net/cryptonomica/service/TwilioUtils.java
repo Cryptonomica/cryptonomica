@@ -51,7 +51,7 @@ public class TwilioUtils {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("To", phoneNumber));
         params.add(new BasicNameValuePair("From", twilioPhoneNumber));
-        params.add(new BasicNameValuePair("Body", "Hello from Twilio!"));
+        params.add(new BasicNameValuePair("Body", smsMessage));
         Message sms = messageFactory.create(params);
 
         LOG.warning(sms.toString());
