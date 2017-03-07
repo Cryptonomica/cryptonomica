@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /**
  *
  */
-@Entity
+@Entity // -> net.cryptonomica.service.OfyService
 @Cache
 public class CryptonomicaOfficer {
     @Id

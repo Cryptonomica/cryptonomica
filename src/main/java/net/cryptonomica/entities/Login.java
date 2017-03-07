@@ -10,7 +10,7 @@ import java.util.Date;
  * for securiry reasons we can track and show to user his latest logins
  * -- need to define when to save new logins (may be if some info changes)
  */
-@Entity
+@Entity // -> net.cryptonomica.service.OfyService
 @Cache
 public class Login {
     @Parent

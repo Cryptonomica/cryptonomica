@@ -16,6 +16,42 @@ public class HttpService {
     /* --- Logger: */
     private static final Logger LOG = Logger.getLogger(HttpService.class.getName());
 
+    public static HTTPResponse makePostRequest(
+            String urlAddress,
+            String bodyStr) {
+
+        // check URL
+        if (urlAddress == null
+                || urlAddress.length() < 7
+                || urlAddress.equals("")
+                ) {
+            throw new IllegalArgumentException("URL is to short or empty");
+        }
+
+        Object result = null;
+
+        URL url = null;
+        try {
+            url = new URL(urlAddress);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        byte[] payload = bodyStr.getBytes(StandardCharsets.UTF_8);
+
+        HTTPRequest request = new HTTPRequest(url, HTTPMethod.POST);
+        request.setPayload(payload);
+
+        URLFetchService urlfetch = URLFetchServiceFactory.getURLFetchService();
+        HTTPResponse response = null;
+        try {
+            response = urlfetch.fetch(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
 
     public static HTTPResponse postWithPayload(
             String _urlAdress,

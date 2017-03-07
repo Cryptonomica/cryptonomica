@@ -5,11 +5,15 @@ import com.google.appengine.api.datastore.Link;
 import com.google.appengine.api.datastore.Text;
 import com.google.appengine.api.users.User;
 import com.googlecode.objectify.Key;
-import com.googlecode.objectify.annotation.*;
+import com.googlecode.objectify.annotation.Entity;
+import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Ignore;
+import com.googlecode.objectify.annotation.Index;
 import net.cryptonomica.forms.NewUserRegistrationForm;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Logger;
 
 /**
  * Entity: user (a human)
@@ -20,59 +24,73 @@ import java.util.Date;
  * http://stackoverflow.com/questions/6201082/case-insensitive-filter-query-with-objectify-google-appengine
  */
 
-@Entity
+@Entity // -> net.cryptonomica.service.OfyService
 // @Cache // -- may be should not stored in cache to be able view changes faster
 public class CryptonomicaUser {
-    /* Logger */
 
+    /* Logger */
+    private static final Logger LOG = Logger.getLogger(CryptonomicaUser.class.getName());
+
+    // the same as Google user ID ( googleUser.getUserId() )
     // = com.google.appengine.api.users.User (java.lang.String userId)
     @Id
-    String userId;
+    String userId; //.............................................................1
     @Index
-    String webSafeStringKey; // see: savedCryptonomicaUserKey.toWebSafeString();
+    // see: savedCryptonomicaUserKey.toWebSafeString();
+            String webSafeStringKey; //...................................................2
     @Index
-    String firstName; // ? from invitation // ? if user changes firstname?
+    // ? if user changes firstname
+            String firstName; // .........................................................3
     @Index
-    String lastName; // ? from invitation // ? if user changes lastname?
+    // ? if user changes lastname
+            String lastName;
     // non indexed:
-    Date birthday; //
-    User googleUser;    // https://cloud.google.com/appengine/docs/java/javadoc/com/google/appengine/api/users/User
+    Date birthday; //.............................................................4
+    // https://cloud.google.com/appengine/docs/java/javadoc/com/google/appengine/api/users/User
+    User googleUser; //...........................................................5
     @Index
-    Email email;        // https://cloud.google.com/appengine/docs/java/javadoc/com/google/appengine/api/datastore/Email
-    Text userInfo;      // user provided info
+    // https://cloud.google.com/appengine/docs/java/javadoc/com/google/appengine/api/datastore/Email
+            Email email; // ..............................................................6
+    // user provided info
     // https://cloud.google.com/appengine/docs/java/javadoc/com/google/appengine/api/datastore/Text
-    Link userCurrentImageLink; // https://cloud.google.com/appengine/docs/java/javadoc/com/google/appengine/api/datastore/Link
-    String imageUploadLink;
+    Text userInfo; // ............................................................7
+    // https://cloud.google.com/appengine/docs/java/javadoc/com/google/appengine/api/datastore/Link
+    Link userCurrentImageLink; // ................................................8
+    String imageUploadLink; // ...................................................9
     @Index
-    String imageUploadKey; // we use this to connect and uploaded image to CryptonomicaUser entity in DB
-    ArrayList<Link> oldUserImageLinks;
+    // we use this to connect and uploaded image to CryptonomicaUser entity in DB
+            String imageUploadKey; // ...................................................10
+    ArrayList<Link> oldUserImageLinks; // .......................................11
     // -- for the future
-    Key<ImageData> imageData; // https://github.com/objectify/objectify/wiki/Entities#keys
+    // https://github.com/objectify/objectify/wiki/Entities#keys
+    Key<ImageData> imageData; //.................................................12
     // -- for the future:
-    ArrayList<Key<ImageData>> OldPhotos;
-    @Load
-    ArrayList<Key<PGPPublicKeyData>> publicKeys;
+    ArrayList<Key<ImageData>> OldPhotos; //......................................13
+    // @Load
+    ArrayList<Key<PGPPublicKeyData>> publicKeys; // .............................14
     // ArrayList<String> residencies; // country(ies) of residency - ? not sure we need it
-    Key<Invitation> invitedBy; //
-    @Ignore // just find be @Parent
-            ArrayList<Key<Invitation>> invitationsSend;
+    Key<Invitation> invitedBy; // ...............................................15
     @Ignore // just find by @Parent
-            ArrayList<Login> logins;
-    Key<Lawyer> lawyerKey;
+            ArrayList<Key<Invitation>> invitationsSend; //...............................16
+    @Ignore // just find by @Parent
+            ArrayList<Login> logins; //..................................................17
+    Key<Lawyer> lawyerKey; // ...................................................18
     @Index
-    Boolean isLawyer;
-    Key<Notary> notaryKey;
+    Boolean isLawyer; // ........................................................19
+    Key<Notary> notaryKey; // ...................................................20
     @Index
-    Boolean isNotary;
-    Key<Arbitrator> arbitratorKey;
+    Boolean isNotary; // ........................................................21
+    Key<Arbitrator> arbitratorKey; // ...........................................22
     @Index
-    Boolean isArbitrator;
-    Key<CryptonomicaOfficer> cryptonomicaOfficerKey;
+    Boolean isArbitrator; // ....................................................23
+    Key<CryptonomicaOfficer> cryptonomicaOfficerKey; // .........................24
     @Index
-    Boolean isCryptonomicaOfficer;
-    ArrayList<Key<AuthorityToRepresent>> canRepresent; // companies user can represent
+    Boolean isCryptonomicaOfficer; // ...........................................25
+    // companies user can represent
+    ArrayList<Key<AuthorityToRepresent>> canRepresent; //........................26
     @Index
-    Boolean active; // will be shown in search results (// paid for verification)
+    // will be shown in search results (// paid for verification)
+            Boolean active; //...........................................................27
 
     /* --- Constructors: */
 

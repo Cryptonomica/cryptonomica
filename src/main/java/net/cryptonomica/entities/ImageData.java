@@ -10,7 +10,7 @@ import com.googlecode.objectify.annotation.Parent;
 /**
  * Data about user picture stored in the Data Store.
  */
-@Entity
+@Entity // -> net.cryptonomica.service.OfyService
 @Cache
 public class ImageData {
     @Parent

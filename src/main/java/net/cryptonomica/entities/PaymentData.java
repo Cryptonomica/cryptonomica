@@ -9,8 +9,8 @@ import java.util.Date;
 /**
  * Data about payment
  */
-@Entity
-@Cache
+@Entity // -> net.cryptonomica.service.OfyService
+// @Cache
 public class PaymentData {
     @Id
     Long Id;

@@ -192,12 +192,13 @@ public class NewUserRegistrationAPI {
                         .param("messageSubject",
                                 "You are registered on Cryptonomica server")
                         .param("messageText",
-                                "CONGRATULATION! \n\n"
-                                        + userProfileGeneralView.getFirstName() + " "
-                                        + userProfileGeneralView.getLastName() + ",\n\n"
+                                "Congratulation! \n\n"
+                                        + userProfileGeneralView.getFirstName().toUpperCase() + " "
+                                        + userProfileGeneralView.getLastName().toUpperCase() + ",\n\n"
                                         + "You are registered on Cryptonomica server" + "\n\n"
                                         + "Best regards, \n\n"
                                         + "Cryptonomica team\n\n"
+                                        + new Date().toString()
                                         + "if you think it's wrong or it is an error, please write to admin@cryptonomica.net \n"
                         )
         );

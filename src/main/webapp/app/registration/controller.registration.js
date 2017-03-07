@@ -19,7 +19,7 @@
             '$log',
             '$cookies',
             '$timeout',
-            function regCtrl($scope,    // TODO: do i need a name for this function?
+            function regCtrl($scope,
                              $sce,
                              $rootScope,
                              $http,
@@ -78,6 +78,7 @@
 
                 $scope.uploadPic = function () {
                     $rootScope.progressbar.start(); // <<<<<<<<<<<
+                    $scope.resp = {};
                     $scope.resp.error = null;
                     GApi.executeAuth('uploadAPI', 'getCsUploadURL')
                         .then(
@@ -86,7 +87,7 @@
                                 $scope.imageUploadKey = resp.imageUploadKey;
                                 console.log("$scope.getCsUploadURL resp:");
                                 console.log(resp);
-                                $scope.btn_upload();
+                                $scope.btn_upload(); // <<<
                             }, function (error) {
                                 console.log("$scope.getCsUploadURL error:");
                                 console.log(error);

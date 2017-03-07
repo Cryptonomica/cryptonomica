@@ -12,7 +12,7 @@ import java.util.Date;
 /**
  * licence for lawyer, notary, arbiter
  */
-@Entity // << -- add the to the actual entity
+@Entity // << -- add the to the actual entity // // -> net.cryptonomica.service.OfyService
 @Cache // << -- add the to the actual entity
 public class Licence {
     @Parent

@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 /**
  * Can be verification of: 1) Public PGP key, 2) Licence 3) Company 4) Authority to represent company
  */
-@Entity
+@Entity // -> net.cryptonomica.service.OfyService
 @Cache
 public class Verification {
     /*---------*/

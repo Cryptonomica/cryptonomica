@@ -36,7 +36,7 @@ public class CSUploadHandlerServlet extends HttpServlet {
 
     @Override
     public void doPost(
-//            User googleUser, // <<< -- not legal here
+            // User googleUser, // <<< -- not legal here
             HttpServletRequest req,
             HttpServletResponse res) throws ServletException, IOException {
 

@@ -9,7 +9,7 @@ import com.googlecode.objectify.annotation.Id;
  * but should not be exposed in open source code
  * Entities should be created only manually in DS by admins
  */
-@Entity
+@Entity // -> net.cryptonomica.service.OfyService
 @Cache // ! should be cashed
 public class AppSettings {
     @Id

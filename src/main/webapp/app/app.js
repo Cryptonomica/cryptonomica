@@ -9,9 +9,8 @@ var app = angular.module('cryptonomica', [
     'ngProgress', // https://github.com/VictorBjelkholm/ngProgress
     'ngclipboard', // https://sachinchoolur.github.io/ngclipboard/
     'ngFileSaver', // http://alferov.github.io/angular-file-saver/#demo
-    // 'angular-country-select', // http://alexcheng1982.github.io/angular-country-select/
     'ui.date', // https://github.com/angular-ui/ui-date
-    'puigcerber.countryPicker',
+    'puigcerber.countryPicker', // angular-country-picker: https://github.com/Puigcerber/angular-country-picker (pvp-country-picker)
     // ---- my:
     'cryptonomica.ui.router',
     'cryptonomica.controller',
@@ -74,6 +73,7 @@ app.run([
             GApi.load('verificationAPI', 'v1', BASE);       // 8
             GApi.load('arbitratorsAPI', 'v1', BASE);        // 9
             GApi.load('ethNodeAPI', 'v1', BASE);            // 10
+            GApi.load('onlineVerificationAPI', 'v1', BASE); // 11
 
             //
             GAuth.setClient(CLIENT);

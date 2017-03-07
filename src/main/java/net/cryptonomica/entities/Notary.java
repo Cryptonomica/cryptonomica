@@ -11,7 +11,7 @@ import java.util.ArrayList;
 /**
  *
  */
-@Entity
+@Entity // -> net.cryptonomica.service.OfyService
 @Cache
 public class Notary {
     @Id String id; // the same id as in cryptonomica user or google user

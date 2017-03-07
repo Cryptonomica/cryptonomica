@@ -12,7 +12,7 @@ import java.util.Date;
 /**
  *
  */
-@Entity
+@Entity // -> net.cryptonomica.service.OfyService
 @Cache
 public class ArbitratorLicence {
     @Parent

@@ -24,7 +24,7 @@
         <init-param>
             <param-name>services</param-name>
             <param-value>
-                net.cryptonomica.api.ArbitratorsAPI
+                net.cryptonomica.api.ArbitratorsAPI,
                 net.cryptonomica.api.CryptonomicaUserAPI,
                 net.cryptonomica.api.EthNodeAPI,
                 net.cryptonomica.api.NewUserRegistrationAPI,
@@ -32,8 +32,9 @@
                 net.cryptonomica.api.UploadAPI,
                 net.cryptonomica.api.PGPPublicKeyAPI,
                 net.cryptonomica.api.UserSearchAndViewAPI,
-                net.cryptonomica.api.VisitorAPI
-                net.cryptonomica.api.VerificationAPI
+                net.cryptonomica.api.VisitorAPI,
+                net.cryptonomica.api.VerificationAPI,
+                net.cryptonomica.api.OnlineVerificationAPI
             </param-value>
         </init-param>
         <!-- https://cloud.google.com/appengine/docs/java/config/appconfig#Java_Warmup_requests -->
@@ -45,6 +46,16 @@
     </servlet-mapping>
 
     <!-- OTHER SERVLETS:  -->
+    <!-- CloudStorage -->
+    <servlet>
+        <servlet-name>CloudStorageServlet</servlet-name>
+        <servlet-class>net.cryptonomica.servlets.CloudStorageServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CloudStorageServlet</servlet-name>
+        <url-pattern>/CloudStorageServlet</url-pattern>
+    </servlet-mapping>
+    <!-- Stripe -->
     <servlet>
         <servlet-name>StripeTestServlet</servlet-name>
         <servlet-class>net.cryptonomica.payments.StripeTestServlet</servlet-class>
@@ -105,6 +116,7 @@
         <servlet-name>TestServlet</servlet-name>
         <url-pattern>/test-servlet</url-pattern>
     </servlet-mapping>
+
     <!-- GAE Remote API for Java -->
     <!-- https://cloud.google.com/appengine/docs/java/tools/remoteapi -->
     <servlet>

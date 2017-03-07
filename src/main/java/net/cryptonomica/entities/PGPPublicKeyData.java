@@ -5,7 +5,10 @@ import com.google.appengine.api.datastore.Text;
 import com.google.common.base.Splitter;
 import com.google.gson.Gson;
 import com.googlecode.objectify.Key;
-import com.googlecode.objectify.annotation.*;
+import com.googlecode.objectify.annotation.Entity;
+import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.Parent;
 import org.bouncycastle.openpgp.PGPPublicKey;
 
 import javax.xml.bind.DatatypeConverter;
@@ -15,7 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
-@Entity
+@Entity // -> net.cryptonomica.service.OfyService
 // @Cache // --- ? can be turned off to show changes faster
 public class PGPPublicKeyData {
     /* ---- Logger */
@@ -29,8 +32,9 @@ public class PGPPublicKeyData {
     // @Id fields cannot be filtered on !!!!
     private String fingerprint; //.............................2
     @Index
-    // --- for filters:
+    // --- for filters in Objectify:
     // .filter("fingerprintStr", fingerprint.toUpperCase())
+    // like: 05600EB8208485E6942666E06A7B21E2844C7980
     private String fingerprintStr; //..........................3
     @Index
     // key of this entity as a website string,
@@ -154,9 +158,9 @@ public class PGPPublicKeyData {
             LOG.warning(e.getMessage());
         }
 
-        // creation date
+        // PGP key creation date
         this.created = pgpPublicKey.getCreationTime();
-        // exp date
+        // PGP key exp date
         this.exp = org.apache.commons.lang3.time.DateUtils.addSeconds(created, (int) pgpPublicKey.getValidSeconds());
         // Bit strength
         this.bitStrength = pgpPublicKey.getBitStrength();
@@ -338,6 +342,10 @@ public class PGPPublicKeyData {
 
     public void setPaymentDataID(Long paymentDataID) {
         PaymentDataID = paymentDataID;
+    }
+
+    public Date getEntityCreated() {
+        return entityCreated;
     }
 
     // end getters and setters

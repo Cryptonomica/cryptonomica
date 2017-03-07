@@ -10,7 +10,7 @@ import java.util.ArrayList;
 /**
  * Company
  */
-@Entity
+@Entity // -> net.cryptonomica.service.OfyService
 @Cache
 public class Company {
     @Id
