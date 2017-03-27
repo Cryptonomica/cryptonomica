@@ -2,7 +2,7 @@
 
 /**
  *  get and showes  by key fingerprint
- *  TODO: if user is a notary or crytonomimica user - offer to add verification
+ *  TODO: if user is a notary or cryptonomica officer - offer to add verification
  */
 
 var controller_name = "cryptonomica.controller.key";

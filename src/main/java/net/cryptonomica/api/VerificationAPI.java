@@ -122,30 +122,4 @@ public class VerificationAPI {
         return verificationGeneralView;
     }
 
-    /* --- Test Amazon SNS service: */
-    @ApiMethod(
-            name = "sendTestSms",
-            path = "sendTestSms",
-            httpMethod = ApiMethod.HttpMethod.POST
-    )
-    @SuppressWarnings("unused")
-    public StringWrapperObject sendTestSms(
-            // final HttpServletRequest httpServletRequest,
-            final User googleUser,
-            final @Named("phoneNumber") String phoneNumber,
-            final @Named("smsMessage") String smsMessage
-            // see: https://cloud.google.com/appengine/docs/java/endpoints/exceptions
-    ) throws UnauthorizedException, BadRequestException, NotFoundException, NumberParseException,
-            IllegalArgumentException, TwilioRestException {
-
-        /* --- Check authorization: */
-        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
-
-        /* --- Send SMS */
-        Message message = TwilioUtils.sendSms(phoneNumber, smsMessage);
-
-        return new StringWrapperObject(message.toJSON());
-
-    } // end of sendTestSms();
-
 }

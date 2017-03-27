@@ -19,7 +19,7 @@ controller.controller(controller_name, [
         '$cookies',
         '$timeout',
         //'ngProgressFactory',
-        function homeCtrl($scope,     // TODO: do i need a name for this function?
+        function homeCtrl($scope,    
                           $rootScope,
                           $http,
                           GApi,

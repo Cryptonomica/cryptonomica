@@ -77,10 +77,14 @@ public class ServletUtils {
         String headerNamesStr = ServletUtils.getRequestHeaders(request);
         String requestParametersStr = ServletUtils.getRequestParameters(request);
         String cookiesStr = ServletUtils.getCookies(request);
-        String requestDataSrt = "{\"request\": {"
+        String requestDataSrt = "{\"request\": "
+                //
+                + "{"
                 + "\"requestHeaders\": " + headerNamesStr + ","
                 + "\"requestParameters\": " + requestParametersStr + ","
                 + "\"cookies\":" + cookiesStr
+                + "}"
+                //
                 + "}";
         return requestDataSrt;
     }
@@ -97,8 +101,8 @@ public class ServletUtils {
 
     public static String removeLastComma(String str) {
 
-        int commaIndex = str.lastIndexOf(",");
-        if (commaIndex == str.length() - 1) {
+        int commaIndex = str.lastIndexOf(","); // -1 if there is no such occurrence.
+        if (commaIndex > 0 && commaIndex == str.length() - 1) {
             str = str.substring(0, commaIndex);
         }
         return str;

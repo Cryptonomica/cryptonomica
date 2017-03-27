@@ -47,13 +47,15 @@
 
     <!-- OTHER SERVLETS:  -->
     <!-- CloudStorage -->
+    <!-- for video uploads -->
     <servlet>
         <servlet-name>CloudStorageServlet</servlet-name>
         <servlet-class>net.cryptonomica.servlets.CloudStorageServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>CloudStorageServlet</servlet-name>
-        <url-pattern>/CloudStorageServlet</url-pattern>
+        <!--<url-pattern>/CloudStorageServlet</url-pattern>-->
+        <url-pattern>/gcs/*</url-pattern>
     </servlet-mapping>
     <!-- Stripe -->
     <servlet>

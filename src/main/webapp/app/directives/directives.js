@@ -3,7 +3,7 @@
     'use strict';
 
     var d = angular.module('cryptonomica.directives', []);
-
+// ------------------------------------------------------------------------------
     d.directive('testDirective1', function () {
         return {
             restrict: 'EA', //E = element, A = attribute, C = class, M = comment
@@ -18,7 +18,7 @@
             // template: '<div>html of Directive 1</div>'
         };
     });
-
+// ------------------------------------------------------------------------------
     d.directive('testDirective2', function () {
         return {
             restrict: 'EA', //E = element, A = attribute, C = class, M = comment
@@ -27,5 +27,6 @@
             templateUrl: 'app/directives/testDirective2.html'
         };
     });
-
+// ------------------------------------------------------------------------------
+    
 })();

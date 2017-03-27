@@ -84,6 +84,11 @@ router
                     controller: 'cryptonomica.controller.proofOfExistence',
                     templateUrl: 'app/proofOfExistence/proofOfExistence.html'
                 })
+                .state('onlineVerification', {
+                    url: '/onlineVerification',
+                    controller: 'cryptonomica.controller.onlineVerification',
+                    templateUrl: 'app/onlineVerification/onlineVerification.html'
+                })
                 .state('test', {
                     url: '/test',
                     controller: 'cryptonomica.controller.test',
