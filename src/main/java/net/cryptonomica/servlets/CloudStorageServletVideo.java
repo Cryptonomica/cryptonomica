@@ -31,10 +31,10 @@ import static net.cryptonomica.service.OfyService.ofy;
  * <p>
  * usage: to upload videos for online verification
  */
-public class CloudStorageServlet extends HttpServlet {
+public class CloudStorageServletVideo extends HttpServlet {
 
     /* --- Logger: */
-    private final static Logger LOG = Logger.getLogger(CloudStorageServlet.class.getName());
+    private final static Logger LOG = Logger.getLogger(CloudStorageServletVideo.class.getName());
     /* --- Gson*/
     private final static Gson GSON = new Gson();
 

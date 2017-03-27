@@ -16,7 +16,7 @@
         <!-- for 1.9.49:
         http://stackoverflow.com/questions/41989306/after-updating-to-gae-1-9-49-maven-fails-to-execute-goal-endpoints-get-discovery
         -->
-        <appengine.version>1.9.48</appengine.version>
+        <appengine.version>1.9.50</appengine.version>
         <!--<gcloud.plugin.version>2.0.9.106.v20160420</gcloud.plugin.version>-->
         <gcloud.plugin.version>2.0.9.133.v201611104</gcloud.plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -87,7 +87,7 @@
         <dependency>
             <groupId>com.googlecode.libphonenumber</groupId>
             <artifactId>libphonenumber</artifactId>
-            <version>8.3.1</version>
+            <version>8.3.3</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/servlets.com/cos -->
@@ -153,7 +153,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.4</version>
+            <version>3.5</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
         <!--<dependency>-->
@@ -182,7 +182,7 @@
             <groupId>com.googlecode.objectify</groupId>
             <artifactId>objectify</artifactId>
             <!--<version>5.1.10</version>-->
-            <version>5.1.12</version>
+            <version>5.1.16</version>
         </dependency>
         <dependency>
             <groupId>net.sf.uadetector</groupId>
