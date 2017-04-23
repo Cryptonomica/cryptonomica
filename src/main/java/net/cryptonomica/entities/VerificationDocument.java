@@ -14,9 +14,9 @@ import java.util.logging.Logger;
  */
 @Entity // -> net.cryptonomica.service.OfyService
 @Cache
-public class VerificationVideo {
+public class VerificationDocument {
 
-    private static final Logger LOG = Logger.getLogger(VerificationVideo.class.getName());
+    private static final Logger LOG = Logger.getLogger(VerificationDocument.class.getName());
 
     @Id
     private String Id; // ramdom string 33 char ..................................................1
@@ -27,27 +27,27 @@ public class VerificationVideo {
     @Index
     private String bucketName; //.................................................................4
     @Index
-    private String objectName; //.................................................................5
+    private String objectName; //................................................................5
     //
-    private String videoUploadKey; //.............................................................6
+    private String documentsUploadKey; //.........................................................6
 
     /* ---- Constructors */
 
-    public VerificationVideo() {
+    public VerificationDocument() {
         this.entityCreated = new Date();
     }
 
-    public VerificationVideo(String id,
-                             User googleUser,
-                             String bucketName,
-                             String objectName,
-                             String videoUploadKey) {
+    public VerificationDocument(String id,
+                                User googleUser,
+                                String bucketName,
+                                String objectName,
+                                String videoUploadKey) {
         this.Id = id;
         this.googleUser = googleUser;
         this.entityCreated = new Date();
         this.bucketName = bucketName;
         this.objectName = objectName;
-        this.videoUploadKey = videoUploadKey;
+        this.documentsUploadKey = videoUploadKey;
     }
 
     /* --- Getters and Setters */
@@ -88,15 +88,15 @@ public class VerificationVideo {
         return objectName;
     }
 
-    public void setObjectName(String objectName) {
-        this.objectName = objectName;
+    public void setObjectName(String objectName1) {
+        this.objectName = objectName1;
     }
 
-    public String getVideoUploadKey() {
-        return videoUploadKey;
+    public String getDocumentsUploadKey() {
+        return documentsUploadKey;
     }
 
-    public void setVideoUploadKey(String videoUploadKey) {
-        this.videoUploadKey = videoUploadKey;
+    public void setDocumentsUploadKey(String documentsUploadKey) {
+        this.documentsUploadKey = documentsUploadKey;
     }
 }

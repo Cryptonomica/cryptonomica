@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 @Cache
 public class VideoUploadKey {
 
-    private static final Logger LOG = Logger.getLogger(OnlineVerification.class.getName());
+    private static final Logger LOG = Logger.getLogger(VideoUploadKey.class.getName());
 
     @Id
     private String Id; // VideoUploadKey - ramdom string 33 char .................................1
