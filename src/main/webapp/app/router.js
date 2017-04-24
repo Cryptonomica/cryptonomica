@@ -22,12 +22,18 @@ router
                 .state('home', {
                     url: '/',
                     controller: 'cryptonomica.controller.home',
-                    templateUrl: 'app/home/home.html',
+                    // templateUrl: 'app/home/home.html',
+                    templateUrl: 'app/landing/landing.html',
                     // resolve: {
                     //     goat: function (GoatService) {
                     //         return GoatService.getGoat();
                     //     }
                     // }
+                })
+                .state('landing', {
+                    url: '/landing',
+                    controller: 'cryptonomica.controller.home',
+                    templateUrl: 'app/landing/landing.html',
                 })
                 .state('registration', {
                     url: '/registration',

@@ -1,3 +1,4 @@
+<header-main-menu></header-main-menu>
 <!-- Navigation -->
 <div class="btn-group" role="group" ng-show="currentUser.registeredCryptonomicaUser">
     <a class="btn btn-secondary" href="/#" role="button">Home</a>
@@ -46,7 +47,8 @@
 
         <fieldset class="form-group">
 
-            <label for="ethAddDocFormDocText">Enter signature, document hash or document text (max. 1700 symbols):</label>
+            <label for="ethAddDocFormDocText">Enter signature, document hash or document text (max. 1700
+                symbols):</label>
 
             <!--<div class="row">-->
 
@@ -119,23 +121,23 @@
 
             <div class="row">
 
-            <div class="col-xs-11 col-md-11">
-                <div class="input-group">
-                    <span class="input-group-addon" id="0x">0x</span>
-                    <input type="text"
-                           class="form-control"
-                           id="sha256"
-                           name="sha256"
-                           ng-model="ethGetDocBySha256Form.sha256"
-                           placeholder="975f8c3065a5a6e0a81434add148b7f2b44065cc7dc09ff96f662df442c259ca"
-                           required>
+                <div class="col-xs-11 col-md-11">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="0x">0x</span>
+                        <input type="text"
+                               class="form-control"
+                               id="sha256"
+                               name="sha256"
+                               ng-model="ethGetDocBySha256Form.sha256"
+                               placeholder="975f8c3065a5a6e0a81434add148b7f2b44065cc7dc09ff96f662df442c259ca"
+                               required>
+                    </div>
                 </div>
-            </div>
-            <div class="col-xs-11 col-md-11">
-                You can also use
-                <a href="https://emn178.github.io/online-tools/sha256.html" target="_blank">this service</a>
-                to calculate sha256 of your document
-            </div>
+                <div class="col-xs-11 col-md-11">
+                    You can also use
+                    <a href="https://emn178.github.io/online-tools/sha256.html" target="_blank">this service</a>
+                    to calculate sha256 of your document
+                </div>
 
             </div>
         </fieldset>
@@ -182,5 +184,5 @@
         </table>
 
     </div>
-
 </div>
+<footer-main></footer-main>

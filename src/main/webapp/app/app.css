@@ -3,14 +3,6 @@
 https://color.adobe.com
 */
 
-/*body {
-    background: #bbbbbb url(img/background.big.001.png) no-repeat center center fixed;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
-}*/
-
 footer {
     background-color: #dddddd;
 }
@@ -23,32 +15,9 @@ No js needed */
     text-transform: capitalize;
 }
 
-.nav-tabs .nav-link.active, .nav-tabs .nav-link.active:focus, .nav-tabs .nav-link.active:hover, .nav-tabs .nav-item.open .nav-link, .nav-tabs .nav-item.open .nav-link:focus, .nav-tabs .nav-item.open .nav-link:hover,
-.card {
-    background-color: #fafafa;
-}
-
-.navbar {
-    /*background-color: #DD4500;*/
-    /*background-color: #290641;*/
-    /*border-color: #DD4500;*/
-    margin-bottom: 0.3em;
-}
-
 .textareaWithKey {
     font-family: monospace;
     font-size: 75%;
-}
-
-/*
-.alert-warning {
-    background-color: RGBA(160, 77, 202, 0.23);
-    color: #af3c3c;
-}
-*/
-
-.container {
-    border-width: 0;
 }
 
 .logo-background {
@@ -57,12 +26,8 @@ No js needed */
     background-repeat: no-repeat;
 }
 
-.card-tab-panel {
-    border-top-width: 0;
-}
-
 .whitelink {
-    color: white;
+    color: white !important;
 }
 
 /* Links */
@@ -71,28 +36,18 @@ a,
 a:visited,
 a:focus,
 a:hover {
-    color: orangered;
-    /*color: #400656;*/
-    /*color: #4c0664;*/
-    /*color: red;*/
-    /*color: #dd4814;*/
+    color: #770077;
 }
 
-/*
-nav a,
-nav a:visited,
-nav a:focus,
-nav a:hover {
-
+a:hover {
+    /* glow effect on hover */
+    color: white;
+    /*font-weight: bold;*/
+    background-color: #550055;
+    /*text-shadow: -1px 1px 20px #ffffff, 1px -1px 20px #ae4dff;*/
 }
-*/
 
 /*----- Icons ------------- */
-
-.orangeicon {
-    /*color: #dd4500; */
-    /*color: orangered;*/
-}
 
 .fa-key {
     /*color: orangered;*/
@@ -135,14 +90,49 @@ nav a:hover {
     margin-bottom: 0.5em !important;
 }
 
-/* temorary icons: */
-/*
-.fa,
-.octicon,
-.mega-octicon {
-    color: orangered; /**/
-/*color: lime;*/
-/* lime - #00ff00 */
+.text-align-center {
+    text-align: center;
+}
 
-/*}*/
+.text-align-left {
+    text-align: left;
+}
+
+.text-align-right {
+    text-align: right;
+}
+
+.text-bold {
+    font-weight: bolder;
+}
+
+.onHoverRed:hover {
+    color: red;
+}
+
+.onHoverPurple:hover {
+    color: purple;
+}
+
+.teamMemberCard {
+    width: 199px;
+    margin: 0.5em;
+}
+
+img.teamMemberPhoto {
+    height: 199px;
+}
+
+img.teamMemberPhoto:hover {
+    /* */
+}
+
+.useCaseCard {
+    width: 500px;
+    margin: 0.5em;
+}
+
+img.useCasePhoto {
+    height: 300px;
+}
 

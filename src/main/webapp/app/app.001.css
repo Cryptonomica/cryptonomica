@@ -1,0 +1,148 @@
+/* useful links:
+
+https://color.adobe.com
+*/
+
+/*body {
+    background: #bbbbbb url(img/background.big.001.png) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}*/
+
+footer {
+    background-color: #dddddd;
+}
+
+/* http://stackoverflow.com/a/36426886/1697878 */
+/* Then, simply wrap the expression (for ex) in your html:
+<span class="capitalize">{{ uppercase_expression }}</span>
+No js needed */
+.capitalize {
+    text-transform: capitalize;
+}
+
+.nav-tabs .nav-link.active, .nav-tabs .nav-link.active:focus, .nav-tabs .nav-link.active:hover, .nav-tabs .nav-item.open .nav-link, .nav-tabs .nav-item.open .nav-link:focus, .nav-tabs .nav-item.open .nav-link:hover,
+.card {
+    background-color: #fafafa;
+}
+
+.navbar {
+    /*background-color: #DD4500;*/
+    /*background-color: #290641;*/
+    /*border-color: #DD4500;*/
+    margin-bottom: 0.3em;
+}
+
+.textareaWithKey {
+    font-family: monospace;
+    font-size: 75%;
+}
+
+/*
+.alert-warning {
+    background-color: RGBA(160, 77, 202, 0.23);
+    color: #af3c3c;
+}
+*/
+
+.container {
+    border-width: 0;
+}
+
+.logo-background {
+    /*background-image: url("images/logo.004.crop.gray.svg");*/
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.card-tab-panel {
+    border-top-width: 0;
+}
+
+.whitelink {
+    color: white;
+}
+
+/* Links */
+
+a,
+a:visited,
+a:focus,
+a:hover {
+    color: orangered;
+    /*color: #400656;*/
+    /*color: #4c0664;*/
+    /*color: red;*/
+    /*color: #dd4814;*/
+}
+
+/*
+nav a,
+nav a:visited,
+nav a:focus,
+nav a:hover {
+
+}
+*/
+
+/*----- Icons ------------- */
+
+.orangeicon {
+    /*color: #dd4500; */
+    /*color: orangered;*/
+}
+
+.fa-key {
+    /*color: orangered;*/
+    /*color: orange;*/
+    font-size: 1.3em;
+}
+
+.false {
+    border-color: red;
+    border-style: solid;
+    border-width: medium;
+}
+
+.true {
+    border-color: green;
+    border-style: solid;
+    border-width: medium;
+}
+
+.keyverified {
+    color: green;
+    text-align: center;
+    border-top: solid;
+    border-top-color: green;
+    border-bottom-color: green !important;
+    border-bottom: solid !important;
+    padding: 2px !important;
+    margin-bottom: 0.5em !important;
+
+}
+
+.keynotverified {
+    color: red;
+    text-align: center;
+    border-top: solid;
+    border-top-color: red;
+    border-bottom-color: red !important;
+    border-bottom: solid !important;
+    padding: 2px !important;
+    margin-bottom: 0.5em !important;
+}
+
+/* temorary icons: */
+/*
+.fa,
+.octicon,
+.mega-octicon {
+    color: orangered; /**/
+/*color: lime;*/
+/* lime - #00ff00 */
+
+/*}*/
+

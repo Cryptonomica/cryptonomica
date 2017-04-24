@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="cryptonomica">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <link rel="shortcut icon" href="favicon.ico?"/>
+    <!-- Octicons -->
+    <!-- https://octicons.github.com/usage/ -->
+    <link rel="stylesheet" href="vendors/octicons/octicons.css">
+    <!-- Font Awesome -->
+    <!-- https://fortawesome.github.io/Font-Awesome/cheatsheet/ -->
+    <link rel="stylesheet" href="vendors/font-awesome/css/font-awesome.min.css">
+    <!-- JQUERY -->
+    <script src="vendors/jquery/jquery-2.2.0.min.js"></script>
+    <!-- Bootstrap 4.0.0-alpha.2 -->
+    <link rel="stylesheet" href="vendors/bootstrap/dist/css/bootstrap.min.css">
+    <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- AngularJS 1.4.9 -->
+    <script src="vendors/angularjs/angular.min.js"></script>
+    <script src="vendors/angularjs/angular-cookies.min.js"></script>
+    <!-- angular-ui-router 0.2.18  -->
+    <!-- https://github.com/angular-ui/ui-router/tree/legacy -->
+    <!-- http://angular-ui.github.io/ui-router/release/angular-ui-router.js -->
+    <script src="vendors/angular-ui-router/0.2.18/angular-ui-router.min.js"></script>
+    <!-- ui-uploader-->
+    <!-- https://github.com/angular-ui/ui-uploader -->
+    <script src="vendors/angular-ui-uploader/dist/uploader.min.js"></script>
+    <!-- angular-google-gapi -->
+    <!-- https://github.com/maximepvrt/angular-google-gapi -->
+    <!--<script src="vendors/angular-google-gapi/0.1.2/angular-google-gapi.js"></script>-->
+    <script src="vendors/angular-google-gapi/1.0.0-beta.1/angular-google-gapi.min.js"></script>
+    <!-- ngProgress 1.1.2-->
+    <!-- https://github.com/VictorBjelkholm/ngProgress -->
+    <script src="vendors/ngprogress/ngprogress.min.js"></script>
+    <link rel="stylesheet" href="vendors/ngprogress/ngProgress.css">
+    <!-- angular-md and dependencies -->
+    <!-- https://github.com/yaru22/angular-md -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.0.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.0.0/highlight.min.js"></script>  -->
+    <script src="vendors/marked/marked.min.js"></script>
+    <script src="vendors/angular-md/angular-md.min.js"></script>
+    <!-- ngclipboard (Angularjs directive for clipboard.js ) https://sachinchoolur.github.io/ngclipboard/ -->
+    <script src="https://cdn.rawgit.com/zenorocha/clipboard.js/master/dist/clipboard.min.js"></script>
+    <script src="vendors/ngclipboard/1.1.1/ngclipboard.min.js"></script>
+    <!-- angular-file-saver https://github.com/alferov/angular-file-saver -->
+    <script src="vendors/angular-file-saver/1.1.0/angular-file-saver.bundle.min.js"></script>
+    <!-- Country select for AngularJS : http://alexcheng1982.github.io/angular-country-select/ -->
+    <!--<script src="vendors/angular-country-select/angular-country-select.js"></script>-->
+    <!--<script src="vendors/angular-country-select/bower_components/select2/select2.min.js"></script>-->
+    <!-- angular-ui/ui-date : https://github.com/angular-ui/ui-date -->
+    <!--<link rel="stylesheet" href="vendors/jquery-ui/1.11.4/jquery-ui.min.css"/>-->
+    <!--<link rel="stylesheet" href="vendors/jquery-ui/1.11.4/jquery-ui.theme.min.css"/>-->
+    <!--<script src="vendors/jquery-ui/1.11.4/jquery-ui.min.js"></script>-->
+    <!--<script src="vendors/angular-ui-date/date.js"></script>-->
+
+    <!-- angular-ui/ui-date (jQuery UI Datepicker for AngularJS) https://github.com/angular-ui/ui-date -->
+    <link rel="stylesheet" href="vendors/jquery-ui/themes/smoothness/jquery-ui.min.css">
+    <script src="vendors/jquery-ui/jquery-ui.min.js"></script>
+    <script src="vendors/angular-ui-date/date.js"></script>
+    <!-- Puigcerber/angular-country-picker : https://github.com/Puigcerber/angular-country-picker -->
+    <script src="vendors/angular-country-picker/country-picker.min.js"></script>
+    <!--  MY SCRIPTS -->
+    <link rel="stylesheet" type="text/css" href="app/app.css">
+    <script src="app/app.js"></script>
+    <script src="app/router.js"></script>
+    <script src="app/controller.js"></script>
+    <script src="app/user.service.js"></script>
+    <script src="app/home/controller.home.js"></script>
+    <script src="app/registration/controller.registration.js"></script>
+    <script src="app/dashboard/dashboard.controller.js"></script>
+    <script src="app/search/controller.search.js"></script>
+    <script src="app/viewprofile/controller.viewprofile.js"></script>
+    <script src="app/showkey/showkey.controller.js"></script>
+    <script src="app/key/key.controller.js"></script>
+    <script src="app/verification/verification.controller.js"></script>
+    <script src="app/verification/verification.service.js"></script>
+    <script src="app/arbitrators/controller.showallarbitrators.js"></script>
+    <script src="app/proofOfExistence/proofOfExistence.controller.js"></script>
+    <script src="app/directives/directives.js"></script>
+    <script src="app/test/test.controller.js"></script>
+    <script src="app/onlineVerification/onlineVerification.js"></script>
+    <!--        Title          -->
+    <title>Cryptonomica: identity proof, online dispute resolution, internationally enforceable electronic
+        contracts
+    </title>
+
+</head>
+
+<body ng-cloak>
+
+<div class="container-fluid">
+    <!-- ------- HEADER ------ -->
+
+    <nav class="navbar navbar-dark bg-inverse">
+        <!--<span class="octicon octicon-shield"></span>-->
+
+        <a class="navbar-brand" href="#">
+            <!--Cryptonomica Key Server // Pre-alpha (v. 0.01)&nbsp;&nbsp;&nbsp;-->
+            Cryptonomica // Beta &nbsp;&nbsp;&nbsp;
+            <span ng-show="working==true">
+                <i class="fa fa-spinner fa-pulse"></i></span></a>
+        <!--<i class="fa fa-key"></i>-->
+        <!--<span class="mega-octicon octicon-key"></span>-->
+
+        <ul class="nav navbar-nav pull-right">
+            <!-- KeyFinder-->
+            <li class="nav-item" ng-show="currentUser.registeredCryptonomicaUser">
+                <a href="" ui-sref="search()"
+                   class="btn btn-secondary-outline" title="Find keys and users">
+                    <i class="fa fa-key"></i>
+                    <br>KeyFinder
+                </a>
+            </li>
+            <!-- -->
+            <!-- Help -->
+            <li class="nav-item">
+                <a href="https://github.com/Cryptonomica/cryptonomica/wiki"
+                   class="btn btn-secondary-outline" ng-click="help()" title="Help">
+                    <i class="fa fa-question-circle"></i>
+                    <br>Help
+                </a>
+            </li>
+
+            <li class="nav-item" ng-show="gdata.getUser()">
+                <a href="https://accounts.google.com/AccountChooser"
+                   title="Change account">{{gdata.getUser().email}}</a>
+                <br>
+                <a href="https://security.google.com/settings/security/permissions"
+                   title="Manage google account permissions">Change permissions</a>
+            </li>
+            <li class="nav-item" ng-show="!gdata.getUser()" ng-hide="">
+                <button class="btn btn-secondary-outline" ng-click="login()">
+                    <i class="fa fa-sign-in"></i>
+                    <br> Login
+                </button>
+            </li>
+            <!--  -->
+            <li class="nav-item" ng-show="gdata.getUser()">
+                <!--
+                                <button class="btn btn-secondary-outline" ng-click="logout()"><i class="fa fa-sign-out"></i>
+                                    <br>
+                                    <span>Logout</span>
+                                </button>
+                                -->
+                <a href="https://accounts.google.com/logout"
+                   role="button"
+                   class="btn btn-secondary-outline">
+                    <i class="fa fa-sign-out"></i>
+                    <br>
+                    <span>Logout</span>
+                </a>
+
+            </li>
+            <li class="nav-item" ng-show="!currentUser.registeredCryptonomicaUser"
+                ng-hide="currentUser.registeredCryptonomicaUser">
+                <button class="btn btn-secondary-outline" ng-click="register()">
+                    <i class="fa fa-pencil-square-o"></i>
+                    <br> Register
+                </button>
+            </li>
+
+            <li class="nav-item navbar-brand" ng-show="gdata.getUser()">
+                <!--<img src="{{gapi.user.picture}}" height="57" style="">-->
+                <img ng-src="{{userCurrentImageLink || 'https://placehold.it/57x57?text=No+Image'}}"
+                     style="height: 57px">
+            </li>
+            <!--  -->
+        </ul>
+    </nav>
+
+    <!-- ------- **** ------ -->
+
+
+    <!---->
+    <div ui-view></div>
+    <!---->
+    <!-- ------- FOOTER ------ -->
+    <nav class="navbar navbar-light bg-faded text-muted">
+        <!--
+        <i class="fa fa-cog fa-spin" style="" title="Under Development"></i>
+        <span>2016.</span> .
+        <br>
+        -->
+        <i class="fa fa-copyright"></i>&nbsp; 2016, The International Arbitration and Cryptography Centre Limited
+        <br>
+        <a href="#" title="Cryptonomica">Cryptonomica</a>® is <a
+            href="https://www.ipo.gov.uk/tmcase/Results/1/UK00003127128">the registered trade mark</a>
+        of <a href="https://cryptonomica.net">The International Arbitration and Cryptography Centre Limited</a>
+        <br>
+        The International Arbitration and Cryptography Centre Limited is an international arbitration authority,
+        registered in The United Kingdom, Registration No. 9392597.
+        <br> International House, 24 Holborn Viaduct, EC1A 2BN London, United Kingdom.
+        <div class="text-xs-right">
+            <i class="fa fa-envelope-o"></i>&nbsp;
+            <a href="mailto:support@cryptonomica.net">support@cryptonomica.net</a>
+            &nbsp;| &nbsp;
+            <a href="https://cryptonomica-server.appspot.com/_ah/api/explorer">API</a>
+            &nbsp;| &nbsp;
+            <a href="" ui-sref="privacyPolicy">Privacy Policy</a>
+            &nbsp;|&nbsp;
+            <a href="" ui-sref="termsOfService">Terms of Service</a>
+        </div>
+    </nav>
+    <!-- ------- **** ------ -->
+</div>
+
+</body>
+
+</html>

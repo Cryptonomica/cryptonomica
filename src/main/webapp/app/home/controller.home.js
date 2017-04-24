@@ -18,8 +18,8 @@ controller.controller(controller_name, [
         '$state',
         '$cookies',
         '$timeout',
-        //'ngProgressFactory',
-        function homeCtrl($scope,    
+        'ngProgressFactory',
+        function homeCtrl($scope,
                           $rootScope,
                           $http,
                           GApi,
@@ -27,13 +27,17 @@ controller.controller(controller_name, [
                           GData,
                           $state,
                           $cookies,
-                          $timeout
-                          //ngProgressFactory
-        ) {
+                          $timeout,
+                          ngProgressFactory) {
 
             GAuth.checkAuth().then(
                 function () {
                     $rootScope.getUserData(); // async?
+                    if ($rootScope.currentUser.registeredCryptonomicaUser) {
+                        $state.go('registration'); // TODO: change to user profile page
+                    } else {
+                        $state.go('landing');
+                    }
                 },
                 function () {
                     //$rootScope.getUserData();
@@ -63,6 +67,7 @@ controller.controller(controller_name, [
             $scope.clearSearchForNotaries = function () {
                 $scope.resp = null;
             }; // clearSearchForNotaries
+
 
         } // end function homeCtl
     ]

@@ -41,6 +41,8 @@ app.run([
         'ngProgressFactory',
         '$timeout',
         // '$cookies',
+        '$anchorScroll',
+        '$location',
         '$log',
         function (GAuth,
                   GApi,
@@ -52,6 +54,8 @@ app.run([
                   ngProgressFactory,
                   $timeout,
                   // $cookies,
+                  $anchorScroll,
+                  $location,
                   $log) {
 
             $rootScope.gdata = GData;
@@ -98,7 +102,6 @@ app.run([
                             // $cookies.put('notary', resp.notary);
                             // $cookies.put('registeredCryptonomicaUser', resp.registeredCryptonomicaUser);
                             // $cookies.put('userCurrentImageLink', $sce.trustAsResourceUrl(resp.userCurrentImageLink));
-
                             //
                             $timeout($rootScope.progressbar.complete(), 1000);
                         }, function (resp) {
@@ -123,6 +126,15 @@ app.run([
 
             //// --- define other functions:
 
+            $rootScope.goTo = function (id) {
+                // set the location.hash to the id of
+                // the element you wish to scroll to.
+                // $location.hash('about');
+                $location.hash(id);
+                // call $anchorScroll()
+                $anchorScroll();
+            };
+
             $rootScope.login = function () { // shows auth window from Google
                 GAuth.login().then(
                     function () {
@@ -146,11 +158,14 @@ app.run([
                     });
 
             };
+
             // =============== Function calls:
 
             $rootScope.progressbar = ngProgressFactory.createInstance();
             $rootScope.progressbar.setHeight('5px'); // any valid CSS value Eg '10px', '1em' or '1%'
-            $rootScope.progressbar.setColor('orangered');
+            // $rootScope.progressbar.setColor('orangered');
+            // $rootScope.progressbar.setColor('purple');
+            $rootScope.progressbar.setColor('#C800C8');
             //$rootScope.checkAuth(); // ? - call this in home controller ect.
 
         } // and main function
