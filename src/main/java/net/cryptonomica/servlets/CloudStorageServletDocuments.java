@@ -24,6 +24,8 @@ import static net.cryptonomica.service.OfyService.ofy;
 // see:
 // https://github.com/objectify/objectify/wiki/Queries#executing-queries
 
+// TODO: this should be finished
+
 /**
  * See:
  * https://cloud.google.com/appengine/docs/standard/java/googlecloudstorageclient/app-engine-cloud-storage-sample
@@ -180,18 +182,19 @@ public class CloudStorageServletDocuments extends HttpServlet {
         }
 
         String verificationVideoId = RandomStringUtils.randomAlphanumeric(33);
-        VerificationVideo verificationVideo = new VerificationVideo(
-                verificationVideoId,
-                cryptonomicaUser.getGoogleUser(),
-                new Date(),
-                gcsFilename.getBucketName(),
-                gcsFilename.getObjectName(),
-                videoUploadKeyReceived
-        );
-        ofy().save().entity(verificationVideo); // <<< async without .now()
 
-        videoUploadKey.setUploadedVideoId(verificationVideoId);
-        ofy().save().entity(videoUploadKey); // <<< async without .now()
+        // VerificationVideo verificationVideo = new VerificationVideo(
+        //         verificationVideoId,
+        //         cryptonomicaUser.getGoogleUser(),
+        //         gcsFilename.getBucketName(),
+        //         gcsFilename.getObjectName(),
+        //         videoUploadKeyReceived
+        // );
+
+        // ofy().save().entity(verificationVideo); // <<< async without .now()
+        //
+        // videoUploadKey.setUploadedVideoId(verificationVideoId);
+        // ofy().save().entity(videoUploadKey); // <<< async without .now()
 
         String jsonResponseStr = "{\"verificationVideoId\":\"" + verificationVideoId + "\"}";
         LOG.warning(jsonResponseStr);

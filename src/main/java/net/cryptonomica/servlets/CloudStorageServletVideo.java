@@ -190,7 +190,6 @@ public class CloudStorageServletVideo extends HttpServlet {
         VerificationVideo verificationVideo = new VerificationVideo(
                 verificationVideoId,
                 cryptonomicaUser.getGoogleUser(),
-                new Date(),
                 gcsFilename.getBucketName(),
                 gcsFilename.getObjectName(),
                 videoUploadKeyReceived
