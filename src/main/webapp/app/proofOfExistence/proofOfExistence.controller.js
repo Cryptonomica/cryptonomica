@@ -64,11 +64,11 @@
 
                             $timeout($rootScope.progressbar.complete(), 1000);
                         }, function (error) {
-                            $log.error("error: ");
+                            $log.error("error:");
                             $log.error(error);
 
-                            $scope.error1 = error; // resp.message or resp.error.message - java.lang.Exception:
-                            $scope.alert = "Error:" + error.toString();
+                            // $scope.error1 = error; // resp.message or resp.error.message - java.lang.Exception:
+                            $scope.alert = "Error:" + error.message;
 
                             $timeout($rootScope.progressbar.complete(), 1000);
                         }
