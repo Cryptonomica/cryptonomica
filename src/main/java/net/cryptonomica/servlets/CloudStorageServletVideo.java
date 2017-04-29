@@ -164,17 +164,18 @@ public class CloudStorageServletVideo extends HttpServlet {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd.HH.mm.ss");
         Date currentDate = new Date();
         String currentDateStr = df.format(currentDate);
-        String fileName = currentDateStr + ".webm";
+        // String fileName = currentDateStr + ".webm";
+        String fileName = currentDateStr; // we'll get file ext from uploaded file
 
         GcsFilename gcsFilename = null;
         try {
             gcsFilename =
-                    CloudStorageService.uploadFileToCloudStorage(
+                    CloudStorageService.uploadFilesToCloudStorage(
                             req,
                             "onlineVerificationVideos",
                             cryptonomicaUser.getEmail().getEmail(), // sub.folder
                             fileName
-                    );
+                    ).get(0); // get first from array of uploaded files (for video will be only one)
         } catch (Exception e) {
             LOG.severe(e.getMessage());
             // see: http://stackoverflow.com/questions/22271099/convert-exception-to-json

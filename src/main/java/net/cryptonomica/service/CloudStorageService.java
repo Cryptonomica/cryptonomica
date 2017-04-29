@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.Channels;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 /**
@@ -74,11 +75,13 @@ public class CloudStorageService {
     /**
      * Writes the payload of the incoming post as the contents of a file to GCS.
      */
-    public static GcsFilename uploadFileToCloudStorage(HttpServletRequest req,
-                                                       String folder,     // "onlineVerificationVideos"
-                                                       String subFolder,  // cryptonomicaUser.getEmail().getEmail()
-                                                       String fileNameStr // currentDateStr + ".webm"
+    public static ArrayList<GcsFilename> uploadFilesToCloudStorage(HttpServletRequest req,
+                                                                   String folder,     // "onlineVerificationVideos"
+                                                                   String subFolder,  // cryptonomicaUser.getEmail().getEmail()
+                                                                   String fileNameStr // currentDateStr + ".webm"
     ) throws IOException, ServletException {
+
+        ArrayList<GcsFilename> result = new ArrayList<>();
 
         GcsFileOptions instance = GcsFileOptions.getDefaultInstance();
 
@@ -87,10 +90,9 @@ public class CloudStorageService {
         // GcsFilename fileName = getFileName(req);
         String bucketName = cloudStorageDefaultBucket;
 
-        String objectName = folder + "/" + subFolder + "/" + fileNameStr;
-        // String objectName = "test-videos/" + currentDateStr + ".mp4";
-        GcsFilename fileName = new GcsFilename(bucketName, objectName);
-        GcsOutputChannel outputChannel = gcsService.createOrReplace(fileName, instance);
+        // String objectName = folder + "/" + subFolder + "/" + fileNameStr;
+        // GcsFilename fileName = new GcsFilename(bucketName, objectName);
+        // GcsOutputChannel outputChannel = gcsService.createOrReplace(fileName, instance);
 
         // Creates a MultipartParser from the specified request, which limits the upload size to the specified length,
         // buffers for performance and prevent attempts to read past the amount specified by the Content-Length.
@@ -119,7 +121,12 @@ public class CloudStorageService {
                 // before proceeding to process the next part.
                 // The contents will otherwise be lost on moving to the next part.
                 // in = filePart.getInputStream(); // does not work!!!
+                //
+                String objectName = folder + "/" + subFolder + "/" + fileNameStr + filePart.getName();
+                GcsFilename fileName = new GcsFilename(bucketName, objectName);
+                GcsOutputChannel outputChannel = gcsService.createOrReplace(fileName, instance);
                 numberOfBytesRead = copy(filePart.getInputStream(), Channels.newOutputStream(outputChannel));
+                result.add(fileName);
                 // filePart.writeTo(Channels.newOutputStream(outputChannel)); // TODO: try use this
                 LOG.warning("numberOfBytesRead: " + String.valueOf(numberOfBytesRead));
             } else if (part.isParam()) {
@@ -132,7 +139,7 @@ public class CloudStorageService {
             throw new ServletException("No file uploaded");
         }
 
-        return (fileName);
+        return result;
 
     } // end of doPost
 

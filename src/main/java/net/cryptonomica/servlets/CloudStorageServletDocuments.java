@@ -6,7 +6,6 @@ import com.googlecode.objectify.Key;
 import net.cryptonomica.entities.CryptonomicaUser;
 import net.cryptonomica.entities.VerificationDocument;
 import net.cryptonomica.entities.VerificationDocumentUploadKey;
-import net.cryptonomica.entities.VerificationVideo;
 import net.cryptonomica.service.CloudStorageService;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -17,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Logger;
 
@@ -159,12 +159,13 @@ public class CloudStorageServletDocuments extends HttpServlet {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd.HH.mm.ss");
         Date currentDate = new Date();
         String currentDateStr = df.format(currentDate);
+        // String fileName = currentDateStr + ".webm"; // ? file format?
         String fileName = currentDateStr + ".webm"; // ? file format?
 
-        GcsFilename gcsFilename = null;
+        ArrayList<GcsFilename> gcsFilenames = null;
         try {
-            gcsFilename =
-                    CloudStorageService.uploadFileToCloudStorage(
+            gcsFilenames =
+                    CloudStorageService.uploadFilesToCloudStorage(
                             req,
                             "onlineVerificationVideos",
                             cryptonomicaUser.getEmail().getEmail(), // sub.folder
@@ -176,9 +177,9 @@ public class CloudStorageServletDocuments extends HttpServlet {
             ServletUtils.sendJsonResponse(resp, GSON.toJson(e));
         }
 
-        if (gcsFilename == null) {
-            LOG.severe("gcsFilename==null");
-            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"gcsFilename==null\"}");
+        if (gcsFilenames == null) {
+            LOG.severe("gcsFilenames==null");
+            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"gcsFilenames==null\"}");
         }
 
         String verificationVideoId = RandomStringUtils.randomAlphanumeric(33);
