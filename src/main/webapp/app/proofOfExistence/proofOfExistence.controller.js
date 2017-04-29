@@ -57,7 +57,7 @@
                             $scope.fullResponse1 = resp; //
                             $log.info("[ethAddDoc] $scope.fullResponse: ");
                             $log.info($scope.fullResponse1);
-
+                            $scope.alert = null;
                             $scope.resp1 = {};
                             $scope.resp1.txHash = resp.txHash;
                             $scope.resp1.sha256 = resp.storedTextSha256;
@@ -92,8 +92,13 @@
                             $log.info($scope.fullResponse2);
 
                             $scope.resp2 = {};
-                            $scope.resp2.docText = resp.storedDoc[4];
-                            $scope.resp2.unixTime = resp.storedDoc[2];
+                            $scope.alert = null;
+                            if (resp.storedDoc[4] == "") {
+                                $scope.resp2.docText = "no documents found"
+                            } else {
+                                $scope.resp2.docText = resp.storedDoc[4];
+                                $scope.resp2.unixTime = resp.storedDoc[2];
+                            }
                             if ($scope.resp2.unixTime) {
                                 $scope.resp2.publishedDate = new Date($scope.resp2.unixTime * 1000).toString();
                             }
@@ -104,10 +109,7 @@
                         }, function (error) {
                             $log.error("error: ");
                             $log.error(error);
-
-                            $scope.error2 = error; // resp.message or resp.error.message - java.lang.Exception:
-                            $scope.alert = "Error:" + error.toString();
-
+                            $scope.alert = error.message;
                             $timeout($rootScope.progressbar.complete(), 1000);
                         }
                     );

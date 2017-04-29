@@ -17,8 +17,8 @@ controller.controller(controller_name, [
         'GData',
         '$state',
         '$cookies',
+        // 'ngProgressFactory',
         '$timeout',
-        'ngProgressFactory',
         function showAllNotariesCtrl($scope,
                                      $rootScope,
                                      $http,
@@ -27,8 +27,8 @@ controller.controller(controller_name, [
                                      GData,
                                      $state,
                                      $cookies,
-                                     $timeout,
-                                     ngProgressFactory) {
+                                     // ngProgressFactory,
+                                     $timeout) {
             // define functions:
             $scope.searchForNotaries = function () {
                 $rootScope.progressbar.start(); // <<<<<<<<<<<
@@ -38,13 +38,13 @@ controller.controller(controller_name, [
                             $scope.resp = resp; // net.cryptonomica.returns.NotaryGeneralView array in resp.items
                             console.log("resp: ");
                             console.log(resp);
-                            $rootScope.working = false;
+                            // $rootScope.working = false;
                             $timeout($rootScope.progressbar.complete(), 1000);
-                        }, function (resp) {
+                        }, function (error) {
                             console.log("error: ");
-                            console.log(resp);
-                            $scope.resp = resp; // resp.message or resp.error.message - java.lang.Exception:
-                            $rootScope.working = false;
+                            console.log(error);
+                            $scope.error = error; // resp.message or resp.error.message - java.lang.Exception:
+                            // $rootScope.working = false;
                             $timeout($rootScope.progressbar.complete(), 1000);
                         }
                     );
@@ -69,7 +69,7 @@ controller.controller(controller_name, [
                 $scope.clearSearchForNotaries();
                 $scope.searchForNotaries();
             };
-            
+
         } // end function showAllNotariesCtrl
     ]
 );
