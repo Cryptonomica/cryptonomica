@@ -32,6 +32,38 @@
         };
     });
     // ------------------------------------------------------------------------------
+    d.directive('mediaStreamRecorder', function () {
+        return {
+            restrict: 'EA', //E = element, A = attribute, C = class, M = comment
+            // <media-stream-recorder></media-stream-recorder>
+            templateUrl: 'app/directives/mediaStreamRecorder.html'
+        };
+    });
+    // ------------------------------------------------------------------------------
+    d.directive('recordVideoJs', function () {
+        return {
+            restrict: 'EA', //E = element, A = attribute, C = class, M = comment
+            // <record-video-js></record-video-js>
+            templateUrl: 'app/directives/recordVideoJs.html'
+        };
+    });
+    // ------------------------------------------------------------------------------
+    d.directive('textForCamera', function () {
+        return {
+            restrict: 'EA', //E = element, A = attribute, C = class, M = comment
+            // <text-for-camera></text-for-camera>
+            templateUrl: 'app/directives/textForCamera.html'
+        };
+    });
+    // ------------------------------------------------------------------------------
+    d.directive('onlineVerificationVideo', function () {
+        return {
+            restrict: 'EA', //E = element, A = attribute, C = class, M = comment
+            // <online-verification-video></online-verification-video>
+            templateUrl: 'app/directives/onlineVerificationVideo.html'
+        };
+    });
+    // ------------------------------------------------------------------------------
     d.directive('testDirective1', function () {
         return {
             restrict: 'EA', //E = element, A = attribute, C = class, M = comment

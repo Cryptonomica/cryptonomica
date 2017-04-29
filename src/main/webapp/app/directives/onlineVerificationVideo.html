@@ -1,0 +1,75 @@
+<!-- HTML -->
+<div class="container" id="container">
+    <div id="videoFromCamera">
+        <center>
+            <text-for-camera></text-for-camera>
+            <button id="record" name="button" class="btn btn-secondary">start recording</button>
+            <button id="stop" name="button" class="btn btn-secondary disabled">stop recording</button>
+            <!--<h4>video from camera:</h4>-->
+            <div class="embed-responsive embed-responsive-16by9">
+                <!-- https://github.com/muaz-khan/RecordRTC#echo-issues -->
+                <video
+                        muted=true
+                        id="video"
+                        src=""
+                        autoplay
+                        class="embed-responsive-item">
+                </video>
+            </div>
+
+            <div id="video-status"
+                 style="height: 2.5em; width: 30%; color: rgba(255, 255, 255, 0); font-weight: bolder">
+            </div>
+        </center>
+        <hr>
+    </div>
+
+    <div id="recordedVideo">
+        <center>
+            <h4>recorded video:</h4>
+
+            <p>
+                video size: <span id="videoSize"></span>
+            </p>
+            <div id="blobURLbox" hidden>
+                blobURL: <span id="blobURL"></span>
+            </div>
+            <div class="embed-responsive embed-responsive-16by9">
+                <video id="blob-video" controls class="embed-responsive-item"></video>
+            </div>
+            <!--request.setRequestHeader('userId', document.getElementById('userId').value);-->
+            <!--request.setRequestHeader('userEmail', document.getElementById('userEmail').value);-->
+            <!--request.setRequestHeader('videoUploadKey', document.getElementById('videoUploadKey').value);-->
+            <!--<form>-->
+            <!-- do not use <form> here - upload does not work -->
+            <div id="userDataForVideo" hidden>
+                <label for="userId">userId:</label>
+                <input type="text" name="userId" id="userId" ng-model="currentUser.userId" disabled>
+                <label for="userEmail">userEmail:</label>
+                <input type="text" name="userEmail" id="userEmail" ng-model="currentUser.email" disabled>
+                <label for="videoUploadKey">videoUploadKey:</label>
+                <input type="text" name="videoUploadKey" id="videoUploadKey" ng-model="videoUploadKey" disabled>
+            </div>
+            <div id="buttons">
+                <!--<button id="save" name="button" class="btn btn-secondary">save recording</button>-->
+                <button id="uploadButton" name="button" class="btn btn-secondary">upload to server</button>
+                <span id="uploading"></span>
+            </div>
+            <!--</form>-->
+            <hr>
+            <h3>Video stored on the server:</h3>
+            <div id="serverResponse" hidden></div>
+            <!--<div id="uploadedVideo"></div>-->
+            <div class="embed-responsive embed-responsive-16by9">
+                <video id="videoFromServer" controls class="embed-responsive-item"></video>
+            </div>
+            <br>
+        </center>
+    </div>
+
+</div>
+
+<!-- JS -->
+<!--<script src="https://cdn.webrtc-experiment.com/MediaStreamRecorder.js"></script>-->
+<media-stream-recorder></media-stream-recorder>
+<record-video-js></record-video-js>

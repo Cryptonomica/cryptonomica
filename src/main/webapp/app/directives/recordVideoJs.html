@@ -1,0 +1,148 @@
+<script type="text/javascript">
+
+    var mediaConstraints = {
+        audio: true,
+        video: true
+    };
+
+    var mediaRecorder;
+
+    navigator.getUserMedia(mediaConstraints, onMediaSuccess, onMediaError);
+
+    function onMediaSuccess(stream) {
+
+        mediaRecorder = new MediaStreamRecorder(stream);
+        console.log(JSON.stringify(mediaRecorder));
+        mediaRecorder.mimeType = 'video/webm';
+        // mediaRecorder.mimeType = 'video/mp4';
+        var formData; //
+
+        document.getElementById('video').setAttribute('src', window.URL.createObjectURL(stream));
+
+        mediaRecorder.ondataavailable = function (blob) {
+            // POST/PUT "Blob" using FormData/XHR2
+            var blobURL = URL.createObjectURL(blob);
+            console.log(blob);
+            console.log("blobURL: " + blobURL);
+
+            document.getElementById('blobURL').innerHTML = blobURL;
+
+            //
+            document.getElementById('blob-video').setAttribute('src', window.URL.createObjectURL(blob));
+            var blobSizeInBytes = blob.size;
+            document.getElementById('videoSize').innerHTML = blobSizeInBytes + " bytes";
+            //
+            // see: https://developer.mozilla.org/en-US/docs/Web/API/FormData/Using_FormData_Objects
+            formData = new FormData();
+            // formData.append(name, value, filename);
+            // see: https://developer.mozilla.org/en-US/docs/Web/API/FormData/append
+            var name = "file"; // The name of the field whose data is contained in value.
+            var value = blob; // The field's value. This can be a USVString or Blob (including subclasses such as File)
+            var filename = "videoFile.webm";
+            // var filename = "videofile.mp4"; // video/mp4
+            // Optional. The filename reported to the server (a USVString),
+            // when a Blob or File is passed as the second parameter. The default filename for Blob objects is "blob".
+            // The default filename for File objects is the file's filename.
+
+            // https://developer.mozilla.org/en-US/docs/Web/API/FormData/append
+            formData.append(name, value, filename);
+            // formData.append(name, value);
+            // formData.append("file", blob);
+            // formData.set("file", blob);
+            // Display the key/value pairs in formData
+            console.log('formData: ');
+            // see: http://stackoverflow.com/questions/17066875/how-to-inspect-formdata
+            for (var pair of formData.entries()) {
+                // see: https://developer.mozilla.org/en-US/docs/Web/API/FormData/entries
+                console.log(pair[0] + ', ' + pair[1]
+                        + ' size: ' + pair[1].size);
+                // see: http://stackoverflow.com/questions/5533192/how-to-get-object-length
+            }
+
+            // formData.append("enctype", "multipart/form-data"); // ?
+
+            /*-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; */
+            var uploadButton = document.getElementById('uploadButton');
+            uploadButton.addEventListener('click', function (e) {
+
+                var request = new XMLHttpRequest();
+
+                //request.open("POST", "https://cryptonomica.net/gcs");
+                request.open("POST",
+                        // "https://cryptonomica.net/gcs/cryptonomica-server.appspot.com/testVideo.webm"
+                        "https://cryptonomica.net/gcs"
+                );
+
+                request.setRequestHeader("testHeader", "testHeaderValue");
+                request.setRequestHeader('userId', document.getElementById('userId').value);
+                request.setRequestHeader('userEmail', document.getElementById('userEmail').value);
+                request.setRequestHeader('videoUploadKey', document.getElementById('videoUploadKey').value);
+
+                request.send(formData);
+//                document.getElementById('uploading').innerHTML = "Uploading ... ";
+                document.getElementById('uploading').innerHTML =
+                        '<i class="fa fa-refresh fa-spin fa-2x fa-fw"></i><span>Loading...</span>';
+
+                // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/onreadystatechange
+                request.onreadystatechange = function () {
+
+                    // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/readyState
+                    console.log('XMLHttpRequest.readyState: ' + request.readyState);
+
+                    if (request.readyState == 4) {
+
+                        document.getElementById('uploading').innerHTML = "";
+
+                        console.log(request.response);
+                        var resp = JSON.parse(request.response);
+                        console.log(resp);
+                        document.getElementById('serverResponse').innerHTML = request.response + '<br>';
+                        if (resp.verificationVideoId) {
+
+                            document.getElementById('videoFromServer').setAttribute(
+                                    'src',
+                                    '/gcs?verificationVideoId=' + resp.verificationVideoId
+                            );
+                        }
+                        // document.getElementById('videoFromServer').setAttribute(
+                        //        'src',
+                        //        'https://cryptonomica.net/gcs/cryptonomica-server.appspot.com/testVideo.webm'
+                        // );
+                    }
+                };
+
+            }); // end of uploadButton.addEventListener
+
+        }; // end: mediaRecorder.ondataavailable
+
+        var recordButton = document.getElementById('record');
+        recordButton.addEventListener('click', function (e) {
+            mediaRecorder.start();
+            document.getElementById('video-status').innerHTML = "RECORDING";
+            document.getElementById('video-status').classList.add('recording');
+            document.getElementById('record').classList.add('disabled');
+            document.getElementById('stop').classList.remove('disabled');
+        });
+
+        var stopButton = document.getElementById('stop');
+        stopButton.addEventListener('click', function () {
+            mediaRecorder.stop(); //
+            document.getElementById('video-status').classList.remove('recording');
+            document.getElementById('record').classList.remove('disabled');
+            document.getElementById('stop').classList.add('disabled');
+
+        });
+
+//        var saveButton = document.getElementById('save');
+//        saveButton.addEventListener('click', function (e) {
+//            mediaRecorder.save();
+//        });
+
+    } // end: onMediaSuccess(stream)
+
+    function onMediaError(e) {
+        console.error('media error:');
+        console.error(e);
+    } // end onMediaError
+
+</script>

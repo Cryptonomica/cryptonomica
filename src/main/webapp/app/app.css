@@ -136,3 +136,28 @@ img.useCasePhoto {
     height: 300px;
 }
 
+/* for video recording: */
+
+@keyframes blink {
+    50% {
+        border-color: rgba(255, 0, 0, 0.77);
+        background-color: rgba(255, 0, 0, 0.77);
+        color: rgba(255, 255, 255, 1);
+    }
+}
+
+.recording {
+    animation: blink .5s step-end infinite alternate;
+}
+
+.paused {
+    background-color: yellow;
+    color: black !important;
+}
+
+.video-status {
+    color: rgba(255, 255, 255, 0) !important;
+}
+
+/* ---------------------*/
+
