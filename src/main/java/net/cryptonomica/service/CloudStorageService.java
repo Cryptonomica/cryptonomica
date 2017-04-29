@@ -122,7 +122,7 @@ public class CloudStorageService {
                 // The contents will otherwise be lost on moving to the next part.
                 // in = filePart.getInputStream(); // does not work!!!
                 //
-                String objectName = folder + "/" + subFolder + "/" + fileNameStr + filePart.getName();
+                String objectName = folder + "/" + subFolder + "/" + fileNameStr + "." + filePart.getFileName();
                 GcsFilename fileName = new GcsFilename(bucketName, objectName);
                 GcsOutputChannel outputChannel = gcsService.createOrReplace(fileName, instance);
                 numberOfBytesRead = copy(filePart.getInputStream(), Channels.newOutputStream(outputChannel));
