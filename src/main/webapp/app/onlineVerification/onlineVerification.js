@@ -27,6 +27,7 @@ controller.controller(controller_name, [
                            $timeout) {
 
         $log.info("cryptonomica.controller.onlineVerification started");
+        $scope.error = {};
 
         // --- get user data
         GAuth.checkAuth().then(
@@ -34,9 +35,7 @@ controller.controller(controller_name, [
                 $rootScope.getUserData(); // async?
             },
             function () {
-                //$rootScope.getUserData();
                 $log.error("[cryptonomica.controller.onlineVerification] GAuth.checkAuth() - unsuccessful");
-                $scope.alert = "User not logged in";
             }
         );
         // -----------------
@@ -54,13 +53,12 @@ controller.controller(controller_name, [
                     }, function (error) {
                         console.log("$scope.etVideoUploadKey error:");
                         console.log(error);
-                        $scope.error = error.message;
+                        $scope.error.message = "[server error}" + error.message;
                     }
                 )
         };
         $scope.getVideoUploadKey();
 // ------------------------------------------------------------------------------
-
     }
 ]);
 

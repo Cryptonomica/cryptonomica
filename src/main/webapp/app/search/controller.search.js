@@ -15,7 +15,7 @@
             'GData',
             '$state',
             '$cookies',
-            function searchCtrl($scope,    // TODO: do i need a name for this function?
+            function searchCtrl($scope,
                                 $rootScope,
                                 $http,
                                 GApi,
