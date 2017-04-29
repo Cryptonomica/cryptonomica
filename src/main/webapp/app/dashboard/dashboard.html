@@ -5,16 +5,7 @@ if not registered - redirected to registration page with message:
 -->
 <div>
     <header-main-menu></header-main-menu>
-    <!-- Navigation -->
-    <div class="btn-group" role="group" ng-show="currentUser.registeredCryptonomicaUser">
-        <a class="btn btn-secondary" href="/#" role="button">Home</a>
-        <a class="btn btn-secondary active" href="/#/dashboard" role="button">Dashboard/Payments</a>
-        <a class="btn btn-secondary" href="/#/registration" role="button">Registration</a>
-        <a class="btn btn-secondary" href="/#/search" role="button">Search</a>
-        <a class="btn btn-secondary" href="/#/showallarbitrators" role="button">Show arbitrators</a>
-        <a class="btn btn-secondary" href="/#/proofOfExistence" role="button">Proof of existence</a>
-    </div>
-    <!-- -->
+    <navigation-menu></navigation-menu>
 
     <div class="card card-block">
         <h1 class="card-title">Dashboard and payments</h1>
@@ -28,7 +19,7 @@ if not registered - redirected to registration page with message:
         Support: <a href="mailto:support@cryptonomica.net">support@cryptonomica.net</a>
         <hr>
         Current prices for key's data storage: <br>
-        if key valid for 1 year:  $100 (in Bitcoin: $90) <br>
+        if key valid for 1 year: $100 (in Bitcoin: $90) <br>
         if key valid for 2 years: $200 (in Bitcoin: $180) <br>
         <hr>
         For arbitration fee and costs see <a

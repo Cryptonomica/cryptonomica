@@ -14,6 +14,14 @@
         };
     });
     // ------------------------------------------------------------------------------
+    d.directive('navigationMenu', function () {
+        return {
+            restrict: 'EA', //E = element, A = attribute, C = class, M = comment
+            // <navigation-menu></navigation-menu>
+            templateUrl: 'app/directives/navigationMenu.html'
+        };
+    });
+    // ------------------------------------------------------------------------------
     d.directive('headerLandingPage', function () {
         return {
             restrict: 'EA', //E = element, A = attribute, C = class, M = comment

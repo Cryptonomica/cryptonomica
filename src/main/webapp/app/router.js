@@ -85,6 +85,11 @@ router
                     controller: 'cryptonomica.controller.showallarbitrators',
                     templateUrl: 'app/arbitrators/showallarbitrators.html'
                 })
+                .state('notaries', {
+                    url: '/notaries',
+                    controller: 'cryptonomica.controller.showAllNotaries',
+                    templateUrl: 'app/notaries/showAllNotaries.html'
+                })
                 .state('proofOfExistence', {
                     url: '/proofOfExistence',
                     controller: 'cryptonomica.controller.proofOfExistence',

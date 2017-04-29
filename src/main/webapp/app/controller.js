@@ -8,6 +8,7 @@ var controller = angular.module('cryptonomica.controller', [
         'cryptonomica.controller.showkey',
         'cryptonomica.controller.key',
         'cryptonomica.controller.verification',
+        'cryptonomica.controller.showAllNotaries',
         'cryptonomica.controller.showallarbitrators',
         'cryptonomica.controller.proofOfExistence',
         'cryptonomica.controller.onlineVerification',
