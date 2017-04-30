@@ -20,6 +20,7 @@ import net.cryptonomica.service.UserTools;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.logging.Logger;
 
 import static net.cryptonomica.service.OfyService.ofy;
@@ -216,5 +217,114 @@ public class OnlineVerificationAPI {
         return new StringWrapperObject(message.toJSON());
 
     } // end of sendTestSms();
+
+    /* --- Send SMS : */
+    @ApiMethod(
+            name = "sendSms",
+            path = "sendSms",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    @SuppressWarnings("unused")
+    public StringWrapperObject sendSms(
+            // final HttpServletRequest httpServletRequest,
+            final User googleUser,
+            final @Named("phoneNumber") String phoneNumber,
+            // in international format, f.e. +972523333333
+            final @Named("fingerprint") String fingerprint
+
+            // see: https://cloud.google.com/appengine/docs/java/endpoints/exceptions
+    ) throws UnauthorizedException, BadRequestException, NotFoundException, NumberParseException,
+            IllegalArgumentException, TwilioRestException {
+
+        /* --- Check authorization: */
+        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaRegisteredUser(googleUser);
+
+        // --- create SMS:
+        String smsMessage = RandomStringUtils.randomNumeric(7);
+        LOG.warning("smsMessage: " + smsMessage);
+
+        // --- store SMS:
+        PhoneVerification phoneVerification = null;
+        phoneVerification = ofy().load().key(Key.create(PhoneVerification.class, fingerprint)).now();
+        if (phoneVerification == null) {
+            phoneVerification = new PhoneVerification(fingerprint);
+        }
+        if (phoneVerification.getVerified()) {
+            throw new BadRequestException("Phone already verified for this OpenPGP public key " + fingerprint);
+        }
+
+        phoneVerification.setPhoneNumber(phoneNumber);
+        phoneVerification.setUserEmail(cryptonomicaUser.getEmail());
+        phoneVerification.setSmsMessage(smsMessage);
+        phoneVerification.setFailedVerificationAttemps(0);
+        phoneVerification.setSmsMessageSend(new Date());
+        LOG.warning(GSON.toJson(phoneVerification));
+
+        /* --- Send SMS */
+        Message message = TwilioUtils.sendSms(phoneNumber, smsMessage);
+        LOG.warning(message.toJSON());
+
+        /* --- Save phoneVerification */
+        ofy().save().entity(phoneVerification).now();
+
+        return new StringWrapperObject("SMS message send successfully");
+
+    } // end of sendTestSms();
+
+    /* --- Check SMS  */
+    @ApiMethod(
+            name = "checkSms",
+            path = "checkSms",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    @SuppressWarnings("unused")
+    public StringWrapperObject checkSms(
+            // final HttpServletRequest httpServletRequest,
+            final User googleUser,
+            final @Named("smsMessage") String smsMessage,
+            final @Named("fingerprint") String fingerprint
+
+            // see: https://cloud.google.com/appengine/docs/java/endpoints/exceptions
+    ) throws UnauthorizedException, BadRequestException, NotFoundException, NumberParseException,
+            IllegalArgumentException, TwilioRestException {
+
+        /* --- Check authorization: */
+        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaRegisteredUser(googleUser);
+
+        // --- store SMS:
+        PhoneVerification phoneVerification = null;
+        phoneVerification = ofy().load().key(Key.create(PhoneVerification.class, fingerprint)).now();
+
+        if (phoneVerification == null) {
+            throw new NotFoundException("Send sms message not found for key " + fingerprint);
+        }
+
+
+        LOG.warning("phoneVerification.getSmsMessage(): " + phoneVerification.getSmsMessage());
+        LOG.warning("smsMessage: " + smsMessage);
+        Boolean verificationResult = phoneVerification.getSmsMessage().toString().equalsIgnoreCase(smsMessage);
+        phoneVerification.setVerified(verificationResult);
+        StringWrapperObject result = new StringWrapperObject();
+        if (verificationResult) {
+            result.setMessage("Phone verified!");
+        } else {
+            phoneVerification.setFailedVerificationAttemps(phoneVerification.getFailedVerificationAttemps() + 1);
+            ofy().save().entity(phoneVerification).now();
+            if (phoneVerification.getFailedVerificationAttemps() >= 3) {
+                throw new BadRequestException("The number of attempts is exhausted. Please resend new sms");
+            } else {
+                throw new BadRequestException("Code does not much. It was attempt # "
+                        + phoneVerification.getFailedVerificationAttemps());
+            }
+
+        }
+
+        // save verification
+        ofy().save().entity(phoneVerification).now();
+
+        return result;
+
+
+    } // end of checkSms();
 
 }

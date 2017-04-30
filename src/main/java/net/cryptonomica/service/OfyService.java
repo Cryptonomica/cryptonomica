@@ -42,6 +42,7 @@ public class OfyService {
         try{factory().register(VerificationVideo.class);}catch (Exception e){LOG.warning(e.getMessage());}
         try{factory().register(VerificationDocumentsUploadKey.class);}catch (Exception e){LOG.warning(e.getMessage());}
         try{factory().register(VerificationDocument.class);}catch (Exception e){LOG.warning(e.getMessage());}
+        try{factory().register(PhoneVerification.class);}catch (Exception e){LOG.warning(e.getMessage());}
     }
 
     // Use this static method for getting the Objectify service factory.

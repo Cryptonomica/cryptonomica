@@ -5,7 +5,7 @@
  */
 
 /* original: */
- /*color: #AC5AFF; */
+/*color: #AC5AFF; */
 
 .btn {
     font-weight: 900;
@@ -113,22 +113,22 @@ body {
     height: 100%;
 }
 
-hr {
+/*hr {
     max-width: 100px;
     height: 2px;
     border-top: 1px solid white;
     border-bottom: 1px solid white;
-}
+}*/
 
 hr.colored {
     border-color: #572292;
 }
 
-@media (min-width: 992px) {
+/*@media (min-width: 992px) {
     hr {
         max-width: 150px;
     }
-}
+}*/
 
 section.page-section {
     padding: 100px 0;

@@ -1,0 +1,37 @@
+<div class="container" id="smsCheckContainer">
+    <hr>
+    <form>
+
+        <fieldset class="form-group">
+            <legend>enter your pnone in international format</legend>
+            <input type="tel" id="phoneNumber" class="form-control" placeholder="+972523333333" ng-model="phoneNumber">
+            <br>
+            <button ng-click="sendSms()"
+                    role="button" type="button" class="btn btn-secondary">
+                Send SMS Message
+            </button>
+        </fieldset>
+
+        <fieldset class="form-group">
+            <legend>Enter received SMS message (7 digits)</legend>
+            <input type="text" id="smsMessage" class="form-control" placeholder="1234567" ng-model="smsMessage">
+            <br>
+            <button ng-click="checkSms()"
+                    role="button" type="button" class="btn btn-secondary">
+                Verify
+            </button>
+        </fieldset>
+
+        <fieldset class="form-group">
+            <legend>Result:</legend>
+            <input type="text" id="smsResult" class="form-control" ng-model="smsResult" disabled>
+        </fieldset>
+
+    </form>
+    <br>
+    <button id="nextStep" name="button" class="btn btn-secondary" role="button" ng-click="getOnlineVerification()">
+        Next Step >>>
+    </button>
+    <br>
+    <hr>
+</div>

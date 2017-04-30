@@ -191,7 +191,58 @@ controller.controller(controller_name, [
             $scope.files = uiUploader.getFiles();
             $scope.$apply();
         });
-// ------------------------------------------------------------------------------
+        // ---------- SMS
+        $scope.sendSms = function () {
+            $rootScope.progressbar.start(); // <<<<<<<<<<<
+            $log.info('$scope.sendSms ...');
+            GApi.executeAuth('onlineVerificationAPI',
+                'sendSms',
+                {
+                    "fingerprint": $stateParams.fingerprint,
+                    "phoneNumber": $scope.phoneNumber
+                }
+            )
+                .then(
+                    function (resp) {
+                        console.log('onlineVerificationAPI > sendSms:');
+                        console.log(resp); // new StringWrapperObject("SMS message send successfully")
+                        $timeout($rootScope.progressbar.complete(), 1000);
+
+                    }, function (error) {
+                        console.log('[Error] onlineVerificationAPI > sendSms');
+                        console.log(error);
+                        $timeout($rootScope.progressbar.complete(), 1000);
+                    }
+                );
+        };
+
+        $scope.checkSms = function () {
+            $rootScope.progressbar.start(); // <<<<<<<<<<<
+            $log.info('$scope.checkSms ...');
+            GApi.executeAuth('onlineVerificationAPI',
+                'checkSms',
+                {
+                    "fingerprint": $stateParams.fingerprint,
+                    "smsMessage": $scope.smsMessage
+                }
+            )
+                .then(
+                    function (resp) {
+                        console.log('onlineVerificationAPI > checkSms:');
+                        console.log(resp); //  new StringWrapperObject();
+                        $scope.smsResult = resp.message;
+                        $timeout($rootScope.progressbar.complete(), 1000);
+
+                    }, function (error) {
+                        console.log('[Error] onlineVerificationAPI > checkSms');
+                        console.log(error);
+                        // for example:
+                        // Object {code: 400, data: Array(1), message: "Required parameter: smsMessage", error: Object}
+                        $scope.smsResult = error.message;
+                        $timeout($rootScope.progressbar.complete(), 1000);
+                    }
+                );
+        }
     }
 ]);
 

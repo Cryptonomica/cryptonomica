@@ -72,12 +72,13 @@
         };
     });
     // ------------------------------------------------------------------------------
-    d.directive('onlineVerificationDocuments', function () {
+    d.directive('smsCheck', function () {
         return {
             restrict: 'EA', //E = element, A = attribute, C = class, M = comment
-            // <online-verification-documents></online-verification-documents>
-            templateUrl: 'app/directives/onlineVerificationDocuments.html'
+            // <sms-check></sms-check>
+            templateUrl: 'app/directives/smsCheck.html'
         };
     });
     // ------------------------------------------------------------------------------
+
 })();
