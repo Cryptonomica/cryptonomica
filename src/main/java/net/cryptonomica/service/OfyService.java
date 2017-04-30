@@ -40,7 +40,7 @@ public class OfyService {
         try{factory().register(OnlineVerification.class);}catch (Exception e){LOG.warning(e.getMessage());}
         try{factory().register(VideoUploadKey.class);}catch (Exception e){LOG.warning(e.getMessage());}
         try{factory().register(VerificationVideo.class);}catch (Exception e){LOG.warning(e.getMessage());}
-        try{factory().register(VerificationDocumentUploadKey.class);}catch (Exception e){LOG.warning(e.getMessage());}
+        try{factory().register(VerificationDocumentsUploadKey.class);}catch (Exception e){LOG.warning(e.getMessage());}
         try{factory().register(VerificationDocument.class);}catch (Exception e){LOG.warning(e.getMessage());}
     }
 

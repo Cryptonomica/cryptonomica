@@ -13,9 +13,7 @@ import com.googlecode.objectify.Key;
 import com.twilio.sdk.TwilioRestException;
 import com.twilio.sdk.resource.instance.Message;
 import net.cryptonomica.constants.Constants;
-import net.cryptonomica.entities.CryptonomicaUser;
-import net.cryptonomica.entities.OnlineVerification;
-import net.cryptonomica.entities.VideoUploadKey;
+import net.cryptonomica.entities.*;
 import net.cryptonomica.returns.StringWrapperObject;
 import net.cryptonomica.service.TwilioUtils;
 import net.cryptonomica.service.UserTools;
@@ -39,54 +37,76 @@ import static net.cryptonomica.service.OfyService.ofy;
         version = "v1",
         scopes = {Constants.EMAIL_SCOPE},
         clientIds = {Constants.WEB_CLIENT_ID, Constants.API_EXPLORER_CLIENT_ID},
-        description = "Onine Verification API")
+        description = "Online Verification API")
 
 public class OnlineVerificationAPI {
 
     /* --- Logger: */
     private static final Logger LOG = Logger.getLogger(OnlineVerificationAPI.class.getName());
+    /* --- Gson */
+    private static final Gson GSON = new Gson();
 
-    /* --- Get verification info by verification ID: */
+    /* --- Get online verification info by OpenPGP Public Key fingerprint  : */
     @ApiMethod(
-            name = "getOnlineVerificationByID",
-            path = "getOnlineVerificationByID",
+            name = "getOnlineVerificationByFingerprint",
+            path = "getOnlineVerificationByFingerprint",
             httpMethod = ApiMethod.HttpMethod.GET
     )
     @SuppressWarnings("unused")
-    public OnlineVerification getOnlineVerificationByID(
+    public OnlineVerification getOnlineVerificationByFingerprint(
             final HttpServletRequest httpServletRequest,
             final User googleUser,
-            final @Named("onlineVerificationID") String onlineVerificationID
+            final @Named("fingerprint") String fingerprint
             // see: https://cloud.google.com/appengine/docs/java/endpoints/exceptions
     ) throws UnauthorizedException, BadRequestException, NotFoundException {
 
-        /* --- Check authorization: */
-        final CryptonomicaUser cryptonomicaOfficer = UserTools.ensureCryptonomicaOfficer(googleUser);
-
-        /* --- Check input: */
-        if (onlineVerificationID == null || onlineVerificationID.equals("")) {
-            throw new BadRequestException("Online Verification ID missing");
+                /* --- Check input: */
+        if (fingerprint == null || fingerprint.equals("") || fingerprint.length() != 40) {
+            throw new BadRequestException("fingerprint is missing or invalid");
         }
 
-        /// ---------------
-
-        /* --- Load verification entity from DS: */
-        OnlineVerification onlineVerification = ofy()
+        PGPPublicKeyData pgpPublicKeyData = null;
+        pgpPublicKeyData = ofy()
                 .load()
-                .key(Key.create(OnlineVerification.class, onlineVerificationID))
+                .type(PGPPublicKeyData.class)
+                .filter("fingerprintStr", fingerprint)
+                .first()
                 .now();
-        if (onlineVerificationID == null) {
-            throw new NotFoundException("Verification info not found");
+
+        if (pgpPublicKeyData == null) {
+            throw new NotFoundException("Key with fingerprint " + fingerprint + " not found");
         }
 
-        /* --- Create new verification info representation: */
+        /* --- Check authorization: */
+        // only allowed users can get verification data:
+        CryptonomicaUser requester = UserTools.ensureCryptonomicaRegisteredUser(googleUser);
+        LOG.warning(GSON.toJson(requester));
 
-        LOG.warning(new Gson().toJson(onlineVerification));
+        OnlineVerification onlineVerification = ofy().load().key(Key.create(OnlineVerification.class, fingerprint)).now();
+        if (onlineVerification == null) {
+            onlineVerification = new OnlineVerification();
+        }
+
+        if (
+                requester.getUserId().equalsIgnoreCase(pgpPublicKeyData.getCryptonomicaUserId())
+                        || (requester.getCryptonomicaOfficer() != null && requester.getCryptonomicaOfficer())
+                        || (requester.getNotary() != null && requester.getNotary())
+                        || (onlineVerification.getAllowedUsers().contains(requester.getUserId()))
+                ) {
+            LOG.warning(
+                    "user " + requester.getUserId() + "is allowed to get online verification data for key " + fingerprint
+            );
+        } else {
+            throw new UnauthorizedException(
+                    "you are not allowed to get online verification data for key " + fingerprint
+            );
+        }
+
+        LOG.warning(GSON.toJson(onlineVerification));
 
         return onlineVerification;
-    } // end: getVerificationByID
+    } // end of getOnlineVerificationByFingerprint
 
-    /* --- Get verification info by verification ID: */
     @ApiMethod(
             name = "getVideoUploadKey",
             path = "getVideoUploadKey",
@@ -130,36 +150,46 @@ public class OnlineVerificationAPI {
 
     } // end: getVideoUploadKey
 
-    // @ApiMethod(
-    //         name = "uploadVideo",
-    //         path = "uploadVideo",
-    //         httpMethod = ApiMethod.HttpMethod.POST
-    // )
-    // @SuppressWarnings("unused")
-    // public StringWrapperObject uploadVideo(
-    //         final HttpServletRequest httpServletRequest,
-    //         final User googleUser,
-    //         final @Named("fingerprint") String fingerprint
-    //         // see: https://cloud.google.com/appengine/docs/java/endpoints/exceptions
-    // ) throws UnauthorizedException, BadRequestException, NotFoundException, IOException, ServletException {
-    //
-    //     /* --- Check authorization: */
-    //     final CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaRegisteredUser(googleUser);
-    //
-    //     /* --- Check input: */
-    //     if (fingerprint == null || fingerprint.equals("")) {
-    //         throw new BadRequestException("fingerprint is missing");
-    //     }
-    //
-    //     /* check if key belongs to user (check by fingerprint) */
-    //     // TODO:
-    //
-    //
-    //     String jsonResponseStr = CloudStorageServiceOld.uploadFileToCloudStorage(httpServletRequest);
-    //     LOG.warning(jsonResponseStr);
-    //     return new StringWrapperObject(jsonResponseStr);
-    //
-    // } // end: uploadVideo
+    @ApiMethod(
+            name = "getDocumentsUploadKey",
+            path = "getDocumentsUploadKey",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    @SuppressWarnings("unused")
+    public StringWrapperObject getDocumentsUploadKey(
+            final HttpServletRequest httpServletRequest,
+            final User googleUser
+            // see: https://cloud.google.com/appengine/docs/java/endpoints/exceptions
+    ) throws UnauthorizedException, BadRequestException, NotFoundException {
+
+        /* --- Check authorization: */
+        final CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaRegisteredUser(googleUser);
+
+        String randomString = RandomStringUtils.randomAlphanumeric(33);
+
+        // create documentUploadKey
+        VerificationDocumentsUploadKey verificationDocumentsUploadKey =
+                new VerificationDocumentsUploadKey(cryptonomicaUser.getGoogleUser(), randomString);
+
+        // save entity
+        Key<VerificationDocumentsUploadKey> key = ofy()
+                .save()
+                .entity(verificationDocumentsUploadKey)
+                .now();
+
+        verificationDocumentsUploadKey = ofy() //
+                .load()
+                .key(key)
+                .now();
+
+        String documentsUploadKey = verificationDocumentsUploadKey.getDocumentsUploadKey();
+
+        LOG.warning("documentsUploadKey: " + documentsUploadKey);
+
+        return new StringWrapperObject(documentsUploadKey);
+
+    } // end: getDocumentsUploadKey
+
 
     /* --- Test SMS service: */
     @ApiMethod(

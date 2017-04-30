@@ -96,7 +96,7 @@ router
                     templateUrl: 'app/proofOfExistence/proofOfExistence.html'
                 })
                 .state('onlineVerification', {
-                    url: '/onlineVerification',
+                    url: '/onlineVerification/{fingerprint}',
                     controller: 'cryptonomica.controller.onlineVerification',
                     templateUrl: 'app/onlineVerification/onlineVerification.html'
                 })

@@ -4,8 +4,9 @@ import com.google.appengine.tools.cloudstorage.GcsFilename;
 import com.google.gson.Gson;
 import com.googlecode.objectify.Key;
 import net.cryptonomica.entities.CryptonomicaUser;
+import net.cryptonomica.entities.PGPPublicKeyData;
 import net.cryptonomica.entities.VerificationDocument;
-import net.cryptonomica.entities.VerificationDocumentUploadKey;
+import net.cryptonomica.entities.VerificationDocumentsUploadKey;
 import net.cryptonomica.service.CloudStorageService;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -18,6 +19,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 
 import static net.cryptonomica.service.OfyService.ofy;
@@ -47,12 +49,14 @@ public class CloudStorageServletDocuments extends HttpServlet {
      * a request to read the GCS file named Bar in the bucket Foo.
      */
     @Override
-    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void doGet(HttpServletRequest req,
+                      HttpServletResponse resp
+    ) throws IOException {
 
         String verificationDocumentId = req.getParameter("verificationDocumentId");
 
         if (verificationDocumentId == null || verificationDocumentId.length() < 33) {
-            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"verificationVideoId is invalid\"}");
+            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"verificationDocumentId is invalid\"}");
         }
 
         VerificationDocument verificationDocument = ofy()
@@ -62,7 +66,18 @@ public class CloudStorageServletDocuments extends HttpServlet {
 
         String bucketName = verificationDocument.getBucketName();
         String objectName = verificationDocument.getObjectName();
-        CloudStorageService.serveFileFromCloudStorage(bucketName, objectName, resp);
+        String extension = "";
+
+        int i = objectName.lastIndexOf('.');
+        if (i > 0) {
+            extension = objectName.substring(i + 1);
+        }
+        CloudStorageService.serveFileFromCloudStorage(
+                bucketName,
+                objectName,
+                "image/" + extension,
+                resp
+        );
 
     } // end of doGet
 
@@ -80,10 +95,10 @@ public class CloudStorageServletDocuments extends HttpServlet {
         // thus it's easier to use headers, then to parse request parameters (as we do in service.CloudStorageServiceOld)
         String userId = req.getHeader("userId"); // google user Id: $rootScope.currentUser.userId
         String userEmail = req.getHeader("userEmail"); // $rootScope.currentUser.email
-        String verificationDocumentUploadKey1received = req.getHeader("VerificationDocumentUploadKey1");
+        String fingerprint = req.getHeader("fingerprint"); // $scope.fingerprint = $stateParams.fingerprint;
+        String verificationDocumentsUploadKey = req.getHeader("verificationDocumentsUploadKey");
         // from RandomStringUtils.random(33);
-        String verificationDocumentUploadKey2received = req.getHeader("VerificationDocumentUploadKey2");
-        // from RandomStringUtils.random(33);
+
 
         // Returns the length, in bytes, of the request body
         // and made available by the input stream, or -1 if the  length is not known
@@ -92,16 +107,17 @@ public class CloudStorageServletDocuments extends HttpServlet {
         LOG.warning("reqContentLength: " + String.valueOf(reqContentLength));
 
         // check headers provided:
-        if (userId == null) {
-            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"userID is null\"}");
-        } else if (userEmail == null) {
-            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"user email is null\"}");
-        } else if (verificationDocumentUploadKey1received == null
-                || verificationDocumentUploadKey2received == null) {
-            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"verification Document Upload Key received is null\"}");
-        } else if (verificationDocumentUploadKey1received.length() != 33
-                || verificationDocumentUploadKey2received.length() != 33) {
-            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"verification Document Upload Key is invalid\"}");
+        if (userId == null || userId.equalsIgnoreCase("")) { // see:
+            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"userID is empty\"}");
+        } else if (userEmail == null || userEmail.equalsIgnoreCase("")) {
+            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"user email is empty\"}");
+        } else if (verificationDocumentsUploadKey == null
+                || verificationDocumentsUploadKey.equalsIgnoreCase("")) {
+            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"verification Document Upload Key received is empty\"}");
+        } else if (verificationDocumentsUploadKey.length() != 33) {
+            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"verification Document Upload Key length is invalid\"}");
+        } else if (fingerprint == null || fingerprint.equals("") || fingerprint.length() != 40) {
+            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"key fingerprint is invalid\"}");
         }
 
         CryptonomicaUser cryptonomicaUser = null;
@@ -118,40 +134,66 @@ public class CloudStorageServletDocuments extends HttpServlet {
             ServletUtils.sendJsonResponse(resp, "{\"Error\":\"User is not registered on Cryptonomica server\"}");
         }
 
+        PGPPublicKeyData pgpPublicKeyData = null;
+        try {
+            pgpPublicKeyData = ofy()
+                    .load()
+                    .type(PGPPublicKeyData.class)
+                    .filter("fingerprintStr", fingerprint)
+                    .first()
+                    .now();
+        } catch (Exception e) {
+            LOG.warning(e.getMessage());
+            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"error reading key data from DB\"}");
+        }
+        if (pgpPublicKeyData == null) {
+            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"Key with fingerprint "
+                    + fingerprint
+                    + " is not registered on Cryptonomica server\"}"
+            );
+        }
+
+        if (!cryptonomicaUser.getUserId().equalsIgnoreCase(pgpPublicKeyData.getCryptonomicaUserId())) {
+            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"Key with fingerprint "
+                    + fingerprint
+                    + " not owned by user "
+                    + cryptonomicaUser.getEmail().getEmail()
+                    + "\"}"
+            );
+        }
+
         // additional check for userID and user email match:
         if (!cryptonomicaUser.getEmail().getEmail().equalsIgnoreCase(userEmail)) {
             ServletUtils.sendJsonResponse(resp, "{\"Error\":\"User ID and user email did not match\"}");
         }
 
-        VerificationDocumentUploadKey verificationDocumentUploadKey1 = null;
-        VerificationDocumentUploadKey verificationDocumentUploadKey2 = null;
+        VerificationDocumentsUploadKey verificationDocumentsUploadKeyFromDB = null;
 
         try {
-            verificationDocumentUploadKey1 = ofy()
+            verificationDocumentsUploadKeyFromDB = ofy()
                     .load()
-                    .key(Key.create(VerificationDocumentUploadKey.class, verificationDocumentUploadKey1received))
-                    .now();
-            verificationDocumentUploadKey2 = ofy()
-                    .load()
-                    .key(Key.create(VerificationDocumentUploadKey.class, verificationDocumentUploadKey2received))
+                    .key(Key.create(VerificationDocumentsUploadKey.class, verificationDocumentsUploadKey))
                     .now();
         } catch (Exception e) {
             LOG.warning(e.getMessage());
-            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"Error loading DocumentUploadKey from DB\"}");
+            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"Error loading DocumentsUploadKey from DB\"}");
         }
 
-        if (verificationDocumentUploadKey1 == null || verificationDocumentUploadKey2 == null) {
-            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"Document Upload Key provided not exists in DB\"}");
+        if (verificationDocumentsUploadKeyFromDB == null) {
+            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"Documents Upload Key provided not exists in DB\"}");
         }
 
-        if (!verificationDocumentUploadKey1.getGoogleUser().getUserId().equalsIgnoreCase(userId)
-                || !verificationDocumentUploadKey2.getGoogleUser().getUserId().equalsIgnoreCase(userId)) {
-            ServletUtils.sendJsonResponse(resp, "\"Error\":\"Document Upload Key provided is not valid for this user\"");
+        if (!verificationDocumentsUploadKeyFromDB.getGoogleUser().getUserId().equalsIgnoreCase(userId)) {
+            ServletUtils.sendJsonResponse(resp, "\"Error\":\"Documents Upload Key provided is not valid for this user\"");
         }
 
-        if (verificationDocumentUploadKey1.getUploadedDocumentId() != null
-                || verificationDocumentUploadKey2.getUploadedDocumentId() != null) {
-            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"Document Upload Key provided is already used\"}");
+        List<VerificationDocument> verificationDocumentsList = ofy()
+                .load()
+                .type(VerificationDocument.class)
+                .filter("documentsUploadKey", verificationDocumentsUploadKey)
+                .list();
+        if (verificationDocumentsList.size() >= 2) {
+            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"Documents Upload Key provided is already used\"}");
         }
 
         // if everything good, upload files <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -159,16 +201,16 @@ public class CloudStorageServletDocuments extends HttpServlet {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd.HH.mm.ss");
         Date currentDate = new Date();
         String currentDateStr = df.format(currentDate);
-        // String fileName = currentDateStr + ".webm"; // ? file format?
-        String fileName = currentDateStr + ".webm"; // ? file format?
+        // String fileName = currentDateStr + ".webm";
+        String fileName = currentDateStr; // we'll get file ext from uploaded file
 
         ArrayList<GcsFilename> gcsFilenames = null;
         try {
             gcsFilenames =
                     CloudStorageService.uploadFilesToCloudStorage(
                             req,
-                            "onlineVerificationVideos",
-                            cryptonomicaUser.getEmail().getEmail(), // sub.folder
+                            "onlineVerificationDocs", // folder
+                            cryptonomicaUser.getEmail().getEmail() + "/" + fingerprint, // sub.folder
                             fileName
                     );
         } catch (Exception e) {
@@ -178,27 +220,32 @@ public class CloudStorageServletDocuments extends HttpServlet {
         }
 
         if (gcsFilenames == null) {
-            LOG.severe("gcsFilenames==null");
-            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"gcsFilenames==null\"}");
+            LOG.severe("gcsFilenames == null");
+            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"gcsFilenames == null\"}");
+        } else {
+            LOG.warning(GSON.toJson(gcsFilenames));
         }
 
-        String verificationVideoId = RandomStringUtils.randomAlphanumeric(33);
+        GcsFilename gcsFilename = gcsFilenames.get(0);
+        // here we'll have only one, because of https://github.com/angular-ui/ui-uploader on frontend, that
+        // uploads files separately
+        String uploadedDocumentId = RandomStringUtils.randomAlphanumeric(33);
+        ofy().save().entity(
+                new VerificationDocument(
+                        uploadedDocumentId,
+                        cryptonomicaUser.getGoogleUser(),
+                        gcsFilename.getBucketName(),
+                        gcsFilename.getObjectName(),
+                        verificationDocumentsUploadKey,
+                        fingerprint
+                )
+        ); // async without .now()
 
-        // VerificationVideo verificationVideo = new VerificationVideo(
-        //         verificationVideoId,
-        //         cryptonomicaUser.getGoogleUser(),
-        //         gcsFilename.getBucketName(),
-        //         gcsFilename.getObjectName(),
-        //         videoUploadKeyReceived
-        // );
-
-        // ofy().save().entity(verificationVideo); // <<< async without .now()
-        //
-        // videoUploadKey.setUploadedVideoId(verificationVideoId);
-        // ofy().save().entity(videoUploadKey); // <<< async without .now()
-
-        String jsonResponseStr = "{\"verificationVideoId\":\"" + verificationVideoId + "\"}";
+        String jsonResponseStr = "{\"uploadedDocumentId\":\""
+                + uploadedDocumentId
+                + "\"}";
         LOG.warning(jsonResponseStr);
+
         ServletUtils.sendJsonResponse(resp, jsonResponseStr);
 
     } // end doPost

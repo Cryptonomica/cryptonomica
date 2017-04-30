@@ -54,12 +54,14 @@ public class CloudStorageService {
     * */
     public static void serveFileFromCloudStorage(String bucketName,
                                                  String objectName,
+                                                 String contentType,
                                                  HttpServletResponse resp) throws IOException {
 
         // GcsFilename fileName = getFileName(req);
         GcsFilename fileName = new GcsFilename(bucketName, objectName);
 
-        resp.setContentType("video/webm");
+        // resp.setContentType("video/webm");
+        resp.setContentType(contentType);
 
         if (SERVE_USING_BLOBSTORE_API) {
             BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();

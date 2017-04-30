@@ -63,8 +63,8 @@
 
             /*-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; */
             var uploadButton = document.getElementById('uploadButton');
-            uploadButton.addEventListener('click', function (e) {
-
+            uploadButton.addEventListener('click', function () {
+                $('#videoUploadError').empty(); // see: http://stackoverflow.com/a/5057771/1697878
                 var request = new XMLHttpRequest();
 
                 //request.open("POST", "https://cryptonomica.net/gcs");
@@ -76,10 +76,10 @@
                 request.setRequestHeader("testHeader", "testHeaderValue");
                 request.setRequestHeader('userId', document.getElementById('userId').value);
                 request.setRequestHeader('userEmail', document.getElementById('userEmail').value);
+                request.setRequestHeader('fingerprint', document.getElementById('fingerprint').value);
                 request.setRequestHeader('videoUploadKey', document.getElementById('videoUploadKey').value);
 
                 request.send(formData);
-//                document.getElementById('uploading').innerHTML = "Uploading ... ";
                 document.getElementById('uploading').innerHTML =
                         '<i class="fa fa-refresh fa-spin fa-2x fa-fw"></i><span>Loading...</span>';
 
@@ -103,11 +103,11 @@
                                     'src',
                                     '/gcs?verificationVideoId=' + resp.verificationVideoId
                             );
+                        } else if (resp.Error) {
+                            // document.getElementById('errorGate').value = resp.Error;
+                            document.getElementById('videoUploadError').innerHTML = resp.Error;
                         }
-                        // document.getElementById('videoFromServer').setAttribute(
-                        //        'src',
-                        //        'https://cryptonomica.net/gcs/cryptonomica-server.appspot.com/testVideo.webm'
-                        // );
+
                     }
                 };
 

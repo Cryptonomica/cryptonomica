@@ -4,6 +4,7 @@ import com.google.appengine.tools.cloudstorage.GcsFilename;
 import com.google.gson.Gson;
 import com.googlecode.objectify.Key;
 import net.cryptonomica.entities.CryptonomicaUser;
+import net.cryptonomica.entities.PGPPublicKeyData;
 import net.cryptonomica.entities.VerificationVideo;
 import net.cryptonomica.entities.VideoUploadKey;
 import net.cryptonomica.service.CloudStorageService;
@@ -70,7 +71,12 @@ public class CloudStorageServletVideo extends HttpServlet {
 
         String bucketName = verificationVideo.getBucketName();
         String objectName = verificationVideo.getObjectName();
-        CloudStorageService.serveFileFromCloudStorage(bucketName, objectName, resp);
+        CloudStorageService.serveFileFromCloudStorage(
+                bucketName,
+                objectName,
+                "video/webm",
+                resp
+        );
 
     } // end of doGet
 
@@ -88,6 +94,7 @@ public class CloudStorageServletVideo extends HttpServlet {
         // thus it's easier to use headers, then to parse request parameters (as we do in service.CloudStorageServiceOld)
         String userId = req.getHeader("userId"); // google user Id: $rootScope.currentUser.userId
         String userEmail = req.getHeader("userEmail"); // $rootScope.currentUser.email
+        String fingerprint = req.getHeader("fingerprint"); // $scope.fingerprint = $stateParams.fingerprint;
         String videoUploadKeyReceived = req.getHeader("videoUploadKey"); // from RandomStringUtils.random(33);
 
         // Returns the length, in bytes, of the request body
@@ -109,6 +116,8 @@ public class CloudStorageServletVideo extends HttpServlet {
         } else if (videoUploadKeyReceived.length() != 33) {
             ServletUtils.sendJsonResponse(resp, "{\"Error\":\"videoUploadKey is invalid\"}");
             // throw new ServletException("videoUploadKey is invalid");
+        } else if (fingerprint == null || fingerprint.equals("") || fingerprint.length() != 40) {
+            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"key fingerprint is invalid\"}");
         }
 
         CryptonomicaUser cryptonomicaUser = null;
@@ -125,6 +134,34 @@ public class CloudStorageServletVideo extends HttpServlet {
         if (cryptonomicaUser == null) {
             ServletUtils.sendJsonResponse(resp, "{\"Error\":\"User is not registered on Cryptonomica server\"}");
             // throw new ServletException("User is not registered on Cryptonomica server");
+        }
+
+        PGPPublicKeyData pgpPublicKeyData = null;
+        try {
+            pgpPublicKeyData = ofy()
+                    .load()
+                    .type(PGPPublicKeyData.class)
+                    .filter("fingerprintStr", fingerprint)
+                    .first()
+                    .now();
+        } catch (Exception e) {
+            LOG.warning(e.getMessage());
+            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"error reading key data from DB\"}");
+        }
+        if (pgpPublicKeyData == null) {
+            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"Key with fingerprint "
+                    + fingerprint
+                    + " is not registered on Cryptonomica server\"}"
+            );
+        }
+
+        if (!cryptonomicaUser.getUserId().equalsIgnoreCase(pgpPublicKeyData.getCryptonomicaUserId())) {
+            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"Key with fingerprint "
+                    + fingerprint
+                    + " not owned by user "
+                    + cryptonomicaUser.getEmail().getEmail()
+                    + "\"}"
+            );
         }
 
         // additional check for userID and user email match:
@@ -173,7 +210,7 @@ public class CloudStorageServletVideo extends HttpServlet {
                     CloudStorageService.uploadFilesToCloudStorage(
                             req,
                             "onlineVerificationVideos",
-                            cryptonomicaUser.getEmail().getEmail(), // sub.folder
+                            cryptonomicaUser.getEmail().getEmail() + "/" + fingerprint, // sub.folder
                             fileName
                     ).get(0); // get first from array of uploaded files (for video will be only one)
         } catch (Exception e) {

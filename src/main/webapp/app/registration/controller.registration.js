@@ -67,7 +67,6 @@
                 };
 
                 /*    https://github.com/angular-ui/ui-uploader     */
-
                 $scope.btn_remove = function (file) {
                     $log.info('deleting=' + file);
                     uiUploader.removeFile(file);

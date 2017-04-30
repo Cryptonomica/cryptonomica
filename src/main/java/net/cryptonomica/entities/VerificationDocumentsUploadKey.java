@@ -1,49 +1,54 @@
 package net.cryptonomica.entities;
 
 import com.google.appengine.api.users.User;
-import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.Logger;
 
 /**
  *
  */
 @Entity // -> net.cryptonomica.service.OfyService
-@Cache
-public class VerificationDocumentUploadKey {
+// @Cache // <- not here
+public class VerificationDocumentsUploadKey {
 
-    private static final Logger LOG = Logger.getLogger(VerificationDocumentUploadKey.class.getName());
+    // private static final Logger LOG = Logger.getLogger(VerificationDocumentsUploadKey.class.getName());
 
     @Id
-    private String Id; // VerificationDocumentUploadKey - random string 33 char .................1
+    private String Id; // VerificationDocumentsUploadKey - random string 33 char .................1
     @Index
     private User googleUser; //...................................................................2
     @Index
     private Date entityCreated; //................................................................3
     @Index
     private String documentsUploadKey; //.........................................................4
-    // @Index
-    private String uploadedDocumentId; //........................................................5
+
+    private ArrayList<String> uploadedDocumentIds; //........................................ ....5
 
     /* ---- Constructors */
 
-    public VerificationDocumentUploadKey() {
+    public VerificationDocumentsUploadKey() {
         this.entityCreated = new Date();
     }
 
-    public VerificationDocumentUploadKey(String id,
-                                         User googleUser,
-                                         String documentsUploadKey,
-                                         String uploadedDocumentId) {
-        this.Id = id;
+    public VerificationDocumentsUploadKey(User googleUser, String documentsUploadKey) {
+        this.Id = documentsUploadKey;
         this.googleUser = googleUser;
         this.entityCreated = new Date();
         this.documentsUploadKey = documentsUploadKey;
-        this.uploadedDocumentId = uploadedDocumentId;
+        this.uploadedDocumentIds = null;
+    }
+
+    /* --- Methods */
+    public boolean addUploadedDocumentId(String uploadedDocumentId) {
+        if (this.uploadedDocumentIds == null) {
+            this.uploadedDocumentIds = new ArrayList<>();
+        }
+        boolean result = this.uploadedDocumentIds.add(uploadedDocumentId);
+        return result;
     }
 
 /* --- Getters and Setters */
@@ -80,11 +85,11 @@ public class VerificationDocumentUploadKey {
         this.documentsUploadKey = documentsUploadKey;
     }
 
-    public String getUploadedDocumentId() {
-        return uploadedDocumentId;
+    public ArrayList<String> getUploadedDocumentIds() {
+        return uploadedDocumentIds;
     }
 
-    public void setUploadedDocumentId(String uploadedDocumentsId) {
-        this.uploadedDocumentId = uploadedDocumentsId;
+    public void setUploadedDocumentIds(ArrayList<String> uploadedDocumentIds) {
+        this.uploadedDocumentIds = uploadedDocumentIds;
     }
 }

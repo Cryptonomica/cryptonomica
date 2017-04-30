@@ -6,7 +6,7 @@
 <!-- Alerts -->
 <div id="alerts">
     <!-- Errors from server -->
-    <div ng-show="error.message" class="alert alert-danger alert-dismissible" role="alert">
+    <div id="errorMessage" ng-show="error.message" class="alert alert-danger alert-dismissible" role="alert">
         {{error.message}}
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
                 aria-hidden="true">×</span></button>
@@ -23,9 +23,72 @@
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
                 aria-hidden="true">×</span></button>
     </div>
+    <input type="text" name="errorGate" id="errorGate" ng-model="error.message" hidden>
 </div>
 
-<online-verification-video></online-verification-video>
+<div id="mainPart" ng-hide="getOnlineVerificationError">
+    <online-verification-video></online-verification-video>
+    <br>
+    <!--<online-verification-documents></online-verification-documents>-->
+</div>
+
+<!-- using directive not work: controler can not get element from directive -->
+<!-- ( var elementTwo = $window.document.getElementById('fileTwo'); )       -->
+<div class="container" id="onlineVerificationDocumentsContainer">
+
+    <form>
+        <fieldset class="form-group">
+            <legend>Your passport</legend>
+            <div
+                    role="button"
+                    type="button"
+                    title="Choose image file (PNG, JPEG, GIF, TIFF, or BMP)"
+                    class="btn btn-primary">
+                <input type="file" id="fileOne">
+            </div>
+        </fieldset>
+
+        <fieldset class="form-group">
+            <legend>Your second ID document (driver licence, national ID etc.)</legend>
+            <div
+                    role="button"
+                    type="button"
+                    title="Choose image file (PNG, JPEG, GIF, TIFF, or BMP)"
+                    class="btn btn-primary">
+                <input type="file" id="fileTwo">
+            </div>
+        </fieldset>
+
+        <fieldset class="form-group">
+
+            <!--<button ng-click="btn_clean()"-->
+            <!--role="button" type="button" class="btn btn-secondary">-->
+            <!--Remove documents-->
+            <!--</button>-->
+
+            <button ng-click="uploadDocs()"
+                    role="button" type="button" class="btn btn-secondary">
+                Upload documents
+            </button>
+
+            <br>
+        </fieldset>
+    </form>
+
+    <div class="row" ng-show="verificationDocsUrls.length > 0">
+        <div class="col-xs-6 col-md-6">
+            <a ng-href="{{verificationDocsUrls[0]}}" class="imageLink" target="_blank">
+                <img id="doc1" ng-src="{{verificationDocsUrls[0]}}" class="verificationDoc"/>
+            </a>
+        </div>
+        <div class="col-xs-6 col-md-6">
+            <a ng-href="{{verificationDocsUrls[1]}}" class="imageLink" target="_blank">
+                <img id="doc2" ng-src="{{verificationDocsUrls[1]}}" class="verificationDoc"/>
+            </a>
+        </div>
+    </div>
+
+</div>
 
 <!-- -->
 <footer-main></footer-main>

@@ -7,7 +7,6 @@ import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 
 import java.util.Date;
-import java.util.logging.Logger;
 
 /**
  *
@@ -16,7 +15,7 @@ import java.util.logging.Logger;
 @Cache
 public class VerificationDocument {
 
-    private static final Logger LOG = Logger.getLogger(VerificationDocument.class.getName());
+    // private static final Logger LOG = Logger.getLogger(VerificationDocument.class.getName());
 
     @Id
     private String Id; // ramdom string 33 char ..................................................1
@@ -27,9 +26,11 @@ public class VerificationDocument {
     @Index
     private String bucketName; //.................................................................4
     @Index
-    private String objectName; //................................................................5
-    //
+    private String objectName; //............................................................,....5
+    @Index
     private String documentsUploadKey; //.........................................................6
+    @Index
+    private String fingerprint; //................................................................7
 
     /* ---- Constructors */
 
@@ -41,14 +42,20 @@ public class VerificationDocument {
                                 User googleUser,
                                 String bucketName,
                                 String objectName,
-                                String videoUploadKey) {
+                                String documentsUploadKey,
+                                String fingerprint) {
         this.Id = id;
         this.googleUser = googleUser;
         this.entityCreated = new Date();
         this.bucketName = bucketName;
         this.objectName = objectName;
-        this.documentsUploadKey = videoUploadKey;
+        this.documentsUploadKey = documentsUploadKey;
+        this.fingerprint = fingerprint;
     }
+
+    /* --- Methods */
+
+
 
     /* --- Getters and Setters */
 
@@ -98,5 +105,13 @@ public class VerificationDocument {
 
     public void setDocumentsUploadKey(String documentsUploadKey) {
         this.documentsUploadKey = documentsUploadKey;
+    }
+
+    public String getFingerprint() {
+        return fingerprint;
+    }
+
+    public void setFingerprint(String fingerprint) {
+        this.fingerprint = fingerprint;
     }
 }

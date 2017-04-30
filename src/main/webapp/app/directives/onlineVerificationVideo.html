@@ -1,5 +1,5 @@
 <!-- HTML -->
-<div class="container" id="container">
+<div class="container" id="onlineVerificationVideoContainer">
     <div id="videoFromCamera">
         <center>
             <text-for-camera></text-for-camera>
@@ -43,12 +43,19 @@
             <!--<form>-->
             <!-- do not use <form> here - upload does not work -->
             <div id="userDataForVideo" hidden>
+
                 <label for="userId">userId:</label>
                 <input type="text" name="userId" id="userId" ng-model="currentUser.userId" disabled>
+
+                <label for="fingerprint">fingerprint</label>
+                <input type="text" name="fingerprint" id="fingerprint" ng-model="fingerprint" disabled>
+
                 <label for="userEmail">userEmail:</label>
                 <input type="text" name="userEmail" id="userEmail" ng-model="currentUser.email" disabled>
+
                 <label for="videoUploadKey">videoUploadKey:</label>
                 <input type="text" name="videoUploadKey" id="videoUploadKey" ng-model="videoUploadKey" disabled>
+
             </div>
             <div id="buttons">
                 <!--<button id="save" name="button" class="btn btn-secondary">save recording</button>-->
@@ -59,12 +66,18 @@
             <hr>
             <h3>Video stored on the server:</h3>
             <div id="serverResponse" hidden></div>
+            <div id="videoUploadError" style="color: red"></div>
             <!--<div id="uploadedVideo"></div>-->
             <div class="embed-responsive embed-responsive-16by9">
                 <video id="videoFromServer" controls class="embed-responsive-item"></video>
             </div>
             <br>
         </center>
+        <br>
+        <button id="nextStep" name="button" class="btn btn-secondary" role="button" ng-click="getOnlineVerification()">
+            Next Step >>>
+        </button>
+        <br>
     </div>
 
 </div>

@@ -1,0 +1,42 @@
+<div class="container" id="onlineVerificationDocumentsContainer">
+
+    <form>
+        <fieldset class="form-group">
+            <legend>Your passport</legend>
+            <div
+                    role="button"
+                    type="button"
+                    title="Choose image file (PDF, PNG, JPEG, GIF, TIFF, or BMP)"
+                    class="btn btn-primary">
+                <input type="file" id="fileOne">
+            </div>
+        </fieldset>
+
+        <fieldset class="form-group">
+            <legend>Your second ID document (driver licence, national ID etc.)</legend>
+            <div
+                    role="button"
+                    type="button"
+                    title="Choose image file (PDF, PNG, JPEG, GIF, TIFF, or BMP)"
+                    class="btn btn-primary">
+                <input type="file" id="fileTwo">
+            </div>
+        </fieldset>
+
+        <fieldset class="form-group">
+
+            <button ng-click="btn_clean()"
+                    role="button" type="button" class="btn btn-secondary">
+                Remove documents
+            </button>
+
+            <button ng-click="uploadDocs()"
+                    role="button" type="button" class="btn btn-secondary">
+                Upload documents
+            </button>
+
+            <br>
+        </fieldset>
+    </form>
+
+</div>
