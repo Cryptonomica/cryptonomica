@@ -78,6 +78,7 @@ app.run([
             GApi.load('arbitratorsAPI', 'v1', BASE);        // 9
             GApi.load('ethNodeAPI', 'v1', BASE);            // 10
             GApi.load('onlineVerificationAPI', 'v1', BASE); // 11
+            GApi.load('stripePaymentsAPI', 'v1', BASE);     // 12
 
             //
             GAuth.setClient(CLIENT);

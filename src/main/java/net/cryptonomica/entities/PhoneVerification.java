@@ -15,27 +15,27 @@ public class PhoneVerification {
     /*------------ */
     @Id
     // @Id fields cannot be filtered on !!!!
-    private String fingerprint; //.............................1
+    private String fingerprint; //...................................1
     @Index
     // --- for filters in Objectify:
     // .filter("fingerprintStr", fingerprint.toUpperCase())
     // like: 05600EB8208485E6942666E06A7B21E2844C7980
-    private String fingerprintStr; //..........................2
+    private String fingerprintStr; //................................2
     @Index
-    private String phoneNumber; // +972523333333 ..............3
+    private String phoneNumber; // +972523333333 ....................3
     @Index
     // RandomStringUtils.randomNumeric(7)
-    private String smsMessage; //..............................5
+    private String smsMessage; // code sent via sms .................5
     @Index
-    private Email userEmail; //................................6
+    private Email userEmail; //......................................6
     @Index
-    private Date smsMessageSend; //............................7
+    private Date smsMessageSend; // date when last sms message sent..7
     @Index
-    private Boolean verified; //...............................8
+    private Boolean verified; //.....................................8
     @Index
-    private Date entityCreated; //.............................9
+    private Date entityCreated; //...................................9
     @Index
-    private Integer failedVerificationAttemps; //.............10
+    private Integer failedVerificationAttemps; //...................10
 
     /* --- Constructors: */
     public PhoneVerification() {

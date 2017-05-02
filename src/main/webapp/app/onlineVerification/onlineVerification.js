@@ -242,7 +242,62 @@ controller.controller(controller_name, [
                         $timeout($rootScope.progressbar.complete(), 1000);
                     }
                 );
-        }
-    }
+        }; // end of $scope.checkSms
+
+        /* ---- Stripe payment  */
+        $scope.stripePaymentForm = {};
+        $scope.stripePaymentForm.fingerprint = $stateParams.fingerprint;
+        $scope.paymentResponse = null;
+        $scope.paymentError = null;
+        $scope.submitPayment = function () {
+            $rootScope.progressbar.start(); // <<<<<<<<<<<
+            $log.info($scope.stripePaymentForm);
+            GApi.executeAuth('stripePaymentsAPI', 'processStripePayment', $scope.stripePaymentForm)
+                .then(
+                    function (paymentResponse) {
+                        $scope.paymentResponse = paymentResponse;
+                        console.log("$scope.paymentResponse: ");
+                        $log.info($scope.paymentResponse);
+                        $timeout($rootScope.progressbar.complete(), 1000);
+                    }, function (paymentError) {
+                        $scope.paymentError = paymentError;
+                        console.log("$scope.paymentError: ");
+                        $log.info($scope.paymentError);
+                        $timeout($rootScope.progressbar.complete(), 1000);
+                    }
+                );
+        }; // end of $scope.submitPayment()
+
+        /* ---- Stripe payment verification : */
+        $scope.paymentVerificationCode = null;
+        $scope.paymentVerificationResponse = null;
+        $scope.paymentVerificationError = null;
+        $scope.checkPaymentVerificationCode = function () {
+            $rootScope.progressbar.start(); // <<<<<<<<<<<
+            $log.info($scope.stripePaymentForm);
+            GApi.executeAuth('stripePaymentsAPI',
+                'checkPaymentVerificationCode',
+                {
+                    "fingerprint": $stateParams.fingerprint,
+                    "paymentVerificationCode": $scope.paymentVerificationCode
+                }
+            )
+                .then(
+                    function (paymentVerificationResponse) { // StringWrapperObject 
+                        $scope.paymentVerificationResponse = paymentVerificationResponse;
+                        // use $scope.paymentVerificationResponse.message
+                        console.log("$scope.paymentVerificationResponse: ");
+                        $log.info($scope.paymentVerificationResponse);
+                        $timeout($rootScope.progressbar.complete(), 1000);
+                    }, function (paymentVerificationError) {
+                        $scope.paymentVerificationError = paymentVerificationError;
+                        console.log("$scope.paymentVerificationError: ");
+                        $log.info($scope.paymentVerificationError);
+                        $timeout($rootScope.progressbar.complete(), 1000);
+                    }
+                );
+        }; // end of $scope.checkPaymentVerificationCode()
+
+    } // end of onlineVerCtrl
 ]);
 

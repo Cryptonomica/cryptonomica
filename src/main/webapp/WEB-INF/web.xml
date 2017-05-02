@@ -24,6 +24,7 @@
         <init-param>
             <param-name>services</param-name>
             <param-value>
+                net.cryptonomica.api.StripePaymentsAPI
                 net.cryptonomica.api.ArbitratorsAPI,
                 net.cryptonomica.api.CryptonomicaUserAPI,
                 net.cryptonomica.api.EthNodeAPI,

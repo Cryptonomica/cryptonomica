@@ -1,17 +1,21 @@
 package net.cryptonomica.entities;
 
 import com.googlecode.objectify.Key;
-import com.googlecode.objectify.annotation.*;
+import com.googlecode.objectify.annotation.Entity;
+import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.Parent;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Data about payment
+ * --- not used yet
  */
 @Entity // -> net.cryptonomica.service.OfyService
 // @Cache
 public class PaymentData {
+
     @Id
     Long Id;
     @Parent

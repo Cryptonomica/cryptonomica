@@ -80,5 +80,21 @@
         };
     });
     // ------------------------------------------------------------------------------
+    d.directive('stripePaymentForOnlineKeyVerification', function () {
+        return {
+            restrict: 'EA', //E = element, A = attribute, C = class, M = comment
+            // <stripe-payment-for-online-key-verification></stripe-payment-for-online-key-verification>
+            templateUrl: 'app/directives/stripePaymentForOnlineKeyVerification.html'
+        };
+    });
+    // ------------------------------------------------------------------------------
+    d.directive('stripePaymentVerificationCode', function () {
+        return {
+            restrict: 'EA', //E = element, A = attribute, C = class, M = comment
+            // <stripe-payment-verification-code></stripe-payment-verification-code>
+            templateUrl: 'app/directives/stripePaymentVerificationCode.html'
+        };
+    });
+    // ------------------------------------------------------------------------------
 
 })();

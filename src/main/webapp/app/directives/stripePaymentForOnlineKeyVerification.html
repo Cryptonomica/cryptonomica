@@ -1,0 +1,80 @@
+<div class="container" id="stripePaymentForOnlineKeyVerification">
+    <!-- Alerts: -->
+
+    <div ng-show="paymentError"
+         class="alert alert-danger alert-dismissible"
+         role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                aria-hidden="true">×</span></button>
+        {{paymentError.message}}
+    </div>
+
+    <div ng-show="paymentResponse"
+         class="alert alert-success alert-dismissible"
+         role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                aria-hidden="true">×</span></button>
+        {{paymentResponse.messageToUser}}
+    </div>
+
+    <div class="card">
+
+        <div class="card-header">
+            <center>
+                <h5>Payment</h5>
+            </center>
+        </div>
+        <div class="card-block">
+
+            <form id="payment-form">
+
+                <div class="form-row">
+                    <legend>
+                        <span>First name:</span>
+                        <input type="text" size="30" ng-model="stripePaymentForm.cardHolderFirstName">
+                    </legend>
+                </div>
+
+                <div class="form-row">
+                    <legend>
+                        <span>Last name:</span>
+                        <input type="text" size="30" ng-model="stripePaymentForm.cardHolderLastName">
+                    </legend>
+                </div>
+
+                <div class="form-row">
+                    <legend>
+                        <span>Card Number:</span>
+                        <!-- Payment card numbers can be up to 19 digits -->
+                        <!-- https://en.wikipedia.org/wiki/Payment_card_number -->
+                        <input type="text" size="19" maxlength="19" ng-model="stripePaymentForm.cardNumber">
+                    </legend>
+                </div>
+
+                <div class="form-row">
+                    <legend>
+                        <span>Expiration (MM/YY)</span>
+                        <input type="text" size="2" maxlength="2" ng-model="stripePaymentForm.cardExpMonth">
+                        <span> / </span>
+                        <input type="text" size="2" maxlength="2" ng-model="stripePaymentForm.cardExpYear">
+                    </legend>
+                </div>
+
+                <div class="form-row">
+                    <legend>
+                        <span>CVC:</span>
+                        <input type="text" size="3" maxlength="3" ng-model="stripePaymentForm.cardCVC">
+                    </legend>
+                </div>
+                <button id="submitPayment"
+                        ng-click="submitPayment()"
+                        role="button"
+                        type="button"
+                        class="submit btn btn-secondary">
+                    Submit Payment
+                </button>
+            </form>
+        </div>
+    </div>
+    <br>
+</div>

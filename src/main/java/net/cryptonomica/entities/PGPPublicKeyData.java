@@ -26,7 +26,7 @@ public class PGPPublicKeyData {
     /*------------ */
     // Key owner's key.
     // It makes possible to store the same key to different users - for testing
-    @Parent
+    @Parent // TODO: should we keep this?
     private Key<CryptonomicaUser> cryptonomicaUserKey; // .....1
     @Id
     // @Id fields cannot be filtered on !!!!

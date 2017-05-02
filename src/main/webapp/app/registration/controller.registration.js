@@ -64,7 +64,7 @@
                                 console.log(error);
                             }
                         )
-                };
+                }; // TODO: do we need this?
 
                 /*    https://github.com/angular-ui/ui-uploader     */
                 $scope.btn_remove = function (file) {

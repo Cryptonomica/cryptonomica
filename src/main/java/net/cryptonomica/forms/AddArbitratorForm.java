@@ -10,8 +10,8 @@ import java.io.Serializable;
 public class AddArbitratorForm implements Serializable {
 
     // the same as cryptonomica user id and google user id;
-    private String id; // ...................................1
-    private String arbitratorInfo; // ..........................2
+    private String id; // ............................. ......1
+    private String arbitratorInfo; // ............. ..........2
     private String linkedInProfileLink; // ...................3
     private String webSiteLink; //............................4
 

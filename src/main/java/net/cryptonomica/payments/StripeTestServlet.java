@@ -1,10 +1,8 @@
 package net.cryptonomica.payments;
 
 import com.google.gson.Gson;
-import com.stripe.Stripe;
-import com.stripe.exception.*;
+import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
-import com.stripe.model.Customer;
 import com.stripe.model.ExternalAccount;
 import com.stripe.net.RequestOptions;
 import net.cryptonomica.service.ApiKeysUtils;
@@ -21,6 +19,9 @@ import java.util.logging.Logger;
 
 /**
  * https://cryptonomica.net/StripeTestServlet
+ * <p>
+ * this gets requests from https://cryptonomica.net/testpayments/stripetest.html
+ * this uses token from frontend using <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
  */
 public class StripeTestServlet extends HttpServlet {
 
@@ -41,7 +42,7 @@ public class StripeTestServlet extends HttpServlet {
         /* --- request*/
         String requestDataStr = ServletUtils.getAllRequestData(request);
 
-        String responseStr = requestDataStr + ",";
+        String responseStr = "{\"paymentData\":" + requestDataStr + ",";
 
         // Get the credit card details submitted by the form
         String token = request.getParameter("stripeToken");

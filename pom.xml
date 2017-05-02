@@ -11,12 +11,8 @@
     <properties>
         <app.id>cryptonomica-server</app.id>
         <app.version>v-1-0</app.version>
-        <!--<appengine.version>1.9.36</appengine.version>-->
-        <!--<appengine.version>1.9.49</appengine.version>-->
-        <!-- for 1.9.49:
-        http://stackoverflow.com/questions/41989306/after-updating-to-gae-1-9-49-maven-fails-to-execute-goal-endpoints-get-discovery
-        -->
-        <appengine.version>1.9.50</appengine.version>
+        <!--<appengine.version>1.9.50</appengine.version>-->
+        <appengine.version>1.9.51</appengine.version>
         <!--<gcloud.plugin.version>2.0.9.106.v20160420</gcloud.plugin.version>-->
         <gcloud.plugin.version>2.0.9.133.v201611104</gcloud.plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -26,19 +22,6 @@
     <prerequisites>
         <maven>3.3.9</maven>
     </prerequisites>
-    <!--
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.amazonaws</groupId>
-                <artifactId>aws-java-sdk-bom</artifactId>
-                <version>1.11.96</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-    -->
 
     <!-- Compile/runtime dependencies -->
     <dependencies>
@@ -56,14 +39,6 @@
             <artifactId>appengine-gcs-client</artifactId>
             <version>0.6</version>
         </dependency>
-
-        <!-- Amazon -->
-        <!--
-        <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk-sns</artifactId>
-        </dependency>
-        -->
 
         <!-- https://cloud.google.com/appengine/docs/standard/java/sms/twilio -->
         <!-- https://twilio.github.io/twilio-java/ -->
@@ -94,12 +69,13 @@
         <!-- The O'Reilly Servlet Package (com.oreilly.servlet) by Jason Hunter to accompany his book,
         Java Servlet Programming, including the famous MultipartRequest and MultipartParser classes. -->
         <!-- http://servlets.com/cos/javadoc/ -->
-        <!--  !!!! added to WEB-INF/lib from cos-26Dec2008.zip -->
         <!--<dependency>-->
-        <!--<groupId>servlets.com</groupId>-->
-        <!--<artifactId>cos</artifactId>-->
-        <!--<version>05Nov2002</version>-->
+            <!--<groupId>servlets.com</groupId>-->
+            <!--<artifactId>cos</artifactId>-->
+            <!--<version>05Nov2002</version>-->
         <!--</dependency>-->
+        <!-- newer version: -->
+        <!--  !!!! added to WEB-INF/lib from cos-26Dec2008.zip -->
         <dependency>
             <groupId>servlets.com</groupId>
             <artifactId>cos</artifactId>
@@ -114,8 +90,9 @@
         <dependency>
             <groupId>com.stripe</groupId>
             <artifactId>stripe-java</artifactId>
-            <version>3.10.0</version>
+            <version>4.6.0</version>
         </dependency>
+        <!-- for stripe on the frontend see: https://stripe.com/docs/stripe.js -->
         <!-- -->
         <dependency>
             <groupId>com.sendgrid</groupId>
@@ -182,7 +159,8 @@
             <groupId>com.googlecode.objectify</groupId>
             <artifactId>objectify</artifactId>
             <!--<version>5.1.10</version>-->
-            <version>5.1.16</version>
+            <!--<version>5.1.16</version>-->
+            <version>5.1.17</version>
         </dependency>
         <dependency>
             <groupId>net.sf.uadetector</groupId>
@@ -269,7 +247,8 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <!--<version>3.5.1</version>-->
-                <version>3.6.0</version>
+                <!--<version>3.6.0</version>-->
+                <version>3.6.1</version>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <source>1.7</source>

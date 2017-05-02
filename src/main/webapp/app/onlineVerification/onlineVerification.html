@@ -35,45 +35,47 @@
 <!-- using directive does not work: controler can not get element from directive -->
 <!-- ( var elementTwo = $window.document.getElementById('fileTwo'); )       -->
 <div class="container" id="onlineVerificationDocumentsContainer">
-    <hr>
-    <form>
-        <fieldset class="form-group">
-            <legend>Your passport</legend>
-            <div
-                    role="button"
-                    type="button"
-                    title="Choose image file (PNG, JPEG, GIF, TIFF, or BMP)"
-                    class="btn btn-primary">
-                <input type="file" class="form-control-file" id="fileOne">
-            </div>
-        </fieldset>
+    <div class="card">
+        <div class="card-header">
+            <center>
+                <h5>Identifcation documents</h5>
+            </center>
+        </div>
+        <div class="card-block">
+            <form>
+                <fieldset class="form-group">
+                    <legend>Your passport</legend>
+                    <div
+                            role="button"
+                            type="button"
+                            title="Choose image file (PNG, JPEG, GIF, TIFF, or BMP)"
+                            class="btn btn-primary">
+                        <input type="file" class="form-control-file" id="fileOne">
+                    </div>
+                </fieldset>
 
-        <fieldset class="form-group">
-            <legend>Your second ID document (driver licence, national ID etc.)</legend>
-            <div
-                    role="button"
-                    type="button"
-                    title="Choose image file (PNG, JPEG, GIF, TIFF, or BMP)"
-                    class="btn btn-primary">
-                <input type="file" class="form-control-file" id="fileTwo">
-            </div>
-        </fieldset>
+                <fieldset class="form-group">
+                    <legend>Your second ID document (driver licence, national ID etc.)</legend>
+                    <div
+                            role="button"
+                            type="button"
+                            title="Choose image file (PNG, JPEG, GIF, TIFF, or BMP)"
+                            class="btn btn-primary">
+                        <input type="file" class="form-control-file" id="fileTwo">
+                    </div>
+                </fieldset>
 
-        <fieldset class="form-group">
+                <fieldset class="form-group">
+                    <button ng-click="uploadDocs()"
+                            role="button" type="button" class="btn btn-secondary">
+                        Upload documents
+                    </button>
 
-            <!--<button ng-click="btn_clean()"-->
-            <!--role="button" type="button" class="btn btn-secondary">-->
-            <!--Remove documents-->
-            <!--</button>-->
+                </fieldset>
 
-            <button ng-click="uploadDocs()"
-                    role="button" type="button" class="btn btn-secondary">
-                Upload documents
-            </button>
-
-        </fieldset>
-
-    </form>
+            </form>
+        </div>
+    </div>
 
     <div class="row" ng-show="verificationDocsUrls.length > 0">
         <div class="col-xs-6 col-md-6">
@@ -94,8 +96,11 @@
     <br>
 
 </div>
-
+<!-- -->
 <sms-check></sms-check>
-
+<!-- -->
+<stripe-payment-for-online-key-verification></stripe-payment-for-online-key-verification>
+<!-- -->
+<stripe-payment-verification-code></stripe-payment-verification-code>
 <!-- -->
 <footer-main></footer-main>
