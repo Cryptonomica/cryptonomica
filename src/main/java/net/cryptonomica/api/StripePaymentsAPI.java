@@ -63,16 +63,16 @@ public class StripePaymentsAPI {
 
         // Set your secret key: remember to change this to your live secret key in production
         // See your keys here: https://dashboard.stripe.com/account/apikeys
-        final String STRIPE_SECRET_KEY = ApiKeysUtils.getApiKey("StripeTestSecretKey");
-        // private static final String STRIPE_SECRET_KEY = ApiKeysUtils.getApiKey("StripeLiveSecretKey");
+        // final String STRIPE_SECRET_KEY = ApiKeysUtils.getApiKey("StripeTestSecretKey");
+        final String STRIPE_SECRET_KEY = ApiKeysUtils.getApiKey("StripeLiveSecretKey");
 
         /* --- Ensure cryptonomica registered user */
         final CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaRegisteredUser(googleUser);
 
-        /* --- Check form: */
-        /* !!!!!!!!!!!!!!!!!!! remove in production !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-        LOG.warning(GSON.toJson(stripePaymentForm)); // <<<<<<<<<<<<<<<<<<<<<<<!!!!!!!!!!!!!!!!
-        // Do not save card data in DB or to logs !!!!!!!
+        /* --- log form: */
+        /* !!!!!!!!!!!!!!!!!!! comment in production !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+        // LOG.warning(GSON.toJson(stripePaymentForm)); // <<<<<<<<<<<<<<<<<<<<<<<!!!!!!!!!!!!!!!!!!!!!!!
+        // Do not save card data in DB or to logs when working with real (non-test) cards numbers !!!!!!!
 
         /* --- create return object */
         StripePaymentReturn stripePaymentReturn = new StripePaymentReturn();
