@@ -71,28 +71,27 @@ controller.controller(controller_name, [
             )
         };
         //
-        /*
-         $scope.pgpPublicKey = null;
-         $scope.getPGPPublicKeyByFingerprintError = null;
-         $scope.getPGPPublicKeyByFingerprint = function () {
-         GApi.executeAuth(
-         'pgpPublicKeyAPI',
-         'getPGPPublicKeyByFingerprint',
-         {"fingerprint": $stateParams.fingerprint}
-         ).then(
-         function (pgpPublicKeyGeneralView) {
-         $scope.pgpPublicKey = pgpPublicKeyGeneralView;
-         console.log("$scope.pgpPublicKey: ");
-         console.log($scope.pgpPublicKey);
+        $scope.pgpPublicKey = null;
+        $scope.getPGPPublicKeyByFingerprintError = null;
 
-         }, function (getPGPPublicKeyByFingerprintError) {
-         $scope.getPGPPublicKeyByFingerprintError = getPGPPublicKeyByFingerprintError;
-         console.log("$scope.getPGPPublicKeyByFingerprintError : ");
-         $log.error($scope.getPGPPublicKeyByFingerprintError);
-         }
-         )
-         };
-         */
+        $scope.getPGPPublicKeyByFingerprint = function () {
+            GApi.executeAuth(
+                'pgpPublicKeyAPI',
+                'getPGPPublicKeyByFingerprint',
+                {"fingerprint": $stateParams.fingerprint}
+            ).then(
+                function (pgpPublicKeyGeneralView) {
+                    $scope.pgpPublicKey = pgpPublicKeyGeneralView;
+                    console.log("$scope.pgpPublicKey: ");
+                    console.log($scope.pgpPublicKey);
+
+                }, function (getPGPPublicKeyByFingerprintError) {
+                    $scope.getPGPPublicKeyByFingerprintError = getPGPPublicKeyByFingerprintError;
+                    console.log("$scope.getPGPPublicKeyByFingerprintError : ");
+                    $log.error($scope.getPGPPublicKeyByFingerprintError);
+                }
+            )
+        };
 
         $scope.priceForKeyVerification = null;
         $scope.getPriceForKeyVerificationError = null;
@@ -138,7 +137,7 @@ controller.controller(controller_name, [
                 $rootScope.getUserData(); // async?                
                 $scope.getOnlineVerification();
                 $scope.getVideoUploadKey();
-                // $scope.getPGPPublicKeyByFingerprint();
+                $scope.getPGPPublicKeyByFingerprint();
                 $scope.getPriceForKeyVerification();
             },
             function () {

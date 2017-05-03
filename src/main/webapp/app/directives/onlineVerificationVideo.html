@@ -31,6 +31,11 @@
             <p>
                 video size: <span id="videoSize"></span>
             </p>
+            <p>
+                please, review your recorded video, check quality of recorded audio,
+                and if everything is O.K. click 'upload to server',
+                or record new video
+            </p>
             <div id="blobURLbox" hidden>
                 blobURL: <span id="blobURL"></span>
             </div>
@@ -69,7 +74,9 @@
             <div id="videoUploadError" style="color: red"></div>
             <!--<div id="uploadedVideo"></div>-->
             <div class="embed-responsive embed-responsive-16by9">
-                <video id="videoFromServer" controls class="embed-responsive-item"></video>
+                <a href="" target="_blank" id="linkToVideoOnServer">
+                    <video id="videoFromServer" controls class="embed-responsive-item"></video>
+                </a>
             </div>
             <br>
         </center>

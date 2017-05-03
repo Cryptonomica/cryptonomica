@@ -79,11 +79,16 @@ public class PGPPublicKeyData {
     private Long PaymentDataID; //............................19
     @Index
     private Date entityCreated; //............................20
+    @Index
+    // if user has a credit card with different spelling
+    // of the last and first name
+    private String nameOnCard; //.............................21
 
     /* --- Constructors: */
     public PGPPublicKeyData() {
         this.verificationsWebSafeStrings = new ArrayList<>();
         this.entityCreated = new Date();
+        this.nameOnCard = null;
     } // end: empty constructor
 
     public PGPPublicKeyData(PGPPublicKey pgpPublicKey, String asciiArmored, String cryptonomicaUserId) {
@@ -170,6 +175,7 @@ public class PGPPublicKeyData {
         this.verificationsWebSafeStrings = new ArrayList<>();
         // ---
         this.entityCreated = new Date(); // <- final
+        this.nameOnCard = null;
     } // end:  costructor with args
 
     /* ------- Methods */
@@ -346,6 +352,14 @@ public class PGPPublicKeyData {
 
     public Date getEntityCreated() {
         return entityCreated;
+    }
+
+    public String getNameOnCard() {
+        return nameOnCard;
+    }
+
+    public void setNameOnCard(String nameOnCard) {
+        this.nameOnCard = nameOnCard;
     }
 
     // end getters and setters

@@ -26,10 +26,23 @@
     <input type="text" name="errorGate" id="errorGate" ng-model="error.message" hidden>
 </div>
 
+<div id="keyInfo">
+    <hr>
+    <center>
+        <p>
+            Verification for key:
+            <a ui-sref="key({fingerprint:pgpPublicKey.fingerprint})" target="_blank">{{pgpPublicKey.keyID}}</a>,
+            key owner:
+            <a ui-sref="viewprofile({userId:cryptonomicaUserId})" target="_blank">{{pgpPublicKey.userID}}</a>
+        </p>
+    </center>
+
+    <hr>
+</div>
+
 <div id="mainPart" ng-hide="getOnlineVerificationError">
     <online-verification-video></online-verification-video>
     <br>
-    <!--<online-verification-documents></online-verification-documents>-->
 </div>
 
 <!-- using directive does not work: controler can not get element from directive -->
@@ -42,6 +55,9 @@
             </center>
         </div>
         <div class="card-block">
+            <p>
+                Please, upload <b>color</b> documents in good quality image file
+            </p>
             <form>
                 <fieldset class="form-group">
                     <legend>Your passport</legend>

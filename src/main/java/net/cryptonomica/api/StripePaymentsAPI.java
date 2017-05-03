@@ -68,6 +68,10 @@ public class StripePaymentsAPI {
         /* --- Ensure cryptonomica registered user */
         final CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaRegisteredUser(googleUser);
 
+        // log info:
+        LOG.warning("cryptonomicaUser: " + cryptonomicaUser.getEmail().getEmail());
+        LOG.warning("key fingerpint: " + stripePaymentForm.getFingerprint());
+
         /* --- log form: */
         /* !!!!!!!!!!!!!!!!!!! comment in production !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
         // LOG.warning(GSON.toJson(stripePaymentForm)); // <<<<<<<<<<<<<<<<<<<<<<<!!!!!!!!!!!!!!!!!!!!!!!
@@ -90,20 +94,35 @@ public class StripePaymentsAPI {
             throw new Exception("OpenPGP public key certificate not found in our database for " + fingerprint);
         }
         //
-        if (!pgpPublicKeyData.getUserEmail().getEmail().equalsIgnoreCase(cryptonomicaUser.getEmail().getEmail())) {
-            throw new Exception("Google Account email and email in key certificate does not much");
-        }
+        // --- non needed here:
+        // String emailFromKey = pgpPublicKeyData.getUserEmail().getEmail().toLowerCase();
+        // String emailFromGoogleAcc = cryptonomicaUser.getEmail().getEmail().toLowerCase();
+        // if (!emailFromKey.equals(emailFromGoogleAcc)) {
+        //     LOG.warning("emailFromKey: " + emailFromKey + " length: ");
+        //     LOG.warning("cryptonomicaUser.getEmail().getEmail(): " + cryptonomicaUser.getEmail().getEmail());
+        //     throw new Exception("Google Account email and email in key certificate does not match");
+        // }
         //
-        if (pgpPublicKeyData.getPaid()) {
+        if (pgpPublicKeyData.getPaid() != null && pgpPublicKeyData.getPaid()) { // <<<
             throw new Exception("Verification of key " + fingerprint + " already paid");
         }
         //
-        if (!stripePaymentForm.getCardHolderFirstName().equalsIgnoreCase(pgpPublicKeyData.getFirstName())
-                || !stripePaymentForm.getCardHolderLastName().equalsIgnoreCase(pgpPublicKeyData.getLastName())
+        String nameOnCard;
+        if (pgpPublicKeyData.getNameOnCard() != null) {
+            nameOnCard = pgpPublicKeyData.getNameOnCard();
+        } else if (
+                !stripePaymentForm.getCardHolderFirstName().equalsIgnoreCase(pgpPublicKeyData.getFirstName())
+                        || !stripePaymentForm.getCardHolderLastName().equalsIgnoreCase(pgpPublicKeyData.getLastName())
                 ) {
             throw new Exception(
-                    "You have to pay with credit card with the same fist and last name as in your OpenPGP key"
+                    "You have to pay with credit card with the same fist and last name as in your OpenPGP key."
+                            + " If your card has different spelling of your name than passport,"
+                            + "please write to support@cryptonomica.net "
+                            + "(include spelling of your name in passport and on the card,"
+                            + "but do not send card number or CVC via email)"
             );
+        } else {
+            nameOnCard = pgpPublicKeyData.getFirstName() + " " + pgpPublicKeyData.getLastName();
         }
 
         // make code for payment:
@@ -122,7 +141,7 @@ public class StripePaymentsAPI {
         cardMap.put("number", stripePaymentForm.getCardNumber()); // String
         cardMap.put("exp_month", stripePaymentForm.getCardExpMonth()); // Integer
         cardMap.put("exp_year", stripePaymentForm.getCardExpYear()); // Integer
-        cardMap.put("name", pgpPublicKeyData.getFirstName() + " " + pgpPublicKeyData.getLastName());
+        cardMap.put("name", nameOnCard);
         //  --- chargeMap
         Map<String, Object> chargeMap = new HashMap<>();
         chargeMap.put("card", cardMap);
@@ -243,7 +262,8 @@ public class StripePaymentsAPI {
         if (paymentForKeyVerificationList == null || paymentForKeyVerificationList.size() < 1) {
             throw new Exception("No payments for verification of the key " + fingerprint + "found");
         } else if (paymentForKeyVerificationList.size() > 1) {
-            throw new Exception("Multiple payments exist for the key: " + fingerprint + ", please write to support");
+            throw new Exception("Multiple payments exist for the key: " + fingerprint
+                    + ", please write to support@cryptonomica.net");
         } else {
             stripePaymentForKeyVerification = paymentForKeyVerificationList.get(0);
         }
@@ -259,7 +279,7 @@ public class StripePaymentsAPI {
                     stripePaymentForKeyVerification.getFailedVerificationAttemps() + 1
             );
             if (stripePaymentForKeyVerification.getFailedVerificationAttemps() >= 5) {
-                throw new Exception("The number of attempts is exhausted. Please, write to support");
+                throw new Exception("The number of attempts is exhausted. Please, write to support@cryptonomica.net");
             } else {
                 throw new Exception("Code does not much. It was attempt # "
                         + stripePaymentForKeyVerification.getFailedVerificationAttemps());

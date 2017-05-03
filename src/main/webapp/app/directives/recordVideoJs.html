@@ -81,7 +81,7 @@
 
                 request.send(formData);
                 document.getElementById('uploading').innerHTML =
-                        '<i class="fa fa-refresh fa-spin fa-2x fa-fw"></i><span>Loading...</span>';
+                        '<i class="fa fa-refresh fa-spin fa-2x fa-fw"></i><span>Uploading...</span>';
 
                 // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/onreadystatechange
                 request.onreadystatechange = function () {
@@ -103,6 +103,11 @@
                                     'src',
                                     '/gcs?verificationVideoId=' + resp.verificationVideoId
                             );
+                            document.getElementById('linkToVideoOnServer').setAttribute(
+                                    'href',
+                                    '/gcs?verificationVideoId=' + resp.verificationVideoId
+                            );
+
                         } else if (resp.Error) {
                             // document.getElementById('errorGate').value = resp.Error;
                             document.getElementById('videoUploadError').innerHTML = resp.Error;
