@@ -6,7 +6,6 @@ import com.google.api.server.spi.config.Named;
 import com.google.appengine.api.users.User;
 import com.google.gson.Gson;
 import com.googlecode.objectify.Key;
-import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
 import com.stripe.net.RequestOptions;
 import net.cryptonomica.constants.Constants;
@@ -123,6 +122,7 @@ public class StripePaymentsAPI {
         cardMap.put("number", stripePaymentForm.getCardNumber()); // String
         cardMap.put("exp_month", stripePaymentForm.getCardExpMonth()); // Integer
         cardMap.put("exp_year", stripePaymentForm.getCardExpYear()); // Integer
+        cardMap.put("name", pgpPublicKeyData.getFirstName() + " " + pgpPublicKeyData.getLastName());
         //  --- chargeMap
         Map<String, Object> chargeMap = new HashMap<>();
         chargeMap.put("card", cardMap);
@@ -139,7 +139,7 @@ public class StripePaymentsAPI {
         // While most banks display this information consistently, some may display it incorrectly or not at all.
         chargeMap.put(
                 "statement_descriptor",
-                "CRYPTONOMICA:"         // 13 characters
+                "CRYPTONOMICA "         // 13 characters
                         + chargeCode     // 7 characters
         );
         // https://stripe.com/docs/api/java#create_charge-description
@@ -157,16 +157,7 @@ public class StripePaymentsAPI {
         chargeMap.put("receipt_email", cryptonomicaUser.getEmail().getEmail());
 
         // -- get Charge object:
-        Charge charge = null;
-        try {
-            charge = Charge.create(chargeMap, requestOptions);
-        } catch (StripeException e) {
-            e.printStackTrace();
-        }
-
-        if (charge == null) {
-            throw new Exception("Charge creation failed");
-        }
+        Charge charge = Charge.create(chargeMap, requestOptions);
 
         String chargeStr = charge.toString(); // Charge obj has custom toString()
         LOG.warning("chargeStr: " + chargeStr);
@@ -337,9 +328,9 @@ public class StripePaymentsAPI {
         );
 
         if (diffInDays > 365) {
-            price = priceForOneYearInUSD * 100; // in USD cents
-        } else {
             price = priceForTwoYearsInUSD * 100; // in USD cents
+        } else {
+            price = priceForOneYearInUSD * 100; // in USD cents
         }
 
         LOG.warning("price: " + price);

@@ -13,7 +13,6 @@ import net.cryptonomica.forms.NewUserRegistrationForm;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.Logger;
 
 /**
  * Entity: user (a human)
@@ -29,68 +28,71 @@ import java.util.logging.Logger;
 public class CryptonomicaUser {
 
     /* Logger */
-    private static final Logger LOG = Logger.getLogger(CryptonomicaUser.class.getName());
+    // private static final Logger LOG = Logger.getLogger(CryptonomicaUser.class.getName());
 
     // the same as Google user ID ( googleUser.getUserId() )
     // = com.google.appengine.api.users.User (java.lang.String userId)
     @Id
-    String userId; //.............................................................1
+    private String userId; //.....................................................................1
     @Index
     // see: savedCryptonomicaUserKey.toWebSafeString();
-            String webSafeStringKey; //...................................................2
+    private String webSafeStringKey; //...........................................................2
     @Index
     // ? if user changes firstname
-            String firstName; // .........................................................3
+    private String firstName; // .................................................................3
     @Index
     // ? if user changes lastname
-            String lastName;
+    private String lastName; //...................................................................4
     // non indexed:
-    Date birthday; //.............................................................4
+    private Date birthday; //.....................................................................5
     // https://cloud.google.com/appengine/docs/java/javadoc/com/google/appengine/api/users/User
-    User googleUser; //...........................................................5
+    private User googleUser; //...................................................................6
     @Index
     // https://cloud.google.com/appengine/docs/java/javadoc/com/google/appengine/api/datastore/Email
-            Email email; // ..............................................................6
+    private Email email; // ......................................................................7
     // user provided info
     // https://cloud.google.com/appengine/docs/java/javadoc/com/google/appengine/api/datastore/Text
-    Text userInfo; // ............................................................7
+    private Text userInfo; // ....................................................................8
     // https://cloud.google.com/appengine/docs/java/javadoc/com/google/appengine/api/datastore/Link
-    Link userCurrentImageLink; // ................................................8
-    String imageUploadLink; // ...................................................9
+    private Link userCurrentImageLink; // ........................................................9
+    private String imageUploadLink; // ...........................................................10
     @Index
     // we use this to connect and uploaded image to CryptonomicaUser entity in DB
-            String imageUploadKey; // ...................................................10
-    ArrayList<Link> oldUserImageLinks; // .......................................11
+    private String imageUploadKey; // ............................................................11
+    private ArrayList<Link> oldUserImageLinks; // ................................................12
     // -- for the future
     // https://github.com/objectify/objectify/wiki/Entities#keys
-    Key<ImageData> imageData; //.................................................12
+    private Key<ImageData> imageData; //..........................................................13
     // -- for the future:
-    ArrayList<Key<ImageData>> OldPhotos; //......................................13
+    private ArrayList<Key<ImageData>> OldPhotos; //...............................................14
     // @Load
-    ArrayList<Key<PGPPublicKeyData>> publicKeys; // .............................14
+    private ArrayList<Key<PGPPublicKeyData>> publicKeys; // ......................................15
     // ArrayList<String> residencies; // country(ies) of residency - ? not sure we need it
-    Key<Invitation> invitedBy; // ...............................................15
+    private Key<Invitation> invitedBy; // ........................................................16
     @Ignore // just find by @Parent
-            ArrayList<Key<Invitation>> invitationsSend; //...............................16
+    private ArrayList<Key<Invitation>> invitationsSend; //........................................17
     @Ignore // just find by @Parent
-            ArrayList<Login> logins; //..................................................17
-    Key<Lawyer> lawyerKey; // ...................................................18
+    private ArrayList<Login> logins; //...........................................................18
+    private Key<Lawyer> lawyerKey; // ............................................................19
     @Index
-    Boolean isLawyer; // ........................................................19
-    Key<Notary> notaryKey; // ...................................................20
+    private Boolean isLawyer; // .................................................................20
+    private Key<Notary> notaryKey; // ............................................................21
     @Index
-    Boolean isNotary; // ........................................................21
-    Key<Arbitrator> arbitratorKey; // ...........................................22
+    private Boolean isNotary; // .................................................................22
+    private Key<Arbitrator> arbitratorKey; // ....................................................23
     @Index
-    Boolean isArbitrator; // ....................................................23
-    Key<CryptonomicaOfficer> cryptonomicaOfficerKey; // .........................24
+    private Boolean isArbitrator; // .............................................................24
+    private Key<CryptonomicaOfficer> cryptonomicaOfficerKey; // ..................................25
     @Index
-    Boolean isCryptonomicaOfficer; // ...........................................25
+    private Boolean isCryptonomicaOfficer; // ....................................................26
     // companies user can represent
-    ArrayList<Key<AuthorityToRepresent>> canRepresent; //........................26
+    private ArrayList<Key<AuthorityToRepresent>> canRepresent; //.................................27
     @Index
     // will be shown in search results (// paid for verification)
-            Boolean active; //...........................................................27
+    private Boolean active; //....................................................................28
+    @Index
+    // https://stripe.com/docs/api/java#customer_object
+    private String stripeCustomerId;//............................................................29
 
     /* --- Constructors: */
 
@@ -357,4 +359,11 @@ public class CryptonomicaUser {
         this.imageUploadKey = imageUploadKey;
     }
 
+    public String getStripeCustomerId() {
+        return stripeCustomerId;
+    }
+
+    public void setStripeCustomerId(String stripeCustomerId) {
+        this.stripeCustomerId = stripeCustomerId;
+    }
 }

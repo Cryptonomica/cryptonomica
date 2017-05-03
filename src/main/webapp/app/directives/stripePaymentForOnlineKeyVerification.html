@@ -24,6 +24,7 @@
                 <h5>Payment</h5>
             </center>
         </div>
+
         <div class="card-block">
 
             <form id="payment-form">
@@ -74,13 +75,24 @@
                     </legend>
                 </div>
 
-                <button id="submitPayment"
-                        ng-click="submitPayment()"
-                        role="button"
-                        type="button"
-                        class="submit btn btn-secondary">
-                    Submit Payment
-                </button>
+                <center>
+                    <div>
+                        <small id="paymentHelp"
+                               class="form-text text-muted">
+                            Payment service provided by <a href="https://stripe.com">Stripe</a>.
+                            We do not store your credit card number, exp date or CVC
+                        </small>
+                        <br>
+                    </div>
+
+                    <button id="submitPayment"
+                            ng-click="submitPayment()"
+                            role="button"
+                            type="button"
+                            class="submit btn btn-secondary">
+                        Submit Payment
+                    </button>
+                </center>
             </form>
         </div>
     </div>
