@@ -14,12 +14,14 @@ import net.cryptonomica.entities.CryptonomicaUser;
 import net.cryptonomica.entities.PGPPublicKeyData;
 import net.cryptonomica.entities.StripePaymentForKeyVerification;
 import net.cryptonomica.forms.StripePaymentForm;
+import net.cryptonomica.returns.IntegerWrapperObject;
 import net.cryptonomica.returns.StringWrapperObject;
 import net.cryptonomica.returns.StripePaymentReturn;
 import net.cryptonomica.service.ApiKeysUtils;
 import net.cryptonomica.service.UserTools;
 import org.apache.commons.lang3.RandomStringUtils;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -109,6 +111,9 @@ public class StripePaymentsAPI {
         final String chargeCode = RandomStringUtils.randomNumeric(7);
         LOG.warning("chargeCode: " + chargeCode); //
 
+        // calculate price for key verification
+        Integer price = calculatePriceForKeyVerification(pgpPublicKeyData);
+
         /* --- process payment */
         // see example on:
         // https://github.com/stripe/stripe-java#usage
@@ -123,8 +128,7 @@ public class StripePaymentsAPI {
         chargeMap.put("card", cardMap);
 
         //  amount - a positive integer in the smallest currency unit (e.g., 100 cents to charge $1.00
-        // <<<<<<<<<< change sum in production !!!!!!
-        chargeMap.put("amount", 100); //
+        chargeMap.put("amount", price); //
         chargeMap.put("currency", "usd"); //
         // https://stripe.com/docs/api/java#create_charge-statement_descriptor
         // An arbitrary string to be displayed on your customer's credit card statement.
@@ -274,5 +278,73 @@ public class StripePaymentsAPI {
         return result;
 
     } // end of paymentVerificationCode
+
+    @ApiMethod(
+            name = "getPriceForKeyVerification",
+            path = "getPriceForKeyVerification",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    @SuppressWarnings("unused")
+    public IntegerWrapperObject getPriceForKeyVerification(
+            final User googleUser,
+            final @Named("fingerprint") String fingerprint
+    )
+            throws Exception {
+
+        /* --- Ensure cryptonomica registered user */
+        final CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaRegisteredUser(googleUser);
+
+        /* --- create return object */
+        IntegerWrapperObject result = new IntegerWrapperObject();
+
+        /* --- get OpenPGP key data */
+        PGPPublicKeyData pgpPublicKeyData = null;
+        pgpPublicKeyData = ofy()
+                .load()
+                .type(PGPPublicKeyData.class)
+                .filter("fingerprintStr", fingerprint)
+                .first()
+                .now();
+        //
+        if (pgpPublicKeyData == null) {
+            throw new Exception("OpenPGP public key certificate not found in our database for " + fingerprint);
+        }
+
+        Integer price = calculatePriceForKeyVerification(pgpPublicKeyData);
+        result.setNumber(price);
+
+        LOG.warning("result: " + GSON.toJson(result));
+
+        return result;
+
+    } // end of getPriceForKeyVerification()
+
+    private Integer calculatePriceForKeyVerification(PGPPublicKeyData pgpPublicKeyData) {
+
+        Integer priceForOneYearInUSD = 1; // <<<<<  change in production  !!!!!!!!!!!!!!!!!!!!!!!!
+        Integer priceForTwoYearsInUSD = 2; // <<<<<  change in production  !!!!!!!!!!!!!!!!!!!!!!!!
+
+        Integer price = null;
+        Date today = new Date();
+        // Calculating the difference between two Java date instances:
+        // http://stackoverflow.com/a/3491723/1697878
+        int diffInDays = (int) ((pgpPublicKeyData.getExp().getTime() - today.getTime())
+                / (1000 * 60 * 60 * 24));
+
+        LOG.warning("Today: " + today
+                + "; Key exp.: " + pgpPublicKeyData.getExp()
+                + "; diff in days: " + diffInDays
+        );
+
+        if (diffInDays > 365) {
+            price = priceForOneYearInUSD * 100; // in USD cents
+        } else {
+            price = priceForTwoYearsInUSD * 100; // in USD cents
+        }
+
+        LOG.warning("price: " + price);
+
+        return price;
+    } // end of calculatePriceForKeyVerification
 
 }

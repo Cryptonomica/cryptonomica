@@ -44,7 +44,7 @@ controller.controller(controller_name, [
         $scope.videoUploadKey = null;
         $scope.verificationDocsUrls = [];
 
-        // --- define functions:
+        //
         $scope.getOnlineVerification = function () {
             GApi.executeAuth(
                 'onlineVerificationAPI',
@@ -70,6 +70,51 @@ controller.controller(controller_name, [
                 }
             )
         };
+        //
+        /*
+         $scope.pgpPublicKey = null;
+         $scope.getPGPPublicKeyByFingerprintError = null;
+         $scope.getPGPPublicKeyByFingerprint = function () {
+         GApi.executeAuth(
+         'pgpPublicKeyAPI',
+         'getPGPPublicKeyByFingerprint',
+         {"fingerprint": $stateParams.fingerprint}
+         ).then(
+         function (pgpPublicKeyGeneralView) {
+         $scope.pgpPublicKey = pgpPublicKeyGeneralView;
+         console.log("$scope.pgpPublicKey: ");
+         console.log($scope.pgpPublicKey);
+
+         }, function (getPGPPublicKeyByFingerprintError) {
+         $scope.getPGPPublicKeyByFingerprintError = getPGPPublicKeyByFingerprintError;
+         console.log("$scope.getPGPPublicKeyByFingerprintError : ");
+         $log.error($scope.getPGPPublicKeyByFingerprintError);
+         }
+         )
+         };
+         */
+
+        $scope.priceForKeyVerification = null;
+        $scope.getPriceForKeyVerificationError = null;
+        $scope.getPriceForKeyVerification = function () {
+            GApi.executeAuth(
+                'stripePaymentsAPI',
+                'getPriceForKeyVerification',
+                {"fingerprint": $stateParams.fingerprint}
+            ).then(
+                function (IntegerWrapperObject) {
+                    $scope.priceForKeyVerification = IntegerWrapperObject.number / 100; // from cents to dollars
+                    console.log("$scope.priceForKeyVerification: ");
+                    console.log($scope.priceForKeyVerification);
+
+                }, function (getPriceForKeyVerificationError) {
+                    $scope.getPriceForKeyVerificationError = getPriceForKeyVerificationError;
+                    console.log("$scope.getPriceForKeyVerificationError : ");
+                    $log.error($scope.getPriceForKeyVerificationError);
+                }
+            )
+        };
+        //
         $scope.getVideoUploadKey = function () {
             GApi.executeAuth('onlineVerificationAPI', 'getVideoUploadKey')
                 .then(
@@ -87,12 +132,14 @@ controller.controller(controller_name, [
                 )
         };
 
-        // --- get user data
+        // --- get user data and execute calls : 
         GAuth.checkAuth().then(
             function () {
-                $rootScope.getUserData(); // async?
+                $rootScope.getUserData(); // async?                
                 $scope.getOnlineVerification();
                 $scope.getVideoUploadKey();
+                // $scope.getPGPPublicKeyByFingerprint();
+                $scope.getPriceForKeyVerification();
             },
             function () {
                 $log.error("[cryptonomica.controller.onlineVerification] GAuth.checkAuth() - unsuccessful");
