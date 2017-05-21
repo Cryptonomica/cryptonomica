@@ -31,12 +31,28 @@
         };
     });
     // ------------------------------------------------------------------------------
+    d.directive('alerts', function () {
+        return {
+            restrict: 'EA', //E = element, A = attribute, C = class, M = comment
+            // <alerts></alerts>
+            templateUrl: 'app/directives/alerts.html'
+        };
+    });
+    // ------------------------------------------------------------------------------
     d.directive('footerMain', function () {
         return {
             restrict: 'EA', //E = element, A = attribute, C = class, M = comment
             // <footer-main></footer-main>
             // replace: 'true', // >> error
             templateUrl: 'app/directives/footerMain.html'
+        };
+    });
+    // ------------------------------------------------------------------------------
+    d.directive('onlineVerificationTerms', function () {
+        return {
+            restrict: 'EA', //E = element, A = attribute, C = class, M = comment
+            // <online-verification-terms></online-verification-terms>
+            templateUrl: 'app/directives/onlineVerificationTerms.html'
         };
     });
     // ------------------------------------------------------------------------------

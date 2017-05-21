@@ -100,6 +100,16 @@ router
                     controller: 'cryptonomica.controller.onlineVerification',
                     templateUrl: 'app/onlineVerification/onlineVerification.html'
                 })
+                .state('onlineVerificationView', {
+                    url: '/onlineVerificationView/{fingerprint}',
+                    controller: 'cryptonomica.controller.onlineVerificationView',
+                    templateUrl: 'app/onlineVerification/onlineVerificationView.html'
+                })
+                // .state('onlineVerificationVideo', {
+                //     url: '/onlineVerificationVideo/{fingerprint}',
+                //     controller: 'cryptonomica.controller.onlineVerification',
+                //     templateUrl: 'app/onlineVerification/onlineVerificationVideo.html'
+                // })
                 .state('test', {
                     url: '/test',
                     controller: 'cryptonomica.controller.test',

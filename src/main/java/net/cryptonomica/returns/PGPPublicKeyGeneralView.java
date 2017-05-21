@@ -30,10 +30,12 @@ public class PGPPublicKeyGeneralView implements Serializable {
     private Date exp; //..................................10
     private Integer bitStrength; //.......................11
     private String asciiArmored; //.......................12
-    private Boolean verified; //..........................13
+    private Boolean verified; //off-line verification.....13
     private Boolean active; //............................14
     private List<String> verificationsWebSafeStrings; //..15
     private List<Long> verificationIDs; // ...............16
+    // OnlineVerification entity ID -> fingerprint
+    private Boolean onlineVerificationFinished; //........17
     // PGPPublicKeyData has also: @Parent private Key<CryptonomicaUser> cryptonomicaUserKey;
     // we have cryptonomicaUserId + webSafeString and not need it
 
@@ -83,6 +85,9 @@ public class PGPPublicKeyGeneralView implements Serializable {
         this.active = pgpPublicKeyData.getActive();
         this.verificationsWebSafeStrings = pgpPublicKeyData.getVerificationsWebSafeStrings();
 
+        this.onlineVerificationFinished = pgpPublicKeyData.getOnlineVerificationFinished();
+
+        // LOG
         LOG.warning(new Gson().toJson(this));
 
     } // end: constructor from PGPPublicKeyData obj
@@ -215,5 +220,13 @@ public class PGPPublicKeyGeneralView implements Serializable {
 
     public void setVerificationIDs(List<Long> verificationIDs) {
         this.verificationIDs = verificationIDs;
+    }
+
+    public Boolean getOnlineVerificationFinished() {
+        return onlineVerificationFinished;
+    }
+
+    public void setOnlineVerificationFinished(Boolean onlineVerificationFinished) {
+        this.onlineVerificationFinished = onlineVerificationFinished;
     }
 }

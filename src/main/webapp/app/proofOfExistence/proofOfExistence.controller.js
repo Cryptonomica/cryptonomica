@@ -6,25 +6,32 @@
 
     var controller = angular.module(controller_name, []);
 
+    // https://docs.angularjs.org/api/ng/provider/$logProvider
+    controller.config(function ($logProvider) {
+            // $logProvider.debugEnabled(false);
+            $logProvider.debugEnabled(true);
+        }
+    );
+
     controller.controller(controller_name, [
         '$scope',
         '$rootScope',
         '$http',
+        '$log',
         'GApi',
         'GAuth',
         'GData',
         '$state',
-        '$log',
         '$cookies',
         '$timeout',
         function PoECtrl($scope,    // <- name for debugging
                          $rootScope,
                          $http,
+                         $log,
                          GApi,
                          GAuth,
                          GData,
                          $state,
-                         $log,
                          $cookies,
                          $timeout) {
 

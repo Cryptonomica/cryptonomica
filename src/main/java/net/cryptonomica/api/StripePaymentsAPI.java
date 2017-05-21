@@ -3,27 +3,26 @@ package net.cryptonomica.api;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.Named;
+import com.google.api.server.spi.response.NotFoundException;
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.appengine.api.users.User;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.googlecode.objectify.Key;
 import com.stripe.model.Charge;
 import com.stripe.net.RequestOptions;
 import net.cryptonomica.constants.Constants;
-import net.cryptonomica.entities.CryptonomicaUser;
-import net.cryptonomica.entities.PGPPublicKeyData;
-import net.cryptonomica.entities.StripePaymentForKeyVerification;
+import net.cryptonomica.entities.*;
 import net.cryptonomica.forms.StripePaymentForm;
-import net.cryptonomica.returns.IntegerWrapperObject;
-import net.cryptonomica.returns.StringWrapperObject;
-import net.cryptonomica.returns.StripePaymentReturn;
+import net.cryptonomica.returns.*;
 import net.cryptonomica.service.ApiKeysUtils;
 import net.cryptonomica.service.UserTools;
 import org.apache.commons.lang3.RandomStringUtils;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 import java.util.logging.Logger;
 
 import static net.cryptonomica.service.OfyService.ofy;
@@ -55,7 +54,8 @@ public class StripePaymentsAPI {
             httpMethod = ApiMethod.HttpMethod.POST
     )
     @SuppressWarnings("unused")
-    public StripePaymentReturn processStripePayment(final User googleUser,
+    public StripePaymentReturn processStripePayment(final HttpServletRequest httpServletRequest,
+                                                    final User googleUser,
                                                     final StripePaymentForm stripePaymentForm
     )
             throws Exception {
@@ -67,6 +67,9 @@ public class StripePaymentsAPI {
 
         /* --- Ensure cryptonomica registered user */
         final CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaRegisteredUser(googleUser);
+        /* --- record user login */
+        Login login = UserTools.registerLogin(httpServletRequest, googleUser);
+        LOG.warning(GSON.toJson(new LoginView(login)));
 
         // log info:
         LOG.warning("cryptonomicaUser: " + cryptonomicaUser.getEmail().getEmail());
@@ -93,16 +96,7 @@ public class StripePaymentsAPI {
         if (pgpPublicKeyData == null) {
             throw new Exception("OpenPGP public key certificate not found in our database for " + fingerprint);
         }
-        //
-        // --- non needed here:
-        // String emailFromKey = pgpPublicKeyData.getUserEmail().getEmail().toLowerCase();
-        // String emailFromGoogleAcc = cryptonomicaUser.getEmail().getEmail().toLowerCase();
-        // if (!emailFromKey.equals(emailFromGoogleAcc)) {
-        //     LOG.warning("emailFromKey: " + emailFromKey + " length: ");
-        //     LOG.warning("cryptonomicaUser.getEmail().getEmail(): " + cryptonomicaUser.getEmail().getEmail());
-        //     throw new Exception("Google Account email and email in key certificate does not match");
-        // }
-        //
+
         if (pgpPublicKeyData.getPaid() != null && pgpPublicKeyData.getPaid()) { // <<<
             throw new Exception("Verification of key " + fingerprint + " already paid");
         }
@@ -115,11 +109,11 @@ public class StripePaymentsAPI {
                         || !stripePaymentForm.getCardHolderLastName().equalsIgnoreCase(pgpPublicKeyData.getLastName())
                 ) {
             throw new Exception(
-                    "You have to pay with credit card with the same fist and last name as in your OpenPGP key."
+                    "You have to pay with credit card with the same first and last name as in your OpenPGP key."
                             + " If your card has different spelling of your name than passport,"
-                            + "please write to support@cryptonomica.net "
+                            + " please write to support@cryptonomica.net "
                             + "(include spelling of your name in passport and on the card,"
-                            + "but do not send card number or CVC via email)"
+                            + " but do not send card number or CVC via email)"
             );
         } else {
             nameOnCard = pgpPublicKeyData.getFirstName() + " " + pgpPublicKeyData.getLastName();
@@ -200,12 +194,35 @@ public class StripePaymentsAPI {
         stripePaymentForKeyVerification.setCryptonomicaUserId(cryptonomicaUser.getUserId());
         stripePaymentForKeyVerification.setUserEmail(cryptonomicaUser.getEmail());
         stripePaymentForKeyVerification.setPaymentVerificationCode(chargeCode);
+        Key<CryptonomicaUser> cryptonomicaUserKey = Key.create(CryptonomicaUser.class, googleUser.getUserId());
+        Key<Login> loginKey = Key.create(cryptonomicaUserKey, Login.class, login.getId());
+        stripePaymentForKeyVerification.setChargeLogin(loginKey);
 
         Key<StripePaymentForKeyVerification> entityKey
                 = ofy().save().entity(stripePaymentForKeyVerification).now();
         LOG.warning("StripePaymentForKeyVerification saved: "
                 + entityKey.toString() // has custom toString()
         );
+
+        // add data to OnlineVerification entity:
+        OnlineVerification onlineVerification = ofy()
+                .load()
+                .key(Key.create(OnlineVerification.class, fingerprint))
+                .now();
+
+        if (onlineVerification == null) {
+            LOG.severe("OnlineVerification record not found in data base");
+        }
+        try {
+            // onlineVerification.setPaimentMade(Boolean.TRUE);
+            onlineVerification.setPaymentMade(Boolean.TRUE);
+            onlineVerification.setStripePaymentForKeyVerificationId(
+                    stripePaymentForKeyVerification.getId()
+            );
+            ofy().save().entity(onlineVerification).now();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return stripePaymentReturn;
     } // end of processStripePayment
@@ -217,6 +234,7 @@ public class StripePaymentsAPI {
     )
     @SuppressWarnings("unused")
     public StringWrapperObject checkPaymentVerificationCode(
+            final HttpServletRequest httpServletRequest,
             final User googleUser,
             final @Named("fingerprint") String fingerprint,
             final @Named("paymentVerificationCode") String paymentVerificationCode
@@ -225,6 +243,9 @@ public class StripePaymentsAPI {
 
         /* --- Ensure cryptonomica registered user */
         final CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaRegisteredUser(googleUser);
+
+        /* record login: */
+        Login login = UserTools.registerLogin(httpServletRequest, googleUser);
 
         /* --- Check form: */
         LOG.warning("paymentVerificationCode from user: " + paymentVerificationCode);
@@ -248,8 +269,8 @@ public class StripePaymentsAPI {
         if (!pgpPublicKeyData.getUserEmail().getEmail().equalsIgnoreCase(cryptonomicaUser.getEmail().getEmail())) {
             throw new Exception("Google Account email and email in key certificate does not much");
         }
-        //
-        if (pgpPublicKeyData.getPaid()) {
+        // first check for null:
+        if (pgpPublicKeyData.getPaid() != null && pgpPublicKeyData.getPaid()) {
             throw new Exception("Verification of key " + fingerprint + " already paid");
         }
         //
@@ -268,11 +289,35 @@ public class StripePaymentsAPI {
             stripePaymentForKeyVerification = paymentForKeyVerificationList.get(0);
         }
 
+        OnlineVerification onlineVerification = ofy()
+                .load()
+                .key(Key.create(OnlineVerification.class, fingerprint))
+                .now();
+
+        if (onlineVerification == null) {
+            throw new NotFoundException("OnlineVerification record not found in data base");
+        }
+
         if (stripePaymentForKeyVerification.getPaymentVerificationCode().equalsIgnoreCase(paymentVerificationCode)) {
+
             stripePaymentForKeyVerification.setVerified(true);
+
+            Key<CryptonomicaUser> cryptonomicaUserKey = Key.create(CryptonomicaUser.class, googleUser.getUserId());
+            Key<Login> loginKey = Key.create(cryptonomicaUserKey, Login.class, login.getId());
+            stripePaymentForKeyVerification.setCheckPaymentVerificationCodeLogin(loginKey);
+
             ofy().save().entity(stripePaymentForKeyVerification); // async
+
+            // add data to PGP Public Key and save:
             pgpPublicKeyData.setPaid(true);
-            ofy().save().entity(pgpPublicKeyData); // async
+            ofy().save().entity(pgpPublicKeyData).now();
+
+            // add data to OnlineVerification and save:
+            // onlineVerification.setPaimentVerified(Boolean.TRUE);
+            onlineVerification.setPaymentVerified(Boolean.TRUE);
+            onlineVerification.setOnlineVerificationFinished(Boolean.TRUE); // <<<<<<<<<< set as ready to manual review
+            ofy().save().entity(onlineVerification); // async
+
             result.setMessage("Code verified!");
         } else {
             stripePaymentForKeyVerification.setFailedVerificationAttemps(
@@ -286,6 +331,52 @@ public class StripePaymentsAPI {
             }
         }
 
+        // On this step user completed entering verification data, send email to compliance:
+        ArrayList<VerificationDocument> verificationDocumentArrayList = new ArrayList<>();
+        int verificationDocumentsListSize = ofy()
+                .load()
+                .type(VerificationDocument.class)
+                .filter("fingerprint", fingerprint)
+                .filter("hidden", false)
+                .list()
+                .size();
+        LOG.warning("verificationDocumentsListSize: " + verificationDocumentsListSize);
+
+        if (verificationDocumentsListSize > 0) {
+            List<VerificationDocument> verificationDocumentList = ofy()
+                    .load()
+                    .type(VerificationDocument.class)
+                    .filter("fingerprint", fingerprint)
+                    .filter("hidden", false)
+                    .list();
+            verificationDocumentArrayList.addAll(verificationDocumentList);
+            LOG.warning(GSON.toJson(verificationDocumentArrayList));
+        }
+
+        OnlineVerificationView onlineVerificationView = new OnlineVerificationView(
+                onlineVerification,
+                verificationDocumentArrayList
+        );
+        Gson prettyGson = new GsonBuilder().setPrettyPrinting().create();
+        final Queue queue = QueueFactory.getDefaultQueue();
+        queue.add(
+                TaskOptions.Builder
+                        .withUrl(
+                                "/_ah/SendGridServlet")
+                        .param("email",
+                                "verification@cryptonomica.net"
+                        )
+                        .param("messageSubject",
+                                "[verification] Request for online verification")
+                        .param("messageText",
+                                "New request for online verification received: \n\n"
+                                        + "see entered data on:\n"
+                                        + "https://cryptonomica.net/#/onlineVerificationView/" + fingerprint + "\n\n"
+                                        + "verification request data in JSON format: \n\n"
+                                        + prettyGson.toJson(onlineVerificationView)
+                        )
+        );
+
         return result;
 
     } // end of paymentVerificationCode
@@ -297,6 +388,7 @@ public class StripePaymentsAPI {
     )
     @SuppressWarnings("unused")
     public IntegerWrapperObject getPriceForKeyVerification(
+            final HttpServletRequest httpServletRequest,
             final User googleUser,
             final @Named("fingerprint") String fingerprint
     )
@@ -304,6 +396,9 @@ public class StripePaymentsAPI {
 
         /* --- Ensure cryptonomica registered user */
         final CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaRegisteredUser(googleUser);
+
+        /* --- record login: */
+        Login login = UserTools.registerLogin(httpServletRequest, googleUser);
 
         /* --- create return object */
         IntegerWrapperObject result = new IntegerWrapperObject();
@@ -324,6 +419,13 @@ public class StripePaymentsAPI {
         Integer price = calculatePriceForKeyVerification(pgpPublicKeyData);
         result.setNumber(price);
 
+        StripePaymentForKeyVerification stripePaymentForKeyVerification = ofy()
+                .load()
+                .key(Key.create(StripePaymentForKeyVerification.class, fingerprint))
+                .now();
+        Key<CryptonomicaUser> cryptonomicaUserKey = Key.create(CryptonomicaUser.class, googleUser.getUserId());
+        Key<Login> loginKey = Key.create(cryptonomicaUserKey, Login.class, login.getId());
+        // stripePaymentForKeyVerification.setGetPriceForKeyVerificationLogin(loginKey); // TODO: repair
         LOG.warning("result: " + GSON.toJson(result));
 
         return result;

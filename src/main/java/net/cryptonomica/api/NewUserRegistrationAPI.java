@@ -73,8 +73,9 @@ public class NewUserRegistrationAPI {
             throw new Exception("Birthdate can not be empty");
         }
 
-        /* --- check userBirthDate */
-        // Date userBirthDate = newUserRegistrationForm.getBirthday();
+        /* --- user BirthDate */
+        Date userBirthDate = newUserRegistrationForm.getBirthday();
+        // TODO: add check
 
         /* --- create PGPPublicKey from armored PGP key block: */
         String userId = googleUser.getUserId();
@@ -90,6 +91,7 @@ public class NewUserRegistrationAPI {
                 pgpPublicKey,
                 armoredPublicPGPkeyBlock,
                 userId);
+        pgpPublicKeyData.setUserBirthday(userBirthDate);
 
         /* --- Check PGPPublic Key: */
 

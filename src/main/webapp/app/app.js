@@ -40,7 +40,7 @@ app.run([
         '$sce',
         'ngProgressFactory',
         '$timeout',
-        // '$cookies',
+        '$cookies',
         '$anchorScroll',
         '$location',
         '$log',
@@ -53,7 +53,7 @@ app.run([
                   $sce,
                   ngProgressFactory,
                   $timeout,
-                  // $cookies,
+                  $cookies,
                   $anchorScroll,
                   $location,
                   $log) {
@@ -96,18 +96,18 @@ app.run([
                             $log.info("[app.js] $rootScope.currentUser: ");
                             $log.info($rootScope.currentUser);
                             // put data to cookies:
-                            // $cookies.put('userId', GData.getUserId());
+                            // $cookies.put('userId', GData.getUserId()); //
+                            // $cookies.put('email', gdata.getUser().email); //
                             // $cookies.put('arbitrator', resp.arbitrator);
                             // $cookies.put('cryptonomicaOfficer', resp.cryptonomicaOfficer);
                             // $cookies.put('lawyer', resp.lawyer);
                             // $cookies.put('notary', resp.notary);
                             // $cookies.put('registeredCryptonomicaUser', resp.registeredCryptonomicaUser);
                             // $cookies.put('userCurrentImageLink', $sce.trustAsResourceUrl(resp.userCurrentImageLink));
-                            //
-                            $timeout($rootScope.progressbar.complete(), 1000);
-                        }, function (resp) {
+                            $timeout($rootScope.progressbar.complete(), 1000); //
+                        }, function (error) {
                             // console.log("$rootScope.getUserData: error: ");
-                            $log.error(resp);
+                            $log.error(error);
                             $timeout($rootScope.progressbar.complete(), 1000);
                         }
                     );
@@ -117,7 +117,7 @@ app.run([
 
                 GAuth.checkAuth().then(
                     function () {
-                        $rootScope.getUserData(); // async?
+                        $rootScope.getUserData(); // async
                     },
                     function () {
                         //$rootScope.getUserData();
@@ -157,7 +157,6 @@ app.run([
                         //$rootScope.getUserData();
                         $state.go('registration');
                     });
-
             };
 
             // =============== Function calls:

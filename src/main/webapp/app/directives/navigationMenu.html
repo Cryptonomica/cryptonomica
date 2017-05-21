@@ -1,10 +1,16 @@
 <!-- Navigation Menu-->
 <div class="btn-group" role="group" ng-show="currentUser.registeredCryptonomicaUser">
-    <a class="btn btn-secondary" href="" ui-sref-active="active" role="button" ui-sref="home">Home</a>
-    <a class="btn btn-secondary" href="" ui-sref-active="active" role="button" ui-sref="dashboard">Dashboard/Payments</a>
+
+    <!--<a class="btn btn-secondary" href="" ui-sref-active="active" role="button" ui-sref="home">Home</a>-->
+    <a class="btn btn-secondary" href="" ui-sref-active="active" role="button"
+       ui-sref="viewprofile({userId:currentUser.userId})">
+        My Profile
+    </a>
     <a class="btn btn-secondary" href="" ui-sref-active="active" role="button" ui-sref="registration">Registration</a>
     <a class="btn btn-secondary" href="" ui-sref-active="active" role="button" ui-sref="search">Search</a>
     <a class="btn btn-secondary" href="" ui-sref-active="active" role="button" ui-sref="notaries">Show notaries</a>
     <a class="btn btn-secondary" href="" ui-sref-active="active" role="button" ui-sref="showallarbitrators">Show arbitrators</a>
     <a class="btn btn-secondary" href="" ui-sref-active="active" role="button" ui-sref="proofOfExistence" >Proof of existence</a>
+    <a class="btn btn-secondary" href="" ui-sref-active="active" role="button" ui-sref="dashboard">Payments</a>
+
 </div>

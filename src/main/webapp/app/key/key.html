@@ -1,33 +1,34 @@
 <header-main-menu></header-main-menu>
 <navigation-menu></navigation-menu>
+<div class="container">
+    <div class="card card-block">
+        <!-- Alert! -->
+        <div ng-show="alert" class="alert alert-danger" role="alert">
+            {{alert}}
+        </div>
+        <!-- KEY VERIFICATION START -->
+        <!-- TODO: to directive -->
+        <!-- TODO: show key verification info in the key view-->
+        <hr>
+        <div ng-show="(currentUser && currentUser.cryptonomicaOfficer)||(currentUser && currentUser.notary)">
+            <h4>Notary menu: </h4>
+            <p>(you view this because you are an authorized notary or Cryptonomica officer)</p>
+            <button type="button" class="btn btn-default" ng-click="KeyVerificationFormShowToggle()"
+                    title="Click to show">
+                Add key verification:
+            </button>
+            <div ng-show="KeyVerificationFormShow">
+                <form id="KeyVerificationFORM" name="KeyVerificationFORM">
+                    <!-- Remember, since Bootstrap utilizes the HTML5 doctype, all inputs must have a type attribute. -->
+                    <fieldset>
+                        <!-- basedOnDocument -->
+                        <label for="basedOnDocument">Document(s) provided for verification:</label>
+                        <input id="basedOnDocument" type="text" class="form-control"
+                               ng-model="VerifyPGPPublicKeyForm.basedOnDocument" ng-required="true">
+                        <br>
 
-<div class="card card-block">
-    <!-- Alert! -->
-    <div ng-show="alert" class="alert alert-danger" role="alert">
-        {{alert}}
-    </div>
-    <!-- KEY VERIFICATION START -->
-    <!-- TODO: to directive -->
-    <!-- TODO: show key verification info in the key view-->
-    <hr>
-    <div ng-show="(currentUser && currentUser.cryptonomicaOfficer)||(currentUser && currentUser.notary)">
-        <h4>Notary menu: </h4>
-        <p>(you view this because you are an authorized notary or Cryptonomica officer)</p>
-        <button type="button" class="btn btn-default" ng-click="KeyVerificationFormShowToggle()" title="Click to show">
-            Add key verification:
-        </button>
-        <div ng-show="KeyVerificationFormShow">
-            <form id="KeyVerificationFORM" name="KeyVerificationFORM">
-                <!-- Remember, since Bootstrap utilizes the HTML5 doctype, all inputs must have a type attribute. -->
-                <fieldset>
-                    <!-- basedOnDocument -->
-                    <label for="basedOnDocument">Document(s) provided for verification:</label>
-                    <input id="basedOnDocument" type="text" class="form-control"
-                           ng-model="VerifyPGPPublicKeyForm.basedOnDocument" ng-required="true">
-                    <br>
-
-                    <!--// verificationInfo-->
-                    <label for="verificationInfo">Information about key verification:</label>
+                        <!--// verificationInfo-->
+                        <label for="verificationInfo">Information about key verification:</label>
 
                     <textarea id="verificationInfo"
                               name="verificationInfo"
@@ -35,107 +36,133 @@
                               ng-model="VerifyPGPPublicKeyForm.verificationInfo"
                               ng-required="true">
                     </textarea>
-                    <br>
-                </fieldset>
-                <input type="submit" class="btn btn-default" ng-click="verifyPGPPublicKeyFormSubmit()">
-            </form>
+                        <br>
+                    </fieldset>
+                    <input type="submit" class="btn btn-default" ng-click="verifyPGPPublicKeyFormSubmit()">
+                </form>
+                <hr>
+                <!-- Success message: -->
+                <div ng-show="VerifyPGPPublicKeyReturn.messageToUser" class="alert alert-success" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                            aria-hidden="true">×</span></button>
+                    {{VerifyPGPPublicKeyReturn.messageToUser}}
+                </div>
+                <!-- Error message: -->
+                <div ng-show="verifyKeyError" class="alert alert-danger" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                            aria-hidden="true">×</span></button>
+                    {{verifyKeyError.message}}
+                </div>
+            </div>
             <hr>
-            <!-- Success message: -->
-            <div ng-show="VerifyPGPPublicKeyReturn.messageToUser" class="alert alert-success" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                        aria-hidden="true">×</span></button>
-                {{VerifyPGPPublicKeyReturn.messageToUser}}
-            </div>
-            <!-- Error message: -->
-            <div ng-show="verifyKeyError" class="alert alert-danger" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                        aria-hidden="true">×</span></button>
-                {{verifyKeyError.message}}
-            </div>
+            <!--  -->
         </div>
-        <hr>
-        <!--  -->
-    </div>
 
-    <!-- KEY VERIFICATION END -->
+        <!-- KEY VERIFICATION END -->
+        <div ng-show="(currentUser && key && (currentUser.userId == key.cryptonomicaUserId)) || (currentUser && currentUser.cryptonomicaOfficer)||(currentUser && currentUser.notary)">
 
-    <table ng-hide="key.empty" class="table table-bordered table-hover">
-        <tbody>
-        <tr>
-            <td>keyID</td>
-            <td>{{key.keyID}}</td>
-        </tr>
-        <tr>
-            <td>userID</td>
-            <td>
-                <a href=""
-                   title="Show user profile"
-                   ui-sref="viewprofile({ userId: key.cryptonomicaUserId })">
-                    {{key.userID}}
-                </a>
+            <div class="row" ng-hide="key.onlineVerificationFinished">
 
+                <div class="col-xs-6 col-md-6 col-lg-6"></div>
 
-            </td>
-        </tr>
-        <tr>
-            <td>fingerprint</td>
-            <td>{{key.fingerprint}}</td>
-        </tr>
-        <tr>
-            <td>created</td>
-            <td>{{key.created}}</td>
-        </tr>
-        <tr>
-            <td>expires</td>
-            <td>{{key.exp}}</td>
-        </tr>
-        <tr>
-            <td>Bit strength</td>
-            <td>{{key.bitStrength}}</td>
-        </tr>
-        <tr>
-            <td>Verified:</td>
-            <td>{{key.verified}}</td>
-        </tr>
+                <div class="col-xs-6 col-md-6 col-lg-6">
+                    <div class="btn-group">
+                        <a class="btn btn-success" href="" role="button" ng-click="verifyOnline()">
+                            Verify Online
+                        </a>
+                        &nbsp;
+                        <a class="btn btn-info" href="" role="button"
+                           ui-sref="onlineVerificationView({fingerprint:key.fingerprint})">
+                            Show verification data
+                        </a>
+                    </div>
+                </div>
+            </div>
 
-        <tr ng-show="key.verificationsWebSafeStrings">
-            <td>Verifications:</td>
-            <td>
-                <div ng-repeat="verificationWebSafeString in key.verificationsWebSafeStrings">
+        </div>
 
+        <table ng-hide="key.empty" class="table table-bordered table-hover">
+            <tbody>
+            <tr>
+                <td>keyID</td>
+                <td>{{key.keyID}}</td>
+            </tr>
+            <tr>
+                <td>userID</td>
+                <td>
                     <a href=""
-                       title="Show verification info"
-                       ui-sref="verification({ verificationWebSafeString: verificationWebSafeString })">
-                        Show verification info
+                       title="Show user profile"
+                       ui-sref="viewprofile({ userId: key.cryptonomicaUserId })">
+                        {{key.userID}}
                     </a>
+                </td>
+            </tr>
+            <tr>
+                <td>fingerprint</td>
+                <td>{{key.fingerprint}}</td>
+            </tr>
+            <tr>
+                <td>created</td>
+                <td>{{key.created}}</td>
+            </tr>
+            <tr>
+                <td>expires</td>
+                <td>{{key.exp}}</td>
+            </tr>
+            <tr>
+                <td>Bit strength</td>
+                <td>{{key.bitStrength}}</td>
+            </tr>
+            <tr>
+                <td>Verified offline:</td>
+                <td>{{key.verified}}</td>
+            </tr>
 
-                </div>
-            </td>
-        </tr>
+            <tr ng-show="key.verificationsWebSafeStrings">
+                <td>Offline verifications:</td>
+                <td>
+                    <div ng-repeat="verificationWebSafeString in key.verificationsWebSafeStrings">
 
-        <tr>
-            <td>ASCII-armored PGP Public Key</td>
-            <td>
-                <!-- -->
-                <div ng-show="key">
-                    <div ng-hide="key.verified" class="keynotverified">
-                        <span>key not verified</span>
-                    </div>
-                    <div ng-show="key.verified" class="keyverified">
-                        <span>key verified</span>
-                    </div>
-                    <!--  -->
-                    <button class="btn" ngclipboard data-clipboard-target="#ASCIIarmored">Copy to clipboard</button>
-                    <button class="btn" ng-click="download(ASCIIarmored)">Download as file</button>
-                    <div>
-                        <pre><code id="ASCIIarmored" title="Public PGP Key">{{key.asciiArmored}}</code></pre>
-                    </div>
-                </div>
-            </td>
-        </tr>
+                        <a href=""
+                           title="Show verification info"
+                           ui-sref="verification({ verificationWebSafeString: verificationWebSafeString })">
+                            Show verification info
+                        </a>
 
-        </tbody>
-    </table>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Verified online:</td>
+                <td>{{key.onlineVerificationFinished}}</td>
+            </tr>
+
+            <tr>
+                <td>ASCII-armored PGP Public Key</td>
+                <td>
+                    <!-- -->
+                    <div ng-show="key">
+                        <div ng-hide="key.verified || key.onlineVerificationFinished" class="keynotverified">
+                            <span>key not verified</span>
+                        </div>
+                        <div ng-show="key.verified || key.onlineVerificationFinished" class="keyverified">
+                            <span>key verified:</span>
+                            <span ng-show="key.onlineVerificationFinished">&nbsp;<b>online</b></span>
+                            <span ng-show="key.verified">&nbsp;<b>offline</b></span>
+                        </div>
+                        <!--  -->
+                        <button class="btn" ngclipboard data-clipboard-target="#ASCIIarmored">Copy to clipboard</button>
+                        <button class="btn" ng-click="download(ASCIIarmored)">Download as file</button>
+                        <div>
+                            <pre><code id="ASCIIarmored" title="Public PGP Key">{{key.asciiArmored}}</code></pre>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
 </div>
-
 <footer-main></footer-main>

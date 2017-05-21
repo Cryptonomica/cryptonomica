@@ -19,7 +19,7 @@ $(document).ready(function () {
         // Initialize WOW.js
         wow = new WOW({
             offset: 50
-        })
+        });
         wow.init();
     }
 });

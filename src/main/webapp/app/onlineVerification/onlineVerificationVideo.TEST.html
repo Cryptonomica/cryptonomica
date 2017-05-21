@@ -1,0 +1,59 @@
+
+<!-- ???? make separate view for video ???? -->
+
+
+<script src="https://cdn.webrtc-experiment.com/MediaStreamRecorder.js"></script>
+
+<header-main-menu></header-main-menu>
+<navigation-menu></navigation-menu>
+
+<!-- Alerts -->
+<div id="alerts">
+
+    <alerts></alerts>
+
+    <!-- Errors from server -->
+    <div id="errorMessage" ng-show="error.message" class="alert alert-danger alert-dismissible" role="alert">
+        {{error.message}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                aria-hidden="true">×</span></button>
+    </div>
+    <!-- Auth error -->
+    <div id="authError" ng-hide="currentUser.registeredCryptonomicaUser" class="alert alert-danger alert-dismissible"
+         role="alert">
+        User not registered or not logged in
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                aria-hidden="true">×</span></button>
+    </div>
+    <!-- Messages to user -->
+    <div id="messageToUser" ng-show="messageToUser" class="alert alert-success alert-dismissible" role="alert">
+        {{messageToUser}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                aria-hidden="true">×</span></button>
+    </div>
+    <input type="text" name="errorGate" id="errorGate" ng-model="error.message" hidden>
+</div>
+
+<div id="keyInfo">
+    <hr>
+    <center>
+        <p>
+            Verification for key:
+            <a ui-sref="key({fingerprint:pgpPublicKey.fingerprint})" target="_blank">{{pgpPublicKey.keyID}}</a>,
+            key owner:
+            <a ui-sref="viewprofile({userId:cryptonomicaUserId})" target="_blank">{{pgpPublicKey.userID}}</a>
+        </p>
+    </center>
+
+    <hr>
+</div>
+
+<div id="mainPart" ng-show="!notAllowed">
+
+    <div id="verificationVideo" ng-show="verificationVideo">
+        <online-verification-video></online-verification-video>
+    </div>
+    
+</div>
+<!-- -->
+<footer-main></footer-main>

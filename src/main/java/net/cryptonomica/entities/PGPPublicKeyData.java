@@ -65,7 +65,7 @@ public class PGPPublicKeyData {
     private int bitStrength; //...............................13
     private Text asciiArmored; //.............................14
     @Index
-    private Boolean verified; //..............................15
+    private Boolean verified; //.off-line verification........15
     @Index
     // can be used to filter what to show
     private Boolean active; //................................16
@@ -83,12 +83,18 @@ public class PGPPublicKeyData {
     // if user has a credit card with different spelling
     // of the last and first name
     private String nameOnCard; //.............................21
+    @Index
+    // OnlineVerification entity ID -> fingerprint
+    private Boolean onlineVerificationFinished; //............22
+    private Date userBirthday; //.............................23
 
     /* --- Constructors: */
     public PGPPublicKeyData() {
         this.verificationsWebSafeStrings = new ArrayList<>();
         this.entityCreated = new Date();
         this.nameOnCard = null;
+        this.verified = false;
+        this.onlineVerificationFinished = false;
     } // end: empty constructor
 
     public PGPPublicKeyData(PGPPublicKey pgpPublicKey, String asciiArmored, String cryptonomicaUserId) {
@@ -176,6 +182,10 @@ public class PGPPublicKeyData {
         // ---
         this.entityCreated = new Date(); // <- final
         this.nameOnCard = null;
+
+        this.verified = false;
+        this.onlineVerificationFinished = false;
+
     } // end:  costructor with args
 
     /* ------- Methods */
@@ -326,10 +336,6 @@ public class PGPPublicKeyData {
         return verificationsWebSafeStrings;
     }
 
-    public void setVerificationsWebSafeStrings(ArrayList<String> verificationsWebSafeStrings) {
-        this.verificationsWebSafeStrings = verificationsWebSafeStrings;
-    }
-
     public void setVerificationsWebSafeStrings(List<String> verificationsWebSafeStrings) {
         this.verificationsWebSafeStrings = verificationsWebSafeStrings;
     }
@@ -354,6 +360,10 @@ public class PGPPublicKeyData {
         return entityCreated;
     }
 
+    public void setEntityCreated(Date entityCreated) {
+        this.entityCreated = entityCreated;
+    }
+
     public String getNameOnCard() {
         return nameOnCard;
     }
@@ -362,5 +372,20 @@ public class PGPPublicKeyData {
         this.nameOnCard = nameOnCard;
     }
 
+    public Boolean getOnlineVerificationFinished() {
+        return onlineVerificationFinished;
+    }
+
+    public void setOnlineVerificationFinished(Boolean onlineVerificationFinished) {
+        this.onlineVerificationFinished = onlineVerificationFinished;
+    }
+
+    public Date getUserBirthday() {
+        return userBirthday;
+    }
+
+    public void setUserBirthday(Date userBirthday) {
+        this.userBirthday = userBirthday;
+    }
     // end getters and setters
 }

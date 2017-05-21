@@ -9,6 +9,13 @@ var controller_name = "cryptonomica.controller.showkey";
 
 var controller = angular.module(controller_name, []);
 
+// https://docs.angularjs.org/api/ng/provider/$logProvider
+controller.config(function ($logProvider) {
+        // $logProvider.debugEnabled(false);
+        $logProvider.debugEnabled(true);
+    }
+);
+
 controller.controller(controller_name, [
         '$scope',
         '$rootScope',
@@ -55,7 +62,8 @@ controller.controller(controller_name, [
             $scope.dateOptions = {
                 changeYear: true,
                 changeMonth: true,
-                yearRange: '1900:-0'};
+                yearRange: '1900:-0'
+            };
             //
             $log.info("$stateParams.websafestring : " + $stateParams.websafestring);
             var showKey = function () {

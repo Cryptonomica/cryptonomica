@@ -102,8 +102,13 @@
     </div>
     <div ng-show="userProfileGeneralView">
         <h3>User Data:</h3>
-        <img ng-src="{{userProfileGeneralView.userCurrentImageLink || 'https://placehold.it/100x100?text=No+Image-Uploaded'}}"
-             height="100" width="" class="img-thumbnail pull-xs-left" style="">
+        <a ng-href="{{userProfileGeneralView.userCurrentImageLink || 'https://placehold.it/100x100?text=No+Image-Uploaded'}}">
+            <img ng-src="{{userProfileGeneralView.userCurrentImageLink || 'https://placehold.it/100x100?text=No+Image-Uploaded'}}"
+                 style="height: 200px"
+                 class="pull-xs-left">
+        </a>
+
+        <br>
         <table class="table table-bordered table-hover">
             <!-- for Bootstrap 4 table see:
                 http://www.quackit.com/bootstrap/bootstrap_4/tutorial/bootstrap_tables.cfm -->

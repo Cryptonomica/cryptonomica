@@ -1,0 +1,60 @@
+<div id="onlineVerificationTerms">
+    <div class="card">
+        <div class="card-header">
+            <center>
+                <h5>Online key verification</h5>
+            </center>
+        </div>
+        <div class="card-block">
+            <form>
+
+                <div id="acceptTermsText">
+                    <md ng-include="'/app/onlineVerification/terms.md'"></md>
+                </div>
+
+                <fieldset class="form-group">
+
+                    <!--<legend>accept online verification terms</legend>-->
+                    <!--<label for="acceptTerms">accept online verification terms:</label>-->
+                    <!--<input type="checkbox" id="acceptTerms" class="form-control" ng-model="acceptTermsAnswer">-->
+                    <!--<br>-->
+
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" ng-model="acceptTermsAnswer">
+                            I accept online verification terms and conditions
+                        </label>
+                    </div>
+
+
+                    <button ng-click="acceptTerms()"
+                            role="button" type="button" class="btn btn-secondary">
+                        Accept
+                    </button>
+
+                </fieldset>
+
+            </form>
+
+            <div id="acceptTermsAlerts">
+                <div ng-show="acceptTermsError" class="alert alert-danger alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span ng-click="alertDanger=null">&times;</span>
+                    </button>
+                    {{acceptTermsError}}
+                </div>
+                <div ng-show="acceptTermsSuccess" class="alert alert-success alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+                    {{acceptTermsSuccess}}
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <button name="button" class="btn btn-secondary" role="button" ng-click="getOnlineVerification()">
+        Next Step >>>
+    </button>
+    <br>
+    <hr>
+
+</div>

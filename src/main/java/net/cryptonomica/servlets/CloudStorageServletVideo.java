@@ -3,10 +3,7 @@ package net.cryptonomica.servlets;
 import com.google.appengine.tools.cloudstorage.GcsFilename;
 import com.google.gson.Gson;
 import com.googlecode.objectify.Key;
-import net.cryptonomica.entities.CryptonomicaUser;
-import net.cryptonomica.entities.PGPPublicKeyData;
-import net.cryptonomica.entities.VerificationVideo;
-import net.cryptonomica.entities.VideoUploadKey;
+import net.cryptonomica.entities.*;
 import net.cryptonomica.service.CloudStorageService;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -136,6 +133,7 @@ public class CloudStorageServletVideo extends HttpServlet {
             // throw new ServletException("User is not registered on Cryptonomica server");
         }
 
+        /* --- Check PGPPublicKeyData */
         PGPPublicKeyData pgpPublicKeyData = null;
         try {
             pgpPublicKeyData = ofy()
@@ -155,6 +153,22 @@ public class CloudStorageServletVideo extends HttpServlet {
             );
         }
 
+        /* --- Check online verification */
+        OnlineVerification onlineVerification = null;
+        try {
+            onlineVerification = ofy().load().key(Key.create(OnlineVerification.class, fingerprint)).now();
+        } catch (Exception e) {
+            LOG.warning(e.getMessage());
+            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"error reading OnlineVerification data from DB\"}");
+        }
+        if (onlineVerification == null) {
+            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"OnlineVerification for the key with fingerprint "
+                    + fingerprint
+                    + " is not registered on Cryptonomica server\"}"
+            );
+        }
+
+        /* --- check if key belongs to user: */
         if (!cryptonomicaUser.getUserId().equalsIgnoreCase(pgpPublicKeyData.getCryptonomicaUserId())) {
             ServletUtils.sendJsonResponse(resp, "{\"Error\":\"Key with fingerprint "
                     + fingerprint
@@ -164,7 +178,7 @@ public class CloudStorageServletVideo extends HttpServlet {
             );
         }
 
-        // additional check for userID and user email match:
+        // additional check for userID and user email match: // TODO: do we need this
         if (!cryptonomicaUser.getEmail().getEmail().equalsIgnoreCase(userEmail)) {
             ServletUtils.sendJsonResponse(resp, "{\"Error\":\"User ID and user email did not match\"}");
             // throw new ServletException("User ID and user email did not match");
@@ -232,7 +246,9 @@ public class CloudStorageServletVideo extends HttpServlet {
                 gcsFilename.getObjectName(),
                 videoUploadKeyReceived
         );
-        ofy().save().entity(verificationVideo); // <<< async without .now()
+        ofy().save().entity(verificationVideo).now(); //
+        onlineVerification.setVerificationVideoId(verificationVideoId);
+        ofy().save().entity(onlineVerification).now();
 
         videoUploadKey.setUploadedVideoId(verificationVideoId);
         ofy().save().entity(videoUploadKey); // <<< async without .now()

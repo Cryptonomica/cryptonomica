@@ -3,10 +3,11 @@
     <!--<h6>(to record video is better to use Google Chrome Browser on Desktop PC)</h6>-->
     <h6>Please, read this text and record on your web-camera:</h6>
     <div>
-        Today is {{ todayDate | date : "fullDate"}}<br>
-        I, {{currentUser.firstName | uppercase}} {{currentUser.lastName |
-        uppercase}}, my email {{currentUser.email}},
-        hereby certify that the OpenPGP key with fingerprint {{keyId}}
+        Today is {{ todayDate | date : "fullDate"}},
+        time on my computer is {{ todayDate | date : "HH"}} hours {{ todayDate | date : "mm"}} minutes <br>
+        I am {{currentUser.firstName | uppercase}} {{currentUser.lastName | uppercase}},
+        my email {{currentUser.email}},
+        hereby certify that the OpenPGP key with ID: {{keyId}}
         is my key, and signatures made by this key are my own signatures.
     </div>
 </div>

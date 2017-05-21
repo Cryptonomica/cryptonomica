@@ -6,6 +6,7 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -13,7 +14,7 @@ import java.util.Date;
  */
 @Entity // -> net.cryptonomica.service.OfyService
 @Cache
-public class VerificationDocument {
+public class VerificationDocument implements Serializable { // <-- this allows bo be returned in API directly
 
     // private static final Logger LOG = Logger.getLogger(VerificationDocument.class.getName());
 
@@ -31,11 +32,15 @@ public class VerificationDocument {
     private String documentsUploadKey; //.........................................................6
     @Index
     private String fingerprint; //................................................................7
+    @Index
+    private Boolean hidden; //....................................................................8
+
 
     /* ---- Constructors */
 
     public VerificationDocument() {
         this.entityCreated = new Date();
+        this.hidden = false;
     }
 
     public VerificationDocument(String id,
@@ -51,6 +56,7 @@ public class VerificationDocument {
         this.objectName = objectName;
         this.documentsUploadKey = documentsUploadKey;
         this.fingerprint = fingerprint;
+        this.hidden = false;
     }
 
     /* --- Methods */
@@ -113,5 +119,13 @@ public class VerificationDocument {
 
     public void setFingerprint(String fingerprint) {
         this.fingerprint = fingerprint;
+    }
+
+    public Boolean getHidden() {
+        return hidden;
+    }
+
+    public void setHidden(Boolean hidden) {
+        this.hidden = hidden;
     }
 }

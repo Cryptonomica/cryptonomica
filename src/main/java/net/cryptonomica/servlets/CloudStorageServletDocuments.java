@@ -3,10 +3,7 @@ package net.cryptonomica.servlets;
 import com.google.appengine.tools.cloudstorage.GcsFilename;
 import com.google.gson.Gson;
 import com.googlecode.objectify.Key;
-import net.cryptonomica.entities.CryptonomicaUser;
-import net.cryptonomica.entities.PGPPublicKeyData;
-import net.cryptonomica.entities.VerificationDocument;
-import net.cryptonomica.entities.VerificationDocumentsUploadKey;
+import net.cryptonomica.entities.*;
 import net.cryptonomica.service.CloudStorageService;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -239,7 +236,19 @@ public class CloudStorageServletDocuments extends HttpServlet {
                         verificationDocumentsUploadKey,
                         fingerprint
                 )
-        ); // async without .now()
+        )
+                .now();
+
+        // to test, but see:
+        // https://github.com/objectify/objectify/wiki/Concepts#optimistic-concurrency
+        OnlineVerification onlineVerification = ofy()
+                .load().key(Key.create(OnlineVerification.class, fingerprint)).now();
+        if (onlineVerification == null) {
+            throw new ServletException("OnlineVerification record not found in data base");
+        }
+        onlineVerification.addVerificationDocument(uploadedDocumentId);
+        ofy().save().entity(onlineVerification).now();
+        //
 
         String jsonResponseStr = "{\"uploadedDocumentId\":\""
                 + uploadedDocumentId

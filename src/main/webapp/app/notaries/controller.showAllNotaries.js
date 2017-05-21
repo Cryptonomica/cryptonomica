@@ -8,10 +8,18 @@ var controller_name = "cryptonomica.controller.showAllNotaries";
 
 var controller = angular.module(controller_name, []);
 
+// https://docs.angularjs.org/api/ng/provider/$logProvider
+controller.config(function ($logProvider) {
+        // $logProvider.debugEnabled(false);
+        $logProvider.debugEnabled(true);
+    }
+);
+
 controller.controller(controller_name, [
         '$scope',
         '$rootScope',
         '$http',
+        '$log',
         'GApi',
         'GAuth',
         'GData',
@@ -22,6 +30,7 @@ controller.controller(controller_name, [
         function showAllNotariesCtrl($scope,
                                      $rootScope,
                                      $http,
+                                     $log,
                                      GApi,
                                      GAuth,
                                      GData,

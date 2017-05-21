@@ -1,6 +1,7 @@
 package net.cryptonomica.entities;
 
 import com.google.appengine.api.datastore.Email;
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
@@ -40,6 +41,9 @@ public class StripePaymentForKeyVerification {
     @Index
     // f.e.: "id": "ch_1AEomQDjN2J4PGOBQqToH0Kz"
     private String chargeId; // ..............................11
+    private Key<Login> getPriceForKeyVerificationLogin;//.....12
+    private Key<Login> chargeLogin; //........................13
+    private Key<Login> checkPaymentVerificationCodeLogin; //..14
 
     /* ---- Constructors */
 
@@ -137,4 +141,29 @@ public class StripePaymentForKeyVerification {
     public void setChargeId(String chargeId) {
         this.chargeId = chargeId;
     }
+
+    public Key<Login> getChargeLogin() {
+        return chargeLogin;
+    }
+
+    public void setChargeLogin(Key<Login> chargeLogin) {
+        this.chargeLogin = chargeLogin;
+    }
+
+    public Key<Login> getCheckPaymentVerificationCodeLogin() {
+        return checkPaymentVerificationCodeLogin;
+    }
+
+    public void setCheckPaymentVerificationCodeLogin(Key<Login> checkPaymentVerificationCodeLogin) {
+        this.checkPaymentVerificationCodeLogin = checkPaymentVerificationCodeLogin;
+    }
+
+    public Key<Login> getGetPriceForKeyVerificationLogin() {
+        return getPriceForKeyVerificationLogin;
+    }
+
+    public void setGetPriceForKeyVerificationLogin(Key<Login> getPriceForKeyVerificationLogin) {
+        this.getPriceForKeyVerificationLogin = getPriceForKeyVerificationLogin;
+    }
 }
+

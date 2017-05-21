@@ -1,5 +1,7 @@
 <script type="text/javascript">
 
+    // app/directives/recordVideoJs.html
+
     var mediaConstraints = {
         audio: true,
         video: true
@@ -145,9 +147,9 @@
 
     } // end: onMediaSuccess(stream)
 
-    function onMediaError(e) {
-        console.error('media error:');
-        console.error(e);
+    function onMediaError(error) {
+        console.log('media error:');
+        console.log(error);
     } // end onMediaError
 
 </script>

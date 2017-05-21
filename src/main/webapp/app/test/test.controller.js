@@ -6,6 +6,13 @@
 
     var controller = angular.module(controller_name, []);
 
+    // https://docs.angularjs.org/api/ng/provider/$logProvider
+    controller.config(function ($logProvider) {
+            // $logProvider.debugEnabled(false);
+            $logProvider.debugEnabled(true);
+        }
+    );
+
     controller.controller(controller_name, [
         '$scope',
         '$rootScope',
