@@ -84,6 +84,8 @@ public class PGPPublicKeyData {
     // of the last and first name
     private String nameOnCard; //.............................21
     @Index
+    // onlineVerificationFinished - true when approved by
+    // compliance officer
     // OnlineVerification entity ID -> fingerprint
     private Boolean onlineVerificationFinished; //............22
     private Date userBirthday; //.............................23

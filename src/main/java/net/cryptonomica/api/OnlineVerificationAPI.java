@@ -516,7 +516,7 @@ public class OnlineVerificationAPI {
             throw new BadRequestException("OnlineVerification already approved");
         }
 
-        // check as approved and save:
+        // mark Online Verification as approved:
         onlineVerification.setOnlineVerificationDataVerified(onlineVerificationApproved); // <<<<<< !!!
         onlineVerification.setVerifiedById(googleUser.getUserId());
         onlineVerification.setVerifiedByFirstNameLastName(
@@ -524,7 +524,21 @@ public class OnlineVerificationAPI {
         );
         onlineVerification.setVerifiedOn(new Date());
         onlineVerification.setVerificationNotes(verificationNotes);
+        // mark key as verifified:
+        PGPPublicKeyData pgpPublicKeyData = ofy()
+                .load()
+                .type(PGPPublicKeyData.class)
+                .filter("fingerprintStr", fingerprint)
+                .first()
+                .now();
+        if (pgpPublicKeyData == null) {
+            throw new NotFoundException("Key with fingerprint " + fingerprint + " not found");
+        }
+        pgpPublicKeyData.setOnlineVerificationFinished(Boolean.TRUE);
+
+        // save data to data store:
         ofy().save().entity(onlineVerification).now();
+        ofy().save().entity(pgpPublicKeyData).now();
 
         // Send email to user:
         final Queue queue = QueueFactory.getDefaultQueue();
