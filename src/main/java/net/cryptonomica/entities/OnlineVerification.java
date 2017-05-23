@@ -100,6 +100,8 @@ public class OnlineVerification implements Serializable { // -- can be returned 
         this.firstName = pgpPublicKeyData.getFirstName();
         this.keyID = pgpPublicKeyData.getKeyID();
         this.cryptonomicaUserId = pgpPublicKeyData.getCryptonomicaUserId();
+        // old PGPPublicKeyData entities (created before 22.05.17) do not have this property
+        // Birthday was stored in CryptonomicaUser entity only
         this.birthday = pgpPublicKeyData.getUserBirthday();
         //
         this.entityCreated = new Date(); // <<< ---

@@ -560,7 +560,7 @@ public class OnlineVerificationAPI {
                                 "Congratulation! \n\n"
                                         + onlineVerification.getFirstName().toUpperCase() + " "
                                         + onlineVerification.getLastName().toUpperCase() + ",\n\n"
-                                        + "your request for online verification for key :"
+                                        + "your request for online verification for key with fingerprint : "
                                         + fingerprint + " approved! \n\n"
                                         + "See verification information on:\n"
                                         + "https://cryptonomica.net/#/onlineVerificationView/" + fingerprint + "\n"
@@ -572,7 +572,7 @@ public class OnlineVerificationAPI {
                                         + new Date().toString()
                                         + "\n\n"
                                         + "if you think it's wrong or it is an error, "
-                                        + "please write to admin@cryptonomica.net\n"
+                                        + "please write to support@cryptonomica.net\n\n"
                         )
         );
 
