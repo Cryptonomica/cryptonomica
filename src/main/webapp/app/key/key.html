@@ -24,21 +24,28 @@
                         <!-- basedOnDocument -->
                         <label for="basedOnDocument">Document(s) provided for verification:</label>
                         <input id="basedOnDocument" type="text" class="form-control"
+                               placeholder="for example: Israeli Passport # 1234567 issued by 'Jerusalem' on 2017-01-01 "
                                ng-model="VerifyPGPPublicKeyForm.basedOnDocument" ng-required="true">
                         <br>
 
                         <!--// verificationInfo-->
-                        <label for="verificationInfo">Information about key verification:</label>
-
+                        <label for="verificationInfo">Place where verification was made:</label>
                     <textarea id="verificationInfo"
                               name="verificationInfo"
                               class="form-control"
                               ng-model="VerifyPGPPublicKeyForm.verificationInfo"
+                              placeholder="for example: International House, 24 Holborn Viaduct, London, United Kingdom"
                               ng-required="true">
                     </textarea>
                         <br>
                     </fieldset>
-                    <input type="submit" class="btn btn-default" ng-click="verifyPGPPublicKeyFormSubmit()">
+                    <p>
+                        Please: before you click 'Submit', make a photo or scan of user document ID in good quality,
+                        and send this photo or scan to <a href="mailto:support@cryptonomica.net">support@cryptonomica.net</a>
+                    </p>
+                    <input type="submit" value="Submit"
+                           class="btn btn-default"
+                           ng-click="verifyPGPPublicKeyFormSubmit()">
                 </form>
                 <hr>
                 <!-- Success message: -->
@@ -59,22 +66,29 @@
         </div>
 
         <!-- KEY VERIFICATION END -->
-        <div ng-show="(currentUser && key && (currentUser.userId == key.cryptonomicaUserId)) || (currentUser && currentUser.cryptonomicaOfficer)||(currentUser && currentUser.notary)">
+        <div>
 
-            <div class="row" ng-hide="key.onlineVerificationFinished">
+            <div class="row">
 
                 <div class="col-xs-6 col-md-6 col-lg-6"></div>
 
                 <div class="col-xs-6 col-md-6 col-lg-6">
                     <div class="btn-group">
-                        <a class="btn btn-success" href="" role="button" ng-click="verifyOnline()">
+
+                        <a ng-show="(currentUser && key && (currentUser.userId == key.cryptonomicaUserId)) && !key.onlineVerificationFinished"
+                           class="btn btn-success" href="" role="button"
+                           ng-click="verifyOnline()">
                             Verify Online
                         </a>
+
                         &nbsp;
-                        <a class="btn btn-info" href="" role="button"
+
+                        <a ng-show="(currentUser && key && (currentUser.userId == key.cryptonomicaUserId)) || (currentUser && currentUser.cryptonomicaOfficer)||(currentUser && currentUser.notary)"
+                           class="btn btn-info" href="" role="button"
                            ui-sref="onlineVerificationView({fingerprint:key.fingerprint})">
                             Show verification data
                         </a>
+
                     </div>
                 </div>
             </div>
@@ -107,7 +121,11 @@
             </tr>
             <tr>
                 <td>expires</td>
-                <td>{{key.exp}}</td>
+                <td ng-style="key.expired && {'color':'red', 'font-weight':'bold'}">
+                    <span ng-show="key.expired">expired: </span>
+                    <!--{{key.exp | date}}-->
+                    {{key.exp}}
+                </td>
             </tr>
             <tr>
                 <td>Bit strength</td>

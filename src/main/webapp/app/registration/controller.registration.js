@@ -12,7 +12,7 @@
             $logProvider.debugEnabled(true);
         }
     );
-    
+
     controller.controller(controller_name, [
             '$scope',
             '$sce',
@@ -67,6 +67,20 @@
                 }
                 //
                 $scope.dateOptions = {changeYear: true, changeMonth: true, yearRange: '1900:-0'};
+                // --------------------------------------------------------------
+                $scope.regForm = {};
+                $scope.pgpPublicKeyUploadForm = {};
+                $scope.readFileContent = function ($fileContent) {
+                    // $scope.content = $fileContent;
+                    $scope.regForm.armoredPublicPGPkeyBlock = $fileContent;
+                    $scope.pgpPublicKeyUploadForm.asciiArmored = $fileContent;
+                    $log.debug('$scope.regForm.armoredPublicPGPkeyBlock: '
+                        + $scope.regForm.armoredPublicPGPkeyBlock
+                    );
+                    $log.debug(' $scope.pgpPublicKeyUploadForm.asciiArmored: '
+                        + $scope.pgpPublicKeyUploadForm.asciiArmored
+                    );
+                };
 
                 // --------------------------------------------------------------
                 $scope.getCsUploadURL = function () {

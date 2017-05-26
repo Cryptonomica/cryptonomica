@@ -89,6 +89,14 @@ controller.controller(controller_name, [
                         $log.info("[key.controller.js] showKey() - resp: ");
                         $log.info(resp);
                         $scope.key = resp;
+                        if ($scope.key.exp) {
+                            if (new Date($scope.key.exp) < new Date()) {
+                                $scope.key.expired = true;
+                                $log.debug('key ' + $scope.key.keyID + 'expired:');
+                                $log.debug(new Date($scope.key.exp));
+                            }
+                        }
+
                         $scope.alert = null;
                         $timeout($rootScope.progressbar.complete(), 1000);
                     },

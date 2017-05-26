@@ -83,8 +83,11 @@
                        target="_blank">
                         OpenPGP public key
                     </a> (required):
+                    <br>
+                    <input type="file" on-read-file="readFileContent($fileContent)"/>
 
                     <p>
+
                         <!--<textarea class="form-control col-xs-9 col-md-9"-->
                     <textarea rows="5" cols="71"
                               class="textareaWithKey form-control"
@@ -148,6 +151,8 @@
                         OpenPGP public key
                     </a> (required):
                     <!--<p>-->
+                    <br>
+                    <input type="file" on-read-file="readFileContent($fileContent)" />
                     <!--<textarea class="form-control col-xs-9 col-md-9"-->
                     <textarea rows="5" cols="71"
                               class="textareaWithKey form-control"
@@ -208,7 +213,14 @@
             </tr>
             <tr>
                 <td>Key ID</td>
-                <td>{{resp.pgpPublicKeyGeneralView.keyID}}</td>
+                <!--<td>{{resp.pgpPublicKeyGeneralView.keyID}}</td>-->
+                <td>
+                    <a href=""
+                       title="Show key info"
+                       ui-sref="key({fingerprint:resp.pgpPublicKeyGeneralView.fingerprint})">
+                        {{resp.pgpPublicKeyGeneralView.keyID}}
+                    </a>
+                </td>
             </tr>
             <tr>
                 <td>Key fingerprint</td>

@@ -1,19 +1,10 @@
 <div>
     <header-main-menu></header-main-menu>
-    <!-- Navigation -->
-    <div class="btn-group" role="group" ng-show="currentUser.registeredCryptonomicaUser">
-        <a class="btn btn-secondary" href="/#" role="button">Home</a>
-        <a class="btn btn-secondary" href="/#/dashboard" role="button">Dashboard/Payments</a>
-        <a class="btn btn-secondary" href="/#/registration" role="button">Registration</a>
-        <a class="btn btn-secondary active" href="/#/search" role="button">Search</a>
-        <a class="btn btn-secondary" href="/#/showallarbitrators" role="button">Show arbitrators</a>
-        <a class="btn btn-secondary" href="/#/proofOfExistence" role="button">Proof of existence</a>
-    </div>
-    <!-- -->
+    <navigation-menu></navigation-menu>
 
     <div class="card card-block">
 
-        <h2>Search for users:</h2>
+        <h3>Search for users:</h3>
         <!--  -->
         <div ng-show="resp.error.message" class="alert alert-danger" role="alert">
             <!--            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
@@ -74,7 +65,7 @@
         </form>
         <!-- search form end -->
         <br>
-        <h2>Search for a key:</h2>
+        <h3>Search for a key:</h3>
         <form>
             <label for="fingerprint">Fingerprint</label>
             <fieldset>
@@ -106,33 +97,37 @@
             </div>
         see: http://stackoverflow.com/questions/30907131/how-to-make-html-table-from-an-array-with-angular-js  -->
         <br>
-        <table class="table table-bordered table-hover" ng-show="resp.profilesList">
-            <!-- for Bootstrap 4 table see:
-            http://www.quackit.com/bootstrap/bootstrap_4/tutorial/bootstrap_tables.cfm -->
-            <thead class="thead-default">
-            <tr>
-                <th>Last name</th>
-                <th>First name</th>
-                <th>Birthday</th>
-                <th>email</th>
-                <th>Information</th>
-                <th>More info</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="userProfileGeneralView in resp.profilesList">
-                <td class="capitalize">{{userProfileGeneralView.lastName}}</td>
-                <td class="capitalize">{{userProfileGeneralView.firstName}}</td>
-                <td>{{userProfileGeneralView.birthday | date}}</td>
-                <td>{{userProfileGeneralView.email}}</td>
-                <td>{{userProfileGeneralView.userInfo}}</td>
-                <td>
-                    <!--<a href="/#/viewprofile/{{userProfileGeneralView.userId}}" ng-click="">Show Profile</a>-->
-                    <a href="" ui-sref="viewprofile({ userId: userProfileGeneralView.userId })">Show Profile</a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+        <div ng-show="resp.profilesList" id="resultsTable">
+            <h3>Results:</h3>
+            <table class="table table-bordered table-hover">
+                <!-- for Bootstrap 4 table see:
+                http://www.quackit.com/bootstrap/bootstrap_4/tutorial/bootstrap_tables.cfm -->
+                <thead class="thead-default">
+                <tr>
+                    <th>Last name</th>
+                    <th>First name</th>
+                    <th>Birthday</th>
+                    <th>email</th>
+                    <th>Information</th>
+                    <th>More info</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="userProfileGeneralView in resp.profilesList">
+                    <td class="capitalize">{{userProfileGeneralView.lastName}}</td>
+                    <td class="capitalize">{{userProfileGeneralView.firstName}}</td>
+                    <td>{{userProfileGeneralView.birthday | date}}</td>
+                    <td>{{userProfileGeneralView.email}}</td>
+                    <td>{{userProfileGeneralView.userInfo}}</td>
+                    <td>
+                        <!--<a href="/#/viewprofile/{{userProfileGeneralView.userId}}" ng-click="">Show Profile</a>-->
+                        <a href="" ui-sref="viewprofile({ userId: userProfileGeneralView.userId })">Show Profile</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
     </div>
     <footer-main></footer-main>
 </div>
