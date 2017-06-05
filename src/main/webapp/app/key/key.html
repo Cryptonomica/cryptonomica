@@ -171,9 +171,13 @@
                         </div>
                         <!--  -->
                         <button class="btn" ngclipboard data-clipboard-target="#ASCIIarmored">Copy to clipboard</button>
-                        <button class="btn" ng-click="download(ASCIIarmored)">Download as file</button>
+                        <!-- http://alferov.github.io/angular-file-saver/ -->
+                        <!--<button class="btn" ng-click="download(ASCIIarmored)">Download as file</button>-->
+                        <button class="btn" ng-click="download(key.asciiArmored)">Download as file</button>
                         <div>
-                            <pre><code id="ASCIIarmored" title="Public PGP Key">{{key.asciiArmored}}</code></pre>
+                            <pre>
+                                <code id="ASCIIarmored" title="Public PGP Key">{{key.asciiArmored}}</code>
+                            </pre>
                         </div>
                     </div>
                 </td>
