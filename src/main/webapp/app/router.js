@@ -105,6 +105,11 @@ router
                     controller: 'cryptonomica.controller.onlineVerificationView',
                     templateUrl: 'app/onlineVerification/onlineVerificationView.html'
                 })
+                .state('ethereumVerification', {
+                    url: '/ethereumVerification/{fingerprint}',
+                    controller: 'cryptonomica.controller.ethereumVerification',
+                    templateUrl: 'app/ethereum/ethereumVerification.html'
+                })
                 // .state('onlineVerificationVideo', {
                 //     url: '/onlineVerificationVideo/{fingerprint}',
                 //     controller: 'cryptonomica.controller.onlineVerification',

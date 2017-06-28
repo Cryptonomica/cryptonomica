@@ -1,0 +1,95 @@
+<div class="container">
+
+    <h3>this is for verification of ethereum account using cryptonomica verified OpenPGP key</h3>
+
+    <section id="requestStringToSign">
+        <div class="card card-block">
+            <h5>request string </h5>
+            <div>
+                first you request a string to to sign this string is made especially for your OpenPGP key, your Ethereum
+                account,
+                and depends on block in the blockchain in which this string is created
+            </div>
+            <button class="btn" ng-click="requestStringToSign()">
+                request string
+            </button>
+            <div id="stringToSignDiv">
+                <pre><code id="stringToSign" title="String to sign">{{stringToSign}}</code></pre>
+            </div>
+            <button ng-show="stringToSign"
+                    class="btn"
+                    role="button"
+                    type="button"
+                    ngclipboard
+                    data-clipboard-target="#stringToSign">
+                Copy to clipboard
+            </button>
+        </div>
+    </section>
+
+    <section id="sendSignedString">
+        <div class="card card-block">
+            <h5>Send signed string</h5>
+            <div>
+                you have to sign string you got on previous step with your key, put signed text in this field, and than
+                click 'send signed string'
+            </div>
+            <form>
+                <textarea class="form-control">
+                    {{signedString}}
+                </textarea>
+            </form>
+            <button
+                    class="btn"
+                    role="button"
+                    type="button"
+                    ng-click="sendsignedString()">
+                Send Signed String to Smart Contract
+            </button>
+
+        </div>
+    </section>
+
+    <section id="verify">
+        <div class="card card-block">
+            <h5>Request Data From Smart Contract</h5>
+            <div>
+                Now request data from smart contract, check data and click 'Verify'
+            </div>
+            <button
+                    class="btn"
+                    role="button"
+                    type="button"
+                    ng-click="requestDataFromSmartContract()">
+                Request Data From Smart Contract
+            </button>
+            <div id="dataFromSmartContract">
+                <br>
+            </div>
+            <button class="btn" ng-click="verify()">
+                Verify
+            </button>
+        </div>
+    </section>
+
+    <section id="verificationResult">
+        <div class="card card-block">
+            <h5>Verification Result</h5>
+            <div>
+                This is your verification result
+            </div>
+            <div id="verificationResultData">
+                <!-- -->
+            </div>
+        </div>
+    </section>
+
+
+    <hr>
+    <hr>
+    <h5>OpenPGP key data:</h5>
+    {{pgpPublicKey}}
+
+    <h5>your user data:</h5>
+    {{currentUser}}
+</div>
