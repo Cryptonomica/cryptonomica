@@ -9,15 +9,17 @@ import java.io.Serializable;
  */
 public class VerifyPGPPublicKeyForm implements Serializable {
     //
-    // private String webSafeString; // ..............1
-    private String fingerprint; // ..............1
+    // private String webSafeString; //
+    private String fingerprint; // ................1
     private String verificationInfo; // ...........2
     private String basedOnDocument; // ............3
+    private String nationality; // ................4
 
     /* ----- Constructors:  */
 
     public VerifyPGPPublicKeyForm() {
     } // end: empty args constructor
+
 
     /* ----- Getters and Setters: */
 
@@ -43,5 +45,13 @@ public class VerifyPGPPublicKeyForm implements Serializable {
 
     public void setBasedOnDocument(String basedOnDocument) {
         this.basedOnDocument = basedOnDocument;
+    }
+
+    public String getNationality() {
+        return nationality;
+    }
+
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
     }
 }

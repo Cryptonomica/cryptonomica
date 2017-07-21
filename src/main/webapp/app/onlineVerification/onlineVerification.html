@@ -55,7 +55,7 @@
     </div>
     <!-- -->
     <div id="verificationDocument" ng-show="verificationDocument">
-        <!-- using directive does not work: controler can not get element from directive -->
+        <!-- using directive does not work: controller can not get element from directive -->
         <!-- ( var elementTwo = $window.document.getElementById('fileTwo'); )       -->
         <div class="container" id="onlineVerificationDocumentsContainer">
             <div class="card">
@@ -65,10 +65,32 @@
                     </center>
                 </div>
                 <div class="card-block">
-                    <p>
-                        Please, upload <b>color</b> documents in good quality image file
-                    </p>
+
                     <form>
+                        <!-- User nationality: -->
+                        <label for="nationality">
+                            Your nationality (according to passport or similar document):
+                        </label>
+                        <br>
+
+                        <select id="nationality" name="nationality" ng-model="nationality" pvp-country-picker
+                                class="c-select" ng-required="true"></select>
+
+                        <div ng-show="nationality.$invalid || nationality == null"
+                             style="color: red">
+                            Please, select your nationality
+                        </div>
+                        <!--<div ng-show="nationality.$valid">-->
+                        <div ng-show="nationality">
+                            Selected: <b>{{nationality}}</b>
+                        </div>
+                        <br>
+                    </form>
+                    <!-- -->
+                    <form>
+                        <p>
+                            Please, upload <b>color</b> documents in good quality image file
+                        </p>
                         <fieldset class="form-group">
                             <legend>Your passport</legend>
                             <div
@@ -76,7 +98,7 @@
                                     type="button"
                                     title="Choose image file (PNG, JPEG, GIF, TIFF, or BMP)"
                                     class="btn btn-primary">
-                                <input type="file" class="form-control-file" id="fileOne">
+                                <input type="file" class="my-file-input-element form-control-file" id="fileOne">
                             </div>
                         </fieldset>
 
@@ -87,7 +109,7 @@
                                     type="button"
                                     title="Choose image file (PNG, JPEG, GIF, TIFF, or BMP)"
                                     class="btn btn-primary">
-                                <input type="file" class="form-control-file" id="fileTwo">
+                                <input type="file" class="my-file-input-element form-control-file" id="fileTwo">
                             </div>
                         </fieldset>
 

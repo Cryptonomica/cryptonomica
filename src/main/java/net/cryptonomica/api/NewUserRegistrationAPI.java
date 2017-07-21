@@ -198,6 +198,10 @@ public class NewUserRegistrationAPI {
                                         + userProfileGeneralView.getFirstName().toUpperCase() + " "
                                         + userProfileGeneralView.getLastName().toUpperCase() + ",\n\n"
                                         + "You are registered on Cryptonomica server" + "\n\n"
+                                        + "To verify your key online:" + "\n"
+                                        + "1) go to 'My profile', 2) click on key ID and go to page with key data , "
+                                        + "3) click green button 'Verify online' and follow instructions provided by web application"
+                                        + "\n\n"
                                         + "Best regards, \n\n"
                                         + "Cryptonomica team\n\n"
                                         + new Date().toString()

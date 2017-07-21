@@ -19,7 +19,9 @@ import org.apache.commons.lang3.time.DatePrinter;
 import org.apache.commons.lang3.time.FastDateFormat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import static net.cryptonomica.service.OfyService.ofy;
@@ -294,6 +296,16 @@ public class NotaryAPI {
                 || verifyPGPPublicKeyForm.getBasedOnDocument().length() < 1) {
             throw new Exception("Document not specified");
         }
+        // 4)
+        if (verifyPGPPublicKeyForm.getNationality() == null
+                || verifyPGPPublicKeyForm.getNationality().isEmpty()
+                || verifyPGPPublicKeyForm.getNationality().length() != 2) {
+            throw new IllegalArgumentException("User nationality shold 2-letter country code defined in ISO 3166");
+        }
+        ArrayList<String> isoCountries = new ArrayList<String>(Arrays.asList(Locale.getISOCountries()));
+        if (!isoCountries.contains(verifyPGPPublicKeyForm.getNationality().toUpperCase())) {
+            throw new IllegalArgumentException("2-letter country code provided is not from ISO 3166");
+        }
 
         /* Load PGPPublicKeyData */
         /*
@@ -337,21 +349,47 @@ public class NotaryAPI {
                 .key(verificationKey)
                 .now();
         LOG.warning("saved verification: " + verification.toJson());
+
         // add verification to PGPPublicKeyData obj, save it to DB and load from DB
+        // > nationality first >>
+        if (pgpPublicKeyData.getNationality() == null || pgpPublicKeyData.getNationality().isEmpty()) {
+            pgpPublicKeyData.setNationality(
+                    verifyPGPPublicKeyForm.getNationality().toUpperCase()
+            );
+        } else if (!pgpPublicKeyData.getNationality().equals(verifyPGPPublicKeyForm.getNationality().toUpperCase())) {
+            throw new IllegalArgumentException(
+                    "Nationality info stored with this key certificate ("
+                            + pgpPublicKeyData.getNationality()
+                            + ") is different than nationality provided now ("
+                            + verifyPGPPublicKeyForm.getNationality()
+                            + ")"
+            );
+        }
         pgpPublicKeyData.setActive(Boolean.TRUE);
         pgpPublicKeyData.setVerified(Boolean.TRUE);
         pgpPublicKeyData.addVerification(verificationKey.toWebSafeString());
-        ofy().save().entity(pgpPublicKeyData).now(); // sync - so we can show verified key instantly
-        pgpPublicKeyData = ofy().load().key(pgpPublicKeyDataKEY).now(); // ensure we have info from DB (? )
 
-        // get CryptonomicaUser obj for Key Owner (? what for? )
-        Key<CryptonomicaUser> keyOwnerKEY = Key.create(CryptonomicaUser.class, pgpPublicKeyData.getCryptonomicaUserId());
+        ofy()
+                .save()
+                .entity(pgpPublicKeyData)
+                .now(); // sync - so we can show verified key instantly
+
+        // Redundant. To ensure everything works.
+        pgpPublicKeyData = ofy()
+                .load()
+                .key(pgpPublicKeyDataKEY)
+                .now(); // ensure we have info from DB ()
+
+        //
+        Key<CryptonomicaUser> keyOwnerKEY = Key.create(CryptonomicaUser.class,
+                pgpPublicKeyData.getCryptonomicaUserId()
+        );
         CryptonomicaUser keyOwner = ofy()
                 .load()
                 .key(keyOwnerKEY)
                 .now();
         // set active, save to DB:
-        keyOwner.setActive(Boolean.TRUE);
+        keyOwner.setActive(Boolean.TRUE); // <<
         ofy().save().entity(keyOwner); // async
 
         VerifyPGPPublicKeyReturn verifyPGPPublicKeyReturn = new VerifyPGPPublicKeyReturn(

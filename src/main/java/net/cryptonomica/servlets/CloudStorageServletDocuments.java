@@ -14,9 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 import static net.cryptonomica.service.OfyService.ofy;
@@ -93,9 +91,8 @@ public class CloudStorageServletDocuments extends HttpServlet {
         String userId = req.getHeader("userId"); // google user Id: $rootScope.currentUser.userId
         String userEmail = req.getHeader("userEmail"); // $rootScope.currentUser.email
         String fingerprint = req.getHeader("fingerprint"); // $scope.fingerprint = $stateParams.fingerprint;
-        String verificationDocumentsUploadKey = req.getHeader("verificationDocumentsUploadKey");
-        // from RandomStringUtils.random(33);
-
+        String verificationDocumentsUploadKey = req.getHeader("verificationDocumentsUploadKey"); // from RandomStringUtils.random(33);
+        String nationality = req.getHeader("nationality").toUpperCase(); // TODO: store to database
 
         // Returns the length, in bytes, of the request body
         // and made available by the input stream, or -1 if the  length is not known
@@ -115,6 +112,16 @@ public class CloudStorageServletDocuments extends HttpServlet {
             ServletUtils.sendJsonResponse(resp, "{\"Error\":\"verification Document Upload Key length is invalid\"}");
         } else if (fingerprint == null || fingerprint.equals("") || fingerprint.length() != 40) {
             ServletUtils.sendJsonResponse(resp, "{\"Error\":\"key fingerprint is invalid\"}");
+        } else if (nationality == null || nationality.isEmpty() || nationality.length() != 2) {
+            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"nationality: " + nationality + " is invalid\"}");
+        }
+
+        ArrayList<String> isoCountries = new ArrayList<String>(Arrays.asList(Locale.getISOCountries()));
+        if (!isoCountries.contains(nationality.toUpperCase())) {
+            ServletUtils.sendJsonResponse(resp,
+                    "{\"Error\":\"nationality: "
+                            + nationality
+                            + " is not country code defined in ISO 3166\"}");
         }
 
         CryptonomicaUser cryptonomicaUser = null;
@@ -201,7 +208,7 @@ public class CloudStorageServletDocuments extends HttpServlet {
         // String fileName = currentDateStr + ".webm";
         String fileName = currentDateStr; // we'll get file ext from uploaded file
 
-        ArrayList<GcsFilename> gcsFilenames = null;
+        ArrayList<GcsFilename> gcsFilenames = null; // but it will be only one, see below
         try {
             gcsFilenames =
                     CloudStorageService.uploadFilesToCloudStorage(
@@ -227,28 +234,39 @@ public class CloudStorageServletDocuments extends HttpServlet {
         // here we'll have only one, because of https://github.com/angular-ui/ui-uploader on frontend, that
         // uploads files separately
         String uploadedDocumentId = RandomStringUtils.randomAlphanumeric(33);
-        ofy().save().entity(
-                new VerificationDocument(
-                        uploadedDocumentId,
-                        cryptonomicaUser.getGoogleUser(),
-                        gcsFilename.getBucketName(),
-                        gcsFilename.getObjectName(),
-                        verificationDocumentsUploadKey,
-                        fingerprint
+        // save info about document:
+        ofy()
+                .save()
+                .entity(
+                        new VerificationDocument(
+                                uploadedDocumentId,
+                                cryptonomicaUser.getGoogleUser(),
+                                gcsFilename.getBucketName(),
+                                gcsFilename.getObjectName(),
+                                verificationDocumentsUploadKey,
+                                fingerprint
+                        )
                 )
-        )
                 .now();
 
         // to test, but see:
         // https://github.com/objectify/objectify/wiki/Concepts#optimistic-concurrency
         OnlineVerification onlineVerification = ofy()
-                .load().key(Key.create(OnlineVerification.class, fingerprint)).now();
+                .load()
+                .key(
+                        Key.create(OnlineVerification.class, fingerprint)
+                )
+                .now();
         if (onlineVerification == null) {
             throw new ServletException("OnlineVerification record not found in data base");
         }
         onlineVerification.addVerificationDocument(uploadedDocumentId);
-        ofy().save().entity(onlineVerification).now();
-        //
+        onlineVerification.setNationality(nationality.toUpperCase()); // TODO: this can be added twice (for every doc)
+        // save onlineVerification
+        ofy()
+                .save()
+                .entity(onlineVerification); // async
+        // .now();
 
         String jsonResponseStr = "{\"uploadedDocumentId\":\""
                 + uploadedDocumentId

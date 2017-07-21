@@ -62,8 +62,8 @@ public class PGPTools {
 //    }
 //    <!-- was a bug reading userID in key DSA + ElGamal -->
 
-    /// NEW:
-    public static PGPPublicKey readPublicKey(InputStream iKeyStream) throws IOException {
+
+    private static PGPPublicKey readPublicKey(InputStream iKeyStream) throws IOException {
         PGPPublicKeyRing newKey = new PGPPublicKeyRing(new ArmoredInputStream(iKeyStream));
         return newKey.getPublicKey();
     }

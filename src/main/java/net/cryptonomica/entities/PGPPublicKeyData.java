@@ -89,6 +89,13 @@ public class PGPPublicKeyData {
     // OnlineVerification entity ID -> fingerprint
     private Boolean onlineVerificationFinished; //............22
     private Date userBirthday; //.............................23
+    //
+    // Nationality - from user passport or id document:
+    // 2-letter country codes defined in ISO 3166
+    // like returned by Locale.getISOCountries() in Java
+    // see: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+    // one key can have only one nationality defined
+    private String nationality; //............................24
 
     /* --- Constructors: */
     public PGPPublicKeyData() {
@@ -389,5 +396,14 @@ public class PGPPublicKeyData {
     public void setUserBirthday(Date userBirthday) {
         this.userBirthday = userBirthday;
     }
+
+    public String getNationality() {
+        return nationality;
+    }
+
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
+    }
+
     // end getters and setters
 }

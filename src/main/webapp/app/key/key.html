@@ -21,6 +21,29 @@
                 <form id="KeyVerificationFORM" name="KeyVerificationFORM">
                     <!-- Remember, since Bootstrap utilizes the HTML5 doctype, all inputs must have a type attribute. -->
                     <fieldset>
+                        <br>
+                        <!-- User nationality: -->
+                        <label for="nationality">
+                            User nationality (according to passport or similar document):
+                        </label>
+                        <br>
+
+                        <select id="nationality" name="nationality"
+                                ng-model="VerifyPGPPublicKeyForm.nationality"
+                                pvp-country-picker
+                                class="c-select"
+                                ng-required="true">
+                        </select>
+
+                        <div ng-show="VerifyPGPPublicKeyForm.nationality == null || VerifyPGPPublicKeyForm.nationality.length < 1"
+                             style="color: red">
+                            Please, select nationality
+                        </div>
+                        <div ng-show="VerifyPGPPublicKeyForm.nationality">
+                            Selected: <b>{{VerifyPGPPublicKeyForm.nationality}}</b>
+                        </div>
+                        <br>
+
                         <!-- basedOnDocument -->
                         <label for="basedOnDocument">Document(s) provided for verification:</label>
                         <input id="basedOnDocument" type="text" class="form-control"

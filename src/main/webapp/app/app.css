@@ -165,6 +165,14 @@ img.useCasePhoto {
     height: 350px;
 }
 
+.my-file-input-element {
+    color: black;
+    /*border-color: black;*/
+    /*border-style: dotted;*/
+    /*border-width: thin;*/
+    /*padding: 0.5em;*/
+}
+
 a.imageLink {
 
 }

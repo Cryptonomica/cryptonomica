@@ -91,17 +91,27 @@ public class OnlineVerificationAPI {
 
         // >>>>>>>>>>>>>>>>>> New OnlineVerifications are created here !!!
         // (user first have to request verification to make changes to it)
-        OnlineVerification onlineVerification = ofy().load().key(Key.create(OnlineVerification.class, fingerprint)).now();
+        OnlineVerification onlineVerification = ofy()
+                .load()
+                .key(Key.create(OnlineVerification.class, fingerprint))
+                .now();
+
         if (onlineVerification == null) {
-            onlineVerification = new OnlineVerification(pgpPublicKeyData);
-            ofy().save().entity(onlineVerification).now();
+            if (requester.getUserId().equalsIgnoreCase(pgpPublicKeyData.getCryptonomicaUserId())) {
+                onlineVerification = new OnlineVerification(pgpPublicKeyData);
+                ofy()
+                        .save()
+                        .entity(onlineVerification)
+                        .now();
+            } else {
+                throw new NotFoundException("Online verification data for fingerprint " + fingerprint + " not found");
+            }
         }
 
-        if (
-                requester.getUserId().equalsIgnoreCase(pgpPublicKeyData.getCryptonomicaUserId())
-                        || (requester.getCryptonomicaOfficer() != null && requester.getCryptonomicaOfficer())
-                        || (requester.getNotary() != null && requester.getNotary())
-                        || (onlineVerification.getAllowedUsers().contains(requester.getUserId()))
+        if (requester.getUserId().equalsIgnoreCase(pgpPublicKeyData.getCryptonomicaUserId())
+                || (requester.getCryptonomicaOfficer() != null && requester.getCryptonomicaOfficer())
+                // || (requester.getNotary() != null && requester.getNotary()) // TODO: should all notaries have access?
+                || (onlineVerification.getAllowedUsers().contains(requester.getUserId()))
                 ) {
             LOG.warning(
                     "user " + requester.getUserId() + "is allowed to get online verification data for key " + fingerprint
@@ -503,7 +513,7 @@ public class OnlineVerificationAPI {
             throw new BadRequestException("onlineVerificationApproved (checkbox): false");
         }
 
-        // Check if OnlineVerificaiton entity exists:
+        // Check if OnlineVerification entity exists:
         OnlineVerification onlineVerification = ofy()
                 .load().key(Key.create(OnlineVerification.class, fingerprint)).now();
         if (onlineVerification == null) {
@@ -524,7 +534,7 @@ public class OnlineVerificationAPI {
         );
         onlineVerification.setVerifiedOn(new Date());
         onlineVerification.setVerificationNotes(verificationNotes);
-        // mark key as verifified:
+        // mark key as verified:
         PGPPublicKeyData pgpPublicKeyData = ofy()
                 .load()
                 .type(PGPPublicKeyData.class)
@@ -534,11 +544,19 @@ public class OnlineVerificationAPI {
         if (pgpPublicKeyData == null) {
             throw new NotFoundException("Key with fingerprint " + fingerprint + " not found");
         }
+        //
         pgpPublicKeyData.setOnlineVerificationFinished(Boolean.TRUE);
+        pgpPublicKeyData.setNationality(onlineVerification.getNationality().toUpperCase());
 
         // save data to data store:
-        ofy().save().entity(onlineVerification).now();
-        ofy().save().entity(pgpPublicKeyData).now();
+        ofy()
+                .save()
+                .entity(onlineVerification)
+                .now();
+        ofy()
+                .save()
+                .entity(pgpPublicKeyData)
+                .now();
 
         // Send email to user:
         final Queue queue = QueueFactory.getDefaultQueue();

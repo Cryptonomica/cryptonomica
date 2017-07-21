@@ -25,6 +25,8 @@ controller.controller(controller_name, [
     '$cookies',
     '$timeout',
     '$window',
+    '$location',
+    '$anchorScroll',
     '$stateParams',
     function onlineVerCtrl($scope,    // <- name for debugging
                            $sce,
@@ -39,6 +41,8 @@ controller.controller(controller_name, [
                            $cookies,
                            $timeout,
                            $window,
+                           $location,
+                           $anchorScroll,
                            $stateParams) {
 
         $log.info("cryptonomica.controller.onlineVerification ver. 01 started");
@@ -68,6 +72,7 @@ controller.controller(controller_name, [
         $scope.fingerprint = $stateParams.fingerprint;
         $scope.keyId = "0x" + $stateParams.fingerprint.substring(32, 40).toUpperCase();
         $scope.todayDate = new Date();
+        $scope.nationality = null;
         $scope.videoUploadKey = null;
         $scope.verificationDocsUrls = [];
         $scope.pgpPublicKey = null;
@@ -130,13 +135,19 @@ controller.controller(controller_name, [
                     if (!$scope.isKeyOwner) {
                         $log.debug('You are not the owner of this key');
                         $scope.alertDanger = 'You are not the owner of this key!';
+                        $location.hash('alertDanger');
+                        $anchorScroll();
                     } else if ($scope.onlineVerification.onlineVerificationDataVerified) {
                         $scope.alertSuccess = 'Online verification for key '
                             + $scope.fingerprint
                             + ' completed!';
+                        $location.hash('alertSuccess');
+                        $anchorScroll();
                     } else if ($scope.onlineVerification.onlineVerificationFinished) {
                         $scope.alertInfo = 'You entered all required data.'
                             + ' Please wait for data verification by our compliance officer.';
+                        $location.hash('alertInfo');
+                        $anchorScroll();
                     } else {
                         // check current verification step:
                         // 0
@@ -178,16 +189,34 @@ controller.controller(controller_name, [
                                 $log.info('$scope.uploadDocs ...');
                                 $scope.resp = {};
                                 $scope.resp.error = null;
+                                if ($scope.nationality == null
+                                    || $scope.nationality.length == 0) {
+                                    $scope.alertDanger = "Please provide nationality";
+                                    // see: https://docs.angularjs.org/api/ng/service/$anchorScroll
+                                    // set the location.hash to the id of
+                                    // the element you wish to scroll to.
+                                    $location.hash('alertDanger');
+                                    $anchorScroll();
+                                    $timeout($rootScope.progressbar.complete(), 1000);
+                                    return;
+                                }
                                 GApi.executeAuth('onlineVerificationAPI', 'getDocumentsUploadKey')
                                     .then(
                                         function (resp) {
                                             $scope.verificationDocumentsUploadKey = resp.message; // net.cryptonomica.returns.StringWrapperObject
                                             console.log('onlineVerificationAPI > getDocumentsUploadKey:');
                                             console.log(resp);
-                                            $scope.btn_upload(); // <<<
+                                            $scope.btn_upload(); // <<<< set headers here
                                         }, function (error) {
                                             console.log('[Error] onlineVerificationAPI > getDocumentsUploadKey:');
                                             console.log(error);
+                                            $scope.alertDanger = error;
+                                            // see: https://docs.angularjs.org/api/ng/service/$anchorScroll
+                                            // set the location.hash to the id of
+                                            // the element you wish to scroll to.
+                                            $location.hash('alertDanger');
+                                            $anchorScroll();
+                                            $timeout($rootScope.progressbar.complete(), 1000);
                                         }
                                     );
                             };
@@ -207,6 +236,7 @@ controller.controller(controller_name, [
                                         'userId': $rootScope.currentUser.userId,
                                         'userEmail': $rootScope.currentUser.email,
                                         'fingerprint': $stateParams.fingerprint,
+                                        'nationality': $scope.nationality,
                                         'verificationDocumentsUploadKey': $scope.verificationDocumentsUploadKey
                                     },
                                     onProgress: function (file) {
@@ -235,6 +265,8 @@ controller.controller(controller_name, [
                                         catch (error) {
                                             $log.error(error);
                                             $scope.alertDanger = error;
+                                            $location.hash('alertDanger');
+                                            $anchorScroll();
                                         }
                                         $scope.$apply(); // ?
                                         $timeout($rootScope.progressbar.complete(), 1000);
@@ -439,11 +471,16 @@ controller.controller(controller_name, [
                     function (resp) {
                         console.log('onlineVerificationAPI > sendSms:');
                         console.log(resp); // new StringWrapperObject("SMS message send successfully")
+                        $scope.alertSuccess = resp.message;
+                        $location.hash('alertSuccess');
+                        $anchorScroll();
                         $timeout($rootScope.progressbar.complete(), 1000);
-
                     }, function (error) {
                         console.log('[Error] onlineVerificationAPI > sendSms');
                         console.log(error);
+                        $scope.alertDanger = error.message;
+                        $location.hash('alertDanger');
+                        $anchorScroll();
                         $timeout($rootScope.progressbar.complete(), 1000);
                     }
                 );

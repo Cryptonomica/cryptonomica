@@ -81,8 +81,10 @@ public class OnlineVerification implements Serializable { // -- can be returned 
     private Boolean termsAccepted; // user accepted terms ...............22
     @Index
     private String cryptonomicaUserId;//.................................23
-    // @Index
+    @Index
     private Date birthday; //............................................24
+    @Index
+    private String nationality; //.......................................25
 
     /* ----- Constructors: */
     public OnlineVerification() {
@@ -108,6 +110,7 @@ public class OnlineVerification implements Serializable { // -- can be returned 
         this.allowedUsers = new ArrayList<>();
         this.verificationDocumentsArray = new ArrayList<>();
         this.termsAccepted = false;
+        this.nationality = pgpPublicKeyData.getNationality();
     } // end constructor
 
     /* ---- Methods */
@@ -312,5 +315,13 @@ public class OnlineVerification implements Serializable { // -- can be returned 
 
     public void setBirthday(Date birthday) {
         this.birthday = birthday;
+    }
+
+    public String getNationality() {
+        return nationality;
+    }
+
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
     }
 }

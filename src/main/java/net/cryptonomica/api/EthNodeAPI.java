@@ -2,6 +2,7 @@ package net.cryptonomica.api;
 
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
+import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
@@ -16,9 +17,10 @@ import net.cryptonomica.entities.AppSettings;
 import net.cryptonomica.entities.CryptonomicaUser;
 import net.cryptonomica.forms.EthAddDocForm;
 import net.cryptonomica.forms.GetDocBySha256Form;
+import net.cryptonomica.returns.StringWrapperObject;
 import net.cryptonomica.service.HttpService;
 import net.cryptonomica.service.UserTools;
-import org.apache.commons.lang3.text.WordUtils;
+import org.apache.commons.text.WordUtils;
 
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
@@ -243,7 +245,66 @@ public class EthNodeAPI {
         }
     } // end AddDocRequestObj
 
-    // ------------
+    /*------------------------------------------------------------------------*/
+    /* ---------------- for https://tomcatweb3j.cryptonomica.net -------------*/
+    @ApiMethod(
+            name = "getVerificationFromSC",
+            path = "getVerificationFromSC",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    @SuppressWarnings("unused")
+    public StringWrapperObject getVerificationDataFromSmartContract(
+            // final HttpServletRequest httpServletRequest,
+            final User googleUser,
+            final @Named("ethereumAcc") String ethereumAcc
+    ) throws IllegalArgumentException, UnauthorizedException {
+
+        // ensure registered user ( - may be later only for verificated):
+        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaRegisteredUser(googleUser);
+
+        // check form:
+        LOG.warning("ethereumAcc" + ethereumAcc);
+
+        if (ethereumAcc == null
+                || ethereumAcc.equals("")
+                ) {
+            throw new IllegalArgumentException("Provided text is to short or empty");
+        }
+
+        String tomcatWeb3jAPIkey = ofy()
+                .load()
+                .key(Key.create(AppSettings.class, "tomcatweb3jAPIkey"))
+                .now()
+                .getValue();
+
+        String urlHost = "https://tomcatweb3j.cryptonomica.net";
+        String urlPath = "/getVerification";
+        String urlAddress = urlHost + urlPath;
+
+        // HashMap<String, String> queryMap = new HashMap<>();
+        // queryMap.put("address", ethereumAcc);
+        String postRequestBody = "address=" + ethereumAcc;
+
+        HTTPResponse httpResponse = HttpService.postRequestWithAPIkey(
+                urlAddress,
+                postRequestBody,
+                tomcatWeb3jAPIkey
+        );
+
+        // LOG.warning("httpResponse: " + new Gson().toJson(httpResponse));
+
+        byte[] httpResponseContentBytes = httpResponse.getContent();
+        String httpResponseContentString = new String(httpResponseContentBytes, StandardCharsets.UTF_8);
+
+        // Test:
+        // Object resObj = new Gson().fromJson(httpResponseContentString, Object.class); // --- exception
+        // LOG.warning("resObj: " + new Gson().toJson(resObj));
+
+        LOG.warning("httpResponseContentString: " + httpResponseContentString);
+
+        // return resObj;
+        return new StringWrapperObject(httpResponseContentString);
+    } //
 
 
 }

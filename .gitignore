@@ -11,6 +11,9 @@ cors-json-file.json
 *.war
 *.ear
 
+#
+!/src/main/webapp/WEB-INF/lib/
+
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
@@ -154,3 +157,4 @@ sftp-config.json
 
 # KDE directory preferences
 .directory
+

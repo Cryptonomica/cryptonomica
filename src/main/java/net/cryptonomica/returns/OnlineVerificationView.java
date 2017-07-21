@@ -40,6 +40,7 @@ public class OnlineVerificationView implements Serializable {
     private Boolean termsAccepted;//.....................................19
     private String cryptonomicaUserId; //................................20
     private Date birthday; //............................................21
+    private String nationality; // ......................................22
 
     /* --- Constructors: */
     public OnlineVerificationView() {
@@ -70,12 +71,14 @@ public class OnlineVerificationView implements Serializable {
         this.cryptonomicaUserId = onlineVerification.getCryptonomicaUserId();
         this.birthday = onlineVerification.getBirthday();
 
+
         this.verificationDocumentsArray = new ArrayList<>();
         if (verificationDocumentArrayList != null && verificationDocumentArrayList.size() > 0)
             for (VerificationDocument doc : verificationDocumentArrayList) {
                 String verificationDocumentId = doc.getId().toString();
                 this.verificationDocumentsArray.add(verificationDocumentId);
             }
+        this.nationality = onlineVerification.getNationality();
     } // end of constructor;
 
     /* --- Getters and Setters: */
@@ -246,5 +249,13 @@ public class OnlineVerificationView implements Serializable {
 
     public void setBirthday(Date birthday) {
         this.birthday = birthday;
+    }
+
+    public String getNationality() {
+        return nationality;
+    }
+
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
     }
 }

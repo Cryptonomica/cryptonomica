@@ -1,8 +1,8 @@
 'use strict';
 
 /**
- *  get and showes  by key fingerprint
- *  TODO: if user is a notary or cryptonomica officer - offer to add verification
+ *  get and shows  key data by key fingerprint
+ *
  */
 
 var controller_name = "cryptonomica.controller.key";
@@ -30,6 +30,8 @@ controller.controller(controller_name, [
         '$cookies',
         'FileSaver',
         'Blob',
+        '$location',
+        '$anchorScroll',
         // 'UserService',
         function showkeyCtrl($scope,
                              $rootScope,
@@ -43,7 +45,9 @@ controller.controller(controller_name, [
                              $stateParams,
                              $cookies,
                              FileSaver,
-                             Blob
+                             Blob,
+                             $location,
+                             $anchorScroll
                              // UserService
         ) {
             //
@@ -136,22 +140,40 @@ controller.controller(controller_name, [
             /*-------------------------*/
             $scope.VerifyPGPPublicKeyForm = {};
             $scope.verifyPGPPublicKeyFormSubmit = function () {
-                if ($scope.KeyVerificationFORM.$valid && $scope.key.cryptonomicaUserId) {
+                if ($stateParams.fingerprint != null && $stateParams.fingerprint.length > 0) {
+
                     verifyKey();
-                } else if ($scope.KeyVerificationFORM.$invalid) {
-                    $log.error("$scope.KeyVerificationFORM.$valid :"
-                        + $scope.KeyVerificationFORM.$valid);
+
                 } else {
-                    $log.error("$scope.key.cryptonomicaUserId: " + $scope.key.cryptonomicaUserId);
+                    $log.error("$scope.verifyPGPPublicKeyFormSubmit ERROR: fingerprint not valid");
+                    $scope.alertDanger = "fingerprint not valid";
+                    $location.hash('alertDanger');
+                    $anchorScroll();
+                    return;
                 }
             };
+
             var verifyKey = function () {
                 $rootScope.progressbar.start(); // <<<<<<
-                //
-                // $scope.VerifyPGPPublicKeyForm.webSafeString = $stateParams.websafestring;  // old
-                $scope.VerifyPGPPublicKeyForm.fingerprint = $stateParams.fingerprint;  //
+                $scope.VerifyPGPPublicKeyForm.fingerprint = $stateParams.fingerprint;
+
                 // $scope.VerifyPGPPublicKeyForm.verificationInfo - from the form
                 // $scope.VerifyPGPPublicKeyForm.basedOnDocument  - from the form
+                // $scope.VerifyPGPPublicKeyForm.nationality  - from the form
+                if ($scope.VerifyPGPPublicKeyForm == null
+                    || $scope.VerifyPGPPublicKeyForm.verificationInfo == null
+                    || $scope.VerifyPGPPublicKeyForm.verificationInfo.length == 0
+                    || $scope.VerifyPGPPublicKeyForm.basedOnDocument == null
+                    || $scope.VerifyPGPPublicKeyForm.basedOnDocument.length == 0
+                    || $scope.VerifyPGPPublicKeyForm.nationality == null
+                    || $scope.VerifyPGPPublicKeyForm.nationality.length == 0
+                ) {
+                    $scope.alertDanger = "Please fill all required data in the form";
+                    $location.hash('alertDanger');
+                    $anchorScroll();
+                    $timeout($rootScope.progressbar.complete(), 1000);
+                    return;
+                }
                 $log.info("$scope.VerifyPGPPublicKeyForm : ");
                 $log.info($scope.VerifyPGPPublicKeyForm);
                 //
