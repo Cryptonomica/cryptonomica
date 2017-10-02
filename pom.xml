@@ -3,28 +3,73 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
+    <!-- see: -->
+    <!-- https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/appengine-java8/endpoints-v2-backend/pom.xml -->
+
     <modelVersion>4.0.0</modelVersion>
     <packaging>war</packaging>
     <version>v-1-0</version>
+
     <groupId>net.cryptonomica</groupId>
     <artifactId>cryptonomica</artifactId>
+
     <properties>
+
         <app.id>cryptonomica-server</app.id>
         <app.version>v-1-0</app.version>
-        <!--<appengine.version>1.9.50</appengine.version>-->
-        <appengine.version>1.9.54</appengine.version>
-        <!--<gcloud.plugin.version>2.0.9.106.v20160420</gcloud.plugin.version>-->
+
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+
+        <appengine.version>1.9.57</appengine.version>
         <gcloud.plugin.version>2.0.9.133.v201611104</gcloud.plugin.version>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
         <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
+        <archiveClasses>true</archiveClasses>
+
     </properties>
 
     <prerequisites>
-        <maven>3.3.9</maven>
+        <maven>3.5.0</maven>
     </prerequisites>
 
     <!-- Compile/runtime dependencies -->
     <dependencies>
+
+        <dependency>
+            <!-- see: https://cloud.google.com/endpoints/docs/frameworks/legacy/v1/java/migrating -->
+            <groupId>com.google.endpoints</groupId>
+            <artifactId>endpoints-framework</artifactId>
+            <version>2.0.8</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.endpoints</groupId>
+            <artifactId>endpoints-management-control-appengine-all</artifactId>
+            <version>1.0.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.appengine</groupId>
+            <artifactId>appengine-api-1.0-sdk</artifactId>
+            <version>1.9.57</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.google.appengine/gcloud-maven-plugin -->
         <dependency>
@@ -32,6 +77,7 @@
             <artifactId>gcloud-maven-plugin</artifactId>
             <version>2.0.9.133.v201611104</version>
         </dependency>
+
         <!-- https://mvnrepository.com/artifact/com.google.appengine.tools/appengine-gcs-client -->
         <!-- needed for import com.google.appengine.tools.cloudstorage.* -->
         <dependency>
@@ -40,18 +86,6 @@
             <version>0.6</version>
         </dependency>
 
-        <!-- https://cloud.google.com/appengine/docs/standard/java/sms/twilio -->
-        <!-- https://twilio.github.io/twilio-java/ -->
-        <!-- JavaDoc: -->
-        <!-- https://twilio.github.io/twilio-java/7.5.0/ -->
-        <!--
-        <dependency>
-            <groupId>com.twilio.sdk</groupId>
-            <artifactId>twilio</artifactId>
-            <version>7.5.0</version>
-            <scope>compile</scope>
-        </dependency>
-        -->
         <dependency>
             <groupId>com.twilio.sdk</groupId>
             <artifactId>twilio-java-sdk</artifactId>
@@ -121,11 +155,13 @@
             <version>2.8.1</version>
             <scope>compile</scope>
         </dependency>
+
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>19.0</version>
         </dependency>
+
         <!-- Apache Commons-->
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -137,12 +173,6 @@
             <artifactId>commons-text</artifactId>
             <version>1.1</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
-        <!--<dependency>-->
-        <!--<groupId>commons-fileupload</groupId>-->
-        <!--<artifactId>commons-fileupload</artifactId>-->
-        <!--<version>1.3.2</version>-->
-        <!--</dependency>-->
 
         <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
         <!-- The Apache Commons Codec package contains simple encoder and decoders for various formats such as Base64
@@ -153,6 +183,7 @@
             <artifactId>commons-codec</artifactId>
             <version>1.10</version>
         </dependency>
+
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcpg-jdk15on</artifactId>
@@ -160,6 +191,7 @@
             <!-- was a bug reading userID in key DSA + ElGamal in BC 1.54 -->
             <version>1.47</version>
         </dependency>
+
         <dependency>
             <groupId>com.googlecode.objectify</groupId>
             <artifactId>objectify</artifactId>
@@ -167,39 +199,19 @@
             <!--<version>5.1.16</version>-->
             <version>5.1.17</version>
         </dependency>
+
         <dependency>
             <groupId>net.sf.uadetector</groupId>
             <artifactId>uadetector-resources</artifactId>
             <version>2014.10</version>
         </dependency>
+
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <!--<version>20141113</version>-->
             <!-- this is not the latest, latest is for Java 1.8-->
             <version>20140107</version>
-        </dependency>
-        <!-- //// -->
-        <dependency>
-            <groupId>com.google.appengine</groupId>
-            <artifactId>appengine-api-1.0-sdk</artifactId>
-            <version>${appengine.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.appengine</groupId>
-            <artifactId>appengine-endpoints</artifactId>
-            <version>${appengine.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-            <version>1</version>
         </dependency>
 
         <!-- Test Dependencies -->
@@ -216,12 +228,14 @@
             <version>2.0.2-beta</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-testing</artifactId>
             <version>${appengine.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-stubs</artifactId>
@@ -233,7 +247,31 @@
     <build>
         <!-- for hot reload of the web application-->
         <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
+
         <plugins>
+            <!-- Endpoints Frameworks plugins: -->
+            <!-- see: https://cloud.google.com/endpoints/docs/frameworks/legacy/v1/java/migrating -->
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>endpoints-framework-maven-plugin</artifactId>
+                <version>1.0.2</version>
+                <configuration>
+                    <!-- plugin configuration -->
+                    <hostname>cryptonomica-server.appspot.com</hostname>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>appengine-maven-plugin</artifactId>
+                <version>1.3.1</version>
+                <configuration>
+                    <!-- deploy configuration -->
+                    <enableJarClasses>false</enableJarClasses>
+                    <version>${app.version}</version>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
@@ -249,67 +287,71 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!--apache.maven.plugins -->
+            <!-- see maven plugins last versions on https://maven.apache.org/plugins/-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <!--<version>3.5.1</version>-->
-                <!--<version>3.6.0</version>-->
-                <version>3.6.1</version>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.0.0</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.5.2</version>
+            </plugin>
+
+            <!--<plugin>-->
+            <!--<groupId>org.apache.maven.plugins</groupId>-->
+            <!--<artifactId>maven-war-plugin</artifactId>-->
+            <!--&lt;!&ndash;<version>2.6</version>&ndash;&gt;-->
+            <!--&lt;!&ndash;<version>3.0.0</version>&ndash;&gt;-->
+            <!--<version>3.1.0</version>-->
+            <!--<configuration>-->
+            <!--<webXml>${project.build.directory}/generated-sources/appengine-endpoints/WEB-INF/web.xml</webXml>-->
+            <!--<webResources>-->
+            <!--<resource>-->
+            <!--&lt;!&ndash; this is relative to the pom.xml directory &ndash;&gt;-->
+            <!--<directory>${project.build.directory}/generated-sources/appengine-endpoints</directory>-->
+            <!--&lt;!&ndash; the list has a default value of ** &ndash;&gt;-->
+            <!--<includes>-->
+            <!--<include>WEB-INF/*.discovery</include>-->
+            <!--<include>WEB-INF/*.api</include>-->
+            <!--</includes>-->
+            <!--</resource>-->
+            <!--</webResources>-->
+            <!--</configuration>-->
+            <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <!--<version>2.6</version>-->
-                <version>3.0.0</version>
+                <version>3.1.0</version>
                 <configuration>
-                    <webXml>${project.build.directory}/generated-sources/appengine-endpoints/WEB-INF/web.xml</webXml>
                     <webResources>
-                        <resource>
-                            <!-- this is relative to the pom.xml directory -->
-                            <directory>${project.build.directory}/generated-sources/appengine-endpoints</directory>
-                            <!-- the list has a default value of ** -->
-                            <includes>
-                                <include>WEB-INF/*.discovery</include>
-                                <include>WEB-INF/*.api</include>
-                            </includes>
-                        </resource>
+                        <resources>
+                            <directory>${basedir}/src/main/webapp/WEB-INF</directory>
+                            <filtering>true</filtering>
+                            <targetPath>WEB-INF</targetPath>
+                        </resources>
                     </webResources>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>com.google.appengine</groupId>
-                <artifactId>appengine-maven-plugin</artifactId>
-                <version>${appengine.version}</version>
-                <configuration>
-                    <enableJarClasses>false</enableJarClasses>
-                    <version>${app.version}</version>
-                    <!-- Comment in the below snippet to bind to all IPs instead of just localhost -->
-                    <!-- address>0.0.0.0</address>
-                <port>8080</port -->
-                    <!-- Comment in the below snippet to enable local debugging with a remote debugger
-                     like those included with Eclipse or IntelliJ -->
-                    <!-- jvmFlags>
-                  <jvmFlag>-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n</jvmFlag>
-                </jvmFlags -->
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>endpoints_get_discovery_doc</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- see: http://mvnrepository.com/artifact/com.google.appengine/gcloud-maven-plugin -->
 
             <plugin>
                 <groupId>com.google.appengine</groupId>
                 <artifactId>gcloud-maven-plugin</artifactId>
-
                 <version>${gcloud.plugin.version}</version>
                 <configuration>
                     <!--<set_default>true</set_default>-->

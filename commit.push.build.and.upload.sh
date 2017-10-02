@@ -7,7 +7,8 @@ git push google --all
 git push origin --all
 #
 mvn install
-mvn appengine:update
+#mvn appengine:update
+mvn appengine:deploy
 mvn clean
 
 # upload only:

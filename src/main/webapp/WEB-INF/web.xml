@@ -17,14 +17,14 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-    <!-- SystemServiceServlet -->
     <servlet>
-        <servlet-name>SystemServiceServlet</servlet-name>
-        <servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
+        <!-- see: https://cloud.google.com/endpoints/docs/frameworks/legacy/v1/java/migrating -->
+        <servlet-name>EndpointsServlet</servlet-name>
+        <servlet-class>com.google.api.server.spi.EndpointsServlet</servlet-class>
         <init-param>
             <param-name>services</param-name>
             <param-value>
-                net.cryptonomica.api.StripePaymentsAPI
+                net.cryptonomica.api.StripePaymentsAPI,
                 net.cryptonomica.api.ArbitratorsAPI,
                 net.cryptonomica.api.CryptonomicaUserAPI,
                 net.cryptonomica.api.EthNodeAPI,
@@ -38,12 +38,14 @@
                 net.cryptonomica.api.OnlineVerificationAPI
             </param-value>
         </init-param>
-        <!-- https://cloud.google.com/appengine/docs/java/config/appconfig#Java_Warmup_requests -->
-        <load-on-startup>1</load-on-startup>
+        <init-param>
+            <param-name>restricted</param-name>
+            <param-value>false</param-value>
+        </init-param>
     </servlet>
     <servlet-mapping>
-        <servlet-name>SystemServiceServlet</servlet-name>
-        <url-pattern>/_ah/spi/*</url-pattern>
+        <servlet-name>EndpointsServlet</servlet-name>
+        <url-pattern>/_ah/api/*</url-pattern>
     </servlet-mapping>
 
     <!-- OTHER SERVLETS:  -->
