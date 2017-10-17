@@ -108,8 +108,9 @@ public class PGPPublicKeyData {
 
     public PGPPublicKeyData(PGPPublicKey pgpPublicKey, String asciiArmored, String cryptonomicaUserId) {
         // fingerprint
+        // see: https://stackoverflow.com/questions/9655181/how-to-convert-a-byte-array-to-a-hex-string-in-java#comment12709256_9855338
         this.fingerprint = DatatypeConverter.printHexBinary(
-                pgpPublicKey.getFingerprint()
+                pgpPublicKey.getFingerprint() // < returns byte[]
         );
         this.fingerprintStr = this.fingerprint; //
         //

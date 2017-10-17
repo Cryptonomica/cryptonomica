@@ -197,7 +197,7 @@
             <artifactId>objectify</artifactId>
             <!--<version>5.1.10</version>-->
             <!--<version>5.1.16</version>-->
-            <version>5.1.17</version>
+            <version>5.1.21</version>
         </dependency>
 
         <dependency>
@@ -313,41 +313,42 @@
             </plugin>
 
             <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-war-plugin</artifactId>-->
+                <!--&lt;!&ndash;<version>2.6</version>&ndash;&gt;-->
+                <!--&lt;!&ndash;<version>3.0.0</version>&ndash;&gt;-->
+                <!--<version>3.1.0</version>-->
+                <!--<configuration>-->
+                    <!--<webXml>${project.build.directory}/generated-sources/appengine-endpoints/WEB-INF/web.xml</webXml>-->
+                    <!--<webResources>-->
+                        <!--<resource>-->
+                            <!--&lt;!&ndash; this is relative to the pom.xml directory &ndash;&gt;-->
+                            <!--<directory>${project.build.directory}/generated-sources/appengine-endpoints</directory>-->
+                            <!--&lt;!&ndash; the list has a default value of ** &ndash;&gt;-->
+                            <!--<includes>-->
+                                <!--<include>WEB-INF/*.discovery</include>-->
+                                <!--<include>WEB-INF/*.api</include>-->
+                            <!--</includes>-->
+                        <!--</resource>-->
+                    <!--</webResources>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
+
+            <!--<plugin>-->
             <!--<groupId>org.apache.maven.plugins</groupId>-->
             <!--<artifactId>maven-war-plugin</artifactId>-->
             <!--&lt;!&ndash;<version>2.6</version>&ndash;&gt;-->
-            <!--&lt;!&ndash;<version>3.0.0</version>&ndash;&gt;-->
             <!--<version>3.1.0</version>-->
             <!--<configuration>-->
-            <!--<webXml>${project.build.directory}/generated-sources/appengine-endpoints/WEB-INF/web.xml</webXml>-->
             <!--<webResources>-->
-            <!--<resource>-->
-            <!--&lt;!&ndash; this is relative to the pom.xml directory &ndash;&gt;-->
-            <!--<directory>${project.build.directory}/generated-sources/appengine-endpoints</directory>-->
-            <!--&lt;!&ndash; the list has a default value of ** &ndash;&gt;-->
-            <!--<includes>-->
-            <!--<include>WEB-INF/*.discovery</include>-->
-            <!--<include>WEB-INF/*.api</include>-->
-            <!--</includes>-->
-            <!--</resource>-->
+            <!--<resources>-->
+            <!--<directory>${basedir}/src/main/webapp/WEB-INF</directory>-->
+            <!--<filtering>true</filtering>-->
+            <!--<targetPath>WEB-INF</targetPath>-->
+            <!--</resources>-->
             <!--</webResources>-->
             <!--</configuration>-->
             <!--</plugin>-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <!--<version>2.6</version>-->
-                <version>3.1.0</version>
-                <configuration>
-                    <webResources>
-                        <resources>
-                            <directory>${basedir}/src/main/webapp/WEB-INF</directory>
-                            <filtering>true</filtering>
-                            <targetPath>WEB-INF</targetPath>
-                        </resources>
-                    </webResources>
-                </configuration>
-            </plugin>
 
             <plugin>
                 <groupId>com.google.appengine</groupId>
