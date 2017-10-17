@@ -18,6 +18,11 @@
         <app.id>cryptonomica-server</app.id>
         <app.version>v-1-0</app.version>
 
+        <!--<endpoints.framework.version>2.0.8</endpoints.framework.version>-->
+        <endpoints.management.version>1.0.4</endpoints.management.version>
+        <!--<endpoints.project.id>YOUR_PROJECT_ID</endpoints.project.id>-->
+        <endpoints.project.id>cryptonomica-server</endpoints.project.id>
+
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
@@ -55,16 +60,24 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>
-            <version>1.9.57</version>
+            <version>1.9.58</version>
         </dependency>
+
+        <!--<dependency>-->
+        <!--<groupId>javax.servlet</groupId>-->
+        <!--<artifactId>javax.servlet-api</artifactId>-->
+        <!--<version>3.1.0</version>-->
+        <!--<type>jar</type>-->
+        <!--<scope>provided</scope>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>3.1.0</version>
-            <type>jar</type>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>javax.inject</groupId>
             <artifactId>javax.inject</artifactId>
@@ -103,20 +116,25 @@
         <!-- The O'Reilly Servlet Package (com.oreilly.servlet) by Jason Hunter to accompany his book,
         Java Servlet Programming, including the famous MultipartRequest and MultipartParser classes. -->
         <!-- http://servlets.com/cos/javadoc/ -->
-        <!--<dependency>-->
-        <!--<groupId>servlets.com</groupId>-->
-        <!--<artifactId>cos</artifactId>-->
-        <!--<version>05Nov2002</version>-->
-        <!--</dependency>-->
-        <!-- newer version: -->
-        <!--  !!!! added to WEB-INF/lib from cos-26Dec2008.zip -->
         <dependency>
             <groupId>servlets.com</groupId>
             <artifactId>cos</artifactId>
-            <version>26Dec2008</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/cos.jar</systemPath>
+            <version>05Nov2002</version>
         </dependency>
+
+        <!-- newer version: ((( removed because of  -->
+        <!--INFO] GCLOUD: Oct 18, 2017 1:14:56 AM com.google.appengine.tools.admin.Application findApiVersion-->
+        <!--[INFO] GCLOUD: WARNING: Could not identify API version in /home/viktor/Dropbox/GIT/CRYPTONOMICA/cryptonomica/target/appengine-staging/WEB-INF/lib/cos.jar-->
+        <!--[INFO] GCLOUD: java.util.zip.ZipException: error in opening zip file-->
+        <!--  !!!! added to WEB-INF/lib from cos-26Dec2008.zip -->
+        <!--<dependency>-->
+        <!--<groupId>servlets.com</groupId>-->
+        <!--<artifactId>cos</artifactId>-->
+        <!--<version>26Dec2008</version>-->
+        <!--<scope>system</scope>-->
+        <!--<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/cos.jar</systemPath>-->
+        <!---->
+        <!--</dependency>-->
 
         <!-- Stripe -->
         <!-- https://github.com/stripe/stripe-java -->
@@ -229,21 +247,22 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>com.google.appengine</groupId>
-            <artifactId>appengine-testing</artifactId>
-            <version>${appengine.version}</version>
-            <scope>test</scope>
-        </dependency>
+        <!--<dependency>-->
+        <!--<groupId>com.google.appengine</groupId>-->
+        <!--<artifactId>appengine-testing</artifactId>-->
+        <!--<version>${appengine.version}</version>-->
+        <!--<scope>test</scope>-->
+        <!--</dependency>-->
 
-        <dependency>
-            <groupId>com.google.appengine</groupId>
-            <artifactId>appengine-api-stubs</artifactId>
-            <version>${appengine.version}</version>
-            <scope>test</scope>
-        </dependency>
+        <!--<dependency>-->
+        <!--<groupId>com.google.appengine</groupId>-->
+        <!--<artifactId>appengine-api-stubs</artifactId>-->
+        <!--<version>${appengine.version}</version>-->
+        <!--<scope>test</scope>-->
+        <!--</dependency>-->
 
     </dependencies>
+
     <build>
         <!-- for hot reload of the web application-->
         <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
@@ -264,11 +283,12 @@
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
+                <!--<version>${appengine.maven.plugin.version}</version>-->
                 <version>1.3.1</version>
                 <configuration>
                     <!-- deploy configuration -->
-                    <enableJarClasses>false</enableJarClasses>
-                    <version>${app.version}</version>
+                    <!--<enableJarClasses>false</enableJarClasses>-->
+                    <!--<version>${app.version}</version>-->
                 </configuration>
             </plugin>
 
@@ -290,49 +310,64 @@
 
             <!--apache.maven.plugins -->
             <!-- see maven plugins last versions on https://maven.apache.org/plugins/-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-clean-plugin</artifactId>
-                <version>3.0.0</version>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <version>2.5.2</version>
-            </plugin>
+            <!--<plugin>-->
+            <!--<groupId>org.apache.maven.plugins</groupId>-->
+            <!--<artifactId>maven-clean-plugin</artifactId>-->
+            <!--<version>3.0.0</version>-->
+            <!--</plugin>-->
 
             <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-war-plugin</artifactId>-->
-                <!--&lt;!&ndash;<version>2.6</version>&ndash;&gt;-->
-                <!--&lt;!&ndash;<version>3.0.0</version>&ndash;&gt;-->
-                <!--<version>3.1.0</version>-->
-                <!--<configuration>-->
-                    <!--<webXml>${project.build.directory}/generated-sources/appengine-endpoints/WEB-INF/web.xml</webXml>-->
-                    <!--<webResources>-->
-                        <!--<resource>-->
-                            <!--&lt;!&ndash; this is relative to the pom.xml directory &ndash;&gt;-->
-                            <!--<directory>${project.build.directory}/generated-sources/appengine-endpoints</directory>-->
-                            <!--&lt;!&ndash; the list has a default value of ** &ndash;&gt;-->
-                            <!--<includes>-->
-                                <!--<include>WEB-INF/*.discovery</include>-->
-                                <!--<include>WEB-INF/*.api</include>-->
-                            <!--</includes>-->
-                        <!--</resource>-->
-                    <!--</webResources>-->
-                <!--</configuration>-->
+            <!--<groupId>org.apache.maven.plugins</groupId>-->
+            <!--<artifactId>maven-compiler-plugin</artifactId>-->
+            <!--<version>3.7.0</version>-->
+            <!--<configuration>-->
+            <!--<source>1.8</source>-->
+            <!--<target>1.8</target>-->
+            <!--</configuration>-->
             <!--</plugin>-->
+
+            <!--<plugin>-->
+            <!--<groupId>org.apache.maven.plugins</groupId>-->
+            <!--<artifactId>maven-install-plugin</artifactId>-->
+            <!--<version>2.5.2</version>-->
+            <!--</plugin>-->
+
+            <!--<plugin>-->
+            <!--<groupId>org.apache.maven.plugins</groupId>-->
+            <!--<artifactId>maven-war-plugin</artifactId>-->
+            <!--&lt;!&ndash;<version>2.6</version>&ndash;&gt;-->
+            <!--&lt;!&ndash;<version>3.0.0</version>&ndash;&gt;-->
+            <!--<version>3.1.0</version>-->
+            <!--<configuration>-->
+            <!--<webXml>${project.build.directory}/generated-sources/appengine-endpoints/WEB-INF/web.xml</webXml>-->
+            <!--<webResources>-->
+            <!--<resource>-->
+            <!--&lt;!&ndash; this is relative to the pom.xml directory &ndash;&gt;-->
+            <!--<directory>${project.build.directory}/generated-sources/appengine-endpoints</directory>-->
+            <!--&lt;!&ndash; the list has a default value of ** &ndash;&gt;-->
+            <!--<includes>-->
+            <!--<include>WEB-INF/*.discovery</include>-->
+            <!--<include>WEB-INF/*.api</include>-->
+            <!--</includes>-->
+            <!--</resource>-->
+            <!--</webResources>-->
+            <!--</configuration>-->
+            <!--</plugin>-->
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <directory>${basedir}/src/main/webapp/WEB-INF</directory>
+                            <filtering>true</filtering>
+                            <targetPath>WEB-INF</targetPath>
+                        </resource>
+                    </webResources>
+                </configuration>
+            </plugin>
 
             <!--<plugin>-->
             <!--<groupId>org.apache.maven.plugins</groupId>-->
