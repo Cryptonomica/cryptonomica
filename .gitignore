@@ -7,7 +7,7 @@ cors-json-file.json
 *.class
 
 # Package Files #
-*.jar
+# *.jar
 *.war
 *.ear
 
