@@ -3,6 +3,7 @@ package net.cryptonomica.api;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.Named;
+import com.google.api.server.spi.config.Nullable;
 import com.google.appengine.api.datastore.Email;
 import com.google.appengine.api.users.User;
 import com.google.gson.Gson;
@@ -12,6 +13,7 @@ import net.cryptonomica.entities.CryptonomicaUser;
 import net.cryptonomica.entities.PGPPublicKeyData;
 import net.cryptonomica.forms.GeneralSearchUserProfilesForm;
 import net.cryptonomica.returns.PGPPublicKeyGeneralView;
+import net.cryptonomica.returns.StringWrapperObject;
 import net.cryptonomica.returns.UserProfileGeneralView;
 import net.cryptonomica.returns.UserSearchAndViewReturn;
 import net.cryptonomica.service.UserTools;
@@ -29,7 +31,7 @@ import static net.cryptonomica.service.OfyService.ofy;
  * explore on: cryptonomica-{test || server}.appspot.com/_ah/api/explorer
  * ! - API should be registered in  web.xml (<param-name>services</param-name>)
  * ! - API should be loaded in app.js - app.run()
- *  * in this API:
+ * * in this API:
  */
 
 @Api(name = "userSearchAndViewAPI", // The api name must match
@@ -326,5 +328,33 @@ public class UserSearchAndViewAPI {
 
         return userProfileGeneralView;
     } // end of getUserProfileById @ApiMethod
+
+
+    @ApiMethod(
+            name = "echo",
+            path = "echo",
+            httpMethod = ApiMethod.HttpMethod.GET)
+    /* >>>>>>>>>>>>>> this is for testing only
+    * curl -H "Content-Type: application/json" -X GET -d '{"message":"hello world"}' https://cryptonomica-server.appspot.com/_ah/api/userSearchAndViewAPI/v1/echo
+    * */
+    public StringWrapperObject echo(
+            @Named("message") String message,
+            @Named("n") @Nullable Integer n
+    ) {
+        StringWrapperObject stringWrapperObject = new StringWrapperObject();
+
+        if (n != null && n >= 0) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < n; i++) {
+                if (i > 0) {
+                    sb.append(" ");
+                }
+                sb.append(message);
+            }
+            stringWrapperObject.setMessage(sb.toString());
+        }
+        return stringWrapperObject;
+    }
+    // [END echo_method]
 
 } // end of class
