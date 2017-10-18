@@ -26,7 +26,8 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
-        <appengine.version>1.9.57</appengine.version>
+        <!-- -->
+        <appengine.version>1.9.58</appengine.version>
         <gcloud.plugin.version>2.0.9.133.v201611104</gcloud.plugin.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -46,21 +47,24 @@
 
         <dependency>
             <!-- see: https://cloud.google.com/endpoints/docs/frameworks/legacy/v1/java/migrating -->
+            <!-- https://mvnrepository.com/artifact/com.google.endpoints/endpoints-framework-tools -->
             <groupId>com.google.endpoints</groupId>
             <artifactId>endpoints-framework</artifactId>
             <version>2.0.8</version>
         </dependency>
 
         <dependency>
+            <!-- https://mvnrepository.com/artifact/com.google.endpoints/endpoints-management-control-all -->
             <groupId>com.google.endpoints</groupId>
             <artifactId>endpoints-management-control-appengine-all</artifactId>
             <version>1.0.5</version>
         </dependency>
 
         <dependency>
+            <!-- https://mvnrepository.com/artifact/com.google.appengine/appengine-api-1.0-sdk -->
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>
-            <version>1.9.58</version>
+            <version>${appengine.version}</version>
         </dependency>
 
         <!--<dependency>-->
@@ -84,16 +88,16 @@
             <version>1</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.google.appengine/gcloud-maven-plugin -->
         <dependency>
+            <!-- https://mvnrepository.com/artifact/com.google.appengine/gcloud-maven-plugin -->
             <groupId>com.google.appengine</groupId>
             <artifactId>gcloud-maven-plugin</artifactId>
             <version>2.0.9.133.v201611104</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.google.appengine.tools/appengine-gcs-client -->
-        <!-- needed for import com.google.appengine.tools.cloudstorage.* -->
         <dependency>
+            <!-- https://mvnrepository.com/artifact/com.google.appengine.tools/appengine-gcs-client -->
+            <!-- needed for import com.google.appengine.tools.cloudstorage.* -->
             <groupId>com.google.appengine.tools</groupId>
             <artifactId>appengine-gcs-client</artifactId>
             <version>0.6</version>
@@ -105,8 +109,8 @@
             <version>6.3.0</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.googlecode.libphonenumber/libphonenumber -->
         <dependency>
+            <!-- https://mvnrepository.com/artifact/com.googlecode.libphonenumber/libphonenumber -->
             <groupId>com.googlecode.libphonenumber</groupId>
             <artifactId>libphonenumber</artifactId>
             <version>8.3.3</version>
@@ -145,7 +149,9 @@
             <version>4.6.0</version>
         </dependency>
         <!-- for stripe on the frontend see: https://stripe.com/docs/stripe.js -->
+
         <!-- -->
+
         <dependency>
             <groupId>com.sendgrid</groupId>
             <artifactId>sendgrid-java</artifactId>
@@ -153,14 +159,16 @@
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
         <!-- needed for sendgrid -->
+
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5.3</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore -->
-        <!-- needed for sendgrid -->
+
         <dependency>
+            <!-- needed for sendgrid -->
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
             <version>4.4.6</version>
@@ -192,11 +200,11 @@
             <version>1.1</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
-        <!-- The Apache Commons Codec package contains simple encoder and decoders for various formats such as Base64
-        and Hexadecimal. In addition to these widely used encoders and decoders, the codec package also maintains a
-        collection of phonetic encoding utilities. -->
         <dependency>
+            <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+            <!-- The Apache Commons Codec package contains simple encoder and decoders for various formats such as Base64
+            and Hexadecimal. In addition to these widely used encoders and decoders, the codec package also maintains a
+            collection of phonetic encoding utilities. -->
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>1.10</version>
@@ -215,7 +223,7 @@
             <artifactId>objectify</artifactId>
             <!--<version>5.1.10</version>-->
             <!--<version>5.1.16</version>-->
-            <version>5.1.21</version>
+            <version>5.1.17</version>
         </dependency>
 
         <dependency>
