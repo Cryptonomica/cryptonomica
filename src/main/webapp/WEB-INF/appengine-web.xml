@@ -27,7 +27,7 @@
     <env-variables>
         <!-- see: https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/appengine/endpoints-frameworks-v2/backend/src/main/webapp/WEB-INF/appengine-web.xml#L31-->
         <!--<env-var name="ENDPOINTS_SERVICE_NAME" value="${endpoints.project.id}.appspot.com" />-->
-        <env-var name="ENDPOINTS_SERVICE_NAME" value="$cryptonomica-server.appspot.com"/>
+        <env-var name="ENDPOINTS_SERVICE_NAME" value="cryptonomica-server.appspot.com"/>
     </env-variables>
 
 </appengine-web-app>

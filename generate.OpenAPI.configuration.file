@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# see:
+# https://cloud.google.com/endpoints/docs/frameworks/java/get-started-frameworks-java#generating_the_openapi_configuration_file
+
+mvn endpoints-framework:openApiDocs
+# OpenAPI document written to target/openapi-docs/openapi.json
+
+gcloud service-management deploy target/openapi-docs/openapi.json
+# Enabling service endpoints.googleapis.com on project cryptonomica-server...
+# ...
+# Service Configuration [2017-10-18r0] uploaded for service [cryptonomica-server.appspot.com]
+# o manage your API, go to: https://console.cloud.google.com/endpoints/api/cryptonomica-server.appspot.com/overview?project=cryptonomica-server
