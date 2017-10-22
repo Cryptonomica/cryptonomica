@@ -42,7 +42,7 @@
     <threadsafe>true</threadsafe>
 
     <!--<basic-scaling>-->
-        <!--<max-instances>2</max-instances>-->
+    <!--<max-instances>2</max-instances>-->
     <!--</basic-scaling>-->
 
     <system-properties>

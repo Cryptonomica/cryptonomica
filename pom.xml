@@ -4,6 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <prerequisites>
+        <!-- shows error whithout this, and waring with this -->
         <maven>3.5.0</maven>
     </prerequisites>
 
@@ -12,7 +13,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <packaging>war</packaging>
-    <version>v-1-0</version>
+    <!-- see: https://enterprise.google.com/supportcenter/managecases#Case/0016000001H3c9i/U-13985468 -->
+    <!--<version>v-1-0</version>-->
+    <version>v-2-0</version>
 
     <groupId>net.cryptonomica</groupId>
     <artifactId>cryptonomica</artifactId>
@@ -318,6 +321,7 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- Endpoints Frameworks v. 2 plugins END  -->
         </plugins>
 
     </build>
