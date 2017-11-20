@@ -25,4 +25,17 @@ public class ApiKeysUtils {
 
         return API_KEY;
     } // end of getApiKey();
+
+    public static Integer getIntegerValue (String apiKeyName) {
+
+        Integer integer = ofy()
+                .load()
+                .key(Key.create(AppSettings.class, apiKeyName))
+                .now()
+                .getIntegerValue();
+
+        return integer;
+    } // end of getApiKey();
+
+
 }

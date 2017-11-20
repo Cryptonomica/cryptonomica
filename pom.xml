@@ -77,19 +77,36 @@
         <dependency>
             <groupId>com.google.endpoints</groupId>
             <artifactId>endpoints-management-control-appengine-all</artifactId>
-            <version>1.0.5</version>
+            <!--<version>1.0.5</version>-->
+            <version>1.0.6</version>
         </dependency>
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>
-            <version>1.9.58</version>
+            <version>1.9.59</version>
         </dependency>
+
         <dependency>
+            <!--
+            App Engine Java 8 Runtime Environment
+            supports the Java Servlet 3.1 and Java Servlet 2.5 specifications
+            https://cloud.google.com/appengine/docs/standard/java/runtime-java8
+            -->
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>2.5</version>
+            <!-- https://javaee.github.io/servlet-spec/downloads/servlet-3.1/Final/servlet-3_1-final.pdf -->
+            <!--
+            see dependency in:
+            https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/appengine-java8/endpoints-v2-backend/pom.xml
+            -->
+            <!--<artifactId>javax.servlet-api</artifactId>-->
+            <!--<version>3.1.0</version>-->
+            <!--<type>jar</type>-->
+            <!---->
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>javax.inject</groupId>
             <artifactId>javax.inject</artifactId>
@@ -204,9 +221,14 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.6</version>
+            <!--<version>3.6</version>-->
+            <version>3.7</version>
         </dependency>
+
         <dependency>
+            <!--
+            for example: org.apache.commons.text.WordUtils.capitalize()
+            -->
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
             <version>1.1</version>

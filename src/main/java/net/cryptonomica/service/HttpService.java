@@ -18,10 +18,31 @@ public class HttpService {
     /* --- Logger: */
     private static final Logger LOG = Logger.getLogger(HttpService.class.getName());
 
+    public static HTTPResponse makePostRequestWithParametersMap(String urlAddress, Map<String, String> parameterMap) {
+
+        StringBuffer payload = new StringBuffer();
+
+        if (parameterMap != null) {
+
+            for (Map.Entry<String, String> entry : parameterMap.entrySet()) {
+                String name = entry.getKey();
+                String value = entry.getValue();
+                try {
+                    payload.append("&").append(name).append("=")
+                            .append(value);
+                } catch (Exception e) {
+                    LOG.warning(e.getMessage());
+                }
+            }
+        }
+        String payloadStr = payload.toString();
+        return makePostRequest(urlAddress, payloadStr);
+    }
+
     public static HTTPResponse makePostRequest(
             String urlAddress,
-            String bodyStr) {
-
+            String bodyStr
+    ) {
         // check URL
         if (urlAddress == null
                 || urlAddress.length() < 7
@@ -183,6 +204,43 @@ public class HttpService {
 
         HTTPRequest request = new HTTPRequest(url, HTTPMethod.POST);
         request.addHeader(new HTTPHeader("apiKey", apiKey));
+        request.setPayload(payload);
+
+        URLFetchService urlFetch = URLFetchServiceFactory.getURLFetchService();
+        HTTPResponse response = null;
+        try {
+            response = urlFetch.fetch(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return response;
+    }
+
+    public static HTTPResponse postRequestWithCustomHeader(
+            final String _urlAddress,
+            final String postRequestBody, //
+            final String headerName,
+            final String headerValue
+    ) {
+
+        if (postRequestBody == null || postRequestBody.equals("")) {
+            throw new IllegalArgumentException("request (postRequestBody) is empty");
+        }
+
+        URL url = null;
+        try {
+            url = new URL(_urlAddress);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        byte[] payload = postRequestBody.getBytes(StandardCharsets.UTF_8);
+
+        HTTPRequest request = new HTTPRequest(url, HTTPMethod.POST);
+        request.addHeader(
+                new HTTPHeader(headerName, headerValue)
+        );
         request.setPayload(payload);
 
         URLFetchService urlFetch = URLFetchServiceFactory.getURLFetchService();

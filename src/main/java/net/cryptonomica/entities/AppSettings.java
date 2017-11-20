@@ -3,6 +3,9 @@ package net.cryptonomica.entities;
 import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
+
+import java.util.Date;
 
 /**
  * Used to store in Datastore API keys, passwords ect - data that needed by the App,
@@ -16,6 +19,9 @@ public class AppSettings {
     private String name; //
     private String value;
     private String info;
+    @Index
+    private Date changed;
+    private Integer integerValue;
 
     /* --- Constructors: */
     public AppSettings() {
@@ -45,5 +51,21 @@ public class AppSettings {
 
     public void setInfo(String info) {
         this.info = info;
+    }
+
+    public Date getChanged() {
+        return changed;
+    }
+
+    public void setChanged(Date changed) {
+        this.changed = changed;
+    }
+
+    public Integer getIntegerValue() {
+        return integerValue;
+    }
+
+    public void setIntegerValue(Integer integerValue) {
+        this.integerValue = integerValue;
     }
 }

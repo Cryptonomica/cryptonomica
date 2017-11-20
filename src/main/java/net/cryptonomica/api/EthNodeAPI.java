@@ -66,7 +66,7 @@ public class EthNodeAPI {
             final EthAddDocForm ethAddDocForm //
     ) throws IllegalArgumentException, UnauthorizedException {
 
-        // ensure registered user ( - may be later only for verificated):
+        // ensure registered user ( - may be later only for verified users):
         CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaRegisteredUser(googleUser);
 
         // check form:
@@ -245,8 +245,82 @@ public class EthNodeAPI {
         }
     } // end AddDocRequestObj
 
+
+
     /*------------------------------------------------------------------------*/
     /* ---------------- for https://tomcatweb3j.cryptonomica.net -------------*/
+    /*------------------------------------------------------------------------*/
+
+    private class TestEntity {
+
+        String string;
+        Integer integer;
+        Boolean aBoolean;
+        Object object;
+
+        public TestEntity() {
+        }
+
+        public TestEntity(String string, Integer integer, Boolean aBoolean, Object object) {
+            this.string = string;
+            this.integer = integer;
+            this.aBoolean = aBoolean;
+            this.object = object;
+        }
+    }
+
+
+    @ApiMethod(
+            name = "requestTestingServlet",
+            path = "requestTestingServlet",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    @SuppressWarnings("unused")
+    public StringWrapperObject requestTestingServlet(
+            final User googleUser
+    ) throws IllegalArgumentException, UnauthorizedException {
+
+        // (!) for Cryptonomica officers only:
+        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        String urlHost = "https://tomcatweb3j.cryptonomica.net";
+        String urlPath = "/TestingServlet";
+        String urlAddress = urlHost + urlPath;
+        String postRequestBody = "testBodyParameterName=" + "testBodyParameterValue";
+        String headerName = "testHeaderName";
+        String heaserValue = "testHeaderValue";
+
+        // (!!!!) DO NOT USE API KEY IN TEST REQUEST
+        HTTPResponse httpResponse = HttpService.postRequestWithCustomHeader(
+                urlAddress,
+                postRequestBody,
+                headerName,
+                heaserValue
+        );
+
+        // LOG.warning("httpResponse: " + new Gson().toJson(httpResponse));
+
+        byte[] httpResponseContentBytes = httpResponse.getContent();
+        String httpResponseContentString = new String(httpResponseContentBytes, StandardCharsets.UTF_8);
+
+        // Test:
+        // Object resObj = new Gson().fromJson(httpResponseContentString, Object.class); // --- exception
+        TestEntity testEntity = new Gson().fromJson(httpResponseContentString, TestEntity.class); // --- works
+        LOG.warning("testEntity: " + new Gson().toJson(testEntity));
+        //  testEntity: {"string":"some string","integer":33,"aBoolean":true,"object":{}} (EthNodeAPI.java:309)
+        LOG.warning("testEntity.string: " + testEntity.string);
+        LOG.warning("testEntity.integer: " + testEntity.integer);
+        LOG.warning("testEntity.aBoolean: " + testEntity.aBoolean);
+        LOG.warning("testEntity.object: " + testEntity.object);
+
+        LOG.warning("httpResponseContentString: ");
+        LOG.warning(httpResponseContentString);
+        // net.cryptonomica.api.EthNodeAPI requestTestingServlet: {"string":"some string","integer":33,"aBoolean":true,"object":{}} (EthNodeAPI.java:317)
+
+        // return resObj;
+        return new StringWrapperObject(httpResponseContentString);
+    } //
+
     @ApiMethod(
             name = "getVerificationFromSC",
             path = "getVerificationFromSC",
@@ -259,15 +333,13 @@ public class EthNodeAPI {
             final @Named("ethereumAcc") String ethereumAcc
     ) throws IllegalArgumentException, UnauthorizedException {
 
-        // ensure registered user ( - may be later only for verificated):
+        // ensure registered user ( - may be later only for verified):
         CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaRegisteredUser(googleUser);
 
         // check form:
         LOG.warning("ethereumAcc" + ethereumAcc);
 
-        if (ethereumAcc == null
-                || ethereumAcc.equals("")
-                ) {
+        if (ethereumAcc == null || ethereumAcc.equals("")) {
             throw new IllegalArgumentException("Provided text is to short or empty");
         }
 

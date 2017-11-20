@@ -13,6 +13,14 @@
     <filter-mapping>
         <filter-name>ObjectifyFilter</filter-name>
         <url-pattern>/*</url-pattern>
+        <!-- see:
+        https://github.com/objectify/objectify/issues/307
+        https://stackoverflow.com/questions/27726961/how-to-resolve-you-have-not-started-an-objectify-context-in-junit
+        -->
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <!-- -->
     </filter-mapping>
 
     <servlet>
@@ -119,6 +127,18 @@
         <servlet-name>SendCustomMessageToEmailGAE</servlet-name>
         <url-pattern>/_ah/SendCustomMessageToEmailGAE</url-pattern>
     </servlet-mapping>
+
+
+    <!-- Github Webhook -->
+    <servlet>
+        <servlet-name>GithubWebhookServlet</servlet-name>
+        <servlet-class>net.cryptonomica.servlets.GithubWebhookServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GithubWebhookServlet</servlet-name>
+        <url-pattern>/GithubWebhookServlet/*</url-pattern>
+    </servlet-mapping>
+
     <!-- For testing -->
     <servlet>
         <servlet-name>TestServlet</servlet-name>
