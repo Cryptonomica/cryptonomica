@@ -139,6 +139,16 @@
         <url-pattern>/GithubWebhookServlet/*</url-pattern>
     </servlet-mapping>
 
+    <!-- Telegram Webhook -->
+    <servlet>
+        <servlet-name>TelegramWebhookServlet</servlet-name>
+        <servlet-class>net.cryptonomica.servlets.TelegramWebhookServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TelegramWebhookServlet</servlet-name>
+        <url-pattern>/TelegramWebhookServlet/*</url-pattern>
+    </servlet-mapping>
+
     <!-- For testing -->
     <servlet>
         <servlet-name>TestServlet</servlet-name>

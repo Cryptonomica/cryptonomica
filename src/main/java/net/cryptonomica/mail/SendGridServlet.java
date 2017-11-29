@@ -19,17 +19,19 @@ import static net.cryptonomica.service.OfyService.ofy;
  * https://github.com/sendgrid/sendgrid-google-java
  */
 public class SendGridServlet extends HttpServlet {
+
     /* --- Logger: */
     private static final Logger LOG = Logger.getLogger(SendGridServlet.class.getName());
 
-    /* -----------*/
-    private static final String SENDGRID_API_KEY = ofy()
-            .load()
-            .key(Key.create(AppSettings.class, "SendGridApiKey"))
-            .now()
-            .getValue();
-
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        // (?) ofy() should be used from HttpServletRequest context, not as static method in servlet class
+        final String SENDGRID_API_KEY = ofy()
+                .load()
+                .key(Key.create(AppSettings.class, "SendGridApiKey"))
+                .now()
+                .getValue();
+
         /* --- get parameters */
         String emailTO = req.getParameter("email");
         String emailCC = req.getParameter("emailCC");

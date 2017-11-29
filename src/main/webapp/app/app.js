@@ -25,6 +25,7 @@ app.config(function ($sceDelegateProvider) {
         'self', // Allow same origin resource loads
         // 'https://cryptonomica-test.appspot.com/**',
         'https://cryptonomica-server.appspot.com/**',
+        'https://lh3.googleusercontent.com/**', // files (photos)  from blob storage service
         'https://raw.githubusercontent.com/Cryptonomica/arbitration-rules/**' // works!
     ]);
 });

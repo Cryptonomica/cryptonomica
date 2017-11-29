@@ -1,6 +1,7 @@
 package net.cryptonomica.servlets;
 
 import com.google.gson.Gson;
+import org.apache.commons.io.IOUtils;
 import org.json.HTTP;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,9 +45,26 @@ public class ServletUtils {
             throw new IOException(e.getMessage());
         }
 
+        // contains 3 parts: {"Request-URI":"","Method":"","HTTP-Version":""}
         JSONObject jsonObject = null;
+
+        // "Method" part (actual request payload)
+        String methodJsonObjectStr = null;
+        JSONObject methodJsonObject = null;
+
         try {
             jsonObject = HTTP.toJSONObject(jb.toString());
+
+            LOG.warning("jsonObject:");
+            LOG.warning(jsonObject.toString());
+
+            // methodJsonObject = jsonObject.getJSONObject("Method");
+            methodJsonObjectStr = jsonObject.getString("Method");
+
+
+            LOG.warning("methodJsonObject");
+            LOG.warning(methodJsonObject.toString());
+
         } catch (JSONException e) {
             throw new IOException("Error parsing JSON request string");
         }
@@ -58,10 +76,25 @@ public class ServletUtils {
         // JSONArray arr = jsonObject.getJSONArray("arrayParamName");
         // etc...
 
-        LOG.warning("jsonObject:");
+        return methodJsonObject;
+    }
+
+    public static JSONObject getJsonObjectFromRequestWithIOUtils(HttpServletRequest request) throws IOException {
+
+        String jsonString = IOUtils.toString(request.getInputStream());
+        JSONObject jsonObject = new JSONObject(jsonString);
+        LOG.warning("jsonObject");
         LOG.warning(jsonObject.toString());
 
+        JSONObject messageJsonObject = jsonObject.getJSONObject("message");
+        LOG.warning("messageJsonObject:");
+        LOG.warning(messageJsonObject.toString());
+
+        String messageTextStr = messageJsonObject.getString("text");
+        LOG.warning("messageTextStr: " + messageTextStr);
+
         return jsonObject;
+
     }
 
     public static String getRequestParameters(HttpServletRequest request) {

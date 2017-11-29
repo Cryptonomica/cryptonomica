@@ -55,8 +55,9 @@ public class GithubWebhookServlet extends HttpServlet {
         if (githubEvent != null) {
             messageToCryptonomicaAdminsChat =
                     "New event from Github: \n"
-                            + "type: " + githubEvent + "\n";
-            //  + "data: " + Arrays.toString(githubMessageJsonObject.keySet().toArray());
+                            + "type: " + githubEvent + "\n"
+                            + "data: \n"
+                            + GSON.toJson(githubMessageJsonObject); // TODO: test this <---
         } else {
             messageToCryptonomicaAdminsChat = "no 'X-GitHub-Event' header received";
         }
