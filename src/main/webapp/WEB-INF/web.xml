@@ -172,6 +172,18 @@
         <url-pattern>/remote_api</url-pattern>
     </servlet-mapping>
 
+    <!-- receiving mail -->
+    <!-- https://cloud.google.com/appengine/docs/standard/java/mail/receiving-mail-with-mail-api -->
+    <servlet>
+        <servlet-name>mailhandler</servlet-name>
+        <servlet-class>net.cryptonomica.servlets.MailHandlerServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>mailhandler</servlet-name>
+        <url-pattern>/_ah/mail/*</url-pattern>
+    </servlet-mapping>
+
+
     <!-- Force SSL for entire site -->
     <!-- (server automatically redirects the requests to the SSL port
      if you try to use HTTP ) -->
@@ -183,6 +195,16 @@
         <user-data-constraint>
             <transport-guarantee>CONFIDENTIAL</transport-guarantee>
         </user-data-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>mail</web-resource-name>
+            <url-pattern>/_ah/mail/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>admin</role-name>
+        </auth-constraint>
     </security-constraint>
 
     <!-- -->

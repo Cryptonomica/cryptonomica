@@ -285,6 +285,15 @@
             <version>20171018</version>
         </dependency>
 
+        <dependency>
+            <!-- Java API for Telegram Bots and Gaming Platform -->
+            <!-- https://github.com/pengrad/java-telegram-bot-api -->
+            <!--https://mvnrepository.com/artifact/com.github.pengrad/java-telegram-bot-api -->
+            <groupId>com.github.pengrad</groupId>
+            <artifactId>java-telegram-bot-api</artifactId>
+            <version>3.5.0</version>
+        </dependency>
+
         <!-- Test Dependencies -->
         <dependency>
             <groupId>junit</groupId>
