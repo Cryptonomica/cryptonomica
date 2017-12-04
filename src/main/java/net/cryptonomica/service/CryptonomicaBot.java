@@ -61,5 +61,19 @@ public class CryptonomicaBot {
         return httpResponse;
     }
 
+    public static HTTPResponse sendMessageWithParameterMap(Map<String, String> parameterMap) {
+
+        final String CryptonomicaBotToken = ApiKeysUtils.getApiKey("CryptonomicaBotToken");
+
+        final String urlAddress = "https://api.telegram.org/bot" + CryptonomicaBotToken + "/sendMessage";
+
+        final String cryptonomicaAdminsChatId = ApiKeysUtils.getApiKey("cryptonomicaAdminsChatId");
+
+        // https://cloud.google.com/appengine/docs/standard/java/javadoc/com/google/appengine/api/urlfetch/HTTPResponse
+        HTTPResponse httpResponse = HttpService.makePostRequestWithParametersMap(urlAddress, parameterMap);
+
+        return httpResponse;
+    }
+
 
 }

@@ -140,7 +140,9 @@
                         },
                         headers: {
                             //'Accept': 'application/json'
-                            'imageUploadKey': $scope.imageUploadKey
+                            'imageUploadKey': $scope.imageUploadKey,
+                            // see: https://stackoverflow.com/questions/40516226/access-control-allow-origin-issue-with-api
+                            'Access-Control-Allow-Origin': '*'
                         },
                         onProgress: function (file) {
                             $log.info(file.name + '=' + file.humanSize);

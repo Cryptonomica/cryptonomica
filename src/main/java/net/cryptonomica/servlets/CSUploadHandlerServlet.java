@@ -6,8 +6,9 @@ import com.google.appengine.api.blobstore.FileInfo;
 import com.google.appengine.api.datastore.Link;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.ServingUrlOptions;
-import com.google.appengine.repackaged.com.google.gson.Gson;
-import com.google.appengine.repackaged.com.google.gson.GsonBuilder;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.googlecode.objectify.Key;
 import net.cryptonomica.constants.Constants;
 import net.cryptonomica.entities.CryptonomicaUser;

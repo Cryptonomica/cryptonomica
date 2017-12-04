@@ -12,6 +12,13 @@ import java.util.logging.Logger;
 
 /**
  * service to send http and https requests
+ *
+ * If you use the Java 7 runtime, you must use the URL Fetch service to issue outbound HTTP(S) requests.
+ * If you use the Java 8 runtime, you aren't required to use the URL Fetch service for outbound requests,
+ * although the Java 8 runtime continues to support URL Fetch. (Note that App Engine Java runtimes are based on OpenJDK.)
+ * https://cloud.google.com/appengine/docs/standard/java/issue-requests
+ *
+ * this class uses GAE URL Fetch service
  */
 public class HttpService {
 

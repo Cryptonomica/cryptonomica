@@ -1,6 +1,7 @@
 package net.cryptonomica.servlets;
 
 import com.google.gson.Gson;
+import org.apache.commons.io.IOUtils;
 import org.json.HTTP;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,12 +26,12 @@ public class ServletUtils {
     private static Gson GSON = new Gson();
 
     /*
-    * see:
-    * https://stackoverflow.com/questions/3831680/httpservletrequest-get-json-post-data
-    * see also alternative methods in
-    * https://stackoverflow.com/questions/1548782/retrieving-json-object-literal-from-httpservletrequest
-    *
-    * */
+     * see:
+     * https://stackoverflow.com/questions/3831680/httpservletrequest-get-json-post-data
+     * see also alternative methods in
+     * https://stackoverflow.com/questions/1548782/retrieving-json-object-literal-from-httpservletrequest
+     *
+     * */
     public static JSONObject getJsonObjectFromRequest(HttpServletRequest request) throws IOException {
 
         StringBuffer jb = new StringBuffer();
@@ -45,8 +46,18 @@ public class ServletUtils {
         }
 
         JSONObject jsonObject = null;
+
         try {
             jsonObject = HTTP.toJSONObject(jb.toString());
+
+            LOG.warning("jsonObject:");
+            LOG.warning(jsonObject.toString());
+            for (String key : jsonObject.keySet()) {
+                LOG.warning(key);
+                LOG.warning(jsonObject.get(key).getClass().getName());
+                LOG.warning(jsonObject.get(key).toString());
+            }
+
         } catch (JSONException e) {
             throw new IOException("Error parsing JSON request string");
         }
@@ -58,10 +69,32 @@ public class ServletUtils {
         // JSONArray arr = jsonObject.getJSONArray("arrayParamName");
         // etc...
 
-        LOG.warning("jsonObject:");
+        return jsonObject;
+    }
+
+    public static JSONObject getJsonObjectFromRequestWithIOUtils(HttpServletRequest request) throws IOException {
+
+        String jsonString = IOUtils.toString(request.getInputStream());
+        JSONObject jsonObject = new JSONObject(jsonString);
+        LOG.warning("jsonObject");
         LOG.warning(jsonObject.toString());
 
+//        JSONObject messageJsonObject = jsonObject.getJSONObject("message");
+//        LOG.warning("messageJsonObject:");
+//        LOG.warning(messageJsonObject.toString());
+//        String messageTextStr = messageJsonObject.getString("text");
+//        LOG.warning("messageTextStr: " + messageTextStr);
+//        LOG.warning("jsonObject:");
+//        LOG.warning(jsonObject.toString());
+
+        for (String key : jsonObject.keySet()) {
+            LOG.warning(key);
+            LOG.warning(jsonObject.get(key).getClass().getName());
+            LOG.warning(jsonObject.get(key).toString());
+        }
+
         return jsonObject;
+
     }
 
     public static String getRequestParameters(HttpServletRequest request) {
@@ -153,8 +186,8 @@ public class ServletUtils {
     }
 
     /* see:
-    * https://stackoverflow.com/questions/4050087/how-to-obtain-the-last-path-segment-of-an-uri
-    * */
+     * https://stackoverflow.com/questions/4050087/how-to-obtain-the-last-path-segment-of-an-uri
+     * */
     public static String getUrlKey(HttpServletRequest request) {
 
         // https://docs.oracle.com/javaee/7/api/javax/servlet/http/HttpServletRequest.html#getRequestURI--
