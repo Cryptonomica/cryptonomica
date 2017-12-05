@@ -57,7 +57,7 @@ public class TelegramWebhookServlet extends HttpServlet {
         Chat chat = message.chat();
         Long chat_id = chat.id();
 
-        String textToSend;
+        String textToSend = null;
         Keyboard replyMarkup = null;
 
         if (messageText.equalsIgnoreCase("/start")) {
@@ -69,29 +69,36 @@ public class TelegramWebhookServlet extends HttpServlet {
 //                    + "Am I cool?";
 //            replyMarkup = new ForceReply();
             replyMarkup = new ReplyKeyboardRemove();
-        } else if (messageText.equalsIgnoreCase(" /moreInfo")) {
+        } else if (messageText.equalsIgnoreCase("/moreInfo")) {
             textToSend = "please visit my web-app: [Cryptonomica.net](https://cryptonomica.net) ";
-        } else {
+        } else if (message.chat().id() != TelegramBotFactory.getCryptonomicaAdminsChatId()) {
             textToSend = "really, " + message.text() + "?\n";
             replyMarkup = new ReplyKeyboardRemove();
         }
 
-        // see message params on
-        // https://core.telegram.org/bots/api#message
-        SendMessage sendMessageRequest = new SendMessage(
-                message.chat().id(), // chat id
-                textToSend
-        )
-//                .parseMode(ParseMode.HTML)
-                .parseMode(ParseMode.Markdown)
-                .disableWebPagePreview(false)
-                .disableNotification(false) // ?
-                .replyToMessageId(message.messageId())
-                .replyMarkup(replyMarkup);
+        if (textToSend != null) {
+            LOG.warning(
+                    "sending message: " + messageText
+                            + " to chat: " + message.chat().id()
+                            + " in respond to message from " + message.from().username()
+            );
+            // see message params on
+            // https://core.telegram.org/bots/api#message
+            SendMessage sendMessageRequest = new SendMessage(
+                    message.chat().id(), // chat id
+                    textToSend
+            )
+                    .parseMode(ParseMode.Markdown)
+                    .disableWebPagePreview(false)
+                    .disableNotification(false) // ?
+                    .replyToMessageId(message.messageId())
+                    .replyMarkup(replyMarkup);
 
-        SendResponse sendResponse = cryptonomicaBot.execute(sendMessageRequest);
+            SendResponse sendResponse = cryptonomicaBot.execute(sendMessageRequest);
+            LOG.warning(sendResponse.toString());
+        }
 
-        LOG.warning(sendResponse.toString());
+        ServletUtils.sendJsonResponse(response, "{}");
 
         /*
         // this works faster:
