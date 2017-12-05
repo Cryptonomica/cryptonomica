@@ -11,6 +11,7 @@ import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
+import net.cryptonomica.service.CollectionsService;
 import net.cryptonomica.service.TelegramBotFactory;
 
 import javax.servlet.ServletException;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 public class TelegramWebhookServlet extends HttpServlet {
@@ -66,21 +68,21 @@ public class TelegramWebhookServlet extends HttpServlet {
                     + message.from().firstName() + " " + message.from().lastName() + ". "
                     + "if you need more info, type: /moreInfo \n"
                     + "if you want to start from the beginning, type: /start \n";
-//                    + "Am I cool?";
 //            replyMarkup = new ForceReply();
             replyMarkup = new ReplyKeyboardRemove();
         } else if (messageText.equalsIgnoreCase("/moreInfo")) {
             textToSend = "please visit my web-app: [Cryptonomica.net](https://cryptonomica.net) ";
+            replyMarkup = new ReplyKeyboardRemove(); // <<< needed!
         } else if (message.chat().id() != TelegramBotFactory.getCryptonomicaAdminsChatId()) {
             textToSend = "really, " + message.text() + "?\n";
-            replyMarkup = new ReplyKeyboardRemove();
+            replyMarkup = new ReplyKeyboardRemove(); // <<< needed!
         }
 
         if (textToSend != null) {
             LOG.warning(
-                    "sending message: " + messageText
+                    "sending message: " + textToSend
                             + " to chat: " + message.chat().id()
-                            + " in respond to message from " + message.from().username()
+                            + " in respond to message '" + messageText + "' from " + message.from().username()
             );
             // see message params on
             // https://core.telegram.org/bots/api#message
@@ -93,6 +95,7 @@ public class TelegramWebhookServlet extends HttpServlet {
                     .disableNotification(false) // ?
                     .replyToMessageId(message.messageId())
                     .replyMarkup(replyMarkup);
+            LOG.warning(CollectionsService.mapToString(sendMessageRequest.getParameters()));
 
             SendResponse sendResponse = cryptonomicaBot.execute(sendMessageRequest);
             LOG.warning(sendResponse.toString());
