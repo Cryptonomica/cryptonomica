@@ -166,6 +166,18 @@ public class ServletUtils {
         return requestDataSrt;
     }
 
+    public static void sendTxtResponse(HttpServletResponse response, final String text) throws IOException {
+
+        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Complete_list_of_MIME_types
+        response.setContentType("text/plain");
+
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter pw = response.getWriter(); //get the stream to write the data
+        pw.println(text);
+        pw.close(); //closing the stream
+
+    } // end of sendTxtResponse()
+
     public static void sendJsonResponse(HttpServletResponse response, final String jsonStr) throws IOException {
 
         response.setContentType("application/json");
