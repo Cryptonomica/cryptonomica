@@ -182,6 +182,7 @@ public class ServletUtils {
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        response.addHeader("Access-Control-Allow-Origin", "*");
         PrintWriter pw = response.getWriter(); //get the stream to write the data
         pw.println(jsonStr);
         pw.close(); //closing the stream

@@ -57,7 +57,7 @@
             for (var pair of formData.entries()) {
                 // see: https://developer.mozilla.org/en-US/docs/Web/API/FormData/entries
                 console.log(pair[0] + ', ' + pair[1]
-                        + ' size: ' + pair[1].size);
+                    + ' size: ' + pair[1].size);
                 // see: http://stackoverflow.com/questions/5533192/how-to-get-object-length
             }
 
@@ -71,8 +71,8 @@
 
                 //request.open("POST", "https://cryptonomica.net/gcs");
                 request.open("POST",
-                        // "https://cryptonomica.net/gcs/cryptonomica-server.appspot.com/testVideo.webm"
-                        "https://cryptonomica.net/gcs"
+                    // "https://cryptonomica.net/gcs/cryptonomica-server.appspot.com/testVideo.webm"
+                    "https://cryptonomica.net/gcs"
                 );
 
                 request.setRequestHeader("testHeader", "testHeaderValue");
@@ -83,7 +83,7 @@
 
                 request.send(formData);
                 document.getElementById('uploading').innerHTML =
-                        '<i class="fa fa-refresh fa-spin fa-2x fa-fw"></i><span>Uploading...</span>';
+                    '<i class="fa fa-refresh fa-spin fa-2x fa-fw"></i><span>Uploading...</span>';
 
                 // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/onreadystatechange
                 request.onreadystatechange = function () {
@@ -102,12 +102,12 @@
                         if (resp.verificationVideoId) {
 
                             document.getElementById('videoFromServer').setAttribute(
-                                    'src',
-                                    '/gcs?verificationVideoId=' + resp.verificationVideoId
+                                'src',
+                                '/gcs?verificationVideoId=' + resp.verificationVideoId
                             );
                             document.getElementById('linkToVideoOnServer').setAttribute(
-                                    'href',
-                                    '/gcs?verificationVideoId=' + resp.verificationVideoId
+                                'href',
+                                '/gcs?verificationVideoId=' + resp.verificationVideoId
                             );
 
                         } else if (resp.Error) {

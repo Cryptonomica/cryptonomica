@@ -18,6 +18,7 @@ import net.cryptonomica.entities.CryptonomicaUser;
 import net.cryptonomica.forms.EthAddDocForm;
 import net.cryptonomica.forms.GetDocBySha256Form;
 import net.cryptonomica.returns.StringWrapperObject;
+import net.cryptonomica.returns.VerificationStruct;
 import net.cryptonomica.service.HttpService;
 import net.cryptonomica.service.UserTools;
 import org.apache.commons.text.WordUtils;
@@ -50,8 +51,8 @@ import static net.cryptonomica.service.OfyService.ofy;
 
 public class EthNodeAPI {
 
-    @SuppressWarnings("unused")
     private static final Logger LOG = Logger.getLogger(EthNodeAPI.class.getName());
+    private static final Gson GSON = new Gson();
 
     @ApiMethod(
             name = "addDoc",
@@ -324,10 +325,10 @@ public class EthNodeAPI {
     @ApiMethod(
             name = "getVerificationFromSC",
             path = "getVerificationFromSC",
-            httpMethod = ApiMethod.HttpMethod.POST
+            httpMethod = ApiMethod.HttpMethod.GET
     )
     @SuppressWarnings("unused")
-    public StringWrapperObject getVerificationDataFromSmartContract(
+    public VerificationStruct getVerificationDataFromSmartContract(
             // final HttpServletRequest httpServletRequest,
             final User googleUser,
             final @Named("ethereumAcc") String ethereumAcc
@@ -374,9 +375,72 @@ public class EthNodeAPI {
 
         LOG.warning("httpResponseContentString: " + httpResponseContentString);
 
-        // return resObj;
+        VerificationStruct verificationStruct = GSON.fromJson(httpResponseContentString, VerificationStruct.class);
+
+        /* header:
+        content-type:  application/json;charset=utf-8
+        body:
+        {
+            "fingerprint": "",
+            "keyCertificateValidUntil": 0,
+            "firstName": "",
+            "lastName": "",
+            "birthDate": 0,
+            "nationality": "",
+            "verificationAddedOn": 0,
+            "revokedOn": 0
+        }
+        */
+        return verificationStruct;
+    }
+
+    @ApiMethod(
+            name = "getVerificationFromSCbyFingerprint",
+            path = "getVerificationFromSCbyFingerprint",
+            httpMethod = ApiMethod.HttpMethod.GET
+    )
+    @SuppressWarnings("unused")
+    public StringWrapperObject getVerificationDataFromSmartContractByFingerprint(
+            // final HttpServletRequest httpServletRequest,
+            final User googleUser,
+            final @Named("fingerprint") String fingerprint
+    ) throws IllegalArgumentException, UnauthorizedException {
+
+        // ensure registered user ( - may be later only for verified):
+        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaRegisteredUser(googleUser);
+
+        // check form:
+        LOG.warning("fingerprint" + fingerprint);
+
+        if (fingerprint == null || fingerprint.equals("") || fingerprint.length() != 40) {
+            throw new IllegalArgumentException("Provided fingerprint is not valid");
+        }
+
+        String tomcatWeb3jAPIkey = ofy()
+                .load()
+                .key(Key.create(AppSettings.class, "tomcatweb3jAPIkey"))
+                .now()
+                .getValue();
+
+        String urlHost = "https://tomcatweb3j.cryptonomica.net";
+        String urlPath = "/getVerification";
+        String urlAddress = urlHost + urlPath;
+
+        // HashMap<String, String> queryMap = new HashMap<>();
+        // queryMap.put("address", ethereumAcc);
+        String postRequestBody = "fingerprint=" + fingerprint;
+
+        HTTPResponse httpResponse = HttpService.postRequestWithAPIkey(
+                urlAddress,
+                postRequestBody,
+                tomcatWeb3jAPIkey
+        );
+
+        byte[] httpResponseContentBytes = httpResponse.getContent();
+        String httpResponseContentString = new String(httpResponseContentBytes, StandardCharsets.UTF_8);
+        LOG.warning("httpResponseContentString: " + httpResponseContentString);
         return new StringWrapperObject(httpResponseContentString);
-    } //
+    }
 
 
 }

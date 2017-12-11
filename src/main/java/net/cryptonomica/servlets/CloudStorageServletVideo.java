@@ -29,6 +29,7 @@ import static net.cryptonomica.service.OfyService.ofy;
  * <p>
  * usage: to upload videos for online verification
  */
+//  <url-pattern>/gcs/*</url-pattern>
 public class CloudStorageServletVideo extends HttpServlet {
 
     /* --- Logger: */
@@ -68,6 +69,7 @@ public class CloudStorageServletVideo extends HttpServlet {
 
         String bucketName = verificationVideo.getBucketName();
         String objectName = verificationVideo.getObjectName();
+        resp.addHeader("Access-Control-Allow-Origin", "*");
         CloudStorageService.serveFileFromCloudStorage(
                 bucketName,
                 objectName,
@@ -255,6 +257,8 @@ public class CloudStorageServletVideo extends HttpServlet {
 
         String jsonResponseStr = "{\"verificationVideoId\":\"" + verificationVideoId + "\"}";
         LOG.warning(jsonResponseStr);
+
+        // > response.addHeader("Access-Control-Allow-Origin", "*");
         ServletUtils.sendJsonResponse(resp, jsonResponseStr);
 
     } // end doPost

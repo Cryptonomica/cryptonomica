@@ -67,6 +67,7 @@ public class CloudStorageServletDocuments extends HttpServlet {
         if (i > 0) {
             extension = objectName.substring(i + 1);
         }
+        resp.addHeader("Access-Control-Allow-Origin", "*");
         CloudStorageService.serveFileFromCloudStorage(
                 bucketName,
                 objectName,

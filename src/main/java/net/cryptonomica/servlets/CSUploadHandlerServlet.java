@@ -6,7 +6,6 @@ import com.google.appengine.api.blobstore.FileInfo;
 import com.google.appengine.api.datastore.Link;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.ServingUrlOptions;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.googlecode.objectify.Key;
@@ -27,9 +26,9 @@ import java.util.logging.Logger;
 import static net.cryptonomica.service.OfyService.ofy;
 
 /*
-* see: https://habrahabr.ru/post/275211/
-* shuld be mapped to
-*/
+ * see: https://habrahabr.ru/post/275211/
+ * shuld be mapped to
+ */
 public class CSUploadHandlerServlet extends HttpServlet {
 
     private final static Logger LOG = Logger.getLogger(CSUploadHandlerServlet.class.getName());
@@ -156,6 +155,7 @@ public class CSUploadHandlerServlet extends HttpServlet {
         //
         res.setContentType("application/json");
         res.setCharacterEncoding("UTF-8");
+        res.addHeader("Access-Control-Allow-Origin", "*");
         PrintWriter pw = res.getWriter(); //get the stream to write the data
         Gson gson = new GsonBuilder().disableHtmlEscaping().create();
         pw.println(
