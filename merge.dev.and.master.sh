@@ -3,6 +3,8 @@
 # see:
 # https://stackoverflow.com/questions/14168677/merge-development-branch-with-master
 
+git add . && git commit -a
+
 git checkout dev
 # on branch development:
 git merge master
