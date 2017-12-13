@@ -149,6 +149,8 @@ public class OnlineVerificationAPI {
                 onlineVerification,
                 verificationDocumentArrayList
         );
+        LOG.warning("onlineVerificationView:");
+        LOG.warning(onlineVerificationView.toString());
 
         return onlineVerificationView;
     } // end of getOnlineVerificationByFingerprint
