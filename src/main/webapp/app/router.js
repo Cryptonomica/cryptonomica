@@ -50,11 +50,11 @@ router
                     controller: 'cryptonomica.controller.viewprofile',
                     templateUrl: 'app/viewprofile/viewprofile.html'
                 })
-                .state('showkey', {
-                    url: '/showkey/{websafestring}',
-                    controller: 'cryptonomica.controller.showkey',
-                    templateUrl: 'app/showkey/showkey.html'
-                })
+                // .state('showkey', {
+                //     url: '/showkey/{websafestring}',
+                //     controller: 'cryptonomica.controller.showkey',
+                //     templateUrl: 'app/showkey/showkey.html'
+                // })
                 .state('key', {
                     url: '/key/{fingerprint}',
                     controller: 'cryptonomica.controller.key',
@@ -109,6 +109,11 @@ router
                     url: '/ethereumVerification/{fingerprint}',
                     controller: 'cryptonomica.controller.ethereumVerification',
                     templateUrl: 'app/ethereum/ethereumVerification.html'
+                })
+                .state('openPGPOnline', {
+                    url: '/openPGPOnline',
+                    controller: 'cryptonomica.controller.openPGPOnline',
+                    templateUrl: 'app/openPGPOnline/openPGPOnline.html'
                 })
                 // .state('onlineVerificationVideo', {
                 //     url: '/onlineVerificationVideo/{fingerprint}',

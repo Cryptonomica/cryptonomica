@@ -61,16 +61,27 @@ controller.controller(controller_name, [
             $scope.verifyOnline = function () {
                 $state.go('onlineVerification', {'fingerprint': $stateParams.fingerprint});
             };
+
+            /* TODO: >>> */
+            $scope.verifyEthereumAccount = function () {
+                $state.go('ethereumVerification', {'fingerprint': $stateParams.fingerprint});
+            };
+
+            $scope.goToEthereumAccountVerification = function () {
+                $state.go('ethereumVerification', {'fingerprint': $stateParams.fingerprint});
+            };
+
             //
             GAuth.checkAuth().then(
-                function () {
+                function (user) {
+                    $rootScope.googleUser = user;
                     $scope.alert = null;
-                    $rootScope.getUserData(); // async?
+                    $rootScope.getUserData(); // async
                 },
                 function () {
                     //$rootScope.getUserData();
                     $log.error("[showkey.controller.js] GAuth.checkAuth() - unsuccessful");
-                    $scope.alert = "User not logged in";
+                    $scope.alertDanger = "User not logged in";
                 }
             );
 
@@ -93,6 +104,13 @@ controller.controller(controller_name, [
                         $log.info("[key.controller.js] showKey() - resp: ");
                         $log.info(resp);
                         $scope.key = resp;
+
+                        // use $rootScope.googleUser can be different than $rootScope.currentUser
+                        // TODO: why?
+                        $log.debug('$rootScope.googleUser.id : ', $rootScope.googleUser.id);
+                        $log.debug('$scope.key.cryptonomicaUserId : ', $scope.key.cryptonomicaUserId);
+                        $log.debug('$rootScope.currentUser : ', $rootScope.currentUser);
+
                         if ($scope.key.exp) {
                             if (new Date($scope.key.exp) < new Date()) {
                                 $scope.key.expired = true;
@@ -100,8 +118,8 @@ controller.controller(controller_name, [
                                 $log.debug(new Date($scope.key.exp));
                             }
                         }
-
                         $scope.alert = null;
+                        // $scope.$apply(); // not needed here
                         $timeout($rootScope.progressbar.complete(), 1000);
                     },
                     function (error) {
@@ -109,6 +127,7 @@ controller.controller(controller_name, [
                         $log.error(error);
                         $scope.alert = error.message;
                         $scope.key.error = error;
+                        $scope.$apply();
                         $timeout($rootScope.progressbar.complete(), 1000);
                     }
                 );
