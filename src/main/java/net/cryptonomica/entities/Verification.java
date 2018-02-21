@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 
 /**
  * Can be verification of: 1) Public PGP key, 2) Licence 3) Company 4) Authority to represent company
+ * Online key Verification has separate class: OnlineVerification
  */
 @Entity // -> net.cryptonomica.service.OfyService
 @Cache

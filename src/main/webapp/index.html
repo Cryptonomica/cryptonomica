@@ -74,6 +74,13 @@
     <!-- Puigcerber/angular-country-picker : https://github.com/Puigcerber/angular-country-picker -->
     <script src="vendors/angular-country-picker/country-picker.min.js"></script>
 
+    <!-- web3.js -->
+    <!-- https://github.com/ethereum/wiki/wiki/JavaScript-API -->
+    <script src="vendors/web3.js/0.19.0/dist/web3.min.js"></script>
+
+    <!-- https://github.com/trufflesuite/truffle-contract -->
+    <script src="vendors/truffle-contract/3.0.1/truffle-contract.min.js"></script>
+
     <!--  MY SCRIPTS -->
     <script src="app/app.js"></script>
     <script src="app/router.js"></script>
@@ -133,6 +140,20 @@
 </head>
 
 <body ng-cloak>
+
+<!--
+see:
+https://github.com/trufflesuite/truffle/issues/260
+https://gist.github.com/mpolci/52db63980897bcd19d77778045b20743
+-->
+<!--<script>
+    window.addEventListener(
+        'load',
+        function () {
+            angular.bootstrap(document, ['cryptonomica'])
+        }
+    )
+</script>-->
 
 <!--<div class="container-fluid">-->
 <div ui-view></div>

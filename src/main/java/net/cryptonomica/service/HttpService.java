@@ -45,6 +45,28 @@ public class HttpService {
         String payloadStr = payload.toString();
         return makePostRequest(urlAddress, payloadStr);
     }
+    public static HTTPResponse makePostRequestWithParametersMapAndApiKey(String urlAddress, String apiKey, Map<String, String> parameterMap) {
+
+        StringBuffer payload = new StringBuffer();
+
+        if (parameterMap != null) {
+
+            for (Map.Entry<String, String> entry : parameterMap.entrySet()) {
+                String name = entry.getKey();
+                String value = entry.getValue();
+                try {
+                    payload.append("&").append(name).append("=")
+                            .append(value);
+                } catch (Exception e) {
+                    LOG.warning(e.getMessage());
+                }
+            }
+        }
+
+        String payloadStr = payload.toString();
+        // return makePostRequest(urlAddress, payloadStr);
+        return postRequestWithAPIkey(urlAddress, payloadStr, apiKey);
+    }
 
     public static HTTPResponse makePostRequest(
             String urlAddress,

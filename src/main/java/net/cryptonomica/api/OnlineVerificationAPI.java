@@ -396,7 +396,7 @@ public class OnlineVerificationAPI {
         OnlineVerification onlineVerification = ofy()
                 .load().key(Key.create(OnlineVerification.class, fingerprint)).now();
         if (onlineVerification == null) {
-            throw new NotFoundException("OnlineVeriication entity does not exist in data base");
+            throw new NotFoundException("OnlineVerification entity does not exist in data base");
         }
 
         // --- store SMS:

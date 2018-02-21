@@ -13,6 +13,7 @@
             <button class="btn" ng-click="requestStringToSign()">
                 request string
             </button>
+            <div ng-show="requestStringToSignWorking">Processing ...</div>
             <div id="stringToSignDiv">
                 <pre><code id="stringToSign" title="String to sign">{{stringToSign}}</code></pre>
             </div>
@@ -86,10 +87,25 @@
 
 
     <hr>
+    <h4>Ethereum data</h4>
+    <div>fingerprint:
+        <a href="" title="Show key info" ui-sref="key({fingerprint:fingerprint})">
+            {{fingerprint}}
+        </a>
+
+
+    </div>
+    <div>ethereum account:
+        <a ng-href="{{etherscanLinkPrefix}}/address/{{web3.eth.defaultAccount}}">
+            {{web3.eth.defaultAccount}}
+        </a>
+    </div>
     <hr>
     <h5>OpenPGP key data:</h5>
     {{pgpPublicKey}}
 
     <h5>your user data:</h5>
     {{currentUser}}
+
+
 </div>
