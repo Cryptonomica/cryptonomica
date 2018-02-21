@@ -11,10 +11,10 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * Can be verification of: 1) Public PGP key, 2) Licence 3) Company 4) Authority to represent company
+ *
  */
 @Entity // -> net.cryptonomica.service.OfyService
-@Cache
+// @Cache // << DO NOT CASH: we need fresh info from DB on every verification step
 public class OnlineVerification implements Serializable { // -- can be returned to frontend
     /*---------*/
     // private static final Logger LOG = Logger.getLogger(OnlineVerification.class.getName());

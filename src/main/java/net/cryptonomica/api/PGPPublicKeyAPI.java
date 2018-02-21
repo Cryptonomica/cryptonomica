@@ -149,7 +149,7 @@ public class PGPPublicKeyAPI {
         LOG.warning(GSON.toJson(pgpPublicKey));
 
         PGPPublicKeyData pgpPublicKeyData = PGPTools.checkPublicKey(pgpPublicKey, asciiArmored, cryptonomicaUser);
-        // -> throws Exception
+        pgpPublicKeyData.setUserBirthday(cryptonomicaUser.getBirthday());
 
         // -- add @Parent value: ---
         pgpPublicKeyData.setCryptonomicaUserKey(Key.create(CryptonomicaUser.class, googleUser.getUserId()));

@@ -1,5 +1,6 @@
 package net.cryptonomica.returns;
 
+import com.google.gson.Gson;
 import net.cryptonomica.entities.OnlineVerification;
 import net.cryptonomica.entities.VerificationDocument;
 
@@ -71,7 +72,6 @@ public class OnlineVerificationView implements Serializable {
         this.cryptonomicaUserId = onlineVerification.getCryptonomicaUserId();
         this.birthday = onlineVerification.getBirthday();
 
-
         this.verificationDocumentsArray = new ArrayList<>();
         if (verificationDocumentArrayList != null && verificationDocumentArrayList.size() > 0)
             for (VerificationDocument doc : verificationDocumentArrayList) {
@@ -81,6 +81,12 @@ public class OnlineVerificationView implements Serializable {
         this.nationality = onlineVerification.getNationality();
     } // end of constructor;
 
+    /* toString() */
+
+    @Override
+    public String toString() {
+        return new Gson().toJson(this);
+    }
     /* --- Getters and Setters: */
 
     public String getFingerprint() {

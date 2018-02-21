@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Interact with the clipboard in browser</title>
+</head>
+<body>
+
+<div>
+    <a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Interact_with_the_clipboard">Interact with the
+        clipboard // MDN </a>
+    <br>
+
+    <p>Extensions built using WebExtension APIs can interact with the system clipboard using <code><a
+            href="https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand">document.execCommand()</a></code>:
+    </p>
+
+    <ul>
+        <li><code>document.execCommand("copy")</code></li>
+        <li><code>document.execCommand("cut")</code></li>
+        <li><code>document.execCommand("paste")</code></li>
+    </ul>
+    <br>
+</div>
+
+<button id="paste">Paste</button>
+<br>
+<textarea id="output"></textarea>
+
+
+<script>
+    // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Interact_with_the_clipboard
+    function paste() {
+        var pasteText = document.querySelector("#output");
+        pasteText.focus();
+        document.execCommand("paste");
+        console.log(pasteText.textContent);
+    }
+
+    document.querySelector("#paste").addEventListener("click", paste);
+</script>
+
+<hr>
+
+<textarea id="input"></textarea>
+<br>
+<button id="copy">Copy</button>
+
+<script>
+    function copy() {
+        var copyText = document.querySelector("#input");
+        copyText.select();
+        document.execCommand("Copy");
+    }
+
+    document.querySelector("#copy").addEventListener("click", copy)
+</script>
+
+<hr>
+
+<textarea id="pasteText" placeholder="Paste key text here or click 'Choose File' to upload key file"></textarea>
+<br>
+<button id="PasteFromClipboard">Paste</button>
+
+<script>
+    function paste() {
+        var pasteText = document.querySelector("#pasteText");
+        pasteText.select();
+        document.execCommand("paste");
+    }
+
+    document.querySelector("#PasteFromClipboard").addEventListener("click", paste)
+</script>
+
+</body>
+</html>

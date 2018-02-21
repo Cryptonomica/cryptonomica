@@ -15,16 +15,23 @@ import com.googlecode.objectify.Key;
 import net.cryptonomica.constants.Constants;
 import net.cryptonomica.entities.AppSettings;
 import net.cryptonomica.entities.CryptonomicaUser;
+import net.cryptonomica.entities.PGPPublicKeyData;
+import net.cryptonomica.entities.VerificationRequestDataFromSC;
 import net.cryptonomica.forms.EthAddDocForm;
 import net.cryptonomica.forms.GetDocBySha256Form;
+import net.cryptonomica.pgp.PGPTools;
+import net.cryptonomica.returns.BooleanWrapperObject;
 import net.cryptonomica.returns.StringWrapperObject;
 import net.cryptonomica.returns.VerificationStruct;
 import net.cryptonomica.service.HttpService;
 import net.cryptonomica.service.UserTools;
 import org.apache.commons.text.WordUtils;
+import org.bouncycastle.openpgp.PGPPublicKey;
 
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import static net.cryptonomica.service.OfyService.ofy;
@@ -440,6 +447,127 @@ public class EthNodeAPI {
         String httpResponseContentString = new String(httpResponseContentBytes, StandardCharsets.UTF_8);
         LOG.warning("httpResponseContentString: " + httpResponseContentString);
         return new StringWrapperObject(httpResponseContentString);
+    }
+
+
+    @ApiMethod(
+            name = "verifyEthAddress",
+            path = "verifyEthAddress",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    @SuppressWarnings("unused")
+    public BooleanWrapperObject verifyEthAddress(
+            // final HttpServletRequest httpServletRequest,
+            final User googleUser,
+            final @Named("ethereumAcc") String ethereumAcc
+    ) throws IllegalArgumentException, UnauthorizedException, Exception {
+
+        BooleanWrapperObject result = new BooleanWrapperObject();
+
+        // ensure registered user ( - may be later only for verified):
+        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaRegisteredUser(googleUser);
+
+        // check form:
+        LOG.warning("ethereumAcc" + ethereumAcc);
+
+        if (ethereumAcc == null || ethereumAcc.equals("")) {
+            throw new IllegalArgumentException("Provided text is to short or empty");
+        }
+
+        String tomcatWeb3jAPIkey = ofy()
+                .load()
+                .key(Key.create(AppSettings.class, "tomcatweb3jAPIkey"))
+                .now()
+                .getValue();
+
+        String urlHost = "https://tomcatweb3j.cryptonomica.net";
+        String urlPath = "/GetVerificationRequestDataServlet";
+        String urlAddress = urlHost + urlPath;
+
+        // HashMap<String, String> queryMap = new HashMap<>();
+        // queryMap.put("address", ethereumAcc);
+        String postRequestBody = "address=" + ethereumAcc;
+
+        HTTPResponse httpResponse = HttpService.postRequestWithAPIkey(
+                urlAddress,
+                postRequestBody,
+                tomcatWeb3jAPIkey
+        );
+
+        byte[] httpResponseContentBytes = httpResponse.getContent();
+        String httpResponseContentString = new String(httpResponseContentBytes, StandardCharsets.UTF_8);
+
+        // Test:
+        // Object resObj = new Gson().fromJson(httpResponseContentString, Object.class); // --- exception
+        // LOG.warning("resObj: " + new Gson().toJson(resObj));
+
+        LOG.warning("httpResponseContentString: " + httpResponseContentString);
+
+        VerificationRequestDataFromSC verificationRequestDataFromSC = GSON.fromJson(
+                httpResponseContentString,
+                VerificationRequestDataFromSC.class
+        );
+
+        // GET Key from DataBase by fingerprint:
+        String unverifiedFingerprint = verificationRequestDataFromSC.getUnverifiedFingerprint();
+        String signedString = verificationRequestDataFromSC.getSignedString();
+
+        PGPPublicKeyData pgpPublicKeyData = PGPTools.getPGPPublicKeyDataFromDataBaseByFingerprint(unverifiedFingerprint);
+
+        Boolean keyVerifiedOffline = pgpPublicKeyData.getVerified();
+        Boolean keyVerifiedOnline = pgpPublicKeyData.getOnlineVerificationFinished();
+
+        if (!keyVerifiedOffline && !keyVerifiedOnline) {
+            throw new Exception("Owner of the OpenPGP key "
+                    + pgpPublicKeyData.getFingerprint()
+                    + " not verified. Can not process with ETH address verification for "
+                    + ethereumAcc
+            );
+        }
+
+        PGPPublicKey publicKey = PGPTools.readPublicKeyFromString(pgpPublicKeyData.getAsciiArmored().getValue());
+
+        result.setResult(
+                PGPTools.verifyText(signedString, publicKey)
+        );
+
+        if (result.getResult()) {
+
+            Map<String, String> parameterMap = new HashMap<>();
+            parameterMap.put("acc", ethereumAcc);
+            parameterMap.put("fingerprint", unverifiedFingerprint);
+            // https://stackoverflow.com/questions/7784421/getting-unix-timestamp-from-date
+            Long keyCertificateValidUntilUnixTimeLong = pgpPublicKeyData.getExp().getTime() / 1000;
+            Integer keyCertificateValidUntilUnixTime = keyCertificateValidUntilUnixTimeLong.intValue();
+            parameterMap.put("keyCertificateValidUntil", keyCertificateValidUntilUnixTime.toString());
+            parameterMap.put("firstName", pgpPublicKeyData.getFirstName());
+            parameterMap.put("lastName", pgpPublicKeyData.getLastName());
+            Long birthDateUnixTimeLong = pgpPublicKeyData.getUserBirthday().getTime() / 1000;
+            Integer birthDateUnixTime = birthDateUnixTimeLong.intValue();
+            parameterMap.put("birthDate", birthDateUnixTime.toString());
+            parameterMap.put("nationality", pgpPublicKeyData.getNationality());
+
+            LOG.warning("parameterMap: ");
+            LOG.warning(GSON.toJson(parameterMap));
+
+            HTTPResponse httpResponseAddVerificationDataServlet = HttpService.makePostRequestWithParametersMapAndApiKey(
+                    "https://tomcatweb3j.cryptonomica.net//addVerificationData",
+                    tomcatWeb3jAPIkey,
+                    parameterMap
+
+            );
+            byte[] httpResponseContentBytesAddVerificationDataServlet = httpResponse.getContent();
+            String httpResponseContentStringAddVerificationDataServlet = new String(
+                    httpResponseContentBytes,
+                    StandardCharsets.UTF_8
+            );
+            result.setMessage(
+                    httpResponseContentStringAddVerificationDataServlet // tx receipt
+            );
+
+        }
+
+        return result;
     }
 
 

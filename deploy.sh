@@ -8,9 +8,16 @@ mvn endpoints-framework:openApiDocs
 
 mvn endpoints-framework:discoveryDocs
 
-gcloud service-management deploy target/openapi-docs/openapi.json
+# old:
+# gcloud service-management deploy target/openapi-docs/openapi.json
 # You can safely ignore the warnings about the paths in openapi.json not requiring an API key
 # ( https://cloud.google.com/endpoints/docs/frameworks/java/get-started-frameworks-java )
+
+# >>> new:
+gcloud endpoints services deploy target/openapi-docs/openapi.json
+# result like:
+# Service Configuration [2018-02-21r0] uploaded for service [cryptonomica-server.appspot.com]
+
 
 # for first rum before deploy run:
 # gcloud app create

@@ -2,14 +2,7 @@ package net.cryptonomica.api;
 
 import com.google.api.server.spi.auth.EspAuthenticator;
 import com.google.api.server.spi.auth.common.User;
-import com.google.api.server.spi.config.AnnotationBoolean;
-import com.google.api.server.spi.config.Api;
-import com.google.api.server.spi.config.ApiIssuer;
-import com.google.api.server.spi.config.ApiIssuerAudience;
-import com.google.api.server.spi.config.ApiMethod;
-import com.google.api.server.spi.config.ApiNamespace;
-import com.google.api.server.spi.config.Named;
-import com.google.api.server.spi.config.Nullable;
+import com.google.api.server.spi.config.*;
 import com.google.api.server.spi.response.UnauthorizedException;
 
 
@@ -71,6 +64,7 @@ public class TestAPI {
      * depending on the API method name. In this case, the HTTP method will default to POST.
      */
     // [START echo_path]
+    @SuppressWarnings("unused")
     @ApiMethod(name = "echo_path_parameter", path = "echo/{n}")
     public Message echoPathParameter(Message message, @Named("n") int n) {
         return doEcho(message, n);
@@ -88,8 +82,12 @@ public class TestAPI {
      * depending on the API method name. In this case, the HTTP method will default to POST.
      */
     // [START echo_api_key]
+    @SuppressWarnings("unused")
     @ApiMethod(name = "echo_api_key", path = "echo_api_key", apiKeyRequired = AnnotationBoolean.TRUE)
-    public Message echoApiKey(Message message, @Named("n") @Nullable Integer n) {
+    public Message echoApiKey(Message message,
+                              @Named("n")
+                              @Nullable Integer n
+    ) {
         return doEcho(message, n);
     }
     // [END echo_api_key]
@@ -119,13 +117,15 @@ public class TestAPI {
      * to the API method name. httpMethod is added here for example purposes.
      */
     // [START google_id_token_auth]
+    @SuppressWarnings("unused")
     @ApiMethod(
             httpMethod = ApiMethod.HttpMethod.GET,
-            authenticators = {EspAuthenticator.class},
-            audiences = {"YOUR_OAUTH_CLIENT_ID"},
-            clientIds = {"YOUR_OAUTH_CLIENT_ID"}
+            authenticators = {EspAuthenticator.class}
+            // audiences = {"YOUR_OAUTH_CLIENT_ID"},
+            // clientIds = {"YOUR_OAUTH_CLIENT_ID"}
     )
     public Email getUserEmail(User user) throws UnauthorizedException {
+
         if (user == null) {
             throw new UnauthorizedException("Invalid credentials");
         }
@@ -136,41 +136,6 @@ public class TestAPI {
     }
     // [END google_id_token_auth]
 
-    /**
-     * Gets the authenticated user's email. If the user is not authenticated, this will return an HTTP
-     * 401.
-     * <p>
-     * Note that name is not specified. This will default to "{class name}.{method name}". For
-     * example, the default is "echo.getUserEmail".
-     * <p>
-     * Note that httpMethod is not required here. Without httpMethod, this will default to GET due
-     * to the API method name. httpMethod is added here for example purposes.
-     */
-    // [START firebase_auth]
-    @ApiMethod(
-            path = "firebase_user",
-            httpMethod = ApiMethod.HttpMethod.GET,
-            authenticators = {EspAuthenticator.class},
-            issuerAudiences = {
-                    @ApiIssuerAudience(
-                            name = "firebase",
-//                            audiences = {"YOUR-PROJECT-ID"}
-                            audiences = {"cryptonomica-server"}
-                    )
-            }
-    )
-
-
-    public Email getUserEmailFirebase(User user) throws UnauthorizedException {
-        if (user == null) {
-            throw new UnauthorizedException("Invalid credentials");
-        }
-
-        Email response = new Email();
-        response.setEmail(user.getEmail());
-        return response;
-    }
-    // [END firebase_auth]
 }
 
 /**

@@ -63,7 +63,7 @@
 
             // formData.append("enctype", "multipart/form-data"); // ?
 
-            /*-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; */
+            // -------------------------------------------------------
             var uploadButton = document.getElementById('uploadButton');
             uploadButton.addEventListener('click', function () {
                 $('#videoUploadError').empty(); // see: http://stackoverflow.com/a/5057771/1697878
@@ -75,10 +75,23 @@
                     "https://cryptonomica.net/gcs"
                 );
 
+                /* see
+                 * https://stackoverflow.com/a/36446460/1697878
+                 * https://stackoverflow.com/questions/43871637/no-access-control-allow-origin-header-is-present-on-the-requested-resource-whe/43881141
+                 * https://stackoverflow.com/questions/40894765/cross-origin-request-blocked-the-same-origin-policy-disallows-reading-the-remot
+                  * */
+
+                request.setRequestHeader("Access-Control-Allow-Origin", "*");
+                request.setRequestHeader("Access-Control-Allow-Methods", "POST");
+                request.setRequestHeader("Access-Control-Allow-Headers", "Origin, Content-Type, Authorization, X-Auth-Token, X-Requested-With");
+                request.setRequestHeader("Access-Control-Allow-Credentials", "true");
+                //
                 request.setRequestHeader("testHeader", "testHeaderValue");
+
                 request.setRequestHeader('userId', document.getElementById('userId').value);
                 request.setRequestHeader('userEmail', document.getElementById('userEmail').value);
                 request.setRequestHeader('fingerprint', document.getElementById('fingerprint').value);
+                // >>> this is for access control: allow video upload only with key that only registered cryptonomica user can get
                 request.setRequestHeader('videoUploadKey', document.getElementById('videoUploadKey').value);
 
                 request.send(formData);
