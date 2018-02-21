@@ -1,0 +1,14 @@
+{
+  "name": "truffle-contract",
+  "homepage": "https://github.com/trufflesuite/truffle-contract",
+  "_release": "e6e9368115",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "e6e93681150b834d003428197dc10702ac38fe83"
+  },
+  "_source": "https://github.com/trufflesuite/truffle-contract.git",
+  "_target": "*",
+  "_originalSource": "truffle-contract",
+  "_direct": true
+}

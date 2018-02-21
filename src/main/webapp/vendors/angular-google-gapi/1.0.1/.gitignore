@@ -1,8 +1,11 @@
 node_modules/
 bower_components/
 
-dist/
+#dist/
 
 .idea/
 *.iml
 *.iws
+
+!/dist/angular-google-gapi.min.js
+!/dist/angular-google-gapi.js

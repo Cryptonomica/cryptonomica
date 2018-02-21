@@ -89,10 +89,10 @@
                     <p>
 
                         <!--<textarea class="form-control col-xs-9 col-md-9"-->
-                    <textarea rows="5" cols="71"
-                              class="textareaWithKey form-control"
-                              ng-model="regForm.armoredPublicPGPkeyBlock"
-                              required>
+                        <textarea rows="5" cols="71"
+                                  class="textareaWithKey form-control"
+                                  ng-model="regForm.armoredPublicPGPkeyBlock"
+                                  required>
                     </textarea>
                     </p>
                 </label>
@@ -144,15 +144,25 @@
                 <p>Key should have first name, last name (in English, exactly as in your passport) and e-mail (the
                     same as in account) in "user id"</p>
                 <p>Key Strength: min 2,048 bits; valid not longer that 2 years;</p>
+                <p>
+                    <b>
+                        For key generation use
+                        <a href="https://github.com/Cryptonomica/arbitration-rules/blob/master/Arbitration_Rules/IACC/web-site/list.of.recommended.OpenPGP.software.md"
+                           target="_blank">recommended software</a>
+                        or our
+                        <a href="" target="_blank" ui-sref="openPGPOnline">OpenPGP online</a> service.
+                    </b>
+                </p>
 
                 <label> Your ASCII-armored
                     <a href="https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/4/html/Step_by_Step_Guide/s1-gnupg-export.html"
                        target="_blank">
                         OpenPGP public key
-                    </a> (required):
+                    </a> (required)<br>
+                    (please, paste your key in the form below or upload key file):
                     <!--<p>-->
                     <br>
-                    <input type="file" on-read-file="readFileContent($fileContent)" />
+                    <input type="file" on-read-file="readFileContent($fileContent)"/>
                     <!--<textarea class="form-control col-xs-9 col-md-9"-->
                     <textarea rows="5" cols="71"
                               class="textareaWithKey form-control"
@@ -163,6 +173,17 @@
                 </label>
                 <br>
             </fieldset>
+
+            <div id="asciiArmoredKeyError"
+                 ng-show="asciiArmoredKeyError"
+                 class="alert alert-danger alert-dismissible"
+                 role="alert">
+                <!--<button type="button" class="close" data-dismiss="alert">-->
+                    <!--<span ng-click="asciiArmoredKeyError=null">&times;</span>-->
+                <!--</button>-->
+                {{asciiArmoredKeyError}}
+            </div>
+
             <button
                     class="btn btn-secondary"
                     role="button"
@@ -177,10 +198,20 @@
 
 </div>
 <!-- alerts on bottom -->
-<div ng-show="resp.error.message" class="alert alert-danger alert-dismissible" role="alert">
+<div ng-show="resp.error.message"
+     class="alert alert-danger alert-dismissible"
+     role="alert">
+    <button type="button" class="close" data-dismiss="alert">
+        <span ng-click="resp.error.message=null">&times;</span>
+    </button>
     {{resp.error.message}}
 </div>
-<div ng-show="resp.messageToUser" class="alert alert-success alert-dismissible" role="alert">
+<div ng-show="resp.messageToUser"
+     class="alert alert-success alert-dismissible"
+     role="alert">
+    <button type="button" class="close" data-dismiss="alert">
+        <span ng-click="resp.messageToUser=null">&times;</span>
+    </button>
     {{resp.messageToUser}}
 </div>
 <!-- ~~~~~~~~~~~~~~~~~~~~~~ -->

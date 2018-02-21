@@ -206,7 +206,39 @@
                     if ($scope.resp && $scope.resp.error) {
                         $scope.resp.error = null;
                     }
+                    $scope.asciiArmoredKeyError = null;
+
                     $log.info($scope.pgpPublicKeyUploadForm);
+
+                    // check if provided text is valid OpenPGP key:
+                    if ($rootScope.stringIsNullUndefinedOrEmpty($scope.pgpPublicKeyUploadForm.asciiArmored)) {
+                        $scope.asciiArmoredKeyError = 'Key form is empty';
+                        $timeout($rootScope.progressbar.complete(), 1000);
+                        // $scope.$apply();
+                        return;
+                    }
+                    try {
+                        var readArmored = openpgp.key.readArmored(
+                            $scope.pgpPublicKeyUploadForm.asciiArmored
+                        );
+                        $log.debug(readArmored);
+                        $log.debug('readArmored.keys.length : ', readArmored.keys.length);
+                        if (readArmored.keys.length === 0) {
+                            $log.debug('readArmored.keys.length === 0');
+                            $scope.asciiArmoredKeyError = "This is not valid OpenPGP key";
+                            $timeout($rootScope.progressbar.complete(), 1000);
+                            // $scope.$apply();
+                            return;
+                        }
+                    } catch (error) {
+                        $log.debug(error.message);
+                        $scope.asciiArmoredKeyError =
+                            "This is not valid OpenPGP key";
+                        $timeout($rootScope.progressbar.complete(), 1000);
+                        // $scope.$apply();
+                        return;
+                    }
+
                     GApi.executeAuth('pgpPublicKeyAPI', 'uploadNewPGPPublicKey',
                         $scope.pgpPublicKeyUploadForm // -> net.cryptonomica.forms.PGPPublicKeyUploadForm
                     )

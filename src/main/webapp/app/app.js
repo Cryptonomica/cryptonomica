@@ -4,7 +4,7 @@ var app = angular.module('cryptonomica', [
     'ngCookies', // (1.4.9) https://code.angularjs.org/1.4.9/docs/api/ngCookies
     'ui.router', // (0.2.18 ) https://github.com/angular-ui/ui-router/tree/legacy
     'ui.uploader', // () https://github.com/angular-ui/ui-uploader
-    'angular-google-gapi', // (1.0.0-beta.1) https://github.com/maximepvrt/angular-google-gapi/
+    'angular-google-gapi', // (1.0.1) https://github.com/maximepvrt/angular-google-gapi/
     'yaru22.md', // https://github.com/yaru22/angular-md
     'ngProgress', // https://github.com/VictorBjelkholm/ngProgress
     'ngclipboard', // https://sachinchoolur.github.io/ngclipboard/
@@ -29,7 +29,6 @@ app.config(function ($sceDelegateProvider) {
         'https://raw.githubusercontent.com/Cryptonomica/arbitration-rules/**' // works!
     ]);
 });
-
 
 app.run([
         'GAuth',
@@ -89,7 +88,7 @@ app.run([
 
             $rootScope.getUserData = function () {  // we use this in $rootScope.checkAuth
                 $rootScope.progressbar.start();
-                GApi.executeAuth('cryptonomicaUserAPI', 'getMyUserData') // async????
+                GApi.executeAuth('cryptonomicaUserAPI', 'getMyUserData') // async
                     .then(
                         function (resp) {
                             $rootScope.currentUser = resp;
@@ -117,7 +116,8 @@ app.run([
             $rootScope.checkAuth = function () {  // functions to call if Auth successful or not
 
                 GAuth.checkAuth().then(
-                    function () {
+                    function (user) {
+                        $rootScope.googleUser = user;
                         $rootScope.getUserData(); // async
                     },
                     function () {
@@ -138,10 +138,22 @@ app.run([
             };
 
             $rootScope.login = function () { // shows auth window from Google
-                GAuth.login().then(
-                    function () {
-                        $rootScope.checkAuth();
-                    });
+                // see: https://github.com/maximepvrt/angular-google-gapi/tree/master#signup-with-google
+                GAuth.login().then(function (user) {
+                    $log.debug('[app.js] user (google)');
+                    $log.debug(user); // undefined -- in ver. 1.0.0-beta.1 (works in 1.0.1, but 1.0.1 is slower);
+                    $rootScope.googleUser = user;
+                    // $log.debug('[app.js]' + user.name + ' is logged in:');
+                    // your application can access their Google account
+                    // $rootScope.getUserData(); //
+                    $rootScope.checkAuth(); // this includes $rootScope.getUserData()
+                }, function () {
+                    $log.debug('[app.js} login failed');
+                });
+                // GAuth.login().then(
+                //     function () {
+                //         $rootScope.checkAuth();
+                //     });
             };
 
             $rootScope.logout = function () {
@@ -160,8 +172,19 @@ app.run([
                     });
             };
 
-            // =============== Function calls:
+            $rootScope.stringIsNullUndefinedOrEmpty = function (str) {
+                return typeof str === 'undefined' || str === null || str.length === 0;
+            };
 
+            $rootScope.unixTimeFromDate = function (date) {
+                return Math.round(date.getTime() / 1000);
+            };
+
+            $rootScope.dateFromUnixTime = function (unixTime) {
+                return new Date(unixTime * 1000);
+            };
+
+            // =============== Function calls:
             $rootScope.progressbar = ngProgressFactory.createInstance();
             $rootScope.progressbar.setHeight('5px'); // any valid CSS value Eg '10px', '1em' or '1%'
             // $rootScope.progressbar.setColor('orangered');

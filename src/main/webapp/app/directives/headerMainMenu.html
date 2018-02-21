@@ -23,23 +23,14 @@
                title="Manage google account permissions" class="whitelink">Change permissions</a>
         </li>
 
-        <!-- Logout -->
-        <li class="nav-item" ng-show="gdata.getUser()">
-            <a href="https://accounts.google.com/logout"
-               role="button"
-               class="btn btn-secondary-outline whitelink">
-                <i class="fa fa-sign-out"></i>
-                <br>
-                <span>Logout</span>
-            </a>
-        </li>
-
         <!-- KeyFinder-->
         <li class="nav-item" ng-show="currentUser.registeredCryptonomicaUser">
             <a href="" ui-sref="search()"
+               role="button"
                class="btn btn-secondary-outline whitelink" title="Find keys and users">
                 <i class="fa fa-key"></i>
-                <br>KeyFinder
+                <br>
+                <span>KeyFinder</span>
             </a>
         </li>
 
@@ -49,6 +40,17 @@
                class="btn btn-secondary-outline whitelink" title="Help" role="button">
                 <i class="fa fa-question-circle"></i>
                 <br>Help
+            </a>
+        </li>
+
+        <!-- Logout -->
+        <li class="nav-item" ng-show="gdata.getUser()">
+            <a href="https://accounts.google.com/logout"
+               role="button"
+               class="btn btn-secondary-outline whitelink">
+                <i class="fa fa-sign-out"></i>
+                <br>
+                <span>Logout</span>
             </a>
         </li>
 
