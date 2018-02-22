@@ -86,11 +86,15 @@
                     </div>
 
                     <button id="submitPayment"
+                            class="submit btn btn-secondary"
+                            ng-class="{disabled: submitPaymentWorking}"
                             ng-click="submitPayment()"
                             role="button"
-                            type="button"
-                            class="submit btn btn-secondary">
+                            type="button">
                         Submit Payment
+                        <span ng-show="submitPaymentWorking" title="working...">
+                        <br><i class="fa fa-refresh fa-spin fa-fw"></i>
+                    </span>
                     </button>
                 </center>
             </form>

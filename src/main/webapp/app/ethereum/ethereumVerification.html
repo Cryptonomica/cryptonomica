@@ -198,7 +198,9 @@
         </section>
 
         <!-- ////// UPLOAD SIGNED STRING \\\\\\ -->
-        <section id="uploadSignedString" ng-show="pgpPublicKey.cryptonomicaUserId === currentUser.userId">
+        <section id="uploadSignedString"
+                 ng-show="pgpPublicKey.cryptonomicaUserId === currentUser.userId"
+                 ng-hide="smartContractData.signedString">
             <div class="card card-block">
                 <h5>Send signed string</h5>
                 <div> you have to sign string you got on previous step with your key
@@ -208,6 +210,7 @@
                     or our
                     <a ui-sref="openPGPOnline" target="_blank">online OpenPGP service</a>
                     ), put signed text in this field, and than click 'send signed string'
+                    <span ng-show="smartContractData.priceForVerificationInEth">(current price {{smartContractData.priceForVerificationInEth}} ETH)</span>
                 </div>
                 <form>
                     <textarea
@@ -253,7 +256,8 @@
         </section>
 
         <!-- ////// VERIFY  \\\\\\ -->
-        <section id="verify" ng-show="pgpPublicKey.cryptonomicaUserId === currentUser.userId">
+        <section id="verify" ng-show="pgpPublicKey.cryptonomicaUserId === currentUser.userId"
+                 ng-hide="smartContractData.verificationAddedOnUnixTime>0">
 
             <div class="card card-block">
 
@@ -263,10 +267,14 @@
                     </div>
                 </div>
                 <br>
-                <button
+                <button id="verifyBtn"
                         class="btn btn-secondary"
+                        ng-class="{disabled: verifyWorking}"
                         ng-click="verify()">
                     Verify
+                    <span ng-show="verifyWorking" title="working...">
+                        <br><i class="fa fa-refresh fa-spin fa-fw"></i>&nbsp;Working ...
+                    </span>
                 </button>
             </div>
 
@@ -279,7 +287,8 @@
                     This is your verification result:
                 </div>
                 <div id="verificationResultData">
-                    <b>{{verificationResult}}</b>
+                    <!--<b>{{verificationResult}}</b>-->
+                    <b>{{verificationResult.result.result}}</b>
                 </div>
             </div>
         </section>

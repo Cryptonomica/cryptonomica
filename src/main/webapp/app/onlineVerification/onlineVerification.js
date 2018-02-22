@@ -517,6 +517,7 @@ controller.controller(controller_name, [
         /* ---- Stripe payment  */
         $scope.submitPayment = function () {
             $rootScope.progressbar.start(); // <<<<<<<<<<<
+            $scope.submitPaymentWorking = true;
             $log.info($scope.stripePaymentForm);
             GApi.executeAuth('stripePaymentsAPI', 'processStripePayment', $scope.stripePaymentForm)
                 .then(
@@ -524,11 +525,13 @@ controller.controller(controller_name, [
                         $scope.paymentResponse = paymentResponse;
                         console.log("$scope.paymentResponse: ");
                         $log.info($scope.paymentResponse);
+                        $scope.submitPaymentWorking = false;
                         $timeout($rootScope.progressbar.complete(), 1000);
                     }, function (paymentError) {
                         $scope.paymentError = paymentError;
                         console.log("$scope.paymentError: ");
                         $log.info($scope.paymentError);
+                        $scope.submitPaymentWorking = false;
                         $timeout($rootScope.progressbar.complete(), 1000);
                     }
                 );

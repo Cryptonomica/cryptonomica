@@ -14,7 +14,9 @@
 
     <!-- JS  -->
     <!-- https://github.com/streamproc/MediaStreamRecorder -->
-    <script src="https://cdn.webrtc-experiment.com/MediaStreamRecorder.js"></script>
+    <!--<script src="https://cdn.webrtc-experiment.com/MediaStreamRecorder.js"></script>-->
+    <script src="https://github.com/streamproc/MediaStreamRecorder/releases/download/1.3.4/MediaStreamRecorder.min.js"></script>
+
 
     <!-- CSS -->
     <style media="screen" type="text/css">
@@ -168,7 +170,7 @@
             for (var pair of formData.entries()) {
                 // see: https://developer.mozilla.org/en-US/docs/Web/API/FormData/entries
                 console.log(pair[0] + ', ' + pair[1]
-                        + ' size: ' + pair[1].size);
+                    + ' size: ' + pair[1].size);
                 // see: http://stackoverflow.com/questions/5533192/how-to-get-object-length
             }
 
@@ -182,8 +184,8 @@
 
                 //request.open("POST", "https://cryptonomica.net/gcs");
                 request.open("POST",
-                        // "https://cryptonomica.net/gcs/cryptonomica-server.appspot.com/testVideo.webm"
-                        "https://cryptonomica.net/gcs"
+                    // "https://cryptonomica.net/gcs/cryptonomica-server.appspot.com/testVideo.webm"
+                    "https://cryptonomica.net/gcs"
                 );
 
                 request.setRequestHeader("testHeader", "testHeaderValue");
@@ -211,8 +213,8 @@
                         if (resp.verificationVideoId) {
 
                             document.getElementById('videoFromServer').setAttribute(
-                                    'src',
-                                    '/gcs?verificationVideoId=' + resp.verificationVideoId
+                                'src',
+                                '/gcs?verificationVideoId=' + resp.verificationVideoId
                             );
                         }
                         // document.getElementById('videoFromServer').setAttribute(

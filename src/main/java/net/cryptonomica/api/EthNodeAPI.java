@@ -542,30 +542,45 @@ public class EthNodeAPI {
             parameterMap.put("keyCertificateValidUntil", keyCertificateValidUntilUnixTime.toString());
             parameterMap.put("firstName", pgpPublicKeyData.getFirstName());
             parameterMap.put("lastName", pgpPublicKeyData.getLastName());
-            Long birthDateUnixTimeLong = pgpPublicKeyData.getUserBirthday().getTime() / 1000;
-            Integer birthDateUnixTime = birthDateUnixTimeLong.intValue();
-            parameterMap.put("birthDate", birthDateUnixTime.toString());
-            parameterMap.put("nationality", pgpPublicKeyData.getNationality());
+
+            if (pgpPublicKeyData.getUserBirthday() != null) { // for testing with old keys only
+                Long birthDateUnixTimeLong = pgpPublicKeyData.getUserBirthday().getTime() / 1000;
+                Integer birthDateUnixTime = birthDateUnixTimeLong.intValue();
+                parameterMap.put("birthDate", birthDateUnixTime.toString());
+            } else {
+                parameterMap.put("birthDate", "null");
+            }
+
+            if (pgpPublicKeyData.getNationality() != null) { // for testing with old keys only
+                parameterMap.put("nationality", pgpPublicKeyData.getNationality());
+            } else {
+                parameterMap.put("nationality", "null");
+            }
 
             LOG.warning("parameterMap: ");
             LOG.warning(GSON.toJson(parameterMap));
 
-            HTTPResponse httpResponseAddVerificationDataServlet = HttpService.makePostRequestWithParametersMapAndApiKey(
-                    "https://tomcatweb3j.cryptonomica.net//addVerificationData",
+            HTTPResponse httpResponseFromAddVerificationDataServlet = HttpService.makePostRequestWithParametersMapAndApiKey(
+                    "https://tomcatweb3j.cryptonomica.net/addVerificationData",
                     tomcatWeb3jAPIkey,
                     parameterMap
 
             );
-            byte[] httpResponseContentBytesAddVerificationDataServlet = httpResponse.getContent();
+            byte[] httpResponseContentBytesFromAddVerificationDataServlet = httpResponse.getContent();
+
             String httpResponseContentStringAddVerificationDataServlet = new String(
-                    httpResponseContentBytes,
+                    httpResponseContentBytesFromAddVerificationDataServlet,
                     StandardCharsets.UTF_8
             );
+
             result.setMessage(
                     httpResponseContentStringAddVerificationDataServlet // tx receipt
             );
 
         }
+
+        LOG.warning("result:");
+        LOG.warning(GSON.toJson(result));
 
         return result;
     }

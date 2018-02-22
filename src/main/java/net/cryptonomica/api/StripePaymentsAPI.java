@@ -434,9 +434,9 @@ public class StripePaymentsAPI {
 
     private Integer calculatePriceForKeyVerification(PGPPublicKeyData pgpPublicKeyData) {
         // 10
-        Integer priceForOneYearInUSD = 20; // <<<<<  change in production  !!!!!!!!!!!!!!!!!!!!!!!!
+        Integer priceForOneYearInUSD = 1; // <<<<<  change in production  !!!!!!!!!!!!!!!!!!!!!!!!
         // 15
-        Integer priceForTwoYearsInUSD = 40; // <<<<<  change in production  !!!!!!!!!!!!!!!!!!!!!!!
+        Integer priceForTwoYearsInUSD = 2; // <<<<<  change in production  !!!!!!!!!!!!!!!!!!!!!!!
 
         Integer price = null;
         Date today = new Date();

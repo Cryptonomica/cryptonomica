@@ -5,6 +5,8 @@ import net.cryptonomica.entities.CryptonomicaUser;
 import net.cryptonomica.entities.PGPPublicKeyData;
 import org.bouncycastle.bcpg.ArmoredInputStream;
 import org.bouncycastle.openpgp.*;
+import org.bouncycastle.openpgp.operator.jcajce.JcaKeyFingerprintCalculator;
+import org.bouncycastle.openpgp.operator.jcajce.JcaPGPContentVerifierBuilderProvider;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -78,8 +80,8 @@ public class PGPTools {
     }
 
     /* this can be used to check if provided OpenPGP public key
-    * contains all required information to be stored in DataBase
-    * */
+     * contains all required information to be stored in DataBase
+     * */
     public static PGPPublicKeyData checkPublicKey(final PGPPublicKey pgpPublicKey,
                                                   final String asciiArmored,
                                                   final CryptonomicaUser cryptonomicaUser)
@@ -193,21 +195,36 @@ public class PGPTools {
     }
 
     public static Boolean verifyText(String plainText, PGPPublicKey publicKey) throws Exception {
+
         String pattern = "-----BEGIN PGP SIGNED MESSAGE-----\\r?\\n.*?\\r?\\n\\r?\\n(.*)\\r?\\n(-----BEGIN PGP SIGNATURE-----\\r?\\n.*-----END PGP SIGNATURE-----)";
+
         Pattern regex = Pattern.compile(pattern, Pattern.CANON_EQ | Pattern.DOTALL);
+
         Matcher regexMatcher = regex.matcher(plainText);
+
+        // if input test is a signed plaintext
         if (regexMatcher.find()) {
+
             String signedDataStr = regexMatcher.group(1);
+            LOG.warning("signedDataStr: ");
+            LOG.warning(signedDataStr);
+
             String signatureStr = regexMatcher.group(2);
+            LOG.warning("signatureStr: ");
+            LOG.warning(signatureStr);
 
             ByteArrayInputStream signedDataIn = new ByteArrayInputStream(signedDataStr.getBytes("UTF8"));
             ByteArrayInputStream signatureIn = new ByteArrayInputStream(signatureStr.getBytes("UTF8"));
 
             Boolean result = verifyFile(signedDataIn, signatureIn, publicKey);
+            LOG.warning("verification result: " + result);
+
             return result;
         }
+
         throw new Exception("Cannot recognize input data");
     }
+
 
     public static Boolean verifyFile(
             InputStream signedDataIn, // signed data
@@ -216,7 +233,10 @@ public class PGPTools {
             throws Exception {
         signatureIn = PGPUtil.getDecoderStream(signatureIn);
         //dataIn = PGPUtil.getDecoderStream(dataIn); // not needed
-        PGPObjectFactory pgpObjectFactory = new PGPObjectFactory(signatureIn);
+        PGPObjectFactory pgpObjectFactory = new PGPObjectFactory(
+                signatureIn,
+                new JcaKeyFingerprintCalculator() // <<<< TODO: check if this is correct
+        );
 
         PGPSignatureList pgpSignatureList = null;
         Object o;
@@ -234,7 +254,10 @@ public class PGPTools {
         if (o instanceof PGPCompressedData) {
 
             PGPCompressedData pgpCompressedData = (PGPCompressedData) o;
-            pgpObjectFactory = new PGPObjectFactory(pgpCompressedData.getDataStream());
+            pgpObjectFactory = new PGPObjectFactory(
+                    pgpCompressedData.getDataStream(),
+                    new JcaKeyFingerprintCalculator() // <<<< TODO: check if this is correct
+            );
             pgpSignatureList = (PGPSignatureList) pgpObjectFactory.nextObject();
 
         } else {
@@ -253,7 +276,17 @@ public class PGPTools {
                     + " in the pubring"
             );
 
-        signatureObject.initVerify(pgpPublicKey, "BC");
+        // signatureObject.initVerify(
+        //  pgpPublicKey,
+        //  "BC"
+        //  );
+        // https://www.borelly.net/cb/docs/javaBC-1.4.8/pg/org/bouncycastle/openpgp/PGPSignature.html#initVerify(org.bouncycastle.openpgp.PGPPublicKey,%20java.security.Provider)
+        // Deprecated. use init(PGPContentVerifierBuilderProvider, PGPPublicKey)
+
+        signatureObject.init(
+                new JcaPGPContentVerifierBuilderProvider(),
+                pgpPublicKey
+        );
 
         while ((ch = signedDataIn.read()) >= 0) {
             signatureObject.update((byte) ch);
