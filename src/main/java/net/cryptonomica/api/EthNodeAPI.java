@@ -566,12 +566,15 @@ public class EthNodeAPI {
                     parameterMap
 
             );
-            byte[] httpResponseContentBytesFromAddVerificationDataServlet = httpResponse.getContent();
+
+            byte[] httpResponseContentBytesFromAddVerificationDataServlet = httpResponseFromAddVerificationDataServlet.getContent();
 
             String httpResponseContentStringAddVerificationDataServlet = new String(
                     httpResponseContentBytesFromAddVerificationDataServlet,
                     StandardCharsets.UTF_8
             );
+
+            LOG.warning(httpResponseContentStringAddVerificationDataServlet);
 
             result.setMessage(
                     httpResponseContentStringAddVerificationDataServlet // tx receipt

@@ -18,10 +18,9 @@ controller.config(function ($logProvider) {
 
 /*
 * This controller has 3 main functions:
-* 1) request and shoe data from smart contract
+* 1) request and show the data from smart contract
 * 2) upload signed string
 * 3) request verification from backend server
-* 4) revoke user verificaiton (from verified ETH address only)
 * */
 
 controller.controller(controller_name, [
@@ -333,10 +332,10 @@ controller.controller(controller_name, [
                                             )
                                                 .then(
                                                     function (ethAddressConnectedToFingerprint) {
-                                                        $log.info('[$scope.requestDataFromSmartContract] $scope.contract.addressAttached: ');
-                                                        $log.info(ethAddressConnectedToFingerprint);
                                                         $scope.smartContractData.ethAddressConnectedToFingerprint = ethAddressConnectedToFingerprint;
                                                         $scope.$apply();
+                                                        $log.info('[$scope.requestDataFromSmartContract] $scope.smartContractData.ethAddressConnectedToFingerprint: ');
+                                                        $log.info($scope.smartContractData.ethAddressConnectedToFingerprint);
                                                         // --------------------- with ethAddressConnectedToFingerprint:
                                                         // (0)
                                                         $scope.contract.verification.call(ethAddressConnectedToFingerprint)
