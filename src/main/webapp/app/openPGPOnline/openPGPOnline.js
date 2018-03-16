@@ -131,9 +131,7 @@ $(function () {
         };
 
         openpgp.decrypt(options).then(function (plaintext) {
-
             console.log("plaintext.data: " + plaintext.data);
-
             $("#decryptedText").val(plaintext.data);
         });
     });
@@ -239,6 +237,7 @@ $(function () {
         $('#publicKeyLocalStorageMessage').text("");
         $('#privateKeyLocalStorageMessage').text("");
         $("#statusMessage").text("Generating key, please wait ...");
+        document.getElementById("generateKeysOpenPGPjs").disabled = true;
 
         //
         var options = {
@@ -269,10 +268,10 @@ $(function () {
 
                 myPublicKey = pubkey;
                 $("#statusMessage").text("");
+                document.getElementById("generateKeysOpenPGPjs").disabled = false;
                 $('#pubkeyShow').val(myPublicKey);
                 console.log("myPublicKey:");
                 console.log(myPublicKey);
-
             });
 
     }); // end #generateKeysOpenPGPjs

@@ -11,7 +11,7 @@ for example: $scope = angular.element(document.getElementById('ethVerificationCt
 
     <!-- ---- OpenPGP JS --- -->
     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/openpgp/2.6.0/openpgp.min.js"-->
-            <!--integrity="sha256-DIFHONFgXJ2Z/EIiFAzymz4x2z4Ge0K2mlxaxv7zitg=" crossorigin="anonymous"></script>-->
+    <!--integrity="sha256-DIFHONFgXJ2Z/EIiFAzymz4x2z4Ge0K2mlxaxv7zitg=" crossorigin="anonymous"></script>-->
     <!-- openPGP.js link moved to index.html -->
 
     <!-- File saver -->
@@ -48,9 +48,9 @@ for example: $scope = angular.element(document.getElementById('ethVerificationCt
         <h5>User email:</h5>
         <textarea id="userEmail" rows="1" cols="71" placeholder="john.doe@gmail.com"></textarea>
         <h5>Valid for (years):</h5>
-        <input id="expire_in" type="number" min="1" max="10" placeholder="1">
+        <input id="expire_in" type="number" min="1" max="10" placeholder="1" value="1">
         <h5>Key size (strength) in bits:</h5>
-        <input id="numBits" input type="number" min="1024" max="4096" step="1024" placeholder="2048">
+        <input id="numBits" input type="number" min="1024" max="4096" step="1024" placeholder="2048" value="2048">
         <!-- Key options END -->
 
         <div class="line"></div>
@@ -202,9 +202,11 @@ for example: $scope = angular.element(document.getElementById('ethVerificationCt
         <div class="line"></div>
         <br>
         <hr>
-        All operations with keys on this page are made only in the browser without transferring data to the server. You can view the page code on
+        All operations with keys on this page are made only in the browser without transferring data to the server. You
+        can view the page code on
         <a href="app/openPGPOnline/openPGPOnline.js">app/openPGPOnline/openPGPOnline.js</a>
-        You can also use <a href="https://ageyev.github.io/crypto/openpgp/">ageyev.github.io/crypto/openpgp/</a> with the same functionality.
+        You can also use <a href="https://ageyev.github.io/crypto/openpgp/">ageyev.github.io/crypto/openpgp/</a> with
+        the same functionality.
         <hr>
 
     </div>
