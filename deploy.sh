@@ -18,11 +18,11 @@ gcloud endpoints services deploy target/openapi-docs/openapi.json
 # result like:
 # Service Configuration [2018-02-21r0] uploaded for service [cryptonomica-server.appspot.com]
 
-
 # for first rum before deploy run:
 # gcloud app create
 # if created already should be a message:
-# ERROR: (gcloud.app.create) The project [cryptonomica-server] already contains an App Engine application in region [us-central].  You can deploy your application using `gcloud app deploy`.
+# ERROR: (gcloud.app.create) The project [cryptonomica-server] already contains an App Engine application in region [us-central].
+# You can deploy your application using `gcloud app deploy`.
 mvn appengine:deploy
 
 # after deploy API should be accessible on
