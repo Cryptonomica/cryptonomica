@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 
+
 gcloud config set project cryptonomica-server
 
-mvn clean
+# see:
+# https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/appengine-java8/endpoints-v2-backend
+
+mvn clean package
 
 mvn endpoints-framework:openApiDocs
 
-mvn endpoints-framework:discoveryDocs
+# mvn endpoints-framework:discoveryDocs
 
 # old:
 # gcloud service-management deploy target/openapi-docs/openapi.json
@@ -18,11 +22,11 @@ gcloud endpoints services deploy target/openapi-docs/openapi.json
 # result like:
 # Service Configuration [2018-02-21r0] uploaded for service [cryptonomica-server.appspot.com]
 
-
 # for first rum before deploy run:
 # gcloud app create
 # if created already should be a message:
-# ERROR: (gcloud.app.create) The project [cryptonomica-server] already contains an App Engine application in region [us-central].  You can deploy your application using `gcloud app deploy`.
+# ERROR: (gcloud.app.create) The project [cryptonomica-server] already contains an App Engine application in region [us-central].
+# You can deploy your application using `gcloud app deploy`.
 mvn appengine:deploy
 
 # after deploy API should be accessible on

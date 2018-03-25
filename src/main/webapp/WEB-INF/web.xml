@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 
-<web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+         http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
 
     <!-- docs: -->
     <!-- https://cloud.google.com/appengine/docs/java/endpoints/required_files#webxml -->
+
+    <!-- see example:
+    https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/appengine-java8/endpoints-v2-backend/src/main/webapp/WEB-INF/web.xml
+    -->
+
+
 
     <!-- Objectify -->
     <filter>
@@ -183,7 +193,6 @@
         <url-pattern>/_ah/mail/*</url-pattern>
     </servlet-mapping>
 
-
     <!-- Force SSL for entire site -->
     <!-- (server automatically redirects the requests to the SSL port
      if you try to use HTTP ) -->
@@ -215,6 +224,9 @@
 
 
     <!-- ///////////////////// >>>>>>>>>>>>>>>>>>> NEW -->
+    <!--see:
+    https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/appengine-java8/endpoints-v2-backend/src/main/webapp/WEB-INF/web.xml
+    -->
     <!-- Add a filter that fetches the service config from service management. -->
     <filter>
         <filter-name>endpoints-api-configuration</filter-name>
@@ -222,6 +234,7 @@
     </filter>
 
     <!-- Add a filter that performs Endpoints logging and monitoring. -->
+    <!-- [START api_management] -->
     <filter>
         <filter-name>endpoints-api-controller</filter-name>
         <filter-class>com.google.api.control.extensions.appengine.GoogleAppEngineControlFilter</filter-class>
@@ -244,5 +257,6 @@
         <filter-name>endpoints-api-controller</filter-name>
         <servlet-name>EndpointsServlet</servlet-name>
     </filter-mapping>
+    <!-- [END api_management] -->
 
 </web-app>
