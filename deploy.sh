@@ -37,4 +37,6 @@ mvn appengine:deploy
 # https://console.cloud.google.com/logs/viewer?project=cryptonomica-server
 # google dev console dashboard:
 # https://console.cloud.google.com/home/dashboard?project=cryptonomica-server
-#
+
+# test:
+curl -H "Content-Type: application/json" -X POST -d '{"message":"echo"}' https://cryptonomica-server.appspot.com/_ah/api/testAPI/v1/echo

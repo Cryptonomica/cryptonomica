@@ -44,10 +44,9 @@ https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/appengine-j
     <runtime>java8</runtime>
     <threadsafe>true</threadsafe>
 
-    <!-- >>>>>>>>>>>>>>>>>>>>>>> !!! <<<< can be commented -->
-    <basic-scaling>
-        <max-instances>2</max-instances>
-    </basic-scaling>
+    <!--<basic-scaling>-->
+        <!--<max-instances>2</max-instances>-->
+    <!--</basic-scaling>-->
 
     <system-properties>
         <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
