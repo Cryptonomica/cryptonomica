@@ -18,5 +18,3 @@ For the legal part of the project see
 For info about using Cryptonomica keys server see our
 [wiki](https://github.com/Cryptonomica/cryptonomica/wiki).
 
-To talk to Cryptonomica team and users join our slack server
-[![Slack Status](http://slack.cryptonomica.net/badge.svg)](http://slack.cryptonomica.net/).
