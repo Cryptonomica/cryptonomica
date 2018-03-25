@@ -5,6 +5,8 @@ import com.google.api.server.spi.auth.common.User;
 import com.google.api.server.spi.config.*;
 import com.google.api.server.spi.response.UnauthorizedException;
 
+import java.util.logging.Logger;
+
 
 /**
  * used example from
@@ -36,6 +38,10 @@ import com.google.api.server.spi.response.UnauthorizedException;
 )
 // [END echo_api_annotation]
 public class TestAPI {
+
+    /* ---- Logger: */
+    private static final Logger LOG = Logger.getLogger(TestAPI.class.getName());
+
     /**
      * Echoes the received message back. If n is a non-negative integer, the message is copied that
      * many times in the returned message.
@@ -119,17 +125,18 @@ public class TestAPI {
     // [START google_id_token_auth]
     @SuppressWarnings("unused")
     @ApiMethod(
-            httpMethod = ApiMethod.HttpMethod.GET,
-            authenticators = {EspAuthenticator.class}
+            name = "getUserEmail",
+            path = "getUserEmail",
+            httpMethod = ApiMethod.HttpMethod.GET
+            // authenticators = {EspAuthenticator.class} // <<< causes (user == null) in APIs Explorer authorized requests
             // audiences = {"YOUR_OAUTH_CLIENT_ID"},
             // clientIds = {"YOUR_OAUTH_CLIENT_ID"}
     )
-    public Email getUserEmail(User user) throws UnauthorizedException {
+    public Email getUserEmail(final User user) throws UnauthorizedException {
 
         if (user == null) {
             throw new UnauthorizedException("Invalid credentials");
         }
-
         Email response = new Email();
         response.setEmail(user.getEmail());
         return response;
@@ -142,6 +149,7 @@ public class TestAPI {
  * The email bean that will be used in the getUserEmail response.
  */
 class Email {
+
     private String email;
 
     public String getEmail() {
