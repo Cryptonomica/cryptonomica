@@ -7,6 +7,8 @@
     <!--
     this is the version from 2018-03-25
     that caused error: https://enterprise.google.com/supportcenter/managecases#Case/001f200001UXy27/U-15349049
+    UPD: problem was in in Endpoints Framework (https://mvnrepository.com/artifact/com.google.endpoints/endpoints-framework) version 2.0.13
+    On version 2.0.9 everything works //
     -->
 
     <prerequisites>
