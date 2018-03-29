@@ -39,4 +39,11 @@ mvn appengine:deploy
 # https://console.cloud.google.com/home/dashboard?project=cryptonomica-server
 
 # test:
+echo 'sending test request to API:'
 curl -H "Content-Type: application/json" -X POST -d '{"message":"echo"}' https://cryptonomica-server.appspot.com/_ah/api/testAPI/v1/echo
+
+## remove old versions in dev console
+# https://console.cloud.google.com/appengine/versions?project=cryptonomica-server
+## flush cache on
+# https://console.cloud.google.com/appengine/memcache?project=cryptonomica-server
+#
