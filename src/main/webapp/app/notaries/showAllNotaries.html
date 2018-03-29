@@ -40,11 +40,11 @@
             </thead>
             <tbody>
             <tr ng-repeat="notaryGeneralView in resp.items">
-                <td><img ng-src="{{notaryGeneralView.userProfileGeneralView.userCurrentImageLink}}"
+                <td>
+                    <img ng-src="{{notaryGeneralView.userProfileGeneralView.userCurrentImageLink}}"
                          class="img-thumbnail"
                          title="{{notaryGeneralView.userProfileGeneralView.lastName}}"
-                         style="height: 100px; width:auto"
-                >
+                         style="height: 100px; width:auto">
 
                 </td>
                 <td class="capitalize">{{notaryGeneralView.userProfileGeneralView.lastName}}</td>

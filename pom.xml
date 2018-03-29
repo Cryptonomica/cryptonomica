@@ -196,9 +196,9 @@
             <artifactId>sendgrid-java</artifactId>
             <version>2.2.2</version>
         </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
         <!-- needed for sendgrid -->
-
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>

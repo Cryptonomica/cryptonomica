@@ -131,14 +131,14 @@ controller.controller(controller_name, [
         $scope.getPGPPublicKeyByFingerprintError = null;
 
         // example from:
-// https://github.com/trufflesuite/truffle-artifactor#artifactorgenerateoptions-networks
+        // https://github.com/trufflesuite/truffle-artifactor#artifactorgenerateoptions-networks
         const networks = {
             "1": {        // Main network
                 "networkName": "Main Ethereum Network",
                 "address": undefined, // contract address
                 "contractAddress": undefined,
                 "ownerAddress": undefined,
-                "etherscanLinkPrefix": undefined
+                "etherscanLinkPrefix": "https://ropsten.etherscan.io/"
             },
             "2": {        // Morden network
                 "networkName": undefined,
