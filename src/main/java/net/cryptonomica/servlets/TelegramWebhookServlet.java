@@ -29,7 +29,7 @@ public class TelegramWebhookServlet extends HttpServlet {
     // Find or create a logger for a named subsystem. If a logger has already been created with the given name it is returned.
     // Otherwise a new logger is created.
     // - When running Tomcat on unixes, the console output is usually redirected to the file named catalina.out
-    private static final String className = GithubWebhookServlet.class.getName();
+    private static final String className = TelegramWebhookServlet.class.getName();
     private static final Logger LOG = Logger.getLogger(className);
 
     /* --- Gson: */
