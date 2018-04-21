@@ -1,17 +1,21 @@
 <!-- HTML -->
 <div>
     <div class="container" id="onlineVerificationVideoContainer">
-        <div id="videoFromCamera">
+
+        <!-- ------------ VIDEO FROM CAMERA -->
+        <div id="videoFromCameraContainer">
             <center>
                 <text-for-camera></text-for-camera>
                 <button id="record" name="button" class="btn btn-secondary">start recording</button>
                 <button id="stop" name="button" class="btn btn-secondary disabled">finish recording</button>
                 <!--<h4>video from camera:</h4>-->
                 <div class="embed-responsive embed-responsive-16by9">
-                    <!-- https://github.com/muaz-khan/RecordRTC#echo-issues -->
+
+                    <!-- (!) see: https://github.com/muaz-khan/RecordRTC#echo-issues -->
+                    <!-- src will be set -->
                     <video
                             muted=true
-                            id="video"
+                            id="videoFromCamera"
                             src=""
                             autoplay
                             class="embed-responsive-item">
@@ -25,6 +29,7 @@
             <hr>
         </div>
 
+        <!-- ------------ RECORDED VIDEO: -->
         <div id="recordedVideo">
             <center>
                 <h4>recorded video:</h4>
@@ -40,8 +45,9 @@
                 <div id="blobURLbox" hidden>
                     blobURL: <span id="blobURL"></span>
                 </div>
-                <div class="embed-responsive embed-responsive-16by9">
+                <div id="video-container" class="embed-responsive embed-responsive-16by9">
                     <video id="blob-video" controls class="embed-responsive-item"></video>
+
                 </div>
                 <!--request.setRequestHeader('userId', document.getElementById('userId').value);-->
                 <!--request.setRequestHeader('userEmail', document.getElementById('userEmail').value);-->
@@ -93,7 +99,8 @@
 
     <!-- JS -->
     <!--<script src="https://cdn.webrtc-experiment.com/MediaStreamRecorder.js"></script>-->
+    <!--<media-stream-recorder></media-stream-recorder>-->
 
-    <media-stream-recorder></media-stream-recorder>
     <record-video-js></record-video-js>
+
 </div>

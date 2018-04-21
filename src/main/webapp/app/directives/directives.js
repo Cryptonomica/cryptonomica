@@ -56,14 +56,6 @@
         };
     });
     // ------------------------------------------------------------------------------
-    d.directive('mediaStreamRecorder', function () {
-        return {
-            restrict: 'EA', //E = element, A = attribute, C = class, M = comment
-            // <media-stream-recorder></media-stream-recorder>
-            templateUrl: 'app/directives/mediaStreamRecorder.html'
-        };
-    });
-    // ------------------------------------------------------------------------------
     d.directive('recordVideoJs', function () {
         return {
             restrict: 'EA', //E = element, A = attribute, C = class, M = comment

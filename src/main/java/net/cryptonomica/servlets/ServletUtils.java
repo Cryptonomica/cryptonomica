@@ -182,7 +182,14 @@ public class ServletUtils {
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.addHeader("Access-Control-Allow-Origin", "*");
+
+        // >>> use
+        // response.addHeader("Access-Control-Allow-Origin", "*");
+        // >>> use:
+        // @Override
+        // protected void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        // method in servlet
+
         PrintWriter pw = response.getWriter(); //get the stream to write the data
         pw.println(jsonStr);
         pw.close(); //closing the stream
