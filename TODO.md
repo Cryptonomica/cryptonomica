@@ -1,5 +1,5 @@
 
-- [ ] resolve:
+- [x] resolve:
  /#/onlineVerification/....
   Failed to load https://cryptonomica.net/gcs: 
   Response to preflight request doesn't pass access control check: 

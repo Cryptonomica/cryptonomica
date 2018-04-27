@@ -2,13 +2,14 @@
 <script src="/newdesign/vendor/wowjs/wow.min.js"></script>
 <script src="/newdesign/js/vitality.js"></script>
 
+
 <script>
     // see:
     // https://github.com/VodkaBears/Vide
     // Vide - Video Background Settings
     $('header.video').vide(
         {
-            mp4: "/app/landing/the_planet_hd_hd720.mp4",
+            // mp4: "/app/landing/the_planet_hd_hd720.mp4",
             poster: "/app/landing/the_planet_hd_hd1080.jpg"
         },
         {
@@ -19,296 +20,319 @@
     );
 </script>
 
-<div id="page-top">
-    <header-landing-page></header-landing-page>
-    <!-- Masthead -->
-    <header class="masthead video">
-        <div class="overlay"></div>
-        <div class="container h-100">
-            <div class="row h-100">
-                <div class="col-12 my-auto text-center text-white">
 
-                    <br>
-                    <div class="masthead-subtitle">The World connected. Electronically.</div>
-                    <br>
-                    <div class="masthead-subtitle">No borders. No boundaries. Your business everywhere.</div>
-                    <br>
-                    <div class="masthead-title">CRYPTONOMICA</div>
-                    <br>
-                    <img class="masthead-img img-fluid mb-3" src="/app/img/logo.004.crop.white.svg" alt="">
-                    <!--<hr class="colored">-->
-                </div>
-            </div>
-        </div>
-        <div class="scroll-down">
-            <a class="btn page-scroll" href="" ng-click="goTo('about')">
-                <i class="fa fa-angle-down fa-fw"></i>
-            </a>
-        </div>
-    </header>
+<!--<div class="container-fluid">-->
 
-    <!-- About Section -->
-    <section class="page-section" id="about">
+<header-landing-page></header-landing-page>
 
-        <div class="container-fluid">
-            <div class="wow fadeIn text-center">
-                <h4>What is Cryptonomica?</h4>
-                <p>
-                    Cryptonomica is the global database of verified identities with service for signing electronic
-                    documents and online dispute resolution.
-                </p>
-                <h4>Why it's useful for me? </h4>
-                <p>
-                    With Cryptonomica you can generate and upload your public cryptographic key (OpenPGP standard)
-                    to global database,
-                    and add to this key verified data about key owner, i.e. about you.
-                    Than you can use your key to securely sign documents worldwide, to encrypt documents,
-                    to resolve disputes online - faster and more comfortable than ever.
-                </p>
-                <h4>How is it different from DocuSign, AdobeSign, and local digital signature services?</h4>
-                <p>
-                    We provide real identity check. As much verification as possible.
-                    We have notaries connected to our system and we have our officers/representatives
-                    in different countries for face-to-face person identification.
-                    We use best security practices and reliable open source cryptography.
-                    And it's global.
-                </p>
-                <br><br>
-            </div>
+<div class="container-fluid">
 
-            <!--<hr class="colored">-->
+    <section id="page-top">
 
-            <div class="row text-center">
-                <div class="col-lg-3 col-md-6">
-                    <div class="wow fadeIn px-4 pb-4 pb-lg-0 h-100" data-wow-delay=".2s">
-                        <span class="octicon octicon-shield onHoverPurple" style="font-size: 5em"></span>
-                        <!--<i class="fa fa-code fa-4x"></i>-->
-                        <h3>OpenPGP</h3>
-                        <p class="mb-0">Open sourced reliable and user-friendly cryptography.
-                            For every OS and every computer device</p>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="wow fadeIn px-4 pb-4 pb-lg-0 h-100" data-wow-delay=".6s">
-                        <i class="fa fa-user onHoverPurple" style="font-size: 5em"></i>
-                        <h3>Reliable verification</h3>
-                        <p class="mb-0">
-                            We provide most reliable identity verification on the global market
-                        </p>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="wow fadeIn px-4 pb-4 pb-lg-0 h-100" data-wow-delay=".4s">
-                        <!--<i class="fa fa-edit fa-4x"></i>-->
-                        <i class="fa fa-bank onHoverPurple" style="font-size: 5em"></i>
-                        <h3>Legal</h3>
-                        <p class="mb-0">
-                            We provide most sophisticated legal tools to secure your contract and documents.
-                            Your electronic contracts are enforceable in (almost) all jurisdictions.
-                            And you choose the law.
-                        </p>
-                    </div>
-                </div>
+        <!-- Masthead -->
+        <header class="masthead video">
+            <div class="overlay"></div>
+            <div class="container h-100">
+                <div class="row h-100">
+                    <div class="col-12 my-auto text-center text-white">
 
-                <div class="col-lg-3 col-md-6">
-                    <div class="wow fadeIn px-4 h-100" data-wow-delay=".8s">
-                        <!--<i class="fa fa-heart fa-4x"></i>-->
-                        <i class="fa fa-heart onHoverRed" style="font-size: 5em"></i>
-                        <h3>Built with passion</h3>
-                        <p class="mb-0">Cryptonomica is carefully designed by experienced lawyers and hackers.
-                            We hope you'll enjoy using it as much as we enjoy creating it.</p>
+                        <br>
+                        <div class="masthead-subtitle">The World connected. Electronically.</div>
+                        <br>
+                        <div class="masthead-subtitle">No borders. No boundaries. Your business everywhere.</div>
+                        <br>
+                        <div class="masthead-subtitle" style="font-weight: 900; font-size: 2.2em">
+                            CRYPTONOMICA
+                        </div>
+                        <!--<div class="masthead-title">CRYPTONOMICA</div>-->
+                        <br>
+                        <img class="masthead-img img-fluid mb-3" src="/app/img/logo.004.crop.white.svg" alt="">
+                        <!--<hr class="colored">-->
                     </div>
                 </div>
             </div>
-        </div>
+
+            <!--
+            <div class="scroll-down">
+                <a class="btn page-scroll" href="" ng-click="goTo('about')">
+                    <i class="fa fa-angle-down fa-fw"></i>
+                </a>
+            </div>
+            -->
+
+        </header>
+
+        <!-- About Section -->
+        <section class="page-section" id="about">
+
+            <div class="container-fluid">
+                <div class="wow fadeIn text-center">
+                    <h4>What is Cryptonomica?</h4>
+                    <p>
+                        Cryptonomica is the global database of verified identities with service for signing
+                        electronic
+                        documents and online dispute resolution.
+                    </p>
+                    <h4>Why it's useful for me? </h4>
+                    <p>
+                        With Cryptonomica you can generate and upload your public cryptographic key (OpenPGP
+                        standard)
+                        to global database,
+                        and add to this key verified data about key owner, i.e. about you.
+                        Than you can use your key to securely sign documents worldwide, to encrypt documents,
+                        to resolve disputes online - faster and more comfortable than ever.
+                    </p>
+                    <h4>How is it different from DocuSign, AdobeSign, and local digital signature services?</h4>
+                    <p>
+                        We provide real identity check. As much verification as possible.
+                        We have notaries connected to our system and we have our officers/representatives
+                        in different countries for face-to-face person identification.
+                        We use best security practices and reliable open source cryptography.
+                        And it's global.
+                    </p>
+                    <br><br>
+                </div>
+
+                <!--<hr class="colored">-->
+
+                <div class="row text-center">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="wow fadeIn px-4 pb-4 pb-lg-0 h-100" data-wow-delay=".2s">
+                            <span class="octicon octicon-shield onHoverPurple" style="font-size: 5em"></span>
+                            <!--<i class="fa fa-code fa-4x"></i>-->
+                            <h3>OpenPGP</h3>
+                            <p class="mb-0">Open sourced reliable and user-friendly cryptography.
+                                For every OS and every computer device</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="wow fadeIn px-4 pb-4 pb-lg-0 h-100" data-wow-delay=".6s">
+                            <i class="fa fa-user onHoverPurple" style="font-size: 5em"></i>
+                            <h3>Reliable verification</h3>
+                            <p class="mb-0">
+                                We provide most reliable identity verification on the global market
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="wow fadeIn px-4 pb-4 pb-lg-0 h-100" data-wow-delay=".4s">
+                            <!--<i class="fa fa-edit fa-4x"></i>-->
+                            <i class="fa fa-bank onHoverPurple" style="font-size: 5em"></i>
+                            <h3>Legal</h3>
+                            <p class="mb-0">
+                                We provide most sophisticated legal tools to secure your contract and documents.
+                                Your electronic contracts are enforceable in (almost) all jurisdictions.
+                                And you choose the law.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6">
+                        <div class="wow fadeIn px-4 h-100" data-wow-delay=".8s">
+                            <!--<i class="fa fa-heart fa-4x"></i>-->
+                            <i class="fa fa-heart onHoverRed" style="font-size: 5em"></i>
+                            <h3>Built with passion</h3>
+                            <p class="mb-0">Cryptonomica is carefully designed by experienced lawyers and hackers.
+                                We hope you'll enjoy using it as much as we enjoy creating it.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How to use -->
+        <section class="page-section" id="howToUse">
+            <div class="container">
+                <center>
+                    <h2 class="wow fadeIn">How to use Cryptonomica</h2>
+                </center>
+                <div class="row">
+                    <md ng-include="'/app/home/content.home.md'"></md>
+                </div>
+            </div>
+        </section>
     </section>
 
-    <!-- How to use -->
-    <section class="page-section" id="howToUse">
-        <div class="container">
-            <center>
-                <h2 class="wow fadeIn">How to use Cryptonomica</h2>
-            </center>
+
+    <!-- Team Section -->
+    <section class="page-section bg-faded" id="team">
+
+        <div class="container text-center">
+            <h2>Our Team</h2>
+            <!--<p class="mb-0">We are an international distributed team of hackers and lawyers</p>-->
+            <hr class="colored">
+
             <div class="row">
-                <md ng-include="'/app/home/content.home.md'"></md>
+
+                <div class="col-lg-3"></div>
+
+                <!--Viktor Ageyev-->
+                <div class="col-lg-3">
+                    <div class="card teamMemberCard wow fadeIn" id="viktorAgeyev" data-wow-delay=".2s">
+                        <img class="card-img-top teamMemberPhoto" src="/app/img/team/viktor.ageyev.01.png"
+                             alt="Viktor Ageyev">
+                        <div class="card-block">
+                            <h4 class="card-title">Viktor Ageyev</h4>
+                            <p class="card-text">
+                                CEO/CTO
+                            </p>
+                            <p class="card-text">
+                                Lawyer, Software Engineer
+                            </p>
+                            <p class="text-bold" style="font-size: 1.5em">
+                                <a href="https://www.facebook.com/viktor.ageyev" target="_blank">
+                                    <i class="fa fa-facebook fa-fw"></i>
+                                </a>
+                                <a href="https://github.com/ageyev" target="_blank">
+                                    <i class="fa fa-github fa-fw"></i>
+                                </a>
+                                <a href="https://il.linkedin.com/in/ageyev" target="_blank">
+                                    <i class="fa fa-linkedin fa-fw"></i>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Max Baryshnikov-->
+                <div class="col-lg-3">
+                    <div class="card teamMemberCard wow fadeIn" id="maxBaryshnikov" data-wow-delay=".4s">
+                        <img class="card-img-top teamMemberPhoto" src="/app/img/team/max.baryshnikov.01.png"
+                             alt="Max Baryshnikov">
+                        <div class="card-block">
+                            <h4 class="card-title">Max Baryshnikov</h4>
+                            <p class="card-text">
+                                Legal Counsel
+                            </p>
+                            <p class="card-text">
+                                Lawyer<br><br>
+                            </p>
+                            <p class="text-bold" style="font-size: 1.5em">
+
+                                <!--<a href="https://www.facebook.com/max.baryshnikov">-->
+                                <!--<i class="fa fa-facebook fa-fw"></i>-->
+                                <!--</a>-->
+
+                                <a href="https://ua.linkedin.com/in/max-baryshnikov-12076b1" target="_blank">
+                                    <i class="fa fa-linkedin fa-fw"></i>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3"></div>
+
             </div>
         </div>
+
     </section>
-</div>
 
-
-<!-- Team Section -->
-<section class="page-section bg-faded" id="team">
-
-    <div class="container text-center">
-        <h2>Our Team</h2>
-        <!--<p class="mb-0">We are an international distributed team of hackers and lawyers</p>-->
-        <hr class="colored">
-
-        <div class="row">
-
-            <!--Viktor Ageyev-->
-            <!--<div class="col-lg-6">-->
-            <div class="card teamMemberCard wow fadeIn" id="viktorAgeyev" data-wow-delay=".2s">
-                <img class="card-img-top teamMemberPhoto" src="/app/img/team/viktor.ageyev.01.png"
-                     alt="Viktor Ageyev">
-                <div class="card-block">
-                    <h4 class="card-title">Viktor Ageyev</h4>
-                    <p class="card-text">
-                        CEO/CTO
-                    </p>
-                    <p class="card-text">
-                        Lawyer, Software Engineer
-                    </p>
-                    <p class="text-bold" style="font-size: 1.5em">
-                        <a href="https://www.facebook.com/viktor.ageyev" target="_blank">
-                            <i class="fa fa-facebook fa-fw"></i>
-                        </a>
-                        <a href="https://github.com/ageyev" target="_blank">
-                            <i class="fa fa-github fa-fw"></i>
-                        </a>
-                        <a href="https://il.linkedin.com/in/ageyev" target="_blank">
-                            <i class="fa fa-linkedin fa-fw"></i>
-                        </a>
-                    </p>
-                </div>
-                <!--</div>-->
-            </div>
-            <!--Max Baryshnikov-->
-            <!--<div class="col-lg-6">-->
-            <div class="card teamMemberCard wow fadeIn" id="maxBaryshnikov" data-wow-delay=".4s">
-                <img class="card-img-top teamMemberPhoto" src="/app/img/team/max.baryshnikov.01.png"
-                     alt="Max Baryshnikov">
-                <div class="card-block">
-                    <h4 class="card-title">Max Baryshnikov</h4>
-                    <p class="card-text">
-                        Legal Counsel
-                    </p>
-                    <p class="card-text">
-                        Lawyer<br><br>
-                    </p>
-                    <p class="text-bold" style="font-size: 1.5em">
-
-                        <!--<a href="https://www.facebook.com/max.baryshnikov">-->
-                        <!--<i class="fa fa-facebook fa-fw"></i>-->
-                        <!--</a>-->
-
-                        <a href="https://ua.linkedin.com/in/max-baryshnikov-12076b1" target="_blank">
-                            <i class="fa fa-linkedin fa-fw"></i>
-                        </a>
-                    </p>
-                </div>
-            </div>
-            <!--</div>-->
-        </div>
-    </div>
-
-</section>
-
-<!-- Awards -->
-<!--<section class="call-to-action" style="background-image: url('img/agency/backgrounds/bg-quote.jpg');" id="awards">-->
-<section class="call-to-action" id="awards">
-    <div class="container wow fadeIn">
-        <h2 class="text-align-center">AWARDS</h2>
-        <br>
-        <div class="row">
-            <div class="col-md-10 offset-md-1">
+    <!-- Awards -->
+    <!--<section class="call-to-action" style="background-image: url('img/agency/backgrounds/bg-quote.jpg');" id="awards">-->
+    <!--<section class="call-to-action" id="awards">-->
+    <section class="page-section" id="awards">
+        <div class="container wow fadeIn">
+            <h2 class="text-align-center">AWARDS</h2>
+            <br>
+            <div class="row">
+                <div class="col-md-10 offset-md-1">
                 <span class="quote">
                     Cryptonomica was named one of the
                         <span class="text-primary">best legal Innovations of 2016</span>
                         by <a href="http://www.hiil.org/" target="_blank">The Hague Institute for Innovation of Law</a>.
                     </span>
-                <br>
-                <hr class="colored">
-                <br>
-                <span class="quote">
+                    <br>
+                    <hr class="colored">
+                    <br>
+                    <span class="quote">
                     Cyptonomica <span class="text-primary"> won the 2nd place</span>
                     on the <a href="https://www.facebook.com/events/1229100670543233/" target="_blank">
                     International Blockchain Hackathon in Tel Aviv</a>
                     on March, 2017.
                     </span>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- Portfolio Carousel Heading -->
-<section class="page-section bg-faded" id="whoUses">
-    <div class="container text-center wow fadeIn">
-        <h2>Who uses cryptonomica</h2>
-        <hr class="colored">
-        <p>Here are some notable users of Cryptonomica</p>
-    </div>
-    <div class="row">
+    <!-- Portfolio Carousel Heading -->
+    <!--<section class="page-section bg-faded" id="whoUses">-->
+    <!--<div class="container text-center wow fadeIn">-->
+    <!--<h2>Who uses cryptonomica</h2>-->
+    <!--<hr class="colored">-->
+    <!--<p>Here are some notable users of Cryptonomica</p>-->
+    <!--</div>-->
+    <!--<div class="row">-->
 
-        <div class="col-6">
-            <center>
-                <div class="card wow fadeIn useCaseCard" id="coinOffering" data-wow-delay=".2s">
-                    <img class="card-img-top useCasePhoto" src="/app/img/users/CoinOffering.01.jpg"
-                         alt="CoinOffering">
-                    <div class="card-block">
-                        <h4 class="card-title">CoinOffering Ltd.</h4>
-                        <p class="card-text">
-                            World’s first corporation with shares represented by tokens in smart contract on the
-                            blockchain
-                            (cryptoshares)
-                        </p>
-                        <p>
-                            <a href="https://coinoffering.github.io/">CoinOfering.com</a>
-                        </p>
-                    </div>
-                </div>
-            </center>
+    <!--<div class="col-6">-->
+    <!--<center>-->
+    <!--<div class="card wow fadeIn useCaseCard" id="coinOffering" data-wow-delay=".2s">-->
+    <!--<img class="card-img-top useCasePhoto" src="/app/img/users/CoinOffering.01.jpg"-->
+    <!--alt="CoinOffering">-->
+    <!--<div class="card-block">-->
+    <!--<h4 class="card-title">CoinOffering Ltd.</h4>-->
+    <!--<p class="card-text">-->
+    <!--World’s first corporation with shares represented by tokens in smart contract on the-->
+    <!--blockchain-->
+    <!--(cryptoshares)-->
+    <!--</p>-->
+    <!--<p>-->
+    <!--<a href="https://coinoffering.github.io/">CoinOfering.com</a>-->
+    <!--</p>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</center>-->
+    <!--</div>-->
+
+    <!--<div class="col-6">-->
+    <!--<center>-->
+    <!--<div class="card wow fadeIn useCaseCard" id="metrumCoin" data-wow-delay=".4s">-->
+    <!--<img class="card-img-top useCasePhoto" src="/app/img/users/MetrumCoin.01.png"-->
+    <!--alt="MetrumCoin">-->
+    <!--<div class="card-block">-->
+    <!--<h4 class="card-title">MetrumCoin</h4>-->
+    <!--<p class="card-text">-->
+    <!--Smart contracts on the Ethereum blockchain for tokenization of real estate-->
+    <!--investments.-->
+    <!--</p>-->
+    <!--<p>-->
+    <!--<a href="http://metrumcoin.com/">MetrumCoin.com</a>-->
+    <!--</p>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</center>-->
+    <!--</div>-->
+
+    <!--</div>-->
+
+    <!--</section>-->
+
+    <!-- Contact Section -->
+    <section class="page-section call-to-action" id="contact">
+        <div class="container wow fadeIn">
+            <div class="text-center">
+                <h2>Contact and more info</h2>
+                <hr class="colored">
+                <p>
+                    <!--<span class="quote">-->
+                    Please, send bug reports, questions or feature suggestions to our
+                    <a href="https://github.com/Cryptonomica/cryptonomica/issues">issue tracker</a>
+                    <!--</span>-->
+
+                </p>
+                <hr class="colored">
+                <p>
+                    <!--<span class="quote">-->
+                    Find us on <a href="https://www.facebook.com/cryptonomica/">facebook</a>, or write to
+                    <a href="mailto:support@cryptonomica.net">support@cryptonomica.net</a>
+                    <!--</span>-->
+                </p>
+            </div>
+
         </div>
-
-        <div class="col-6">
-            <center>
-                <div class="card wow fadeIn useCaseCard" id="metrumCoin" data-wow-delay=".4s">
-                    <img class="card-img-top useCasePhoto" src="/app/img/users/MetrumCoin.01.png"
-                         alt="MetrumCoin">
-                    <div class="card-block">
-                        <h4 class="card-title">MetrumCoin</h4>
-                        <p class="card-text">
-                            Smart contracts on the Ethereum blockchain for tokenization of real estate investments.
-                        </p>
-                        <p>
-                            <a href="http://metrumcoin.com/">MetrumCoin.com</a>
-                        </p>
-                    </div>
-                </div>
-            </center>
-        </div>
-
-    </div>
-
-</section>
-
-<!-- Contact Section -->
-<section class="page-section call-to-action" id="contact">
-    <div class="container wow fadeIn">
-        <div class="text-center">
-            <h2>Contact and more info</h2>
-            <hr class="colored">
-            <p>
-                <span class="quote">
-                Please, send bug reports, questions or feature suggestions to our
-                <a href="https://github.com/Cryptonomica/cryptonomica/issues">issue tracker</a>
-                    </span>
-
-            </p>
-            <hr class="colored">
-            <p>
-                <span class="quote">
-                Join our <a href="http://slack.cryptonomica.net/" target="_blank">Slack server</a>,
-                find us on <a href="https://www.facebook.com/cryptonomica/">facebook</a>, or write to
-                <a href="mailto:support@cryptonomica.net">support@cryptonomica.net</a>
-                    </span>
-            </p>
-        </div>
-
-    </div>
-</section>
+    </section>
+</div>
 
 <footer-main></footer-main>
-
-</div>
+<!--</div>-->

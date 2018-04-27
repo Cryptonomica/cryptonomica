@@ -1,8 +1,17 @@
 
 = Backend TODO
 
-* [ ] modify code in `net.cryptonomica.servlets.CloudStorageServletVideo`
+* [x] modify code in `net.cryptonomica.servlets.CloudStorageServletVideo`
 
-* [ ] ....
+* [x] resolve:
 
+ /#/onlineVerification/....
+ Failed to load https://cryptonomica.net/gcs:
+ Response to preflight request doesn't pass access control check:
+ No 'Access-Control-Allow-Origin' header is present on the requested resource.
+ Origin 'https://www.cryptonomica.net' is therefore not allowed access
+
+(make possible to work from domain other than cryptonomica.net)
+
+* [ ] move to last version of Bouncy Castle
 

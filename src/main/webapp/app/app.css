@@ -260,3 +260,7 @@ a.imageLink {
 
 }
 
+/* landing page top menu: */
+.fixed-top {
+    position: unset;
+}

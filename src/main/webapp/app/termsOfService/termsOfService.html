@@ -1,8 +1,13 @@
-<header-main-menu></header-main-menu>
-<navigation-menu></navigation-menu>
+<div class="container-fluid">
 
-<div class="card card-block">
-    <md ng-include="'https://raw.githubusercontent.com/Cryptonomica/arbitration-rules/master/Arbitration_Rules/IACC/web-site/TermsOfService.md'"></md>
+    <header-main-menu></header-main-menu>
+    <navigation-menu></navigation-menu>
+
+    <div class="card card-block">
+
+        <md ng-include="'/app/termsOfService/TermsOfService.md'"></md>
+
+    </div>
 </div>
 
 <footer-main></footer-main>
