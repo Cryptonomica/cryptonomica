@@ -32,14 +32,16 @@
                 <div class="form-row">
                     <legend>
                         <span>First name on card:</span>
-                        <input type="text" size="30" ng-model="stripePaymentForm.cardHolderFirstName">
+                        <input type="text" size="30" ng-model="stripePaymentForm.cardHolderFirstName"
+                               autocomplete='cc-given-name'>
                     </legend>
                 </div>
 
                 <div class="form-row">
                     <legend>
                         <span>Last name on card:</span>
-                        <input type="text" size="30" ng-model="stripePaymentForm.cardHolderLastName">
+                        <input type="text" size="30" ng-model="stripePaymentForm.cardHolderLastName"
+                               autocomplete='cc-family-name'>
                     </legend>
                 </div>
 
@@ -48,31 +50,60 @@
                         <span>Card Number:</span>
                         <!-- Payment card numbers can be up to 19 digits -->
                         <!-- https://en.wikipedia.org/wiki/Payment_card_number -->
-                        <input type="text" size="19" maxlength="19" ng-model="stripePaymentForm.cardNumber">
+                        <input type="text" size="19" maxlength="19" ng-model="stripePaymentForm.cardNumber"
+                               autocomplete='cc-number'>
                     </legend>
                 </div>
 
                 <div class="form-row">
                     <legend>
                         <span>Expiration (MM/YY)</span>
-                        <input type="text" size="2" maxlength="2" ng-model="stripePaymentForm.cardExpMonth">
+                        <input type="text" size="2" maxlength="2" ng-model="stripePaymentForm.cardExpMonth"
+                               autocomplete='cc-exp-month'>
                         <span> / </span>
-                        <input type="text" size="2" maxlength="2" ng-model="stripePaymentForm.cardExpYear">
+                        <input type="text" size="2" maxlength="2" ng-model="stripePaymentForm.cardExpYear"
+                               autocomplete='cc-exp-year'>
                     </legend>
                 </div>
 
                 <div class="form-row">
                     <legend>
                         <span>CVC:</span>
-                        <input type="text" size="3" maxlength="3" ng-model="stripePaymentForm.cardCVC">
+                        <input type="text" size="3" maxlength="3" ng-model="stripePaymentForm.cardCVC"
+                               autocomplete='cc-csc'>
                     </legend>
                 </div>
+
                 <div class="form-row">
                     <legend>
                         <span>price:</span>
                         <input type="text" size="3" ng-model="priceForKeyVerification" disabled>
-                        <span>USD</span>
+                        <!--<span>USD</span>-->
+                        <span>EUR</span>
                     </legend>
+                </div>
+
+                <!-- Promo Code -->
+                <div id="promoCodeSection">
+                    <div class="form-row">
+                        <legend>
+                            <span>promo code (case sensitive):</span>
+                            <input type="text" size="11" ng-model="promoCode">
+
+                            <button id="applyPromoCode"
+                                    class="submit btn btn-secondary"
+                                    ng-class="{disabled: getPriceForKeyVerificationIsWorking}"
+                                    ng-click="getPriceForKeyVerification()"
+                                    role="button"
+                                    type="button">
+                                Apply Promo Code
+                                <span ng-show="getPriceForKeyVerificationIsWorking" title="working...">
+                                <br>
+                                <i class="fa fa-refresh fa-spin fa-fw"></i>
+                            </span>
+                            </button>
+                        </legend>
+                    </div>
                 </div>
 
                 <center>
@@ -96,6 +127,7 @@
                         <br><i class="fa fa-refresh fa-spin fa-fw"></i>
                     </span>
                     </button>
+
                 </center>
             </form>
         </div>

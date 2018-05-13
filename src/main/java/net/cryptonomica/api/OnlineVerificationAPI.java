@@ -462,7 +462,7 @@ public class OnlineVerificationAPI {
             throw new BadRequestException("fingerprint is missing or invalid");
         }
 
-        if (termsAccepted == null || termsAccepted == false) {
+        if (termsAccepted == null || !termsAccepted) {
             throw new IllegalArgumentException("You have to accept terms to process with online verification");
         }
 
@@ -511,7 +511,7 @@ public class OnlineVerificationAPI {
 
         if (onlineVerificationApproved == null) {
             throw new IllegalArgumentException("onlineVerificationApproved is null");
-        } else if (onlineVerificationApproved == false) {
+        } else if (!onlineVerificationApproved) {
             throw new BadRequestException("onlineVerificationApproved (checkbox): false");
         }
 
@@ -547,7 +547,7 @@ public class OnlineVerificationAPI {
             throw new NotFoundException("Key with fingerprint " + fingerprint + " not found");
         }
         //
-        pgpPublicKeyData.setOnlineVerificationFinished(Boolean.TRUE);
+        // pgpPublicKeyData.setOnlineVerificationFinished(Boolean.TRUE); // >> this should be made in StripePaymentsAPI
         pgpPublicKeyData.setNationality(onlineVerification.getNationality().toUpperCase());
 
         // save data to data store:

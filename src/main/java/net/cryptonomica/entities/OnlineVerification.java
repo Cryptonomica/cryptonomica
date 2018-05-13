@@ -85,6 +85,9 @@ public class OnlineVerification implements Serializable { // -- can be returned 
     private Date birthday; //............................................24
     @Index
     private String nationality; //.......................................25
+    // PromoCode
+    @Index
+    private String promoCode; // ........................................26
 
     /* ----- Constructors: */
     public OnlineVerification() {
@@ -325,4 +328,13 @@ public class OnlineVerification implements Serializable { // -- can be returned 
     public void setNationality(String nationality) {
         this.nationality = nationality;
     }
+
+    public String getPromoCode() {
+        return promoCode;
+    }
+
+    public void setPromoCode(String promoCode) {
+        this.promoCode = promoCode;
+    }
+
 }

@@ -169,7 +169,11 @@
     </servlet-mapping>
 
     <!-- GAE Remote API for Java -->
+    <!-- https://cloud.google.com/appengine/docs/standard/java/tools/remoteapi -->
     <!-- https://cloud.google.com/appengine/docs/java/tools/remoteapi -->
+    <!-- The servlet returns an error if there is no authenticated user or the authenticated user is not an admin of
+    your application, so there is no need to configure any additional security. Once you've deployed your app with
+    these settings, any app with the Remote API client installed can use its services -->
     <servlet>
         <display-name>Remote API Servlet</display-name>
         <servlet-name>RemoteApiServlet</servlet-name>

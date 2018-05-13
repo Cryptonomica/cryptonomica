@@ -89,7 +89,7 @@
                     <!-- -->
                     <form>
                         <p>
-                            Please, upload <b>color</b> documents in good quality image file
+                            Please, upload <b>color</b> documents in good quality image (.jpg, .jpeg or .png only) file
                         </p>
                         <fieldset class="form-group">
                             <legend>Your passport</legend>
@@ -125,6 +125,11 @@
                 </div>
             </div>
 
+            <div class="row" ng-show="verificationDocsUrls.length > 0">
+                <div class="col-xs-12 col-md-12">
+                    <center>Please check if your images are visible:</center>
+                </div>
+            </div>
             <div class="row" ng-show="verificationDocsUrls.length > 0">
                 <div class="col-xs-6 col-md-6">
                     <a ng-href="{{verificationDocsUrls[0]}}" class="imageLink" target="_blank">

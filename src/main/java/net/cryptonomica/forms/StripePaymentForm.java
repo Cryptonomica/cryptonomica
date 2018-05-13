@@ -17,10 +17,12 @@ public class StripePaymentForm implements Serializable {
     private String fingerprint; // ..................................................5
     private String cardHolderFirstName; // as in OpenPGP key certificate ............6
     private String cardHolderLastName; // as in OpenPGP key certificate .............7
+    private String promoCode; // ....................................................8
 
     /* --- Constructors: */
 
     public StripePaymentForm() {
+        //
     }
 
     /* --- Getters and Setters: */
@@ -79,5 +81,13 @@ public class StripePaymentForm implements Serializable {
 
     public void setCardHolderLastName(String cardHolderLastName) {
         this.cardHolderLastName = cardHolderLastName;
+    }
+
+    public String getPromoCode() {
+        return promoCode;
+    }
+
+    public void setPromoCode(String promoCode) {
+        this.promoCode = promoCode;
     }
 }

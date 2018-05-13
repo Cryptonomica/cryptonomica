@@ -1,7 +1,6 @@
 package net.cryptonomica.entities;
 
 import com.google.appengine.api.datastore.Email;
-import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
@@ -41,9 +40,13 @@ public class StripePaymentForKeyVerification {
     @Index
     // f.e.: "id": "ch_1AEomQDjN2J4PGOBQqToH0Kz"
     private String chargeId; // ..............................11
-    private Key<Login> getPriceForKeyVerificationLogin;//.....12
-    private Key<Login> chargeLogin; //........................13
-    private Key<Login> checkPaymentVerificationCodeLogin; //..14
+    //
+    @Index
+    private String promoCodeUsed; // .........................12
+
+    // private Key<Login> getPriceForKeyVerificationLogin;//
+    private Long chargeLoginEntityId; //......................13
+    private Long checkPaymentVerificationCodeLoginEntityId; //14
 
     /* ---- Constructors */
 
@@ -142,28 +145,29 @@ public class StripePaymentForKeyVerification {
         this.chargeId = chargeId;
     }
 
-    public Key<Login> getChargeLogin() {
-        return chargeLogin;
+    public String getPromoCodeUsed() {
+        return promoCodeUsed;
     }
 
-    public void setChargeLogin(Key<Login> chargeLogin) {
-        this.chargeLogin = chargeLogin;
+    public void setPromoCodeUsed(String promoCodeUsed) {
+        this.promoCodeUsed = promoCodeUsed;
     }
 
-    public Key<Login> getCheckPaymentVerificationCodeLogin() {
-        return checkPaymentVerificationCodeLogin;
+    public Long getChargeLoginEntityId() {
+        return chargeLoginEntityId;
     }
 
-    public void setCheckPaymentVerificationCodeLogin(Key<Login> checkPaymentVerificationCodeLogin) {
-        this.checkPaymentVerificationCodeLogin = checkPaymentVerificationCodeLogin;
+    public void setChargeLoginEntityId(Long chargeLoginEntityId) {
+        this.chargeLoginEntityId = chargeLoginEntityId;
     }
 
-    public Key<Login> getGetPriceForKeyVerificationLogin() {
-        return getPriceForKeyVerificationLogin;
+    public Long getCheckPaymentVerificationCodeLoginEntityId() {
+        return checkPaymentVerificationCodeLoginEntityId;
     }
 
-    public void setGetPriceForKeyVerificationLogin(Key<Login> getPriceForKeyVerificationLogin) {
-        this.getPriceForKeyVerificationLogin = getPriceForKeyVerificationLogin;
+    public void setCheckPaymentVerificationCodeLoginEntityId(Long checkPaymentVerificationCodeLoginEntityId) {
+        this.checkPaymentVerificationCodeLoginEntityId = checkPaymentVerificationCodeLoginEntityId;
     }
+
 }
 

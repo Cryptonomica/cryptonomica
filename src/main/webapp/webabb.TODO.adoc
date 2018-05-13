@@ -1,5 +1,10 @@
 
 = WebApp TODO
+Cryptonomica Ltd <support@cryptonomica.net>
+v1.0, 2018-05-08
+:toc:
+
+== Tasks
 
 * [ ] when new key uploaded in the message make fingerprint a link: user can go to key certificate page immediately
 * [ ] repair video recording (only first seconds are recorded)
