@@ -36,6 +36,9 @@ public class PGPPublicKeyGeneralView implements Serializable {
     private List<Long> verificationIDs; // ...............16
     // OnlineVerification entity ID -> fingerprint
     private Boolean onlineVerificationFinished; //........17
+    private String nationality; //........................18
+    private Date birthdate; // ...........................19
+
     // PGPPublicKeyData has also: @Parent private Key<CryptonomicaUser> cryptonomicaUserKey;
     // we have cryptonomicaUserId + webSafeString and not need it
 
@@ -86,6 +89,10 @@ public class PGPPublicKeyGeneralView implements Serializable {
         this.verificationsWebSafeStrings = pgpPublicKeyData.getVerificationsWebSafeStrings();
 
         this.onlineVerificationFinished = pgpPublicKeyData.getOnlineVerificationFinished();
+
+        this.nationality = pgpPublicKeyData.getNationality();
+
+        this.birthdate = pgpPublicKeyData.getUserBirthday();
 
         // LOG
         LOG.warning(new Gson().toJson(this));
@@ -228,5 +235,13 @@ public class PGPPublicKeyGeneralView implements Serializable {
 
     public void setOnlineVerificationFinished(Boolean onlineVerificationFinished) {
         this.onlineVerificationFinished = onlineVerificationFinished;
+    }
+
+    public String getNationality() {
+        return nationality;
+    }
+
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
     }
 }

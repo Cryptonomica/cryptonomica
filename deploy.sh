@@ -47,8 +47,8 @@ mvn clean
 # test:
 echo 'sending test request to API:'
 curl -i -H "Content-Type: application/json" -X POST -d '{"message":"echo"}' https://cryptonomica-server.appspot.com/_ah/api/testAPI/v1/echo
-
 echo # empty line
+
 echo $(date "+%FT%T%Z") : $(whoami)
 
 ## remove old versions in dev console

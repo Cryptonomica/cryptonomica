@@ -197,7 +197,7 @@ public class PGPPublicKeyData {
         this.verified = false;
         this.onlineVerificationFinished = false;
 
-    } // end:  costructor with args
+    } // end:  constructor with args
 
     /* ------- Methods */
 
