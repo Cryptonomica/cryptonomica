@@ -1,7 +1,6 @@
 package net.cryptonomica.entities;
 
 import com.google.appengine.api.datastore.Email;
-import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
@@ -35,6 +34,7 @@ public class OnlineVerification implements Serializable { // -- can be returned 
     @Index
     // keyID, like [0xE77173E5]
     private String keyID; // ............................................6
+
     /*  --- for filters in Objectify:*/
     // .filter("fingerprintStr", fingerprint.toUpperCase())
     // like: 05600EB8208485E6942666E06A7B21E2844C7980
@@ -85,6 +85,9 @@ public class OnlineVerification implements Serializable { // -- can be returned 
     private Date birthday; //............................................24
     @Index
     private String nationality; //.......................................25
+    // PromoCode
+    @Index
+    private String promoCode; // ........................................26
 
     /* ----- Constructors: */
     public OnlineVerification() {
@@ -96,6 +99,7 @@ public class OnlineVerification implements Serializable { // -- can be returned 
 
     public OnlineVerification(PGPPublicKeyData pgpPublicKeyData) {
         this.Id = pgpPublicKeyData.getFingerprint(); // (@Id for PGPPublicKeyData is 'fingerprint'
+        this.fingerprintStr = pgpPublicKeyData.getFingerprint();
         this.pgpPublicKeyDataUrlSafeKey = pgpPublicKeyData.getWebSafeString();
         this.userEmail = pgpPublicKeyData.getUserEmail();
         this.lastName = pgpPublicKeyData.getLastName();
@@ -324,4 +328,13 @@ public class OnlineVerification implements Serializable { // -- can be returned 
     public void setNationality(String nationality) {
         this.nationality = nationality;
     }
+
+    public String getPromoCode() {
+        return promoCode;
+    }
+
+    public void setPromoCode(String promoCode) {
+        this.promoCode = promoCode;
+    }
+
 }

@@ -3,6 +3,10 @@
 
 gcloud config set project cryptonomica-server
 
+gcloud app versions list
+# (max. 15 versions)
+# gcloud app versions delete ...
+
 # see:
 # https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/appengine-java8/endpoints-v2-backend
 
@@ -38,5 +42,17 @@ mvn appengine:deploy
 # google dev console dashboard:
 # https://console.cloud.google.com/home/dashboard?project=cryptonomica-server
 
+mvn clean
+
 # test:
-curl -H "Content-Type: application/json" -X POST -d '{"message":"echo"}' https://cryptonomica-server.appspot.com/_ah/api/testAPI/v1/echo
+echo 'sending test request to API:'
+curl -i -H "Content-Type: application/json" -X POST -d '{"message":"echo"}' https://cryptonomica-server.appspot.com/_ah/api/testAPI/v1/echo
+echo # empty line
+
+echo $(date "+%FT%T%Z") : $(whoami)
+
+## remove old versions in dev console
+# https://console.cloud.google.com/appengine/versions?project=cryptonomica-server
+## flush cache on
+# https://console.cloud.google.com/appengine/memcache?project=cryptonomica-server
+#

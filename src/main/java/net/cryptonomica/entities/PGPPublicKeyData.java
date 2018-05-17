@@ -95,6 +95,7 @@ public class PGPPublicKeyData {
     // like returned by Locale.getISOCountries() in Java
     // see: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
     // one key can have only one nationality defined
+    // user enters this when
     private String nationality; //............................24
 
     /* --- Constructors: */
@@ -196,7 +197,7 @@ public class PGPPublicKeyData {
         this.verified = false;
         this.onlineVerificationFinished = false;
 
-    } // end:  costructor with args
+    } // end:  constructor with args
 
     /* ------- Methods */
 

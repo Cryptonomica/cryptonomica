@@ -69,7 +69,7 @@ public class CloudStorageServletVideo extends HttpServlet {
 
         String bucketName = verificationVideo.getBucketName();
         String objectName = verificationVideo.getObjectName();
-        resp.addHeader("Access-Control-Allow-Origin", "*");
+        // resp.addHeader("Access-Control-Allow-Origin", "*");
         CloudStorageService.serveFileFromCloudStorage(
                 bucketName,
                 objectName,
@@ -91,176 +91,219 @@ public class CloudStorageServletVideo extends HttpServlet {
 
         // this should be POST request with "multipart/form-data"
         // thus it's easier to use headers, then to parse request parameters (as we do in service.CloudStorageServiceOld)
+
+        // ! >  .getHeader returns null if the request does not have a header of that name
+
         String userId = req.getHeader("userId"); // google user Id: $rootScope.currentUser.userId
         String userEmail = req.getHeader("userEmail"); // $rootScope.currentUser.email
         String fingerprint = req.getHeader("fingerprint"); // $scope.fingerprint = $stateParams.fingerprint;
         String videoUploadKeyReceived = req.getHeader("videoUploadKey"); // from RandomStringUtils.random(33);
 
+        // --- debug:
         // Returns the length, in bytes, of the request body
         // and made available by the input stream, or -1 if the  length is not known
         int reqContentLength = req.getContentLength();
         // use Integer.toString(i) or String.valueOf(i) to convert int to String
         LOG.warning("reqContentLength: " + String.valueOf(reqContentLength));
 
-        // check if headers provided:
-        if (userId == null) {
-            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"userID is null\"}");
-            // throw new ServletException();
-        } else if (userEmail == null) {
-            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"user email is null\"}");
-            // throw new ServletException("user email is null");
-        } else if (videoUploadKeyReceived == null) {
-            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"videoUploadKey received is null\"}");
-            // throw new ServletException("videoUploadKey received is null");
-        } else if (videoUploadKeyReceived.length() != 33) {
-            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"videoUploadKey is invalid\"}");
-            // throw new ServletException("videoUploadKey is invalid");
-        } else if (fingerprint == null || fingerprint.equals("") || fingerprint.length() != 40) {
-            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"key fingerprint is invalid\"}");
-        }
+        String errorMessage = null;
+        String successMessage = null;
 
         CryptonomicaUser cryptonomicaUser = null;
-        try {
-            cryptonomicaUser = ofy()
-                    .load()
-                    .key(Key.create(CryptonomicaUser.class, userId))
-                    .now();
-        } catch (Exception e) {
-            LOG.warning(e.getMessage());
-            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"error reading user data from DB\"}");
-            // throw new ServletException("Error");
-        }
-        if (cryptonomicaUser == null) {
-            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"User is not registered on Cryptonomica server\"}");
-            // throw new ServletException("User is not registered on Cryptonomica server");
-        }
-
-        /* --- Check PGPPublicKeyData */
         PGPPublicKeyData pgpPublicKeyData = null;
-        try {
-            pgpPublicKeyData = ofy()
-                    .load()
-                    .type(PGPPublicKeyData.class)
-                    .filter("fingerprintStr", fingerprint)
-                    .first()
-                    .now();
-        } catch (Exception e) {
-            LOG.warning(e.getMessage());
-            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"error reading key data from DB\"}");
-        }
-        if (pgpPublicKeyData == null) {
-            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"Key with fingerprint "
-                    + fingerprint
-                    + " is not registered on Cryptonomica server\"}"
-            );
-        }
-
-        /* --- Check online verification */
         OnlineVerification onlineVerification = null;
-        try {
-            onlineVerification = ofy().load().key(Key.create(OnlineVerification.class, fingerprint)).now();
-        } catch (Exception e) {
-            LOG.warning(e.getMessage());
-            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"error reading OnlineVerification data from DB\"}");
-        }
-        if (onlineVerification == null) {
-            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"OnlineVerification for the key with fingerprint "
-                    + fingerprint
-                    + " is not registered on Cryptonomica server\"}"
-            );
-        }
-
-        /* --- check if key belongs to user: */
-        if (!cryptonomicaUser.getUserId().equalsIgnoreCase(pgpPublicKeyData.getCryptonomicaUserId())) {
-            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"Key with fingerprint "
-                    + fingerprint
-                    + " not owned by user "
-                    + cryptonomicaUser.getEmail().getEmail()
-                    + "\"}"
-            );
-        }
-
-        // additional check for userID and user email match: // TODO: do we need this
-        if (!cryptonomicaUser.getEmail().getEmail().equalsIgnoreCase(userEmail)) {
-            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"User ID and user email did not match\"}");
-            // throw new ServletException("User ID and user email did not match");
-        }
-
         VideoUploadKey videoUploadKey = null;
-        try {
-            videoUploadKey = ofy()
-                    .load()
-                    .key(Key.create(VideoUploadKey.class, videoUploadKeyReceived))
-                    .now();
-        } catch (Exception e) {
-            LOG.warning(e.getMessage());
-            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"Error loading videoUploadKey from DB\"}");
-            // throw new ServletException("Error");
+
+        // TODO >>> rewrite code to not send requests to BD if http request data is invalid;
+
+        cryptonomicaUser = ofy()
+                .load()
+                .key(Key.create(CryptonomicaUser.class, userId))
+                .now();
+
+        pgpPublicKeyData = ofy()
+                .load()
+                .type(PGPPublicKeyData.class)
+                .filter("fingerprintStr", fingerprint)
+                .first() // < should be only one
+                .now();
+
+        onlineVerification = ofy()
+                .load()
+                .key(Key.create(OnlineVerification.class, fingerprint)).now();
+
+        videoUploadKey = ofy()
+                .load()
+                .key(Key.create(VideoUploadKey.class, videoUploadKeyReceived))
+                .now();
+
+        if (userId == null || userId.isEmpty()) {
+
+            errorMessage = "{\"Error\":\"userID is null or empty\"}";
+
+        } else if (userEmail == null || userEmail.isEmpty()) {
+
+            errorMessage = "{\"Error\":\"user email is null or empty\"}";
+
+        } else if (videoUploadKeyReceived == null || videoUploadKeyReceived.isEmpty()) {
+
+            errorMessage = "{\"Error\":\"videoUploadKey received is null or empty\"}";
+
+        } else if (videoUploadKeyReceived.length() != 33) {
+
+            errorMessage = "{\"Error\":\"videoUploadKey is invalid\"}";
+
+        } else if (fingerprint == null || fingerprint.isEmpty() || fingerprint.length() != 40) {
+
+            errorMessage = "{\"Error\":\"key fingerprint is invalid\"}";
+
+        } else if (cryptonomicaUser == null) {
+
+            errorMessage = "{\"Error\":\"User is not registered on Cryptonomica server\"}";
+
+        } else if (pgpPublicKeyData == null) {
+
+            errorMessage = "{\"Error\":\"Key with fingerprint " + fingerprint + " is not registered on Cryptonomica server\"}";
+
+        } else if (onlineVerification == null) {
+
+            errorMessage = "{\"Error\":\"OnlineVerification for the key with fingerprint " + fingerprint + " is not registered on Cryptonomica server\"}";
+
+        } else if (!cryptonomicaUser.getUserId().equalsIgnoreCase(pgpPublicKeyData.getCryptonomicaUserId())) {
+
+            errorMessage = "{\"Error\":\"Key with fingerprint " + fingerprint + " not owned by user " + cryptonomicaUser.getEmail().getEmail() + "\"}";
+
+        } else if (!cryptonomicaUser.getEmail().getEmail().equalsIgnoreCase(userEmail)) {
+
+            errorMessage = "{\"Error\":\"User ID and user email did not match\"}";
+
+        } else if (videoUploadKey == null) {
+
+            errorMessage = "{\"Error\":\"Video Upload Key provided not exists in DB\"}";
+
+        } else if (!videoUploadKey.getGoogleUser().getUserId().equalsIgnoreCase(userId)) {
+
+            errorMessage = "\"Error\":\"Video Upload Key provided is not valid for this user\"";
+
+        } else if (videoUploadKey.getUploadedVideoId() != null) {
+
+            errorMessage = "{\"Error\":\"Video Upload Key provided is already used\"}";
+
         }
-        if (videoUploadKey == null) {
-            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"Video Upload Key provided not exists in DB\"}");
-            // throw new ServletException("Video Upload Key provided not exists in DB");
+
+        if (errorMessage != null) {
+
+            LOG.warning(errorMessage);
+            ServletUtils.sendJsonResponse(resp, errorMessage);
+
+        } else {
+
+            // if everything good, upload file <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+            // DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd.HH.mm.ss");
+            Date currentDate = new Date();
+            String currentDateStr = df.format(currentDate);
+            // String fileName = currentDateStr + ".webm";
+            String fileName = currentDateStr; // we'll get file ext from uploaded file
+
+            GcsFilename gcsFilename = null;
+
+            try {
+                gcsFilename =
+                        CloudStorageService.uploadFilesToCloudStorage( // <<<< actual file upload <<<<
+                                req,
+                                "onlineVerificationVideos",
+                                cryptonomicaUser.getEmail().getEmail() + "/" + fingerprint, // sub.folder
+                                fileName
+                        ).get(0); // get first from array of uploaded files (for video will be only one)
+            } catch (Exception e) {
+                LOG.severe(e.getMessage());
+                // see: http://stackoverflow.com/questions/22271099/convert-exception-to-json
+                errorMessage = GSON.toJson(e);
+            }
+
+            if (gcsFilename == null) {
+
+                LOG.severe("gcsFilename == null");
+                if (errorMessage == null) {
+                    errorMessage = "{\"Error\":\"gcsFilename is null\"}";
+                }
+                ServletUtils.sendJsonResponse(resp, errorMessage);
+
+            } else { // file upload successful
+
+                String verificationVideoId = RandomStringUtils.randomAlphanumeric(33);
+
+                VerificationVideo verificationVideo = new VerificationVideo(
+                        verificationVideoId,
+                        cryptonomicaUser.getGoogleUser(),
+                        gcsFilename.getBucketName(),
+                        gcsFilename.getObjectName(),
+                        videoUploadKeyReceived
+                );
+
+                // save video information to DB
+                ofy().save().entity(verificationVideo).now(); //
+
+                // save 'onlineVerification' entity to DB:
+                onlineVerification.setVerificationVideoId(verificationVideoId);
+                ofy().save().entity(onlineVerification).now();
+
+                // save 'videoUploadKey' entity to DB:
+                videoUploadKey.setUploadedVideoId(verificationVideoId);
+                ofy().save().entity(videoUploadKey); // <<< async without .now()
+
+                //
+                successMessage = "{\"verificationVideoId\":\"" + verificationVideoId + "\"}";
+                LOG.warning(successMessage);
+
+                // see:
+                // https://stackoverflow.com/questions/20881532/no-access-control-allow-origin-header-is-present-on-the-requested-resource
+                //
+                // resp.addHeader("Access-Control-Allow-Origin", "*");
+                // resp.setHeader("Access-Control-Allow-Origin", req.getHeader("Origin"));
+                // >> see 'service' method below
+                ServletUtils.sendJsonResponse(resp, successMessage); // << success result
+            }
+
         }
-
-        if (!videoUploadKey.getGoogleUser().getUserId().equalsIgnoreCase(userId)) {
-            ServletUtils.sendJsonResponse(resp, "\"Error\":\"Video Upload Key provided is not valid for this user\"");
-            // throw new ServletException("Video Upload Key provided is not valid for this user");
-        }
-
-        if (videoUploadKey.getUploadedVideoId() != null) {
-            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"Video Upload Key provided is already used\"}");
-            // throw new ServletException("Video Upload Key provided is already used");
-        }
-
-        // if everything good, upload file <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-        // DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd.HH.mm.ss");
-        Date currentDate = new Date();
-        String currentDateStr = df.format(currentDate);
-        // String fileName = currentDateStr + ".webm";
-        String fileName = currentDateStr; // we'll get file ext from uploaded file
-
-        GcsFilename gcsFilename = null;
-        try {
-            gcsFilename =
-                    CloudStorageService.uploadFilesToCloudStorage(
-                            req,
-                            "onlineVerificationVideos",
-                            cryptonomicaUser.getEmail().getEmail() + "/" + fingerprint, // sub.folder
-                            fileName
-                    ).get(0); // get first from array of uploaded files (for video will be only one)
-        } catch (Exception e) {
-            LOG.severe(e.getMessage());
-            // see: http://stackoverflow.com/questions/22271099/convert-exception-to-json
-            ServletUtils.sendJsonResponse(resp, GSON.toJson(e));
-        }
-
-        if (gcsFilename == null) {
-            LOG.severe("gcsFilename==null");
-            ServletUtils.sendJsonResponse(resp, "{\"Error\":\"gcsFilename==null\"}");
-        }
-
-        String verificationVideoId = RandomStringUtils.randomAlphanumeric(33);
-        VerificationVideo verificationVideo = new VerificationVideo(
-                verificationVideoId,
-                cryptonomicaUser.getGoogleUser(),
-                gcsFilename.getBucketName(),
-                gcsFilename.getObjectName(),
-                videoUploadKeyReceived
-        );
-        ofy().save().entity(verificationVideo).now(); //
-        onlineVerification.setVerificationVideoId(verificationVideoId);
-        ofy().save().entity(onlineVerification).now();
-
-        videoUploadKey.setUploadedVideoId(verificationVideoId);
-        ofy().save().entity(videoUploadKey); // <<< async without .now()
-
-        String jsonResponseStr = "{\"verificationVideoId\":\"" + verificationVideoId + "\"}";
-        LOG.warning(jsonResponseStr);
-
-        // > response.addHeader("Access-Control-Allow-Origin", "*");
-        ServletUtils.sendJsonResponse(resp, jsonResponseStr);
 
     } // end doPost
+
+    @Override
+    // see: https://stackoverflow.com/a/35756384 in
+    // https://stackoverflow.com/questions/20881532/no-access-control-allow-origin-header-is-present-on-the-requested-resource
+    protected void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+
+        // setHeader : Adds a response header with the given name and value.
+        // This method allows response headers to have multiple values.
+
+        // addHeader : Sets a response header with the given name and
+        // integer value.  If the header had already been set, the new value
+        // overwrites the previous one.  The <code>containsHeader</code>
+        // method can be used to test for the presence of a header before
+        // setting its value.
+
+        LOG.warning("req.getHeader(\"Origin\"): ");
+        LOG.warning(req.getHeader("Origin"));
+
+        // res.addHeader("Access-Control-Allow-Origin", "*");
+        res.addHeader("Access-Control-Allow-Origin", req.getHeader("Origin"));
+        // res.setHeader("Access-Control-Allow-Origin", req.getHeader("Origin"));
+        // <-- or in ServletUtils.sendJsonResponse
+
+        // see: https://stackoverflow.com/a/42061962
+        res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+        res.setHeader("Access-Control-Max-Age", "3600");
+        // res.setHeader("Access-Control-Allow-Headers", "x-requested-with");
+        // res.setHeader("Access-Control-Allow-Headers", "Authorization");
+        //
+        res.setHeader("Access-Control-Allow-Headers", "*");
+        //
+        // res.setHeader("Access-Control-Allow-Credentials", "true");
+        // res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
+
+        super.service(req, res);
+    }
 
 }

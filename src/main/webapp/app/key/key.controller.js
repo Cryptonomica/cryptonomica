@@ -107,8 +107,12 @@ controller.controller(controller_name, [
 
                         // use $rootScope.googleUser can be different than $rootScope.currentUser
                         // TODO: why?
-                        $log.debug('$rootScope.googleUser.id : ', $rootScope.googleUser.id);
-                        $log.debug('$scope.key.cryptonomicaUserId : ', $scope.key.cryptonomicaUserId);
+                        if ($rootScope.googleUser) {
+                            $log.debug('$rootScope.googleUser.id : ', $rootScope.googleUser.id);
+                        }
+                        if ($scope.key) {
+                            $log.debug('$scope.key.cryptonomicaUserId : ', $scope.key.cryptonomicaUserId);
+                        }
                         $log.debug('$rootScope.currentUser : ', $rootScope.currentUser);
 
                         if ($scope.key.exp) {

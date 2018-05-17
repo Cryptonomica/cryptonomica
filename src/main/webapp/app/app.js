@@ -184,6 +184,32 @@ app.run([
                 return new Date(unixTime * 1000);
             };
 
+            /* https://codepen.io/shaikmaqsood/pen/XmydxJ/ */
+            $rootScope.copyToClipboard = function (element) {
+                // var $temp = $("<input>");
+                var $temp = $("<textarea></textarea>");
+                $("body").append($temp);
+                console.log('copy to clipboard: $(' + element + ').val() :');
+                console.log($(element).text());
+                $temp.val(
+                    $(element).text()
+                    // $(element).val()
+                ).select();
+                document.execCommand("copy");
+                $temp.remove();
+            };
+
+            $rootScope.saveKeyAsFile = function (element) {
+                // var textToSave = $(element).val();
+                var textToSave = $(element).text();
+                console.log("textToSave as file:");
+                console.log(textToSave);
+                var blob = new Blob([textToSave], {type: "text/plain;charset=utf-8"});
+                $log.debug(blob);
+                // uses https://eligrey.com/demos/FileSaver.js/
+                saveAs(blob, "key.txt");
+            };
+
             // =============== Function calls:
             $rootScope.progressbar = ngProgressFactory.createInstance();
             $rootScope.progressbar.setHeight('5px'); // any valid CSS value Eg '10px', '1em' or '1%'

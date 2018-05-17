@@ -3,11 +3,13 @@ package net.cryptonomica.api;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.Named;
+import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Email;
 import com.google.appengine.api.users.User;
 import com.google.gson.Gson;
 import com.googlecode.objectify.Key;
 import net.cryptonomica.constants.Constants;
+import net.cryptonomica.entities.ApiKey;
 import net.cryptonomica.entities.CryptonomicaUser;
 import net.cryptonomica.entities.PGPPublicKeyData;
 import net.cryptonomica.forms.GetUsersKeysByUserIdForm;
@@ -21,6 +23,7 @@ import net.cryptonomica.returns.StringWrapperObject;
 import net.cryptonomica.service.UserTools;
 import org.bouncycastle.openpgp.PGPPublicKey;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +50,7 @@ public class PGPPublicKeyAPI {
 
     /* --- Logger: */
     private static final Logger LOG = Logger.getLogger(PGPPublicKeyAPI.class.getName());
+
     /* --- Gson: */
     private static final Gson GSON = new Gson();
 
@@ -118,6 +122,80 @@ public class PGPPublicKeyAPI {
         return pgpPublicKeyGeneralView;
 
     } // end of getPGPPublicKeyByFingerprint()
+
+    @ApiMethod(
+            name = "getPGPPublicKeyByFingerprintWithApiKey",
+            path = "getPGPPublicKeyByFingerprintWithApiKey",
+            httpMethod = ApiMethod.HttpMethod.GET,
+            description = "This API method can be called with API key provided to partner services"
+    )
+    @SuppressWarnings("unused")
+    // get key by by fingerprint
+    public PGPPublicKeyGeneralView getPGPPublicKeyByFingerprintWithApiKey(
+            // final User googleUser,
+            final HttpServletRequest httpServletRequest,
+            // final @Named("serviceName") String serviceName,
+            final @Named("fingerprint") String fingerprint,
+            @Named("serviceName") String serviceName,
+            @Named("apiKeyString") String apiKeyString
+    ) throws Exception {
+
+        /* --- check argument */
+        if (fingerprint == null || fingerprint.isEmpty()) {
+            throw new IllegalArgumentException("fingerprint not provided");
+        }
+
+        /* --- check service name */
+        if (serviceName == null || serviceName.isEmpty()) {
+            serviceName = httpServletRequest.getHeader("serviceName");
+        }
+        if (serviceName == null || serviceName.isEmpty()) {
+            throw new UnauthorizedException("serviceName not provided");
+        }
+
+        /* --- check apiKeyString */
+        if (apiKeyString == null || apiKeyString.isEmpty()) {
+            apiKeyString = httpServletRequest.getHeader("apiKeyString");
+        }
+        if (apiKeyString == null || apiKeyString.isEmpty()) {
+            throw new UnauthorizedException("apiKeyString not provided");
+        }
+
+        /* --- check authorization */
+        ApiKey apiKey = ofy()
+                .load()
+                .key(Key.create(ApiKey.class, serviceName))
+                .now();
+
+        if (apiKey == null || apiKey.getApiKey() == null || apiKey.getApiKey().isEmpty()) {
+            throw new UnauthorizedException("No API key registered for this user");
+        }
+
+        // The equals() method is case-sensitive
+        if (!apiKey.getApiKey().equals(apiKeyString)) {
+            throw new UnauthorizedException("invalid API key");
+        }
+
+        if (!apiKey.getGetPGPPublicKeyByFingerprintWithApiKey()) {
+            throw new UnauthorizedException("API key is not valid for this API method");
+        }
+
+        /* Log request: */
+        LOG.warning("service name: " + serviceName);
+        LOG.warning("Request: @Named(\"fingerprint\") : " + fingerprint);
+
+        /* ---- the same as in API without API key: */
+
+        // GET Key from DataBase by fingerprint:
+        PGPPublicKeyData pgpPublicKeyData = PGPTools.getPGPPublicKeyDataFromDataBaseByFingerprint(fingerprint);
+        // make key representation, return result
+        PGPPublicKeyGeneralView pgpPublicKeyGeneralView = new PGPPublicKeyGeneralView(pgpPublicKeyData);
+
+        LOG.warning("Result: " + GSON.toJson(pgpPublicKeyGeneralView));
+
+        return pgpPublicKeyGeneralView;
+
+    } // end of getPGPPublicKeyByFingerprintWithApiKey
 
     @ApiMethod(
             name = "uploadNewPGPPublicKey",
