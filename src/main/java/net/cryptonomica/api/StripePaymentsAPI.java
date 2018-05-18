@@ -4,6 +4,7 @@ import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.NotFoundException;
+import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Email;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
@@ -19,6 +20,7 @@ import net.cryptonomica.entities.*;
 import net.cryptonomica.forms.CreatePromoCodesForm;
 import net.cryptonomica.forms.StripePaymentForm;
 import net.cryptonomica.returns.*;
+import net.cryptonomica.service.ApiKeysService;
 import net.cryptonomica.service.ApiKeysUtils;
 import net.cryptonomica.service.UserTools;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -645,12 +647,50 @@ public class StripePaymentsAPI {
             numberOfPromoCodesToCreate = 1;
         }
         for (int i = 1; i < numberOfPromoCodesToCreate; i++) {
+
             PromoCode promoCode = new PromoCode();
+            promoCode.setDiscountInPercent(createPromoCodesForm.getDiscountInPercent());
+            promoCode.setCreatedBy(googleUser.getEmail());
+
             ofy().save().entity(promoCode); // async
+
             createPromoCodesReturn.addPromoCode(promoCode);
+
         }
 
         return createPromoCodesReturn;
+
+    } // end of createPromoCodes()
+
+    @ApiMethod(
+            name = "createPromoCodeWithApiKey",
+            path = "createPromoCodeWithApiKey",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    @SuppressWarnings("unused")
+    public PromoCodeStringReturn createPromoCodeWithApiKey(
+            final HttpServletRequest httpServletRequest,
+            @Named("serviceName") String serviceName,
+            @Named("apiKeyString") String apiKeyString
+    ) throws Exception {
+
+        ApiKey apiKey = ApiKeysService.checkApiKey(httpServletRequest, serviceName, apiKeyString);
+
+        if (!apiKey.getCreatePromoCodeWithApiKey()) {
+            throw new UnauthorizedException("API key is not valid for this API method");
+        }
+
+        Integer discount = apiKey.getDiscountInPercentForPromoCodes();
+        if (discount == null || discount <= 0) {
+            throw new IllegalArgumentException("This API key has no discount for promo codes");
+        }
+
+        PromoCode promoCode = new PromoCode(discount);
+        promoCode.setCreatedBy(serviceName);
+
+        ofy().save().entity(promoCode).now(); //
+
+        return new PromoCodeStringReturn(promoCode);
 
     } // end of createPromoCodes()
 

@@ -4,7 +4,6 @@ import com.google.appengine.api.datastore.Email;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
-import org.apache.commons.lang3.RandomStringUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -38,6 +37,12 @@ public class ApiKey
     @Index
     private Boolean getPGPPublicKeyByFingerprintWithApiKey;
 
+    @Index
+    private Boolean createPromoCodeWithApiKey;
+
+    @Index
+    private Integer discountInPercentForPromoCodes;
+
     private List<String> permissions;
 
     /* --- Constructors */
@@ -46,6 +51,7 @@ public class ApiKey
         // this.apiKey = RandomStringUtils.randomAlphanumeric(33);
         this.entityCreated = new Date();
         this.permissions = new ArrayList<>();
+
     }
 
     /* --- Methods */
@@ -115,4 +121,19 @@ public class ApiKey
         this.permissions = permissions;
     }
 
+    public Boolean getCreatePromoCodeWithApiKey() {
+        return createPromoCodeWithApiKey;
+    }
+
+    public void setCreatePromoCodeWithApiKey(Boolean createPromoCodeWithApiKey) {
+        this.createPromoCodeWithApiKey = createPromoCodeWithApiKey;
+    }
+
+    public Integer getDiscountInPercentForPromoCodes() {
+        return discountInPercentForPromoCodes;
+    }
+
+    public void setDiscountInPercentForPromoCodes(Integer discountInPercentForPromoCodes) {
+        this.discountInPercentForPromoCodes = discountInPercentForPromoCodes;
+    }
 }
