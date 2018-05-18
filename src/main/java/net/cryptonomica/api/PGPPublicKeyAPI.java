@@ -20,6 +20,7 @@ import net.cryptonomica.returns.PGPPublicKeyGeneralView;
 import net.cryptonomica.returns.PGPPublicKeyUploadReturn;
 import net.cryptonomica.returns.SearchPGPPublicKeysReturn;
 import net.cryptonomica.returns.StringWrapperObject;
+import net.cryptonomica.service.ApiKeysService;
 import net.cryptonomica.service.UserTools;
 import org.bouncycastle.openpgp.PGPPublicKey;
 
@@ -138,44 +139,14 @@ public class PGPPublicKeyAPI {
             final @Named("fingerprint") String fingerprint,
             @Named("serviceName") String serviceName,
             @Named("apiKeyString") String apiKeyString
-    ) throws Exception {
+    ) throws Exception { // UnauthorizedException or Exception
 
         /* --- check argument */
         if (fingerprint == null || fingerprint.isEmpty()) {
             throw new IllegalArgumentException("fingerprint not provided");
         }
 
-        /* --- check service name */
-        if (serviceName == null || serviceName.isEmpty()) {
-            serviceName = httpServletRequest.getHeader("serviceName");
-        }
-        if (serviceName == null || serviceName.isEmpty()) {
-            throw new UnauthorizedException("serviceName not provided");
-        }
-
-        /* --- check apiKeyString */
-        if (apiKeyString == null || apiKeyString.isEmpty()) {
-            apiKeyString = httpServletRequest.getHeader("apiKeyString");
-        }
-        if (apiKeyString == null || apiKeyString.isEmpty()) {
-            throw new UnauthorizedException("apiKeyString not provided");
-        }
-
-        /* --- check authorization */
-        ApiKey apiKey = ofy()
-                .load()
-                .key(Key.create(ApiKey.class, serviceName))
-                .now();
-
-        if (apiKey == null || apiKey.getApiKey() == null || apiKey.getApiKey().isEmpty()) {
-            throw new UnauthorizedException("No API key registered for this user");
-        }
-
-        // The equals() method is case-sensitive
-        if (!apiKey.getApiKey().equals(apiKeyString)) {
-            throw new UnauthorizedException("invalid API key");
-        }
-
+        ApiKey apiKey = ApiKeysService.checkApiKey(httpServletRequest, serviceName, apiKeyString);
         if (!apiKey.getGetPGPPublicKeyByFingerprintWithApiKey()) {
             throw new UnauthorizedException("API key is not valid for this API method");
         }

@@ -29,13 +29,14 @@ public class PromoCode
     @Index
     private Date entityCreated;
     @Index
-    private Email createdBy;
+    private String createdBy;
     @Index
     private Email usedBy;
     @Index
     private String usedForFingerprint;
     @Index
     private Date usedOn;
+    //
     private List<Email> validOnlyForUsers;
     private List<String> validOnlyForCountries; // as in OnlineVerification object
 
@@ -57,6 +58,18 @@ public class PromoCode
         this.validOnlyForCountries = new ArrayList<>();
         //
         this.discountInPercent = discountInPercent;
+    }
+
+
+    public PromoCode(Integer discountInPercent, String createdBy) {
+        this.used = false;
+        this.promoCode = RandomStringUtils.randomAlphanumeric(11);
+        this.entityCreated = new Date();
+        this.validOnlyForUsers = new ArrayList<>();
+        this.validOnlyForCountries = new ArrayList<>();
+        //
+        this.discountInPercent = discountInPercent;
+        this.createdBy = createdBy;
     }
 
     public PromoCode(Integer discountInPercent, Date validUntil) {
@@ -128,11 +141,11 @@ public class PromoCode
         this.entityCreated = entityCreated;
     }
 
-    public Email getCreatedBy() {
+    public String getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(Email createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -175,5 +188,4 @@ public class PromoCode
     public void setValidOnlyForCountries(List<String> validOnlyForCountries) {
         this.validOnlyForCountries = validOnlyForCountries;
     }
-
 }

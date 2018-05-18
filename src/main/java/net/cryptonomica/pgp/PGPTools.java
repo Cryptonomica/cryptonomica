@@ -150,7 +150,7 @@ public class PGPTools {
 
         /* Validate fingerprint */
         if (fingerprint == null || fingerprint.length() < 40 || fingerprint.length() > 40) {
-            throw new Exception("Invalid public key in request (fingerprint not valid)");
+            throw new IllegalArgumentException("Invalid public key in request (fingerprint not valid)");
         }
 
         /* Load PGPPublicKeyData from DB by fingerprint */
@@ -166,7 +166,7 @@ public class PGPTools {
         LOG.warning("DS search result by fingerprint: " + GSON.toJson(pgpPublicKeyDataList));
         // if key not found trow an exception
         if (pgpPublicKeyDataList == null || pgpPublicKeyDataList.size() == 0) {
-            throw new Exception("Public PGP key with firngerprint"
+            throw new IllegalArgumentException("Public PGP key with fingerprint"
                     + fingerprint.toUpperCase()
                     + "not found in DataBase");
         }
