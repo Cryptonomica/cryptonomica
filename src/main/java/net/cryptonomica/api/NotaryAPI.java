@@ -366,7 +366,8 @@ public class NotaryAPI {
             );
         }
         pgpPublicKeyData.setActive(Boolean.TRUE);
-        pgpPublicKeyData.setVerified(Boolean.TRUE);
+        pgpPublicKeyData.setVerified(Boolean.TRUE); // <<< legacy TODO: remove
+        pgpPublicKeyData.setVerifiedOffline(Boolean.TRUE); // <<< legacy
         pgpPublicKeyData.addVerification(verificationKey.toWebSafeString());
 
         ofy()

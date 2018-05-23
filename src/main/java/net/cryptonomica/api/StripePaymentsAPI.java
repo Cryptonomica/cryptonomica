@@ -674,9 +674,12 @@ public class StripePaymentsAPI {
             @Named("apiKeyString") String apiKeyString
     ) throws Exception {
 
-        ApiKey apiKey = ApiKeysService.checkApiKey(httpServletRequest, serviceName, apiKeyString);
+        ApiKey apiKey = ApiKeysService
+                .checkApiKey(
+                        httpServletRequest, serviceName, apiKeyString
+                );
 
-        if (!apiKey.getCreatePromoCodeWithApiKey()) {
+        if (apiKey.getCreatePromoCodeWithApiKey() == null || !apiKey.getCreatePromoCodeWithApiKey()) {
             throw new UnauthorizedException("API key is not valid for this API method");
         }
 

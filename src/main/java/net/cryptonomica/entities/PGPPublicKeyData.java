@@ -64,7 +64,7 @@ public class PGPPublicKeyData {
     @Index
     private int bitStrength; //...............................13
     private Text asciiArmored; //.............................14
-    @Index
+    @Index // legacy:
     private Boolean verified; //.off-line verification........15
     @Index
     // can be used to filter what to show
@@ -97,13 +97,23 @@ public class PGPPublicKeyData {
     // one key can have only one nationality defined
     // user enters this when
     private String nationality; //............................24
+    @Index
+    private Boolean verifiedOffline; //.......................25 // <TODO: new
+    @Index
+    private Boolean verifiedOnline; //........................26 // <TODO: new
+    @Index
+    private Boolean revoked; //...............................27
+    @Index
+    private Date revokedOn; //................................28
+    @Index
+    private String revokedBy; //..............................29
 
     /* --- Constructors: */
     public PGPPublicKeyData() {
         this.verificationsWebSafeStrings = new ArrayList<>();
         this.entityCreated = new Date();
         this.nameOnCard = null;
-        this.verified = false;
+        // this.verified = false; // TODO: >>> change for old keys
         this.onlineVerificationFinished = false;
     } // end: empty constructor
 
@@ -194,7 +204,7 @@ public class PGPPublicKeyData {
         this.entityCreated = new Date(); // <- final
         this.nameOnCard = null;
 
-        this.verified = false;
+        // this.verified = false; // <<< TODO:
         this.onlineVerificationFinished = false;
 
     } // end:  constructor with args
@@ -405,6 +415,46 @@ public class PGPPublicKeyData {
 
     public void setNationality(String nationality) {
         this.nationality = nationality;
+    }
+
+    public Boolean getVerifiedOffline() {
+        return verifiedOffline;
+    }
+
+    public void setVerifiedOffline(Boolean verifiedOffline) {
+        this.verifiedOffline = verifiedOffline;
+    }
+
+    public Boolean getVerifiedOnline() {
+        return verifiedOnline;
+    }
+
+    public void setVerifiedOnline(Boolean verifiedOnline) {
+        this.verifiedOnline = verifiedOnline;
+    }
+
+    public Boolean getRevoked() {
+        return revoked;
+    }
+
+    public void setRevoked(Boolean revoked) {
+        this.revoked = revoked;
+    }
+
+    public Date getRevokedOn() {
+        return revokedOn;
+    }
+
+    public void setRevokedOn(Date revokedOn) {
+        this.revokedOn = revokedOn;
+    }
+
+    public String getRevokedBy() {
+        return revokedBy;
+    }
+
+    public void setRevokedBy(String revokedBy) {
+        this.revokedBy = revokedBy;
     }
 
     // end getters and setters

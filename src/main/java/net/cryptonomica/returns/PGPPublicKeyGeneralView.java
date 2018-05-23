@@ -1,6 +1,5 @@
 package net.cryptonomica.returns;
 
-import com.google.gson.Gson;
 import com.googlecode.objectify.Key;
 import net.cryptonomica.entities.CryptonomicaUser;
 import net.cryptonomica.entities.PGPPublicKeyData;
@@ -8,14 +7,13 @@ import net.cryptonomica.entities.PGPPublicKeyData;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Key representation that can be sent to frontend
  */
 public class PGPPublicKeyGeneralView implements Serializable {
     /* ----- Logger: */
-    private static final Logger LOG = Logger.getLogger(PGPPublicKeyGeneralView.class.getName());
+    // private static final Logger LOG = Logger.getLogger(PGPPublicKeyGeneralView.class.getName());
     /* ----- */
     // @Id
     private String fingerprint; //.........................1
@@ -30,7 +28,7 @@ public class PGPPublicKeyGeneralView implements Serializable {
     private Date exp; //..................................10
     private Integer bitStrength; //.......................11
     private String asciiArmored; //.......................12
-    private Boolean verified; //off-line verification.....13
+    private Boolean verified; //off-line verification.....13 // legacy
     private Boolean active; //............................14
     private List<String> verificationsWebSafeStrings; //..15
     private List<Long> verificationIDs; // ...............16
@@ -38,6 +36,12 @@ public class PGPPublicKeyGeneralView implements Serializable {
     private Boolean onlineVerificationFinished; //........17
     private String nationality; //........................18
     private Date birthdate; // ...........................19
+    // new (2018-05-23):
+    private Boolean verifiedOffline; //...................20 // <TODO: new
+    private Boolean verifiedOnline; //....................21 // <TODO: new
+    private Boolean revoked; //...........................22
+    private Date revokedOn; //............................23
+    private String revokedBy; //..........................24
 
     // PGPPublicKeyData has also: @Parent private Key<CryptonomicaUser> cryptonomicaUserKey;
     // we have cryptonomicaUserId + webSafeString and not need it
@@ -93,9 +97,19 @@ public class PGPPublicKeyGeneralView implements Serializable {
         this.nationality = pgpPublicKeyData.getNationality();
 
         this.birthdate = pgpPublicKeyData.getUserBirthday();
+        // 20
+        this.verifiedOffline = pgpPublicKeyData.getVerifiedOffline();
+        // 21
+        this.verifiedOnline = pgpPublicKeyData.getVerifiedOnline();
+        // 22
+        this.revoked = pgpPublicKeyData.getRevoked();
+        // 23
+        this.revokedOn = pgpPublicKeyData.getRevokedOn();
+        // 24
+        this.revokedBy = pgpPublicKeyData.getRevokedBy();
 
         // LOG
-        LOG.warning(new Gson().toJson(this));
+        // LOG.warning(new Gson().toJson(this));
 
     } // end: constructor from PGPPublicKeyData obj
 
@@ -244,4 +258,53 @@ public class PGPPublicKeyGeneralView implements Serializable {
     public void setNationality(String nationality) {
         this.nationality = nationality;
     }
+
+    public Date getBirthdate() {
+        return birthdate;
+    }
+
+    public void setBirthdate(Date birthdate) {
+        this.birthdate = birthdate;
+    }
+
+    public Boolean getVerifiedOffline() {
+        return verifiedOffline;
+    }
+
+    public void setVerifiedOffline(Boolean verifiedOffline) {
+        this.verifiedOffline = verifiedOffline;
+    }
+
+    public Boolean getVerifiedOnline() {
+        return verifiedOnline;
+    }
+
+    public void setVerifiedOnline(Boolean verifiedOnline) {
+        this.verifiedOnline = verifiedOnline;
+    }
+
+    public Boolean getRevoked() {
+        return revoked;
+    }
+
+    public void setRevoked(Boolean revoked) {
+        this.revoked = revoked;
+    }
+
+    public Date getRevokedOn() {
+        return revokedOn;
+    }
+
+    public void setRevokedOn(Date revokedOn) {
+        this.revokedOn = revokedOn;
+    }
+
+    public String getRevokedBy() {
+        return revokedBy;
+    }
+
+    public void setRevokedBy(String revokedBy) {
+        this.revokedBy = revokedBy;
+    }
+
 }
