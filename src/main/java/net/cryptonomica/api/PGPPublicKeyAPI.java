@@ -16,16 +16,14 @@ import net.cryptonomica.forms.GetUsersKeysByUserIdForm;
 import net.cryptonomica.forms.PGPPublicKeyUploadForm;
 import net.cryptonomica.forms.SearchPGPPublicKeysForm;
 import net.cryptonomica.pgp.PGPTools;
-import net.cryptonomica.returns.PGPPublicKeyGeneralView;
-import net.cryptonomica.returns.PGPPublicKeyUploadReturn;
-import net.cryptonomica.returns.SearchPGPPublicKeysReturn;
-import net.cryptonomica.returns.StringWrapperObject;
+import net.cryptonomica.returns.*;
 import net.cryptonomica.service.ApiKeysService;
 import net.cryptonomica.service.UserTools;
 import org.bouncycastle.openpgp.PGPPublicKey;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -403,5 +401,108 @@ public class PGPPublicKeyAPI {
 
         return new StringWrapperObject(resultJSON);
     }
+
+    @ApiMethod(
+            name = "revokeKeyByAdmin",
+            path = "revokeKeyByAdmin",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    @SuppressWarnings("unused")
+    // get key by by fingerprint
+    public PGPPublicKeyGeneralView revokeKeyByAdmin(
+            final User googleUser,
+            final @Named("fingerprint") String fingerprint
+    ) throws Exception {
+
+        /* Check authorization: */
+        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaRegisteredUser(googleUser);
+
+        // GET Key from DataBase by fingerprint:
+        PGPPublicKeyData pgpPublicKeyData = PGPTools.getPGPPublicKeyDataFromDataBaseByFingerprint(fingerprint);
+
+        if (pgpPublicKeyData == null) {
+            throw new IllegalArgumentException("key with fingerprint " + fingerprint + " not found in database");
+        }
+
+        // make changes:
+        pgpPublicKeyData.setRevoked(Boolean.TRUE);
+        pgpPublicKeyData.setRevokedOn(new Date());
+        pgpPublicKeyData.setRevokedBy(cryptonomicaUser.getEmail().getEmail());
+
+        // store to DB:
+        ofy().save().entity(pgpPublicKeyData).now();
+
+        // make key representation from new data from DB:
+        PGPPublicKeyGeneralView pgpPublicKeyGeneralView = new PGPPublicKeyGeneralView(
+                PGPTools.getPGPPublicKeyDataFromDataBaseByFingerprint(fingerprint)
+        );
+
+        LOG.warning("Result: " + GSON.toJson(pgpPublicKeyGeneralView));
+
+        return pgpPublicKeyGeneralView;
+
+    } // end of revokeKeyByAdmin
+
+    /* ---- TEMPORARY: */
+    @ApiMethod(
+            name = "repairOldEntities",
+            path = "repairOldEntities",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    @SuppressWarnings("unused")
+    public ListOfPGPPublicKeyGeneralViews repairOldEntities(
+            // final HttpServletRequest httpServletRequest,
+            final User googleUser
+            // see: https://cloud.google.com/appengine/docs/java/endpoints/exceptions
+    ) throws UnauthorizedException, IllegalArgumentException {
+
+        /* --- Check authorization: */
+        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        ListOfPGPPublicKeyGeneralViews result = new ListOfPGPPublicKeyGeneralViews();
+
+        List<PGPPublicKeyData> pgpPublicKeyDataEntitiesList =
+                ofy()
+                        .load()
+                        .type(PGPPublicKeyData.class)
+                        .filter(
+                                "verified",
+                                true
+                        )
+                        .list();
+
+        for (PGPPublicKeyData pgpPublicKeyData : pgpPublicKeyDataEntitiesList) {
+
+            if (pgpPublicKeyData.getVerified()) {
+                pgpPublicKeyData.setVerifiedOffline(Boolean.TRUE);
+                Key<PGPPublicKeyData> pgpPublicKeyDataKey = ofy().save().entity(pgpPublicKeyData).now();
+                result.addKey(pgpPublicKeyData);
+            }
+
+        }
+
+        pgpPublicKeyDataEntitiesList =
+                ofy()
+                        .load()
+                        .type(PGPPublicKeyData.class)
+                        .filter(
+                                "onlineVerificationFinished",
+                                true
+                        )
+                        .list();
+        for (PGPPublicKeyData pgpPublicKeyData : pgpPublicKeyDataEntitiesList) {
+
+            if (pgpPublicKeyData.getOnlineVerificationFinished()) {
+                pgpPublicKeyData.setVerifiedOnline(Boolean.TRUE);
+                Key<PGPPublicKeyData> pgpPublicKeyDataKey = ofy().save().entity(pgpPublicKeyData).now();
+                result.addKey(pgpPublicKeyData);
+            }
+
+        }
+
+        return result;
+
+    } // end of repairOldEntities
+
 
 }

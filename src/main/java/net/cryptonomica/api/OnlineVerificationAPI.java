@@ -540,7 +540,7 @@ public class OnlineVerificationAPI {
         PGPPublicKeyData pgpPublicKeyData = ofy()
                 .load()
                 .type(PGPPublicKeyData.class)
-                .filter("fingerprintStr", fingerprint)
+                .filter("fingerprintStr", fingerprint.toUpperCase())
                 .first()
                 .now();
         if (pgpPublicKeyData == null) {
@@ -549,6 +549,7 @@ public class OnlineVerificationAPI {
         //
         // pgpPublicKeyData.setOnlineVerificationFinished(Boolean.TRUE); // >> this should be made in StripePaymentsAPI
         pgpPublicKeyData.setNationality(onlineVerification.getNationality().toUpperCase());
+        pgpPublicKeyData.setVerifiedOnline(Boolean.TRUE); // <<< NEW
 
         // save data to data store:
         ofy()
@@ -603,6 +604,7 @@ public class OnlineVerificationAPI {
 
         return result;
 
-    } // end of acceptTerms();
+    } // end of approve ;
+
 
 }

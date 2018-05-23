@@ -157,7 +157,7 @@
             </tr>
             <tr>
                 <td>Verified offline:</td>
-                <td>{{key.verified}}</td>
+                <td>{{key.verifiedOffline||key.verified}}</td>
             </tr>
 
             <tr ng-show="key.verificationsWebSafeStrings">
@@ -177,7 +177,12 @@
 
             <tr>
                 <td>Verified online:</td>
-                <td>{{key.onlineVerificationFinished}}</td>
+                <td>{{key.verifiedOnline}}</td>
+            </tr>
+
+            <tr ng-show="key.revoked">
+                <td style="color: red">Revoked on:</td>
+                <td style="color: red">{{key.revokedOn}}</td>
             </tr>
 
             <tr>
@@ -185,13 +190,13 @@
                 <td>
                     <!-- -->
                     <div ng-show="key">
-                        <div ng-hide="key.verified || key.onlineVerificationFinished" class="keynotverified">
+                        <div ng-hide="key.verifiedOffline || key.verifiedOnline || key.verified" class="keynotverified">
                             <span>key not verified</span>
                         </div>
-                        <div ng-show="key.verified || key.onlineVerificationFinished" class="keyverified">
+                        <div ng-show="key.verifiedOffline || key.verifiedOnline || key.verified" class="keyverified">
                             <span>key verified:</span>
-                            <span ng-show="key.onlineVerificationFinished">&nbsp;<b>online</b></span>
-                            <span ng-show="key.verified">&nbsp;<b>offline</b></span>
+                            <span ng-show="key.verifiedOnline">&nbsp;<b>online</b></span>
+                            <span ng-show="key.verifiedOffline || key.verified">&nbsp;<b>offline</b></span>
                         </div>
                         <!--  -->
 
