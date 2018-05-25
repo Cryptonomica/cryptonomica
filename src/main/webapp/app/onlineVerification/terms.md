@@ -21,10 +21,10 @@ We have to verify your phone number. You put your phone number in international 
 #### Step 4.
 You have to pay for verification with the credit card with the same first and last name as in your key (key certificate) and in your passport. If spelling on your credit card differs from the passport, please, write to support@cryptonomica.net - we may manually allow spelling you provide us in your email.
 
-The current price for key verification is: $100 for key, if key valid for one year, and $180 if key valid from one to two years.
+The current price for key verification is: €90 for key, if key valid for one year, and €170 if key valid from one to two years.
 
 Until 01 June 2017 we have an action for our first time users:
-$50 for key, if key valid for one year, and $75 if key valid from one to two years.
+€60 for key, if key valid for one year, and $96 if key valid from one to two years.
 
 #### Step 5.
 Please check your credit card bank statement and find description for charge for key verification, it looks like: 'CRYPTONOMICA 6691170', you may also receive this information by sms or request via phone call from your bank or credit card company. The last 7 digits is your unique code, and you have to enter this code on our web-site to prove that you are a legitimate owner of the credit card
