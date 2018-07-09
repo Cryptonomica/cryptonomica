@@ -1,67 +1,128 @@
-<header-main-menu></header-main-menu>
-<navigation-menu></navigation-menu>
+<div id="contextWrap">
 
-<div id="showNotaries">
+    <!-- left sidebar-->
+    <left-sidebar></left-sidebar>
 
-    <div class="card card-block">
-        <!-- Alerts  -->
-        <!-- http://www.quackit.com/bootstrap/bootstrap_4/tutorial/bootstrap_alerts.cfm -->
-        <!-- Auth error -->
-        <div ng-hide="currentUser.registeredCryptonomicaUser" class="alert alert-danger alert-dismissible" role="alert">
-            user not registered or not logged in
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                    aria-hidden="true">×</span></button>
-        </div>
-        <!-- Error messages -->
-        <div ng-show="resp.error.message" class="alert alert-danger" role="alert">
-            {{resp.error.message}}
-        </div>
+    <!--right sidebar-->
+    <right-sidebar></right-sidebar>
 
-        <h6>Cryptonomica ceritified notaries: </h6>
-        <button class="btn btn-secondary" role="button" id="searchForNotariesBtn" ng-click="refreshNotaries()">
-            refresh information
-        </button>
-        <!--  https://docs.angularjs.org/api/ng/directive/ngRepeat#iterating-over-object-properties
-        <div ng-repeat="obj in collection track by $id(obj)">
-                {{obj.prop}}
+    <div class="pusher">
+
+        <!--topHeaderMenu -->
+        <top-header-menu></top-header-menu>
+
+        <!-- ==== MAIN SECTION ====  -->
+
+        <div class="mainWrap navslide">
+
+            <div class="ui equal width left aligned padded grid stackable">
+
+                <!--Page Content-->
+
+                <div class="stretched row">
+
+                    <div class="column">
+
+                        <!-- Alerts -->
+                        <alerts></alerts>
+
+                        <div class="ui segments">
+
+                            <!-- Breadcrumb -->
+                            <div id="breadcrumb" class="ui segment">
+                                <div class="ui breadcrumb">
+                                    <a class="section" href="" ui-sref-active="active" ui-sref="home">Home</a>
+                                    <i class="right angle icon divider"></i>
+                                    <a class="section" href="" ui-sref-active="active" ui-sref="notaries">Notaries</a>
+                                    <!--<i class="right angle icon divider"></i>-->
+                                </div>
+                            </div>
+
+                            <div class="ui segment">
+
+                                <!-- Alerts  -->
+
+                                <!-- Auth error -->
+                                <!--<div ng-hide="currentUser.registeredCryptonomicaUser" class="alert alert-danger alert-dismissible" role="alert">-->
+                                <!--user not registered or not logged in-->
+                                <!--<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span-->
+                                <!--aria-hidden="true">×</span></button>-->
+                                <!--</div>-->
+                                <div ng-hide="currentUser.registeredCryptonomicaUser" class="ui negative message">
+                                    <!--<i class="close icon" ng-click="alertDanger=null"></i>-->
+                                    <div class="header">Error:</div>
+                                    <p>User not registered or not logged in</p>
+                                </div>
+
+                                <!-- Error messages -->
+                                <!--<div ng-show="resp.error.message" class="alert alert-danger" role="alert">-->
+                                <!--{{resp.error.message}}-->
+                                <!--</div>-->
+                                <div id="alertDanger" ng-show="resp.error.message" class="ui negative message">
+                                    <i class="close icon" ng-click="resp.error.message=null"></i>
+                                    <div class="header">Error:</div>
+                                    <p>{{resp.error.message}}</p>
+                                </div>
+
+                                <h2><i class="icofont icofont-stamp"></i>&nbsp;Cryptonomica ceritified notaries: </h2>
+                                <button class="btn btn-secondary" role="button" id="searchForNotariesBtn"
+                                        ng-click="refreshNotaries()">
+                                    refresh information
+                                </button>
+                                <!--  https://docs.angularjs.org/api/ng/directive/ngRepeat#iterating-over-object-properties
+                                <div ng-repeat="obj in collection track by $id(obj)">
+                                        {{obj.prop}}
+                                    </div>
+                                see: http://stackoverflow.com/questions/30907131/how-to-make-html-table-from-an-array-with-angular-js  -->
+                                <table class="ui selectable celled table" ng-show="resp.items">
+                                    <thead>
+                                    <tr>
+                                        <th>Image</th>
+                                        <th>Last name</th>
+                                        <th>First name</th>
+                                        <th>Information</th>
+                                        <th>More info</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="notaryGeneralView in resp.items">
+                                        <td>
+                                            <img ng-src="{{notaryGeneralView.userProfileGeneralView.userCurrentImageLink}}"
+                                                 class="ui small image"
+                                                 title="{{notaryGeneralView.userProfileGeneralView.lastName}}">
+
+                                        </td>
+                                        <td>{{notaryGeneralView.userProfileGeneralView.lastName | titleCase}}
+                                        </td>
+                                        <td>{{notaryGeneralView.userProfileGeneralView.firstName | titleCase}}
+                                        </td>
+                                        <td>{{notaryGeneralView.notaryInfo}}</td>
+                                        <td>
+                                            <a href=""
+                                               ui-sref="viewprofile({ userId: notaryGeneralView.userProfileGeneralView.userId})">
+                                                Show Profile
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                        </div>
+
+                        <!-- FOOTER -->
+                        <footer-main></footer-main>
+
+                    </div>
+
+                </div>
+
             </div>
-        see: http://stackoverflow.com/questions/30907131/how-to-make-html-table-from-an-array-with-angular-js  -->
-        <table class="table table-bordered table-hover" ng-show="resp.items">
-            <!-- for Bootstrap 4 table see:
-            http://www.quackit.com/bootstrap/bootstrap_4/tutorial/bootstrap_tables.cfm -->
-            <thead class="thead-default">
-            <tr>
-                <th>Image</th>
-                <th>Last name</th>
-                <th>First name</th>
-                <th>Information</th>
-                <th>More info</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="notaryGeneralView in resp.items">
-                <td>
-                    <img ng-src="{{notaryGeneralView.userProfileGeneralView.userCurrentImageLink}}"
-                         class="img-thumbnail"
-                         title="{{notaryGeneralView.userProfileGeneralView.lastName}}"
-                         style="height: 100px; width:auto">
 
-                </td>
-                <td class="capitalize">{{notaryGeneralView.userProfileGeneralView.lastName}}</td>
-                <td class="capitalize">{{notaryGeneralView.userProfileGeneralView.firstName}}</td>
-                <td>{{notaryGeneralView.notaryInfo}}</td>
-                <td>
-                    <a href=""
-                       ui-sref="viewprofile({ userId: notaryGeneralView.userProfileGeneralView.userId })">
-                        Show Profile
-                    </a>
-                    <!--<a href="" ng-click="">show</a>-->
-                </td>
-            </tr>
-            </tbody>
-        </table>
+        </div>
+
     </div>
-    <!-- Notaries end -->
 
 </div>
-<footer-main></footer-main>
+

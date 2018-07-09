@@ -13,7 +13,6 @@
     https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/appengine-java8/endpoints-v2-backend/src/main/webapp/WEB-INF/web.xml
     -->
 
-
     <!-- Objectify -->
     <filter>
         <filter-name>ObjectifyFilter</filter-name>

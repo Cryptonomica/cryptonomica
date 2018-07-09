@@ -1,169 +1,250 @@
-<header-main-menu></header-main-menu>
-<navigation-menu></navigation-menu>
-<div class="container">
-    <!-- Alerts -->
-    <alerts></alerts>
+<div id="contextWrap">
 
-    <!-- Main part -->
-    <br>
-    <h4>Online verification data for {{onlineVerification.keyID}}</h4>
+    <!-- left sidebar-->
+    <left-sidebar></left-sidebar>
 
-    <table class="table table-bordered table-hover">
-        <!-- for Bootstrap4 table see: http://www.quackit.com/bootstrap/bootstrap_4/tutorial/bootstrap_tables.cfm -->
-        <tbody>
-        <tr>
-            <td>Key fingerprint:</td>
-            <td class="capitalize">
-                <a ui-sref="key({fingerprint: onlineVerification.fingerprint})">
-                    {{onlineVerification.fingerprint}}
-                </a>
-            </td>
-        </tr>
-        <tr>
-            <td>First Name:</td>
-            <td class="capitalize">{{onlineVerification.firstName}}</td>
-        </tr>
-        <tr>
-            <td>Last Name:</td>
-            <td class="capitalize">{{onlineVerification.lastName}}</td>
-        </tr>
-        <tr>
-            <td>Birthday:</td>
-            <td>{{onlineVerification.birthday | date}}</td>
-        </tr>
-        <tr>
-            <td>Nationality:</td>
-            <td>{{onlineVerification.nationality}}</td>
-        </tr>
-        <tr>
-            <td>Google Account (email):</td>
-            <td>
-                <a ui-sref="viewprofile({userId: onlineVerification.cryptonomicaUserId})">
-                    {{onlineVerification.userEmail}}
-                </a>
+    <!--right sidebar-->
+    <right-sidebar></right-sidebar>
 
-            </td>
-        </tr>
-        <tr>
-            <td>Phone Number:</td>
-            <td>
-                {{onlineVerification.phoneNumber}}
-            </td>
-        </tr>
-        <tr>
-            <td>Stripe Payment For Key Verification Id:</td>
-            <td>
-                {{onlineVerification.stripePaymentForKeyVerificationId}}
-            </td>
-        </tr>
-        <tr>
-            <td>Payment Verified:</td>
-            <td>
-                {{onlineVerification.paymentVerified}}
-            </td>
-        </tr>
-        <tr>
-            <td>Verification started:</td>
-            <td>{{onlineVerification.entityCreated | date}}</td>
-        </tr>
-        <tr>
-            <td>Verified On:</td>
-            <td>{{onlineVerification.verifiedOn | date}}</td>
-        </tr>
-        <tr>
-            <td>Verified By:</td>
-            <td>
-                <a ui-sref="viewprofile({userId: onlineVerification.verifiedById})">
-                    {{onlineVerification.verifiedByFirstNameLastName}}
-                </a>
-            </td>
-        </tr>
+    <div class="pusher">
 
-        </tbody>
-    </table>
+        <!--topHeaderMenu -->
+        <top-header-menu></top-header-menu>
 
-    <!-- Verification Documents -->
-    <div class="row">
-        <center>
-            <h3>Verification documents:</h3>
-        </center>
-    </div>
-    <div id="verificationDocuments" class="row">
+        <!-- ==== MAIN SECTION ====  -->
 
-        <div class="col-xs-6 col-md-6">
-            <a ng-href="https://cryptonomica.net/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[0]}}"
-               class="imageLink"
-               target="_blank">
-                <img id="doc1"
-                     ng-src="https://cryptonomica.net/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[0]}}"
-                     class="verificationDoc"/>
-            </a>
-        </div>
+        <div class="mainWrap navslide">
 
-        <div class="col-xs-6 col-md-6">
-            <a ng-href="https://cryptonomica.net/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[1]}}"
-               class="imageLink"
-               target="_blank">
-                <img id="doc2"
-                     ng-src="https://cryptonomica.net/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[1]}}"
-                     class="verificationDoc"/>
-            </a>
-        </div>
-    </div>
+            <div class="ui equal width left aligned padded grid stackable">
 
-    <hr>
+                <!--Page Content-->
 
-    <!-- Verification Video: -->
-    <div id="verificationVideo" class="row">
-        <div class="embed-responsive embed-responsive-16by9">
-            <a href="" target="_blank" id="linkToVideoOnServer">
-                <video id="videoFromServer"
-                       ng-src="{{videoUrl}}"
-                       controls class="embed-responsive-item">
-                </video>
-            </a>
-        </div>
-    </div>
+                <div class="stretched row">
 
-    <hr>
+                    <div class="column">
 
-    <div id="approve" ng-show="currentUser.cryptonomicaOfficer">
+                        <!-- Alerts -->
+                        <alerts></alerts>
 
-        <p>(you see this because you are cryptonomica compliance officer)</p>
+                        <div class="ui segments">
 
-        <div id="approveResponse" ng-show="approveResponse" class="alert alert-success alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert">
-                <span ng-click="approveResponse=null">&times;</span></button>
-            {{approveResponse}}
-        </div>
+                            <!-- Breadcrumb -->
+                            <div id="breadcrumb" class="ui segment">
+                                <a class="section" href="" ui-sref-active="active" ui-sref="home">Home</a>
+                                <i class="right angle icon divider"></i>
+                                <a class="section">Profiles</a>
+                                <i class="right angle icon divider"></i>
+                                <a class="section" href="" ui-sref-active="active"
+                                   ui-sref="viewprofile({userId:onlineVerification.cryptonomicaUserId})">
+                                    {{onlineVerification.firstName | titleCase }}&nbsp;{{onlineVerification.lastName |
+                                    titleCase}}
+                                </a>
+                                <i class="right angle icon divider"></i>
+                                <a class="section" ui-sref-active="active"
+                                   ui-sref="key({fingerprint:onlineVerification.fingerprint})">
+                                    {{keyId}}
+                                </a>
+                                <i class="right angle icon divider"></i>
+                                <a class="section active">Online Verification Data</a>
+                            </div>
 
-        <div ng-show="approveResponseError" class="alert alert-danger alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert">
-                <span ng-click="approveResponseError=null">&times;</span>
-            </button>
-            {{approveResponseError}}
-        </div>
+                            <div class="ui segment">
 
-        <form>
-            <fieldset class="form-group">
+                                <!-- Main part -->
 
-                <div class="form-check">
-                    <label class="form-check-label">
-                        <input type="checkbox" class="form-check-input" ng-model="onlineVerificationApproved">
-                        Approve data entered for online verificaiton
-                    </label>
+                                <h3>Online verification data for {{onlineVerification.keyID}}</h3>
+
+                                <table class="ui celled table">
+                                    <tbody>
+                                    <tr>
+                                        <td>Key fingerprint:</td>
+                                        <td class="capitalize">
+                                            <a ui-sref="key({fingerprint: onlineVerification.fingerprint})">
+                                                {{onlineVerification.fingerprint}}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>First Name:</td>
+                                        <td class="capitalize">{{onlineVerification.firstName}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Last Name:</td>
+                                        <td class="capitalize">{{onlineVerification.lastName}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Birthday:</td>
+                                        <td>{{onlineVerification.birthday | date}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Nationality:</td>
+                                        <td>{{onlineVerification.nationality}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Google Account (email):</td>
+                                        <td>
+                                            <a ui-sref="viewprofile({userId: onlineVerification.cryptonomicaUserId})">
+                                                {{onlineVerification.userEmail}}
+                                            </a>
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Phone Number:</td>
+                                        <td>
+                                            {{onlineVerification.phoneNumber}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Stripe Payment For Key Verification Id:</td>
+                                        <td>
+                                            {{onlineVerification.stripePaymentForKeyVerificationId}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Payment Verified:</td>
+                                        <td>
+                                            {{onlineVerification.paymentVerified}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Verification started:</td>
+                                        <td>{{onlineVerification.entityCreated | date}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Verified On:</td>
+                                        <td>{{onlineVerification.verifiedOn | date}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Verified By:</td>
+                                        <td>
+                                            <a ui-sref="viewprofile({userId: onlineVerification.verifiedById})">
+                                                {{onlineVerification.verifiedByFirstNameLastName}}
+                                            </a>
+                                        </td>
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+
+                                <!-- Verification Documents -->
+
+                                <center>
+                                    <h3>Verification documents:</h3>
+                                </center>
+
+
+                                <a ng-href="https://cryptonomica.net/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[0]}}"
+                                   class="imageLink"
+                                   target="_blank">
+                                    <img id="doc1"
+                                         ng-src="https://cryptonomica.net/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[0]}}"
+                                         class="verificationDoc"/>
+                                </a>
+
+                                <a ng-href="https://cryptonomica.net/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[1]}}"
+                                   class="imageLink"
+                                   target="_blank">
+                                    <img id="doc2"
+                                         ng-src="https://cryptonomica.net/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[1]}}"
+                                         class="verificationDoc"/>
+                                </a>
+
+                                <hr>
+
+                                <!-- Verification Video: -->
+                                <div id="verificationVideo" class="row">
+                                    <div class="embed-responsive embed-responsive-16by9">
+                                        <a href="" target="_blank" id="linkToVideoOnServer">
+                                            <video id="videoFromServer"
+                                                   ng-src="{{videoUrl}}"
+                                                   controls class="embed-responsive-item">
+                                            </video>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <hr>
+
+                                <div id="approve" ng-show="currentUser.cryptonomicaOfficer">
+
+                                    <p>(you see this because you are Cryptonomica compliance officer)</p>
+
+                                    <!-- Approve Alerts: -->
+
+                                    <!--<div id="approveResponse" ng-show="approveResponse"-->
+                                    <!--class="alert alert-success alert-dismissible" role="alert">-->
+                                    <!--<button type="button" class="close" data-dismiss="alert">-->
+                                    <!--<span ng-click="approveResponse=null">&times;</span></button>-->
+                                    <!--{{approveResponse}}-->
+                                    <!--</div>-->
+
+                                    <div id="approveResponse" ng-show="approveResponse"
+                                         class="ui positive message">
+                                        <i class="close icon" ng-click="approveResponse=null"></i>
+                                        <div class="header">Success:</div>
+                                        <p>{{approveResponse}}</p>
+                                    </div>
+
+                                    <!--<div ng-show="approveResponseError" class="alert alert-danger alert-dismissible"-->
+                                    <!--role="alert">-->
+                                    <!--<button type="button" class="close" data-dismiss="alert">-->
+                                    <!--<span ng-click="approveResponseError=null">&times;</span>-->
+                                    <!--</button>-->
+                                    <!--{{approveResponseError}}-->
+                                    <!--</div>-->
+
+                                    <div id="approveResponseError" ng-show="approveResponseError"
+                                         class="ui negative message">
+                                        <i class="close icon" ng-click="approveResponseError=null"></i>
+                                        <div class="header">Error:</div>
+                                        <p>{{approveResponseError}}</p>
+                                    </div>
+
+                                    <form class="ui form">
+
+                                        <fieldset>
+
+                                            <div class="field">
+                                                <div class="ui checkbox">
+
+                                                    <input type="checkbox" ng-model="onlineVerificationApproved">
+
+                                                    <label><b>Approve data entered for online verification</b></label>
+                                                </div>
+                                            </div>
+
+                                            <label for="verificationNotes">Verification notes: </label>
+
+                                            <input id="verificationNotes" type="text" class="form-control"
+                                                   ng-model="verificationNotes">
+                                            <br>
+
+                                            <button ng-click="approve()"
+                                                    class="ui button" type="submit">
+                                                Approve
+                                            </button>
+
+                                        </fieldset>
+                                    </form>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- FOOTER -->
+                        <footer-main></footer-main>
+
+                    </div>
+
                 </div>
-                <br>
-                <label for="verificationNotes">Verification notes: </label>
-                <input id="verificationNotes" type="text" class="form-control" ng-model="verificationNotes">
-                <br>
-                <button ng-click="approve()"
-                        role="button" type="button" class="btn btn-secondary">
-                    Approve
-                </button>
-            </fieldset>
-        </form>
+
+            </div>
+
+        </div>
+
     </div>
+
 </div>
-<!-- Footer -->
-<footer-main></footer-main>
+

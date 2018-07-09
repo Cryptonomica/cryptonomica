@@ -1,5 +1,3 @@
-"use strict";
-
 /*
 * OpenPGP.js
 * http://openpgpjs.org
@@ -8,6 +6,8 @@
 * */
 
 $(function () {
+
+    "use strict";
 
     console.log("app.js is loaded");
 
@@ -47,7 +47,7 @@ $(function () {
             myPublicKey = localStorage.getItem('myPublicKey');
             if (myPublicKey) {
                 $('#pubkeyShow').val(myPublicKey);
-                $('#publicKeyLocalStorageMessage').text('Public key loaded from your browser local storage');
+                $('#publicKeyLocalStorageMessage').text('Public key loaded from your browser local storage:');
             }
         }
     };
@@ -56,7 +56,7 @@ $(function () {
         myPrivateKey = localStorage.getItem('myPrivateKey');
         if (myPrivateKey) {
             $("#privkeyShow").val(myPrivateKey);
-            $('#privateKeyLocalStorageMessage').text('Private key loaded from your browser local storage');
+            $('#privateKeyLocalStorageMessage').text('Private key loaded from your browser local storage:');
         }
     };
 
@@ -81,9 +81,10 @@ $(function () {
 
     // Encrypt
     $("#encrypt").click(function (event) {
-        console.log("button clicked");
+        console.log("[encrypt] button clicked:");
+        $("#signOrEncryptMessageError").text("");
         var armoredKey = $('#pubkeyShow').val();
-        console.log("armoredKey: " + armoredKey);
+        // console.log("armoredKey: " + armoredKey);
         var publicKey = openpgp.key.readArmored(armoredKey);
 
         var message = $("#messageText").val();
@@ -98,21 +99,48 @@ $(function () {
             // armor: false // don't ASCII armor (for Uint8Array output)
         };
 
-        openpgp.encrypt(options).then(function (ciphertext) {
-            console.log(ciphertext);
-            console.log(JSON.stringify(ciphertext));
-            encryptedASCIIarmored = ciphertext.data; // '-----BEGIN PGP MESSAGE ... END PGP MESSAGE-----'
-            console.log("ciphertext.data: " + ciphertext.data);
-            $("#encryptedText").val(ciphertext.data);
-        });
+        openpgp.encrypt(options)
+            .then(function (ciphertext) {
+                console.log(ciphertext);
+                console.log(JSON.stringify(ciphertext));
+                encryptedASCIIarmored = ciphertext.data; // '-----BEGIN PGP MESSAGE ... END PGP MESSAGE-----'
+                console.log("ciphertext.data: " + ciphertext.data);
+                $("#encryptedText").val(ciphertext.data);
+            })
+            .catch(function (error) {
+                console.log("encrypt message error:");
+                console.log(error);
+                $("#signOrEncryptMessageError").text(error).css('color', 'red');
+            });
     });
 
     // Decrypt
     $("#decryptButton").click(function (event) {
 
+        $('#decryptError').text("");
+
         var armoredMessage = $("#encryptedText").val();
+        // console.log("message to decrypt:");
+        // console.log(armoredMessage);
+        // console.log("message to decrypt length:");
+        // console.log(armoredMessage.toString().length);
+
+        if (typeof armoredMessage === undefined || armoredMessage === null || armoredMessage.toString().length === 0) {
+            $('#decryptError').text("no text to decrypt").css({'color': 'red'});
+            return;
+        }
+
         var armoredPubKey = $("#pubkeyShow").val();
+        // if (!armoredPubKey || armoredPubKey.toString().length === 0) {
+        //     $('#decryptError').text("no public key provided").css({'color': 'red'});
+        // }
+
         var armoredPrivKey = $("#privkeyShow").val();
+        if (typeof armoredPrivKey === undefined || armoredPrivKey === null || armoredPrivKey.toString().length === 0) {
+            $('#decryptError').text("no private key for decryption provided").css({'color': 'red'});
+            return;
+        }
+
         console.log("armoredPrivKey: ");
         console.log(armoredPrivKey);
 
@@ -130,10 +158,24 @@ $(function () {
             privateKey: privateKeyDecrypted // after privateKeyEncrypted.decrypt(passphrase)
         };
 
-        openpgp.decrypt(options).then(function (plaintext) {
-            console.log("plaintext.data: " + plaintext.data);
-            $("#decryptedText").val(plaintext.data);
-        });
+        try {
+            openpgp.decrypt(options)
+                .then(function (plaintext) {
+                    console.log("plaintext.data: " + plaintext.data);
+                    $("#decryptedText").val(plaintext.data);
+                })
+                .catch(function (error) {
+                    console.log("decrypt error:");
+                    console.log(error);
+                    $('#decryptError').text(error).css({'color': 'red'});
+                });
+
+        } catch (error) {
+            console.log("decrypt error:");
+            console.log(error);
+            $('#decryptError').text(error).css({'color': 'red'});
+        }
+
     });
 
     // Check Signature
@@ -166,22 +208,28 @@ $(function () {
             return;
         }
 
-        openpgp.verify(options).then(function (verified) {
-            var validity = verified.signatures[0].valid; // true
-            console.log("verified.signatures:");
-            console.log(verified.signatures);
-            var result;
-            var css = {};
-            if (validity) {
-                result = 'Signed by key id: [' + verified.signatures[0].keyid.toHex().toUpperCase() + ']';
-                css.color = "green";
-            } else {
-                result = "Signature can not be verified";
-                css.color = "red";
-            }
-            console.log(result);
-            $('#checkSignatureResult').text(result).css(css);
-        });
+        openpgp.verify(options)
+            .then(function (verified) {
+                var validity = verified.signatures[0].valid; // true
+                console.log("verified.signatures:");
+                console.log(verified.signatures);
+                var result;
+                var css = {};
+                if (validity) {
+                    result = 'Signed by key id: [' + verified.signatures[0].keyid.toHex().toUpperCase() + ']';
+                    css.color = "green";
+                } else {
+                    result = "Signature can not be verified";
+                    css.color = "red";
+                }
+                console.log(result);
+                $('#checkSignatureResult').text(result).css(css);
+            })
+            .catch(function (error) {
+                console.log("check signature error:");
+                console.log(error);
+                $('#checkSignatureResult').text(error).css({'color': 'red'});
+            });
 
     });
 
@@ -226,6 +274,8 @@ $(function () {
 
     $("#generateKeysOpenPGPjs").click(function (event) {
 
+        $("#generateKeyError").text("");
+
         var genOpts = makeGenerateKeysOptions();
         if (!checkGenerateKeysOptions(genOpts)) {
             return;
@@ -254,38 +304,47 @@ $(function () {
             keyExpirationTime: genOpts.expire_in
         };
 
-        // (static) generateKey(userIds, passphrase, numBits, unlocked, keyExpirationTime) → {Promise.<Object>}
-        openpgp
-            .generateKey(options)
-            .then(function (key) {
-                var privkey = key.privateKeyArmored; // '-----BEGIN PGP PRIVATE KEY BLOCK ... '
-                console.log("privkey:");
-                console.log(privkey);
-                myPrivateKey = privkey;
-                $("#privkeyShow").val(myPrivateKey);
+        try {
+            // (static) generateKey(userIds, passphrase, numBits, unlocked, keyExpirationTime) → {Promise.<Object>}
+            openpgp
+                .generateKey(options)
+                .then(function (key) {
+                    var privkey = key.privateKeyArmored; // '-----BEGIN PGP PRIVATE KEY BLOCK ... '
+                    console.log("privkey:");
+                    console.log(privkey);
+                    myPrivateKey = privkey;
+                    $("#privkeyShow").val(myPrivateKey);
 
-                var pubkey = key.publicKeyArmored; // '-----BEGIN PGP PUBLIC KEY BLOCK ... '
+                    var pubkey = key.publicKeyArmored; // '-----BEGIN PGP PUBLIC KEY BLOCK ... '
 
-                myPublicKey = pubkey;
-                $("#statusMessage").text("");
-                document.getElementById("generateKeysOpenPGPjs").disabled = false;
-                $('#pubkeyShow').val(myPublicKey);
-                console.log("myPublicKey:");
-                console.log(myPublicKey);
-            });
+                    myPublicKey = pubkey;
+                    $("#statusMessage").text("");
+                    $('#pubkeyShow').val(myPublicKey);
+                    console.log("myPublicKey:");
+                    console.log(myPublicKey);
+                    document.getElementById("generateKeysOpenPGPjs").disabled = false;
+                });
+        } catch (e) {
+            $("#generateKeyError").text(e);
+            document.getElementById("generateKeysOpenPGPjs").disabled = false;
+        }
+
 
     }); // end #generateKeysOpenPGPjs
 
     $("#saveSignedMessageAsFile").click(function () {
         var signedMessage = $("#signedMessage").val();
+        // see: https://tools.ietf.org/html/rfc3156
+        // var blob = new Blob([signedMessage], {type: "application/pgp;charset=utf-8"});
         var blob = new Blob([signedMessage], {type: "text/plain;charset=utf-8"});
         saveAs(blob, "signedMessage.txt");
     });
 
     $("#saveEncryptedTextAsFile").click(function () {
         var encryptedText = $("#encryptedText").val();
-        var blob = new Blob([encryptedText], {type: "text/plain;charset=utf-8"});
-        saveAs(blob, "encryptedText.txt");
+        // see: https://tools.ietf.org/html/rfc3156
+        var blob = new Blob([encryptedText], {type: "application/pgp-encrypted;charset=utf-8"});
+        saveAs(blob, "encryptedText.asc");
     });
 
     $("#saveDecryptedTextAsFile").click(function () {
@@ -295,13 +354,33 @@ $(function () {
     });
 
     $("#savePublicKeyAsFile").click(function () {
-        var blob = new Blob([myPublicKey], {type: "text/plain;charset=utf-8"});
-        saveAs(blob, "publicKey.txt");
+        var blob = new Blob([myPublicKey], {type: "application/pgp-keys;charset=utf-8"});
+        var firstName = document.getElementById("firstName").value;
+        var lastName = document.getElementById("lastName").value;
+        var keyId = $('#keyId').text();
+        var fileName = "publicKey.asc";
+        if (firstName && lastName) {
+            fileName = firstName + '.' + lastName + '.' + fileName;
+        }
+        if (keyId) {
+            fileName = keyId + fileName;
+        }
+        saveAs(blob, fileName);
     });
 
     $("#savePrivateKeyAsFile").click(function () {
-        var blob = new Blob([myPrivateKey], {type: "text/plain;charset=utf-8"});
-        saveAs(blob, "privateKey.txt");
+        var blob = new Blob([myPrivateKey], {type: "application/pgp-keys;charset=utf-8"});
+        var firstName = document.getElementById("firstName").value;
+        var lastName = document.getElementById("lastName").value;
+        var keyId = $('#keyId').text();
+        var fileName = "privateKey.asc";
+        if (firstName && lastName) {
+            fileName = firstName + '.' + lastName + '.' + fileName;
+        }
+        if (keyId) {
+            fileName = keyId + fileName;
+        }
+        saveAs(blob, fileName);
     });
 
     $("#savePublicKeyToLocalStorageButton").click(function () {
@@ -356,7 +435,7 @@ $(function () {
         );
         console.log(privateKey);
 
-        var keyId = '[' + privateKey.keys[0].primaryKey.keyid.toHex().toUpperCase() + ']';
+        var keyId = '[0x' + privateKey.keys[0].primaryKey.keyid.toHex().toUpperCase() + ']';
         var fingerprint = privateKey.keys[0].primaryKey.fingerprint.toUpperCase();
         var userId = privateKey.keys[0].users[0].userId.userid;
         var created = privateKey.keys[0].primaryKey.created;
@@ -385,7 +464,7 @@ $(function () {
         var publicKey = openpgp.key.readArmored(
             $('#pubkeyShow').val()
         );
-        var keyId = '[' + publicKey.keys[0].primaryKey.keyid.toHex().toUpperCase() + ']';
+        var keyId = '[0x' + publicKey.keys[0].primaryKey.keyid.toHex().toUpperCase() + ']';
         var fingerprint = publicKey.keys[0].primaryKey.fingerprint.toUpperCase();
         var userId = publicKey.keys[0].users[0].userId.userid;
         var created = publicKey.keys[0].primaryKey.created;
@@ -414,11 +493,11 @@ $(function () {
 
         console.log("publicKey.keys[0].getPrimaryUser().selfCertificate.keyNeverExpires :");
         console.log(publicKey.keys[0].getPrimaryUser().selfCertificate.keyNeverExpires);
-        //
-        var exp = new Date(
-            publicKey.keys[0].primaryKey.created.getTime()
-            + (publicKey.keys[0].getPrimaryUser().selfCertificate.keyExpirationTime * 1000)
-        );
+
+        // var exp = new Date(
+        //     publicKey.keys[0].primaryKey.created.getTime()
+        //     + (publicKey.keys[0].getPrimaryUser().selfCertificate.keyExpirationTime * 1000)
+        // );
 
         //
         /**
@@ -426,7 +505,7 @@ $(function () {
          * .getExpirationTime() returns the expiration time of the primary key or null if key does not expire
          * @return {Date|null}
          */
-        exp = publicKey.keys[0].getExpirationTime(); // <<< ---- use this
+        var exp = publicKey.keys[0].getExpirationTime(); // <<< ---- use this
         //
         //
 
@@ -448,98 +527,41 @@ $(function () {
         $("#bitsSize").text(bitsSize);
     });
 
-    // Read Public key data with Kbpgp
-    // $("#readPublicKeyDataKbpgp").click(function () {
-    //
-    //     // var alice_pgp_key = "-----BEGIN PGP PUBLIC ... etc.";
-    //     //
-    //     // kbpgp.KeyManager.import_from_armored_pgp({
-    //     //     armored: alice_pgp_key
-    //     // }, function(err, alice) {
-    //     //     if (!err) {
-    //     //         console.log("alice is loaded");
-    //     //     }
-    //     // });
-    //
-    //     var publicKeyArmored = $('#pubkeyShow').val();
-    //     var key;
-    //     kbpgp.KeyManager.import_from_armored_pgp({
-    //         armored: publicKeyArmored
-    //     }, function (err, keyImported) {
-    //         if (!err) {
-    //             console.log("key is loaded:");
-    //             console.log(keyImported);
-    //             key = keyImported;
-    //         }
-    //     });
-    //
-    //     var fingerprint = key.get_pgp_fingerprint().toString('hex').toUpperCase();
-    //     var userEmail = key.pgp.userids[0].components.email;
-    //     var userName = key.pgp.userids[0].components.username;
-    //     var userId = userName + " <" + userEmail + ">";
-    //     //
-    //     var created = new Date(key.primary.lifespan.generated * 1000);
-    //
-    //     //
-    //     /*
-    //      // OpenPGP.js:
-    //      var exp = new Date(
-    //      publicKey.keys[0].primaryKey.created.getTime()
-    //      + (publicKey.keys[0].getPrimaryUser().selfCertificate.keyExpirationTime * 1000)
-    //      );
-    //      */
-    //
-    //     /*
-    //     var exp = new Date(
-    //         key.primary.lifespan.generated * 1000
-    //         + key.primary.lifespan.expire_in * 1000
-    //     ); // possible bug, see: https://github.com/keybase/kbpgp/issues/75*/
-    //
-    //     console.log("key.primary.lifespan: ");
-    //     console.log(key.primary.lifespan);
-    //     var exp = new Date(
-    //         (key.primary.lifespan.generated + key.primary.lifespan.expire_in) * 1000
-    //     ); // possible bug, see: https://github.com/keybase/kbpgp/issues/75
-    //
-    //     console.log(fingerprint);
-    //     console.log(userId);
-    //     console.log(created);
-    //     console.log(exp);
-    //
-    //     $("#fingerprint").text(fingerprint);
-    //     $("#userId").text(userId);
-    //     $("#created").text(created);
-    //     $("#exp").text(exp);
-    // });
 
     $('#signMessage').click(function (event) {
 
-        $("#signMessageError").text("");
+        $("#signOrEncryptMessageError").text("");
 
         var messageToSign = $("#messageText").val();
-        var privateKeyArmored = $("#privkeyShow").val();
-        var passphrase = $("#passphrase").val();
-
         if (messageToSign.toString().length === 0) {
-            $("#signMessageError").text("Message to sign is empty").css('color', 'red');
+            $("#signOrEncryptMessageError").text("Message to sign is empty").css('color', 'red');
+            return;
         }
+
+        var privateKeyArmored = $("#privkeyShow").val();
         if (privateKeyArmored.toString().length === 0) {
-            $("#signMessageError").text("Private key is empty").css('color', 'red');
+            $("#signOrEncryptMessageError").text("Private key is empty").css('color', 'red');
+            return;
         }
+
+        var passphrase = $("#passphrase").val();
         if (passphrase.toString().length === 0) {
-            $("#signMessageError").text("Password for private key is empty").css('color', 'red');
+            $("#signOrEncryptMessageError").text("Password for private key is empty").css('color', 'red');
+            return;
         }
+
         var privateKeyEncrypted;
         try {
             privateKeyEncrypted = openpgp.key.readArmored(privateKeyArmored).keys[0];
             if (typeof privateKeyEncrypted === 'undefined' || privateKeyEncrypted === null) {
-                $("#signMessageError").text("Private key is invalid").css('color', 'red');
+                $("#signOrEncryptMessageError").text("Private key is invalid").css('color', 'red');
                 return;
             }
             privateKeyEncrypted.decrypt(passphrase); // boolean
         } catch (error) {
+            console.log("sign message error:");
             console.log(error);
-            $("#signMessageError").text(error).css('color', 'red');
+            $("#signOrEncryptMessageError").text(error).css('color', 'red');
         }
 
         var privateKeyDecrypted = privateKeyEncrypted;
@@ -552,14 +574,20 @@ $(function () {
         var signedMessageObj = {};
         // see: https://openpgpjs.org/openpgpjs/doc/openpgp.js.html#line285
         // https://openpgpjs.org/openpgpjs/doc/module-openpgp.html
-        openpgp.sign(signObj).then(function (res) { //
-            // @return {Promise<String|CleartextMessage>} ASCII armored message or the message of type CleartextMessage
-            signedMessageObj = res;
-            console.log(JSON.stringify(signedMessageObj));
-            console.log(signedMessageObj.data);
-            $("#signedMessage").val(signedMessageObj.data);
-            // document.getElementById("signedMessage").value = signedMessageObj.data;
-        });
+        openpgp.sign(signObj)
+            .then(function (res) { //
+                // @return {Promise<String|CleartextMessage>} ASCII armored message or the message of type CleartextMessage
+                signedMessageObj = res;
+                console.log(JSON.stringify(signedMessageObj));
+                console.log(signedMessageObj.data);
+                $("#signedMessage").val(signedMessageObj.data);
+                // document.getElementById("signedMessage").value = signedMessageObj.data;
+            })
+            .catch(function (error) {
+                console.log("sign message error:");
+                console.log(error);
+                ("#signOrEncryptMessageError").text(error).css('color', 'red');
+            });
     });
 
     /* https://codepen.io/shaikmaqsood/pen/XmydxJ/ */

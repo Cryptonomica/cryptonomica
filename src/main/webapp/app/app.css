@@ -1,93 +1,91 @@
-/* useful links:
+/* this file should be placed in index.html after all other css  */
 
-https://color.adobe.com
-*/
-
-h5 {
-    font-size: medium;
-    /*font-weight: normal;*/
-    /*text-transform: none;*/
+.line {
+    border-bottom: dotted 2px #eeeeee;
+    padding-bottom: 0.5em;
+    margin-bottom: 0.5em;
 }
 
-.btn {
-    padding: 0.5em;
-    font-weight: bold !important;
-    font-stretch: condensed !important;
-    font-size: medium !important;
-}
+/* -- modify theme */
 
-.navigationMenu {
-    letter-spacing: normal !important;
-}
-
-/*Buttons
-see: https://codepen.io/davidelrizzo/pen/vEYvyv
-see also: https://developers.google.com/identity/sign-in/web/build-button
-*/
-#mainNav .navbar-collapse .navbar-nav > .nav-item > .nav-link {
-    padding: 0.3em;
-    padding-left: 1em;
-    padding-right: 1em;
-    color: white;
-}
-
-.loginBtn {
-    display: list-item;
-    box-sizing: border-box;
-    /*position: relative;*/
-    /*width: 5em;*/
-    height: unset;
-    margin: 0.2em;
-    padding: 2px !important;
-    /*padding-top: 2px !important;*/
-    border: none;
-    /*text-align: left;*/
-    /*line-height: 34px;*/
-    white-space: nowrap;
-    border-radius: 0.2em;
-    /*font-size: 16px;*/
-    color: #FFF;
-}
-
-/*.loginBtn:before {*/
-/*content: "";*/
-/*box-sizing: border-box;*/
-/*position: absolute;*/
-/*top: 0;*/
-/*left: 0;*/
-/*width: 34px;*/
-/*height: 100%;*/
+/*.segments {*/
+/*background-color: white;*/
 /*}*/
 
-.loginBtn:focus {
-    outline: none;
+.mainWrap {
+    background: rgba(237, 237, 237, 0.5);
 }
 
-.loginBtn:active {
-    box-shadow: inset 0 0 0 32px rgba(0, 0, 0, 0.1);
+#footer {
+    background-color: rgba(222, 222, 222, 1.0);
 }
 
-/* Google */
-.loginBtn--google {
-    font-family: "Roboto", Roboto, arial, sans-serif;
-    background: #DD4B39;
+.ui .form {
+    font-size: 1em;
 }
 
-.loginBtn--google:before {
-    border-right: #BB3F30 1px solid;
-    /*background: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/14082/icon_google.png') 6px 6px no-repeat;*/
+.ui .button {
+    font-size: 1em;
 }
 
-.loginBtn--google:hover,
-.loginBtn--google:focus {
-    background: #E74B37;
-    color: rgb(200, 200, 200) !important;
+.ui.modal {
+    font-size: 1.1em;
 }
 
-/* ------- */
+ui. .message {
+    margin-bottom: 0em;
+}
 
-footer {
-    background-color: #dddddd;
+.ui.modal .actions .button {
+    font-size: 1em;
+}
+
+#alertDanger, #alertWarning, #alertInfo, #alertSuccess, #alertMessage {
+    margin-bottom: 0em;
+}
+
+.ui.menu {
+    font-size: 1em;
+}
+
+.ui.segments .segment, .ui.segment {
+    /* font-size: 1rem; */
+    font-size: 1.1em;
+}
+
+.ui.inverted.menu .item {
+    padding-bottom: 1.37em;
+    /*background: #4c4b50;*/
+}
+
+.ui.inverted.menu .active.item {
+
+    color: #60c8fa !important;
+
+    /*color: #67febb !important;*/
+    /*color: #85f9fa !important;*/
+    /*color: #00ffff !important;*/
+    /*color: #39ff14 !important;*/
+}
+
+.ui.inverted.menu .item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    /*color: rgba(169, 253, 255, 0.99) !important;*/
+    /*color: rgba(169, 253, 255, 0.99) !important;*/
+    /*color: purple !important;*/
+    /*color: purple !important;*/
+    color: #60c8fa !important;
+    /*color: rgb(236, 115, 255) !important;*/
+}
+
+/*.ui.header:hover {
+    color: #60c8fa !important;
+}*/
+
+/* ----------------------------  */
+textarea {
+    font-family: monospace;
+
 }
 
 /* http://stackoverflow.com/a/36426886/1697878 */
@@ -98,56 +96,8 @@ No js needed */
     text-transform: capitalize;
 }
 
-.textareaWithKey {
-    font-family: monospace;
-    font-size: 75%;
-}
-
-.logo-background {
-    /*background-image: url("images/logo.004.crop.gray.svg");*/
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-.whitelink {
-    color: white !important;
-}
-
-/* Links */
-
-a,
-a:visited,
-a:focus,
-a:hover {
-    color: #770077;
-}
-
-a:hover {
-    /* glow effect on hover */
-    color: white;
-    /*font-weight: bold;*/
-    background-color: #550055;
-    /*text-shadow: -1px 1px 20px #ffffff, 1px -1px 20px #ae4dff;*/
-}
-
-/*----- Icons ------------- */
-
-.fa-key {
-    /*color: orangered;*/
-    /*color: orange;*/
-    font-size: 1.3em;
-}
-
-.false {
-    border-color: red;
-    border-style: solid;
-    border-width: medium;
-}
-
-.true {
-    border-color: green;
-    border-style: solid;
-    border-width: medium;
+.textAreaWithKey {
+    font-size: 75% !important;
 }
 
 .keyverified {
@@ -173,51 +123,26 @@ a:hover {
     margin-bottom: 0.5em !important;
 }
 
-.text-align-center {
-    text-align: center;
+/* ----------------------------  */
+
+::selection {
+    /*background-color: #CCE2FF;*/
+    background-color: rgba(133, 59, 255, 0.67);
+    color: rgba(0, 0, 0, 0.87);
 }
 
-.text-align-left {
-    text-align: left;
+a .socialLogo {
+    font-size: 1.4em;
+    color: #9c9c9c !important;
+    /*color: black !important;*/
 }
 
-.text-align-right {
-    text-align: right;
+a .socialLogo:hover {
+    /*color: white !important;*/
+    color: #60c8fa !important;
 }
 
-.text-bold {
-    font-weight: bolder;
-}
-
-.onHoverRed:hover {
-    color: red;
-}
-
-.onHoverPurple:hover {
-    color: purple;
-}
-
-.teamMemberCard {
-    width: 199px;
-    margin: 0.5em;
-}
-
-img.teamMemberPhoto {
-    height: 199px;
-}
-
-img.teamMemberPhoto:hover {
-    /* */
-}
-
-.useCaseCard {
-    width: 500px;
-    margin: 0.5em;
-}
-
-img.useCasePhoto {
-    height: 300px;
-}
+/* ----------------------------  */
 
 /* for video recording: */
 
@@ -256,11 +181,3 @@ img.useCasePhoto {
     /*padding: 0.5em;*/
 }
 
-a.imageLink {
-
-}
-
-/* landing page top menu: */
-.fixed-top {
-    position: unset;
-}

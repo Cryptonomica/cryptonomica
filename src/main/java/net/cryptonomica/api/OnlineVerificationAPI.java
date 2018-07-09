@@ -362,6 +362,7 @@ public class OnlineVerificationAPI {
         LOG.warning(GSON.toJson(phoneVerification));
 
         /* --- Send SMS */
+        // via:
         Message message = TwilioUtils.sendSms(phoneNumber, smsMessage);
         LOG.warning(message.toJSON());
 

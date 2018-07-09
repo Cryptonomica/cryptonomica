@@ -1,0 +1,322 @@
+<header-main-menu></header-main-menu>
+<navigation-menu></navigation-menu>
+
+<div class="card">
+
+    <div class="card-block">
+
+        <!-- alerts -->
+        <!-- http://www.quackit.com/bootstrap/bootstrap_4/tutorial/bootstrap_alerts.cfm -->
+        <div ng-show="currentUser.registeredCryptonomicaUser" class="alert alert-warning alert-dismissible"
+             role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                    aria-hidden="true">×</span></button>
+            <!--{{alert}}-->
+            You are already registered. You can upload/change your photo or upload new public key.
+        </div>
+        <!-- alerts on top -->
+        <div ng-show="resp.error.message" class="alert alert-danger alert-dismissible" role="alert">
+            {{resp.error.message}}
+        </div>
+        <div ng-show="resp.messageToUser" class="alert alert-success alert-dismissible" role="alert">
+            {{resp.messageToUser}}
+        </div>
+
+        <!--  Image upload START -->
+
+        <img ng-src="{{userCurrentImageLink || 'https://placehold.it/100x100?text=No+Image+Uploaded'}}"
+             style="height: 200px"
+             class="img-thumbnail"
+             title="Your current photo">
+
+        <!--  -->
+        <div ng-show="currentUser.registeredCryptonomicaUser">
+
+            <form>
+                <fieldset class="form-group">
+                    <legend>Upload/change you photo (with recognizable face)</legend>
+                    <!--<input type="file" id="file1" multiple="">-->
+                    <!-- https://jsfiddle.net/jasny/vtGxm/ -->
+                    <!--<div class="fileinput fileinput-new" data-provides="fileinput">-->
+                    <div
+                            role="button"
+                            type="button"
+                            title="Choose image file (PNG, JPEG, GIF, TIFF, or BMP)"
+                            class="btn btn-secondary">
+                        <input type="file" id="file1">
+                    </div>
+                </fieldset>
+                <fieldset class="form-group">
+                    <button ng-click="uploadPic()" role="button" type="button" class="btn btn-secondary">Upload
+                        photo
+                    </button>
+                    <br>
+                    <button
+                            ng-click="refreshPhoto()"
+                            role="button"
+                            type="button"
+                            title="It may take several seconds to update photo in database"
+                            class="btn btn-secondary">
+                        Then Refresh
+                    </button>
+                </fieldset>
+            </form>
+
+        </div>
+
+    </div>
+    <!--  Image upload END -->
+    <hr>
+
+    <!-- First key upload form BEGIN -->
+    <div class="card-block" id="firstKeyUpload" ng-show="!currentUser.registeredCryptonomicaUser">
+        <form>
+            <fieldset class="form-group">
+                <legend>For registration upload your
+                    <a href="https://github.com/Cryptonomica/cryptonomica/wiki/Public-PGP-Key">public OpenPGP
+                        key</a>
+                    and some info about you
+                </legend>
+                <p>Key should have first name, last name (in English, exactly as in your passport) and e-mail (the
+                    same as in account) in "user id"</p>
+                <p>Key Strength: min 2,048 bits; valid not longer that 2 years;</p>
+
+                <label> Your ASCII-armored
+                    <a href="https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/4/html/Step_by_Step_Guide/s1-gnupg-export.html"
+                       target="_blank">
+                        OpenPGP public key
+                    </a> (required):
+                    <br>
+                    <input type="file" on-read-file="readFileContent($fileContent)"/>
+
+                    <p>
+
+                        <!--<textarea class="form-control col-xs-9 col-md-9"-->
+                        <textarea rows="5" cols="71"
+                                  class="textareaWithKey form-control"
+                                  ng-model="regForm.armoredPublicPGPkeyBlock"
+                                  required>
+                    </textarea>
+                    </p>
+                </label>
+                <br>
+                <label>
+                    Your Birthdate (required):
+                    <p>
+                        <input
+                                class="form-control col-xs-9 col-md-9"
+                                ui-date="dateOptions"
+                                ng-model="regForm.birthday">
+                    </p>
+                </label>
+                <br>
+                <label>
+                    Info about you (optional):
+                    <p>
+                        <textarea
+                                class="form-control col-xs-9 col-md-9"
+                                ng-model="regForm.userInfo">
+                        </textarea>
+                    </p>
+                </label>
+                <br>
+            </fieldset>
+            <button
+                    class="btn btn-secondary"
+                    role="button"
+                    id="registerNewUserBtn"
+                    ng-click="registerNewUser()">
+                Send your data
+            </button>
+        </form>
+    </div>
+    <!-- First key upload form END -->
+
+    <div id="showUserKeys">
+        <!-- TODO: show user keys-->
+    </div>
+
+    <!-- Key upload BEGIN -->
+    <div class="card-block" id="keyUpload">
+        <form ng-show="currentUser.registeredCryptonomicaUser">
+            <fieldset class="form-group">
+                <legend>Upload your new
+                    <a href="https://github.com/Cryptonomica/cryptonomica/wiki/Public-PGP-Key">public OpenPGP
+                        key</a>
+                </legend>
+                <p>Key should have first name, last name (in English, exactly as in your passport) and e-mail (the
+                    same as in account) in "user id"</p>
+                <p>Key Strength: min 2,048 bits; valid not longer that 2 years;</p>
+                <p>
+                    <b>
+                        For key generation use
+                        <a href="https://github.com/Cryptonomica/arbitration-rules/blob/master/Arbitration_Rules/IACC/web-site/list.of.recommended.OpenPGP.software.md"
+                           target="_blank">recommended software</a>
+                        or our
+                        <a href="" target="_blank" ui-sref="openPGPOnline">OpenPGP online</a> service.
+                    </b>
+                </p>
+
+                <label> Your ASCII-armored
+                    <a href="https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/4/html/Step_by_Step_Guide/s1-gnupg-export.html"
+                       target="_blank">
+                        OpenPGP public key
+                    </a> (required)<br>
+                    (please, paste your key in the form below or upload key file):
+                    <!--<p>-->
+                    <br>
+                    <input type="file" on-read-file="readFileContent($fileContent)"/>
+                    <!--<textarea class="form-control col-xs-9 col-md-9"-->
+                    <textarea rows="5" cols="71"
+                              class="textareaWithKey form-control"
+                              ng-model="pgpPublicKeyUploadForm.asciiArmored"
+                              required>
+                    </textarea>
+                    <!--</p>-->
+                </label>
+                <br>
+            </fieldset>
+
+            <div id="asciiArmoredKeyError"
+                 ng-show="asciiArmoredKeyError"
+                 class="alert alert-danger alert-dismissible"
+                 role="alert">
+                <!--<button type="button" class="close" data-dismiss="alert">-->
+                <!--<span ng-click="asciiArmoredKeyError=null">&times;</span>-->
+                <!--</button>-->
+                {{asciiArmoredKeyError}}
+            </div>
+
+            <button
+                    class="btn btn-secondary"
+                    role="button"
+                    id="keyUploadBtn"
+                    ng-click="keyUploadFn()">
+                Upload new key
+            </button>
+        </form>
+
+    </div>
+    <!-- Key upload END -->
+
+</div>
+<!-- alerts on bottom -->
+<div ng-show="resp.error.message"
+     class="alert alert-danger alert-dismissible"
+     role="alert">
+    <button type="button" class="close" data-dismiss="alert">
+        <span ng-click="resp.error.message=null">&times;</span>
+    </button>
+    {{resp.error.message}}
+</div>
+<div ng-show="resp.messageToUser"
+     class="alert alert-success alert-dismissible"
+     role="alert">
+    <button type="button" class="close" data-dismiss="alert">
+        <span ng-click="resp.messageToUser=null">&times;</span>
+    </button>
+    {{resp.messageToUser}}
+</div>
+<!-- ~~~~~~~~~~~~~~~~~~~~~~ -->
+<div class="card" ng-show="resp">
+    <div class="card-block">
+        <table class="table table-bordered" ng-show="resp.userProfileGeneralView">
+            <!-- for Bootstrap 4 table see:
+            http://www.quackit.com/bootstrap/bootstrap_4/tutorial/bootstrap_tables.cfm -->
+            <tbody>
+            <!---->
+            <tr>
+                <td>First Name</td>
+                <td>{{resp.userProfileGeneralView.firstName}}</td>
+            </tr>
+            <tr>
+                <td>Last Name</td>
+                <td>{{resp.userProfileGeneralView.lastName}}</td>
+            </tr>
+            <tr>
+                <td>Bitrhdate</td>
+                <td>{{resp.userProfileGeneralView.birthday}}</td>
+            </tr>
+            <tr>
+                <td>E-mail in the key</td>
+                <td>{{resp.pgpPublicKeyGeneralView.userEmail}}</td>
+            </tr>
+            <tr>
+                <td>User e-mail</td>
+                <td>{{resp.userProfileGeneralView.email}}</td>
+            </tr>
+            <tr>
+                <td>Key ID</td>
+                <!--<td>{{resp.pgpPublicKeyGeneralView.keyID}}</td>-->
+                <td>
+                    <a href=""
+                       title="Show key info"
+                       ui-sref="key({fingerprint:resp.pgpPublicKeyGeneralView.fingerprint})">
+                        {{resp.pgpPublicKeyGeneralView.keyID}}
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>Key fingerprint</td>
+                <td>{{resp.pgpPublicKeyGeneralView.fingerprint}}</td>
+            </tr>
+            <tr>
+                <td>Key created</td>
+                <td>{{resp.pgpPublicKeyGeneralView.created}}</td>
+            </tr>
+            <tr>
+                <td>Key valid until</td>
+                <td>{{resp.pgpPublicKeyGeneralView.exp}}</td>
+            </tr>
+            <tr>
+                <td>Key bit strength</td>
+                <td>{{resp.pgpPublicKeyGeneralView.bitStrength}}</td>
+            </tr>
+            <tr>
+                <td>User info</td>
+                <td>{{resp.userProfileGeneralView.userInfo}}</td>
+            </tr>
+            </tbody>
+        </table>
+        <div ng-show="resp.loginView">
+            <hr>
+            <h4>Your last login info:</h4>
+            <table class="table table-bordered" ng-show="resp.loginView">
+                <!-- for Bootstrap 4 table see:
+                http://www.quackit.com/bootstrap/bootstrap_4/tutorial/bootstrap_tables.cfm -->
+                <tbody>
+                <tr>
+                    <td>IP</td>
+                    <td>{{resp.loginView.ip}}</td>
+                </tr>
+                <tr>
+                    <td>Internet provider</td>
+                    <td>{{resp.loginView.provider}}</td>
+                </tr>
+                <tr>
+                    <td>Country</td>
+                    <td>{{resp.loginView.country}}</td>
+                </tr>
+                <tr>
+                    <td>Your OS</td>
+                    <td>{{resp.loginView.userOS}}</td>
+                </tr>
+                <tr>
+                    <td>Hostname</td>
+                    <td>{{resp.loginView.hostname}}</td>
+                </tr>
+                <tr>
+                    <td>Browser</td>
+                    <td>{{resp.loginView.userBrowser}}</td>
+                </tr>
+                <tr>
+                    <td>Login Date</td>
+                    <td>{{resp.loginView.loginDate}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+<footer-main></footer-main>

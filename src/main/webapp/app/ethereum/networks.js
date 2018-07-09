@@ -3,7 +3,7 @@
 // example from:
 // https://github.com/trufflesuite/truffle-artifactor#artifactorgenerateoptions-networks
 
-const networks = {
+var networks = {
     "1": {        // Main network
         "networkName": "Main Ethereum Network",
         "address": undefined, // contract address

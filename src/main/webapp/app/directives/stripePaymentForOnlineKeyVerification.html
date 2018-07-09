@@ -1,139 +1,162 @@
-<div class="container">
+<div id="stripePaymentsForm">
+
     <!-- Alerts: -->
 
-    <div ng-show="paymentError"
-         class="alert alert-danger alert-dismissible"
-         role="alert">
-        <button type="button" class="close" data-dismiss="alert"><span
-                aria-hidden="true">×</span></button>
-        {{paymentError.message}}
+    <div id="alertDanger" ng-show="paymentError" class="ui negative message">
+        <i class="close icon" ng-click="paymentError=null"></i>
+        <div class="header">Error:</div>
+        <p>{{paymentError.message}}</p>
     </div>
 
-    <div ng-show="paymentResponse"
-         class="alert alert-success alert-dismissible"
-         role="alert">
-        <button type="button" class="close" data-dismiss="alert"><span
-                aria-hidden="true">×</span></button>
-        {{paymentResponse.messageToUser}}
+    <div id="alertSuccess" ng-show="paymentResponse" class="ui positive message">
+        <i class="close icon" ng-click="paymentResponse=null"></i>
+        <div class="header">Success:</div>
+        <p>{{paymentResponse.messageToUser}}</p>
     </div>
 
-    <div class="card">
+    <!-- Card -->
 
-        <div class="card-header">
-            <center>
-                <h5>Payment</h5>
-            </center>
+    <center>
+        <h2>Payment</h2>
+        <h4>
+            We accept Visa, Mastercard and American Express payments from customers worldwide.
+            Payment service provided by <a href="https://stripe.com" target="_blank">Stripe</a>.
+            We do not store your credit card number, exp date or CVC
+        </h4>
+
+    </center>
+
+    <form id="payment-form" class="ui form">
+
+        <div class="field">
+
+            <label>Name:</label>
+
+            <div class="two fields">
+                <div class="field">
+                    <input name="firstName" ng-model="stripePaymentForm.cardHolderFirstName"
+                           placeholder="First Name" type="text"
+                           autocomplete='cc-given-name'>
+                </div>
+                <div class="field">
+                    <input name="lastName" ng-model="stripePaymentForm.cardHolderLastName" placeholder="Last Name"
+                           type="text" autocomplete='cc-family-name'>
+                </div>
+            </div>
+
         </div>
 
-        <div class="card-block">
+        <div class="fields">
 
-            <form id="payment-form">
+            <div class="seven wide field">
+                <label>Card Number:</label>
+                <!-- Payment card numbers can be up to 19 digits -->
+                <!-- https://en.wikipedia.org/wiki/Payment_card_number -->
+                <input name="cardNumber" ng-model="stripePaymentForm.cardNumber"
+                       maxlength="19" placeholder="Card #" type="text" autocomplete='cc-number'>
+            </div>
+            <div class="three wide field">
+                <label>CVC</label>
+                <input name="cardCVC" placeholder="CVC" type="text" size="3" maxlength="3"
+                       ng-model="stripePaymentForm.cardCVC"
+                       autocomplete='cc-csc'>
+            </div>
 
-                <div class="form-row">
-                    <legend>
-                        <span>First name on card:</span>
-                        <input type="text" size="30" ng-model="stripePaymentForm.cardHolderFirstName"
-                               autocomplete='cc-given-name'>
-                    </legend>
-                </div>
+            <div class="six wide field">
+                <label>Expiration</label>
+                <div class="two fields">
 
-                <div class="form-row">
-                    <legend>
-                        <span>Last name on card:</span>
-                        <input type="text" size="30" ng-model="stripePaymentForm.cardHolderLastName"
-                               autocomplete='cc-family-name'>
-                    </legend>
-                </div>
-
-                <div class="form-row">
-                    <legend>
-                        <span>Card Number:</span>
-                        <!-- Payment card numbers can be up to 19 digits -->
-                        <!-- https://en.wikipedia.org/wiki/Payment_card_number -->
-                        <input type="text" size="19" maxlength="19" ng-model="stripePaymentForm.cardNumber"
-                               autocomplete='cc-number'>
-                    </legend>
-                </div>
-
-                <div class="form-row">
-                    <legend>
-                        <span>Expiration (MM/YY)</span>
-                        <input type="text" size="2" maxlength="2" ng-model="stripePaymentForm.cardExpMonth"
-                               autocomplete='cc-exp-month'>
-                        <span> / </span>
-                        <input type="text" size="2" maxlength="2" ng-model="stripePaymentForm.cardExpYear"
-                               autocomplete='cc-exp-year'>
-                    </legend>
-                </div>
-
-                <div class="form-row">
-                    <legend>
-                        <span>CVC:</span>
-                        <input type="text" size="3" maxlength="3" ng-model="stripePaymentForm.cardCVC"
-                               autocomplete='cc-csc'>
-                    </legend>
-                </div>
-
-                <div class="form-row">
-                    <legend>
-                        <span>price:</span>
-                        <input type="text" size="3" ng-model="priceForKeyVerification" disabled>
-                        <!--<span>USD</span>-->
-                        <span>EUR</span>
-                    </legend>
-                </div>
-
-                <!-- Promo Code -->
-                <div id="promoCodeSection">
-                    <div class="form-row">
-                        <legend>
-                            <span>promo code (case sensitive):</span>
-                            <input type="text" size="11" ng-model="promoCode">
-
-                            <button id="applyPromoCode"
-                                    class="submit btn btn-secondary"
-                                    ng-class="{disabled: getPriceForKeyVerificationIsWorking}"
-                                    ng-click="getPriceForKeyVerification()"
-                                    role="button"
-                                    type="button">
-                                Apply Promo Code
-                                <span ng-show="getPriceForKeyVerificationIsWorking" title="working...">
-                                <br>
-                                <i class="fa fa-refresh fa-spin fa-fw"></i>
-                            </span>
-                            </button>
-                        </legend>
-                    </div>
-                </div>
-
-                <center>
-                    <div>
-                        <small id="paymentHelp"
-                               class="form-text text-muted">
-                            Payment service provided by <a href="https://stripe.com" target="_blank">Stripe</a>.
-                            We do not store your credit card number, exp date or CVC
-                        </small>
-                        <br>
+                    <div class="field">
+                        <select class="ui fluid search dropdown" name="cardExpMonth"
+                                ng-model="stripePaymentForm.cardExpMonth" type="text">
+                            <option value="">Month</option>
+                            <option value="01">January</option>
+                            <option value="02">February</option>
+                            <option value="03">March</option>
+                            <option value="04">April</option>
+                            <option value="05">May</option>
+                            <option value="06">June</option>
+                            <option value="07">July</option>
+                            <option value="08">August</option>
+                            <option value="09">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
                     </div>
 
+                    <!--<div class="field">-->
+                        <!--<input name="cardExpYear" placeholder="Year: last two digits" type="text" size="2" maxlength="2"-->
+                               <!--ng-model="stripePaymentForm.cardExpYear"-->
+                               <!--autocomplete='cc-exp-year'>-->
+                    <!--</div>-->
+
+                    <div class="field">
+                        <select class="ui fluid search dropdown" name="cardExpYear"
+                                nng-model="stripePaymentForm.cardExpYear" type="text">
+                            <option value="">Year</option>
+                            <option value="18">2018</option>
+                            <option value="19">2019</option>
+                            <option value="20">2020</option>
+                            <option value="21">2021</option>
+                            <option value="22">2022</option>
+                            <option value="23">2023</option>
+                            <option value="24">2024</option>
+                            <option value="25">2025</option>
+                            <option value="26">2026</option>
+                            <option value="27">2027</option>
+                            <option value="28">2028</option>
+                            <option value="29">2029</option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="two fields">
+
+                <!--<div class="field">-->
+                <!--<label>Price:&nbsp;EUR&nbsp;{{priceForKeyVerification}}&nbsp;</label>-->
+                <!--&lt;!&ndash;<input type="text" size="3" ng-model="priceForKeyVerification" disabled>&ndash;&gt;-->
+                <!--</div>-->
+
+
+                <div class="field">
+                    <label>Promotional code (if applicable):</label>
+                    <input type="text" size="11" ng-model="promoCode" placeholder="case sensitive">
+                    <button id="applyPromoCode"
+                            ng-class="{disabled: getPriceForKeyVerificationIsWorking}"
+                            ng-click="getPriceForKeyVerification()"
+                            class="ui small button">
+                        Apply Promo Code
+                        <span ng-show="getPriceForKeyVerificationIsWorking" title="working...">
+                        <br> <i class="fa fa-refresh fa-spin fa-fw"></i>
+                    </span>
+                    </button>
+                </div>
+
+                <div class="field">
+                    <label>Price:&nbsp;EUR&nbsp;{{priceForKeyVerification}}&nbsp;</label>
                     <button id="submitPayment"
-                            class="submit btn btn-secondary"
                             ng-class="{disabled: submitPaymentWorking}"
                             ng-click="submitPayment()"
-                            role="button"
-                            type="button">
+                            class="ui positive button" type="submit">
                         Submit Payment
                         <span ng-show="submitPaymentWorking" title="working...">
                         <br><i class="fa fa-refresh fa-spin fa-fw"></i>
                     </span>
                     </button>
+                </div>
 
-                </center>
-            </form>
+            </div>
         </div>
 
-    </div>
-    <button name="button" class="btn btn-secondary" role="button" ng-click="getOnlineVerification()">
+
+    </form>
+    <hr>
+    <button name="button" class="ui positive button" ng-click="getOnlineVerification()">
         Next Step >>>
     </button>
     <br><br>

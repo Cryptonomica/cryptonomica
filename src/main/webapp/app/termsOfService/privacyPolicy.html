@@ -1,11 +1,56 @@
-<div class="container-fluid">
-    <header-main-menu></header-main-menu>
-    <navigation-menu></navigation-menu>
+<div id="contextWrap">
 
-    <div class="card card-block">
+    <!-- left sidebar-->
+    <left-sidebar></left-sidebar>
 
-        <md ng-include="'/app/termsOfService/PrivacyPolicy.md'"></md>
+    <!--right sidebar-->
+    <right-sidebar></right-sidebar>
+
+    <div class="pusher">
+
+        <!--topHeaderMenu -->
+        <top-header-menu></top-header-menu>
+
+        <!--maincontent-->
+        <div class="mainWrap navslide">
+
+            <div class="ui equal width left aligned padded grid stackable">
+                <!--Site Content-->
+                <div class="stretched row">
+
+                    <div class="column">
+
+                        <div class="ui segments">
+
+                            <div class="ui segment">
+                                <div class="ui breadcrumb">
+                                    <a class="section">Home</a>
+                                    <i class="right angle icon divider"></i>
+                                    <a class="active section">Privacy Policy</a>
+                                    <!--<i class="right angle icon divider"></i>-->
+                                    <!--<div class="active section">T-Shirt</div>-->
+                                </div>
+                            </div>
+
+                            <div class="ui segment">
+                                <md ng-include="'/app/termsOfService/PrivacyPolicy.md'"></md>
+                                <br>
+                            </div>
+
+
+                        </div>
+                        <!-- FOOTER -->
+                        <footer-main></footer-main>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
 
     </div>
+
 </div>
-<footer-main></footer-main>
+

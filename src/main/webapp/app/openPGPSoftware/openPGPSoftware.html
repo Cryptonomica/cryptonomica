@@ -1,0 +1,58 @@
+<div id="contextWrap">
+
+    <!-- left sidebar-->
+    <left-sidebar></left-sidebar>
+
+    <!--right sidebar-->
+    <right-sidebar></right-sidebar>
+
+    <div class="pusher">
+
+        <!--topHeaderMenu -->
+        <top-header-menu></top-header-menu>
+
+        <!--maincontent-->
+        <div class="mainWrap navslide">
+
+            <div class="ui equal width left aligned padded grid stackable">
+                <!--Site Content-->
+                <div class="stretched row">
+
+                    <div class="column">
+
+                        <div class="ui segments">
+
+                            <div class="ui segment">
+                                <div class="ui breadcrumb">
+                                    <a class="section">Home</a>
+                                    <i class="right angle icon divider"></i>
+                                    <a class="active section" href="" ui-sref-active="active" ui-sref="openPGPOnline">OpenPGP
+                                        Online</a>
+                                    <i class="right angle icon divider"></i>
+                                    <a class="active section">Recommended OpenPGP software</a>
+                                    <!--<i class="right angle icon divider"></i>-->
+                                </div>
+                            </div>
+
+                            <div class="ui segment">
+                                <md ng-include="'/app/openPGPSoftware/openPGPSoftware.md'"></md>
+                                <br>
+                            </div>
+
+
+                        </div>
+                        <!-- FOOTER -->
+                        <footer-main></footer-main>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+

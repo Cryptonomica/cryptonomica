@@ -123,6 +123,34 @@ public class PGPPublicKeyAPI {
     } // end of getPGPPublicKeyByFingerprint()
 
     @ApiMethod(
+            name = "requestPGPPublicKeyByFingerprint",
+            path = "requestPGPPublicKeyByFingerprint",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    @SuppressWarnings("unused")
+    // get key by by fingerprint
+    public PGPPublicKeyGeneralView requestPGPPublicKeyByFingerprint(
+            final User googleUser,
+            final @Named("fingerprint") String fingerprint
+    ) throws Exception {
+
+        /* Log request: */
+        LOG.warning("Request: @Named(\"fingerprint\") : " + fingerprint);
+
+        /* Check authorization: */
+        UserTools.ensureCryptonomicaRegisteredUser(googleUser);
+
+        // GET Key from DataBase by fingerprint:
+        PGPPublicKeyData pgpPublicKeyData = PGPTools.getPGPPublicKeyDataFromDataBaseByFingerprint(fingerprint);
+
+        // make key representation, return result
+        PGPPublicKeyGeneralView pgpPublicKeyGeneralView = new PGPPublicKeyGeneralView(pgpPublicKeyData);
+
+        return pgpPublicKeyGeneralView;
+
+    } // end of requestPGPPublicKeyByFingerprint()
+
+    @ApiMethod(
             name = "getPGPPublicKeyByFingerprintWithApiKey",
             path = "getPGPPublicKeyByFingerprintWithApiKey",
             httpMethod = ApiMethod.HttpMethod.GET,
@@ -250,8 +278,8 @@ public class PGPPublicKeyAPI {
         if (fingerprint != null) {
             result = ofy().load()
                     .type(PGPPublicKeyData.class)
-                    .filter("fingerprint", fingerprint)
-                    .list();
+                    .filter("fingerprintStr", fingerprint)
+                    .list(); // << only one entity possible in this list
         } else if (keyID != null) {
             result = ofy().load()
                     .type(PGPPublicKeyData.class)
@@ -459,9 +487,34 @@ public class PGPPublicKeyAPI {
         /* --- Check authorization: */
         CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
 
+        /* Create Result Obj */
+
         ListOfPGPPublicKeyGeneralViews result = new ListOfPGPPublicKeyGeneralViews();
 
+        /* Offline Verification */
+
+        // false:
         List<PGPPublicKeyData> pgpPublicKeyDataEntitiesList =
+                ofy()
+                        .load()
+                        .type(PGPPublicKeyData.class)
+                        .filter(
+                                "verified",
+                                false
+                        )
+                        .list();
+        for (PGPPublicKeyData pgpPublicKeyData : pgpPublicKeyDataEntitiesList) {
+
+            if (!pgpPublicKeyData.getVerified()) { // <<< ! verified: false
+                pgpPublicKeyData.setVerifiedOffline(Boolean.FALSE);
+                Key<PGPPublicKeyData> pgpPublicKeyDataKey = ofy().save().entity(pgpPublicKeyData).now();
+                result.addKey(pgpPublicKeyData);
+            }
+
+        }
+
+        // true:
+        pgpPublicKeyDataEntitiesList =
                 ofy()
                         .load()
                         .type(PGPPublicKeyData.class)
@@ -481,6 +534,29 @@ public class PGPPublicKeyAPI {
 
         }
 
+        /* Online Verification : */
+
+        // false:
+        pgpPublicKeyDataEntitiesList =
+                ofy()
+                        .load()
+                        .type(PGPPublicKeyData.class)
+                        .filter(
+                                "onlineVerificationFinished",
+                                false
+                        )
+                        .list();
+        for (PGPPublicKeyData pgpPublicKeyData : pgpPublicKeyDataEntitiesList) {
+
+            if (!pgpPublicKeyData.getOnlineVerificationFinished()) { // ! <<< onlineVerificationFinished: false
+                pgpPublicKeyData.setVerifiedOnline(Boolean.FALSE);
+                Key<PGPPublicKeyData> pgpPublicKeyDataKey = ofy().save().entity(pgpPublicKeyData).now();
+                result.addKey(pgpPublicKeyData);
+            }
+
+        }
+
+        // true:
         pgpPublicKeyDataEntitiesList =
                 ofy()
                         .load()

@@ -1,0 +1,176 @@
+<script src="https://cdn.webrtc-experiment.com/MediaStreamRecorder.js"></script>
+
+<header-main-menu></header-main-menu>
+<navigation-menu></navigation-menu>
+
+<!-- Alerts -->
+<div id="alerts">
+
+    <alerts></alerts>
+
+    <!-- Errors from server -->
+    <div id="errorMessage" ng-show="error.message" class="alert alert-danger alert-dismissible" role="alert">
+        {{error.message}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                aria-hidden="true">×</span></button>
+    </div>
+    <!-- Auth error -->
+    <div id="authError" ng-hide="currentUser.registeredCryptonomicaUser" class="alert alert-danger alert-dismissible"
+         role="alert">
+        User not registered or not logged in
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                aria-hidden="true">×</span></button>
+    </div>
+    <!-- Messages to user -->
+    <div id="messageToUser" ng-show="messageToUser" class="alert alert-success alert-dismissible" role="alert">
+        {{messageToUser}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                aria-hidden="true">×</span></button>
+    </div>
+    <input type="text" name="errorGate" id="errorGate" ng-model="error.message" hidden>
+</div>
+
+<div id="keyInfo" ng-show="pgpPublicKey">
+    <hr>
+    <center>
+        <p>
+            Verification for key:
+            <a ui-sref="key({fingerprint:pgpPublicKey.fingerprint})" target="_blank">
+                {{pgpPublicKey.keyID}}
+            </a>,
+            key owner:
+            <a ui-sref="viewprofile({userId:pgpPublicKey.cryptonomicaUserId})" target="_blank">
+                {{pgpPublicKey.userID}}
+            </a>
+        </p>
+    </center>
+
+    <hr>
+</div>
+
+<div id="mainPart" ng-show="!notAllowed">
+    <!-- -->
+    <div id="showTerms" ng-show="showTerms">
+        <online-verification-terms></online-verification-terms>
+    </div>
+    <!-- -->
+    <div id="verificationDocument" ng-show="verificationDocument">
+        <!-- using directive does not work: controller can not get element from directive -->
+        <!-- ( var elementTwo = $window.document.getElementById('fileTwo'); )       -->
+        <div class="container" id="onlineVerificationDocumentsContainer">
+            <div class="card">
+                <div class="card-header">
+                    <center>
+                        <h5>Identifcation documents</h5>
+                    </center>
+                </div>
+                <div class="card-block">
+
+                    <form>
+                        <!-- User nationality: -->
+                        <label for="nationality">
+                            Your nationality (according to passport or similar document):
+                        </label>
+                        <br>
+
+                        <select id="nationality" name="nationality" ng-model="nationality" pvp-country-picker
+                                class="c-select" ng-required="true"></select>
+
+                        <div ng-show="nationality.$invalid || nationality == null"
+                             style="color: red">
+                            Please, select your nationality
+                        </div>
+                        <!--<div ng-show="nationality.$valid">-->
+                        <div ng-show="nationality">
+                            Selected: <b>{{nationality}}</b>
+                        </div>
+                        <br>
+                    </form>
+                    <!-- -->
+                    <form>
+                        <p>
+                            Please, upload <b>color</b> documents in good quality image (.jpg, .jpeg or .png only) file
+                        </p>
+                        <fieldset class="form-group">
+                            <legend>Your passport</legend>
+                            <div
+                                    role="button"
+                                    type="button"
+                                    title="Choose image file (PNG, JPEG, GIF, TIFF, or BMP)"
+                                    class="btn btn-primary">
+                                <input type="file" class="my-file-input-element form-control-file" id="fileOne">
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="form-group">
+                            <legend>Your second ID document (driver licence, national ID etc.)</legend>
+                            <div
+                                    role="button"
+                                    type="button"
+                                    title="Choose image file (PNG, JPEG, GIF, TIFF, or BMP)"
+                                    class="btn btn-primary">
+                                <input type="file" class="my-file-input-element form-control-file" id="fileTwo">
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="form-group">
+                            <button ng-click="uploadDocs()"
+                                    role="button" type="button" class="btn btn-secondary">
+                                Upload documents
+                            </button>
+
+                        </fieldset>
+
+                    </form>
+                </div>
+            </div>
+
+            <div class="row" ng-show="verificationDocsUrls.length > 0">
+                <div class="col-xs-12 col-md-12">
+                    <center>Please check if your images are visible:</center>
+                </div>
+            </div>
+            <div class="row" ng-show="verificationDocsUrls.length > 0">
+                <div class="col-xs-6 col-md-6">
+                    <a ng-href="{{verificationDocsUrls[0]}}" class="imageLink" target="_blank">
+                        <img id="doc1" ng-src="{{verificationDocsUrls[0]}}"
+                             class="img-fluid"/>
+                    </a>
+                </div>
+                <div class="col-xs-6 col-md-6">
+                    <a ng-href="{{verificationDocsUrls[1]}}" class="imageLink" target="_blank">
+                        <img id="doc2" ng-src="{{verificationDocsUrls[1]}}"
+                             class="img-fluid"/>
+                    </a>
+                </div>
+            </div>
+
+            <br>
+            <button name="button" class="btn btn-secondary" role="button"
+                    ng-click="getOnlineVerification()">
+                Next Step >>>
+            </button>
+            <br><br>
+
+        </div>
+    </div>
+    <!-- -->
+    <div id="verificationVideo" ng-show="verificationVideo">
+        <online-verification-video></online-verification-video>
+    </div>
+    <!-- -->
+    <div id="phoneVerification" ng-show="phoneVerification">
+        <sms-check></sms-check>
+    </div>
+    <!-- -->
+    <div id="stripePaymentForOnlineKeyVerification" ng-show="stripePaymentForOnlineKeyVerification">
+        <stripe-payment-for-online-key-verification></stripe-payment-for-online-key-verification>
+    </div>
+    <!-- -->
+    <div id="stripePaymentVerificationCode" ng-show="stripePaymentVerificationCode">
+        <stripe-payment-verification-code></stripe-payment-verification-code>
+    </div>
+    <!-- -->
+</div>
+<!-- -->
+<footer-main></footer-main>

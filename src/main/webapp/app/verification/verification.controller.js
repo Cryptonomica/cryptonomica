@@ -47,6 +47,9 @@ controller.controller(controller_name, [
                                   $cookies
                                   // UserService
         ) {
+
+            $log.debug(controller_name, "started"); //
+            $timeout($rootScope.progressbar.complete(), 1000);
             //
             GAuth.checkAuth().then(
                 function () {

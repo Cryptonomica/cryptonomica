@@ -1,0 +1,47 @@
+<header-main-menu></header-main-menu>
+<navigation-menu></navigation-menu>
+
+<div class="card card-block">
+
+    <!-- ERROR alert! -->
+    <div ng-show="result.error" class="alert alert-danger" role="alert">
+        {{result.error}}
+    </div>
+
+    <!-- VERIFICATION INFO -->
+    <!--
+    verificationId
+    verifiedOn
+    verificationInfo
+    verifiedByCryptonomicaUserId
+    -->
+    <table class="table table-bordered table-hover">
+        <tbody>
+
+        <tr>
+            <td>Verified on:</td>
+            <td>{{result.verifiedOn}}</td>
+        </tr>
+
+        <tr>
+            <td>Verification info:</td>
+            <td>{{result.verificationInfo}}</td>
+        </tr>
+
+        <tr>
+            <td>Verified by:</td>
+            <td>
+                <a href=""
+                   title="Show user profile"
+                   ui-sref="viewprofile({ userId: result.verifiedByCryptonomicaUserId })">
+                    Show user profile
+                </a>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+
+</div>
+
+<footer-main></footer-main>

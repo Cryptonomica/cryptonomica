@@ -1,7 +1,5 @@
 package net.cryptonomica.returns;
 
-import com.googlecode.objectify.Key;
-import net.cryptonomica.entities.CryptonomicaUser;
 import net.cryptonomica.entities.PGPPublicKeyData;
 
 import java.io.Serializable;
@@ -17,7 +15,7 @@ public class PGPPublicKeyGeneralView implements Serializable {
     /* ----- */
     // @Id
     private String fingerprint; //.........................1
-    private String webSafeString; //.......................2
+    //    private String webSafeString; //.......................2
     private String cryptonomicaUserId; //..................3
     private String keyID; //...............................4
     private String userID; //..............................5
@@ -54,16 +52,16 @@ public class PGPPublicKeyGeneralView implements Serializable {
 
         this.fingerprint = pgpPublicKeyData.getFingerprint();
 
-        if (pgpPublicKeyData.getWebSafeString() == null) {
-            this.webSafeString =
-                    Key.create(
-                            Key.create(CryptonomicaUser.class, pgpPublicKeyData.getCryptonomicaUserId()),
-                            PGPPublicKeyData.class,
-                            pgpPublicKeyData.getFingerprint()
-                    ).toWebSafeString();
-        } else {
-            this.webSafeString = pgpPublicKeyData.getWebSafeString();
-        }
+//        if (pgpPublicKeyData.getWebSafeString() == null) {
+//            this.webSafeString =
+//                    Key.create(
+//                            Key.create(CryptonomicaUser.class, pgpPublicKeyData.getCryptonomicaUserId()),
+//                            PGPPublicKeyData.class,
+//                            pgpPublicKeyData.getFingerprint()
+//                    ).toWebSafeString();
+//        } else {
+//            this.webSafeString = pgpPublicKeyData.getWebSafeString();
+//        }
 
         this.cryptonomicaUserId = pgpPublicKeyData.getCryptonomicaUserId();
         this.keyID = pgpPublicKeyData.getKeyID();
@@ -90,6 +88,7 @@ public class PGPPublicKeyGeneralView implements Serializable {
         }
 
         this.active = pgpPublicKeyData.getActive();
+
         this.verificationsWebSafeStrings = pgpPublicKeyData.getVerificationsWebSafeStrings();
 
         this.onlineVerificationFinished = pgpPublicKeyData.getOnlineVerificationFinished();
@@ -123,13 +122,13 @@ public class PGPPublicKeyGeneralView implements Serializable {
         this.fingerprint = fingerprint;
     }
 
-    public String getWebSafeString() {
-        return webSafeString;
-    }
-
-    public void setWebSafeString(String webSafeString) {
-        this.webSafeString = webSafeString;
-    }
+//    public String getWebSafeString() {
+//        return webSafeString;
+//    }
+//
+//    public void setWebSafeString(String webSafeString) {
+//        this.webSafeString = webSafeString;
+//    }
 
     public String getCryptonomicaUserId() {
         return cryptonomicaUserId;

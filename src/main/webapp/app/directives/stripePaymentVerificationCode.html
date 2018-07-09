@@ -1,54 +1,50 @@
-<div class="container" id="paymentVerification">
+<div id="paymentVerification">
+
     <!-- Alerts: -->
 
-    <div ng-show="paymentVerificationError"
-         class="alert alert-danger alert-dismissible"
-         role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                aria-hidden="true">×</span></button>
-        {{paymentVerificationError.message}}
+    <div id="alertDanger" ng-show="paymentVerificationError" class="ui negative message">
+        <i class="close icon" ng-click="paymentVerificationError=null"></i>
+        <div class="header">Error:</div>
+        <p>{{paymentVerificationError.message}}</p>
     </div>
 
-    <div ng-show="paymentVerificationResponse"
-         class="alert alert-success alert-dismissible"
-         role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                aria-hidden="true">×</span></button>
+    <div id="alertSuccess" ng-show="paymentVerificationResponse" class="ui positive message">
+        <i class="close icon" ng-click="paymentVerificationResponse=null"></i>
+        <div class="header">Success:</div>
         {{paymentVerificationResponse.message}}
     </div>
 
     <!-- Card: -->
 
-    <div class="card">
-
-        <div class="card-header">
-            <center>
-                <h5>Enter 7 digits code from your credit card bank statement</h5>
-                <p>like: '6691170 CRYPTONOMICA' - input first 7 digits</p>
-            </center>
-        </div>
-        <div class="card-block">
-
-            <form id="payment-form">
-
-                <div class="form-row">
-                    <legend>
-                        <span>Code:</span>
-                        <input type="text" size="12" ng-model="paymentVerificationCode">
-                    </legend>
-                </div>
-
-                <button ng-click="checkPaymentVerificationCode()"
-                        role="button"
-                        type="button"
-                        class="submit btn btn-secondary">
-                    Check code
-                </button>
-            </form>
-        </div>
+    <div id="header">
+        <center>
+            <h4>Enter 7 digits code from your credit card bank statement (like: '6691170 CRYPTONOMICA' - input first 7
+                digits)</h4>
+        </center>
     </div>
-    <button name="button" class="btn btn-secondary" role="button" ng-click="getOnlineVerification()">
+
+    <form id="payment-form" class="ui form">
+
+        <div class="field">
+            <label>Code:</label>
+            <input type="text" size="12" ng-model="paymentVerificationCode">
+
+        </div>
+
+        <div class="field">
+            <button ng-click="checkPaymentVerificationCode()" class="ui button" type="submit">
+                Check code
+            </button>
+        </div>
+
+    </form>
+
+    <hr>
+    <!--ng-disabled="onlineVerification.onlineVerificationFinished"-->
+
+    <button name="button" class="ui positive button" ng-click="getOnlineVerification()">
         Next Step >>>
     </button>
+
     <br><br>
 </div>
