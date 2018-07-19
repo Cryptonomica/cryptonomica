@@ -1,11 +1,27 @@
 package net.cryptonomica.api;
 
-import com.google.api.server.spi.auth.EspAuthenticator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.api.server.spi.auth.common.User;
 import com.google.api.server.spi.config.*;
+import com.google.api.server.spi.response.BadRequestException;
+import com.google.api.server.spi.response.NotFoundException;
 import com.google.api.server.spi.response.UnauthorizedException;
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.appengine.api.taskqueue.TaskOptions;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.twilio.sdk.TwilioRestException;
+import net.cryptonomica.entities.CryptonomicaUser;
+import net.cryptonomica.returns.StringWrapperObject;
+import net.cryptonomica.service.TwilioUtils;
+import net.cryptonomica.service.UserTools;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.logging.Logger;
+
+/* see: https://stackoverflow.com/a/27148958/1697878 */
 
 
 /**
@@ -21,6 +37,7 @@ import java.util.logging.Logger;
 @Api(
         name = "testAPI", // The api name must match '[a-z]+[A-Za-z0-9]*'
         version = "v1",
+        description = "For testing",
         namespace =
         @ApiNamespace(
                 ownerDomain = "cryptonomica-server.appspot.com",
@@ -91,8 +108,7 @@ public class TestAPI {
     @SuppressWarnings("unused")
     @ApiMethod(name = "echo_api_key", path = "echo_api_key", apiKeyRequired = AnnotationBoolean.TRUE)
     public Message echoApiKey(Message message,
-                              @Named("n")
-                              @Nullable Integer n
+                              @Named("n") @Nullable Integer n
     ) {
         return doEcho(message, n);
     }
@@ -111,6 +127,74 @@ public class TestAPI {
         }
         return message;
     }
+
+    @ApiMethod(
+            name = "sendTestEmail",
+            path = "sendTestEmail",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    @SuppressWarnings("unused")
+    // creates a new cryptonomica user and saves him/her to database
+    public Message sendTestEmail(
+            final HttpServletRequest httpServletRequest,
+            final com.google.appengine.api.users.User googleUser,
+            final @Named("email") String email,
+            final @Named("message") String message
+
+    ) throws Exception {
+
+        /* --- (!!!) only cryptonomica officers  */
+        UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        // send an email to user:
+        final Queue queue = QueueFactory.getDefaultQueue();
+        Gson prettyGson = new GsonBuilder().setPrettyPrinting().create();
+        queue.add(
+                TaskOptions.Builder
+                        .withUrl(
+                                "/_ah/SendGridServlet")
+                        .param("email",
+                                email
+                        )
+                        .param("messageSubject",
+                                "test message from Cryptonomica")
+                        .param("messageText",
+                                "[this is a test message from Cryptonomica] \n\n"
+                                        + message
+                                        + "\n\n"
+                                        + "if you think it's wrong or it is an error, please write to admin@cryptonomica.net \n"
+                        )
+        );
+
+        return new Message(message);
+    } // end
+
+
+    /* --- Test SMS service: */
+    @ApiMethod(
+            name = "sendTestSms",
+            path = "sendTestSms",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    @SuppressWarnings("unused")
+    public StringWrapperObject sendTestSms(
+            // final HttpServletRequest httpServletRequest,
+            final com.google.appengine.api.users.User googleUser,
+            final @Named("phoneNumber") String phoneNumber,
+            final @Named("smsMessage") String smsMessage
+            // see: https://cloud.google.com/appengine/docs/java/endpoints/exceptions
+    ) throws UnauthorizedException, BadRequestException, NotFoundException, NumberParseException,
+            IllegalArgumentException, TwilioRestException {
+
+        /* --- Check authorization: */
+        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        /* --- Send SMS */
+        com.twilio.sdk.resource.instance.Message message = TwilioUtils.sendSms(phoneNumber, smsMessage);
+
+        return new StringWrapperObject(message.toJSON());
+
+    } // end of sendTestSms();
 
     /**
      * Gets the authenticated user's email. If the user is not authenticated, this will return an HTTP
@@ -152,6 +236,10 @@ class Email {
 
     private String email;
 
+    public Email() {
+        //
+    }
+
     public String getEmail() {
         return this.email;
     }
@@ -167,6 +255,14 @@ class Email {
 class Message {
 
     private String message;
+
+    public Message() {
+    }
+
+    /* see: https://stackoverflow.com/a/27148958/1697878 */
+    public Message(@JsonProperty("message") String message) {
+        this.message = message;
+    }
 
     public String getMessage() {
         return this.message;

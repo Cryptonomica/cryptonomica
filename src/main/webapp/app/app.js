@@ -7,7 +7,7 @@ var app = angular.module('cryptonomica', [
     'angular-google-gapi', // (1.0.1) https://github.com/maximepvrt/angular-google-gapi/
     'yaru22.md', // https://github.com/yaru22/angular-md
     'ngProgress', // https://github.com/VictorBjelkholm/ngProgress
-    'ngclipboard', // https://sachinchoolur.github.io/ngclipboard/
+    // 'ngclipboard', // https://sachinchoolur.github.io/ngclipboard/
     'ngFileSaver', // http://alferov.github.io/angular-file-saver/#demo
     'ui.date', // https://github.com/angular-ui/ui-date
     'puigcerber.countryPicker', // angular-country-picker: https://github.com/Puigcerber/angular-country-picker (pvp-country-picker)
@@ -73,7 +73,7 @@ app.run([
                   $location,
                   $log) {
 
-            $log.debug('webapp started,  version: ', '3.0');
+            $log.info('webapp started,  version: ', '3.1');
 
             /* --- UI */
             $rootScope.sidebarVisible = true;

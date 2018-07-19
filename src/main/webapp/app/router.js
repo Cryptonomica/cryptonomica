@@ -105,6 +105,11 @@ router
                     controller: 'cryptonomica.controller.ethereumVerification',
                     templateUrl: 'app/ethereum/ethereumVerification.html'
                 })
+                .state('verifyEthAddress', {
+                    url: '/verifyEthAddress',
+                    controller: 'cryptonomica.controller.verifyEthAddress',
+                    templateUrl: 'app/ethereum/verifyEthAddress.html'
+                })
                 .state('openPGPOnline', {
                     url: '/openPGPOnline',
                     controller: 'cryptonomica.controller.openPGPOnline',

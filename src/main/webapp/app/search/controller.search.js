@@ -50,6 +50,7 @@
 
                 // main function:
                 $scope.doSearch = function () {
+                    $rootScope.progressbar.start(); // <<<<<<<<<<<
                     $rootScope.working = true;
                     $scope.resp = null;
                     console.log("search for: " + JSON.stringify($scope.form)); // search for: [object Object] without JSON.stringify
@@ -60,11 +61,13 @@
                                 console.log("controller.search: doSearch(): resp: ");
                                 console.log(resp);
                                 $rootScope.working = false;
+                                $timeout($rootScope.progressbar.complete(), 1000);
                             }, function (resp) {
                                 console.log("error: ");
                                 console.log(resp);
                                 $scope.resp = resp; // resp.message or resp.error.message - java.lang.Exception:
                                 $rootScope.working = false;
+                                $timeout($rootScope.progressbar.complete(), 1000);
                             }
                         );
                 }; // end $scope.doSearch

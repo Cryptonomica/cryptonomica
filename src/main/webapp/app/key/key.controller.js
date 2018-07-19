@@ -66,7 +66,7 @@
                 };
 
                 /* TODO: >>> */
-                $scope.verifyEthereumAccount = function () {
+                $scope.showEthereumVerificationData = function () {
                     $state.go('ethereumVerification', {'fingerprint': $stateParams.fingerprint});
                 };
 

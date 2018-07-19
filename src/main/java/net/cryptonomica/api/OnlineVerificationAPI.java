@@ -292,33 +292,6 @@ public class OnlineVerificationAPI {
 
     } // end: getDocumentsUploadKey
 
-
-    /* --- Test SMS service: */
-    @ApiMethod(
-            name = "sendTestSms",
-            path = "sendTestSms",
-            httpMethod = ApiMethod.HttpMethod.POST
-    )
-    @SuppressWarnings("unused")
-    public StringWrapperObject sendTestSms(
-            // final HttpServletRequest httpServletRequest,
-            final User googleUser,
-            final @Named("phoneNumber") String phoneNumber,
-            final @Named("smsMessage") String smsMessage
-            // see: https://cloud.google.com/appengine/docs/java/endpoints/exceptions
-    ) throws UnauthorizedException, BadRequestException, NotFoundException, NumberParseException,
-            IllegalArgumentException, TwilioRestException {
-
-        /* --- Check authorization: */
-        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
-
-        /* --- Send SMS */
-        Message message = TwilioUtils.sendSms(phoneNumber, smsMessage);
-
-        return new StringWrapperObject(message.toJSON());
-
-    } // end of sendTestSms();
-
     /* --- Send SMS : */
     @ApiMethod(
             name = "sendSms",
@@ -537,6 +510,7 @@ public class OnlineVerificationAPI {
         );
         onlineVerification.setVerifiedOn(new Date());
         onlineVerification.setVerificationNotes(verificationNotes);
+
         // mark key as verified:
         PGPPublicKeyData pgpPublicKeyData = ofy()
                 .load()
@@ -547,9 +521,20 @@ public class OnlineVerificationAPI {
         if (pgpPublicKeyData == null) {
             throw new NotFoundException("Key with fingerprint " + fingerprint + " not found");
         }
-        //
+
         // pgpPublicKeyData.setOnlineVerificationFinished(Boolean.TRUE); // >> this should be made in StripePaymentsAPI
-        pgpPublicKeyData.setNationality(onlineVerification.getNationality().toUpperCase());
+        if (onlineVerification.getNationality() == null) {
+            throw new IllegalArgumentException("User nationality not provided");
+        } else {
+            pgpPublicKeyData.setNationality(onlineVerification.getNationality().toUpperCase());
+        }
+
+        if (onlineVerification.getBirthday() == null) {
+            throw new IllegalArgumentException("User birthday not provided");
+        } else {
+            pgpPublicKeyData.setUserBirthday(onlineVerification.getBirthday());
+        }
+
         pgpPublicKeyData.setVerifiedOnline(Boolean.TRUE); // <<< NEW
 
         // save data to data store:
@@ -585,7 +570,8 @@ public class OnlineVerificationAPI {
                                         + "your request for online verification for key with fingerprint : "
                                         + fingerprint + " approved! \n\n"
                                         + "See verification information on:\n"
-                                        + "https://cryptonomica.net/#/onlineVerificationView/" + fingerprint + "\n"
+                                        // + "https://cryptonomica.net/#/onlineVerificationView/" + fingerprint + "\n"
+                                        + "https://cryptonomica.net/#!/onlineVerificationView/" + fingerprint + "\n"
                                         + "(information is not public, you have to login with your google account "
                                         + onlineVerification.getUserEmail().getEmail()
                                         + ")\n\n"

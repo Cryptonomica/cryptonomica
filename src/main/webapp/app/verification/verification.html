@@ -33,14 +33,47 @@
                                 <div class="ui breadcrumb">
                                     <a class="section" href="" ui-sref-active="active" ui-sref="home">Home</a>
                                     <i class="right angle icon divider"></i>
-                                    <a class="section" href="" ui-sref-active="active" ui-sref="test">Test</a>
+                                    <a class="section" href="" ui-sref-active="active" ui-sref="test">Offline
+                                        Verification Info</a>
                                     <!--<i class="right angle icon divider"></i>-->
                                 </div>
                             </div>
 
                             <div class="ui segment">
 
+                                <!-- VERIFICATION INFO -->
+                                <!--
+                                verificationId
+                                verifiedOn
+                                verificationInfo
+                                verifiedByCryptonomicaUserId
+                                -->
+                                <table class="table table-bordered table-hover">
+                                    <tbody>
 
+                                    <tr>
+                                        <td><b>Verified on:</b></td>
+                                        <td>{{result.verifiedOn}}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><b>Verification info:</b></td>
+                                        <td>{{result.verificationInfo}}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><b>Verified by:</b></td>
+                                        <td>
+                                            <a href=""
+                                               title="Show user profile"
+                                               ui-sref="viewprofile({ userId: result.verifiedByCryptonomicaUserId })">
+                                                Show user profile
+                                            </a>
+                                        </td>
+                                    </tr>
+
+                                    </tbody>
+                                </table>
 
                             </div>
 

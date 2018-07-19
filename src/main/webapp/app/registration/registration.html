@@ -91,6 +91,14 @@
                                 </h2>
                             </div>
 
+                            <div class="ui segment" ng-show="currentUser.registeredCryptonomicaUser">
+                                <div class="ui yellow message">
+                                    <!--<i class="close icon" ng-click="alertWarning=null"></i>-->
+                                    <!--<div class="header">Warning:</div>-->
+                                    <p>You are already registered</p>
+                                </div>
+                            </div>
+
                             <div class="ui segment" ng-show="!googleUser||currentUser.registeredCryptonomicaUser">
                                 <!--<div class="ui segment" ng-show="!googleUser||currentUser.registeredCryptonomicaUser">-->
 

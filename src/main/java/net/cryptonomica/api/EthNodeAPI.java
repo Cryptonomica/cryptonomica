@@ -310,6 +310,8 @@ public class EthNodeAPI {
 
         byte[] httpResponseContentBytes = httpResponse.getContent();
         String httpResponseContentString = new String(httpResponseContentBytes, StandardCharsets.UTF_8);
+        LOG.warning("httpResponseContentString:");
+        LOG.warning(httpResponseContentString);
 
         // Test:
         // Object resObj = new Gson().fromJson(httpResponseContentString, Object.class); // --- exception
