@@ -48,16 +48,75 @@
                                 </div>
                             </div>
 
-                            <div class="ui segment" ng-show="currentNetwork.connected">
+                            <div class="ui segment">
 
-                                <!-- TODO: update network ID in production -->
-                                <div id="mainSection" ng-show="currentUser&&web3.version.network=='1'">
 
-                                    <h2>
-                                        <i class="ethereum icon"></i>&nbsp;
-                                        Verify your Ethereum address/key with your OpenPGP key
-                                    </h2>
+                                <h2>
+                                    <i class="ethereum icon"></i>&nbsp;
+                                    Verify your Ethereum address/key with your OpenPGP key
+                                </h2>
 
+                                <div id="serviceDescription">
+                                    <br>
+                                    <p>
+                                        <b title="Click to hide/show description"
+                                           ng-click="showDescription=!showDescription">How it works?</b>
+                                    </p>
+                                    <div ng-show="showDescription">
+                                        <p>
+                                            To verify identity of Ethereum address private key owner (a person
+                                            who can send transactions from this address),
+                                            you have to sign a simple message with yor verified OpenPGP key, and
+                                            send this message from your Ethereum address to our smart contract.
+                                            Then you request our system to pull this signed message from smart
+                                            contract and check it's signature. If signature can be verified,
+                                            our server puts user data (first name, last name, birthdate,
+                                            nationality, OpenPGP key fingerprint, Ethereum address) to smart
+                                            contract.
+                                            <br><br>
+                                            User data from this
+                                            <a
+                                                    href="https://etherscan.io/address/0x12313dcf43120bd3d568deee13cb4c2c49e50782#code"
+                                                    target="_blank">
+                                                smart contract
+                                            </a> can be read
+                                            by other smart contracts and decentralized applications. You can use
+                                            your verified identity to make legal binding
+                                            and also legally enforceable contracts/documents on the Ethereum
+                                            blockchain.<br><br>
+
+                                            Ethereum address can be connected to one OpenPGP key only, and one
+                                            time only.<br><br>
+                                            If OpenPGP key expires, user have to use another Ethereum address
+                                            for new OpenPGP public key.<br><br>
+                                            You can also read from and write to our smart contract from
+                                            <a
+                                                    href="https://etherscan.io/address/0x12313dcf43120bd3d568deee13cb4c2c49e50782#readContract"
+                                                    target="_blank">
+                                                etherscan
+                                            </a><br>
+                                            <b>For developers:</b> this service created to be as much smart
+                                            contract developer friendly as possible.
+                                            See smart contract verified code on
+                                            <a href="https://etherscan.io/address/0x12313dcf43120bd3d568deee13cb4c2c49e50782#code"
+                                               target="_blank">
+                                                etherscan
+                                            </a> Please, ask questions in our
+                                            <a href="https://t.me/cryptonomicanet"
+                                               target="_blank">
+                                                telegram group
+                                            </a>, send issues to
+                                            <a href="https://github.com/Cryptonomica/cryptonomica/issues"
+                                               target="_blank">
+                                                issue tracker
+                                            </a>
+                                            <br>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div id="mainSection"
+                                     ng-show="currentUser&&currentNetwork.connected&&web3.version.network=='1'">
 
                                     <form class="ui form">
 
@@ -69,6 +128,7 @@
                                                 </a>
                                             </b>
                                         </div>
+
 
                                         <div class="field" ng-show="userKeys.length > 0">
 
@@ -87,59 +147,6 @@
                                                         value="{{fingerprintStr}}">{{fingerprintStr}}
                                                 </option>
                                             </select>
-
-                                            <div id="serviceDescription">
-                                                <br>
-                                                <p><b>How it works?</b></p>
-                                                <p>
-                                                    To verify identity of Ethereum address private key owner (a person
-                                                    who can send transactions from this address),
-                                                    you have to sign a simple message with yor verified OpenPGP key, and
-                                                    send this message from your Ethereum address to our smart contract.
-                                                    Then you request our system to pull this signed message from smart
-                                                    contract and check it's signature. If signature can be verified,
-                                                    our server puts user data (first name, last name, birthdate,
-                                                    nationality, OpenPGP key fingerprint, Ethereum address) to smart
-                                                    contract.
-                                                    <br><br>
-                                                    User data from this
-                                                    <a
-                                                            href="https://etherscan.io/address/0x12313dcf43120bd3d568deee13cb4c2c49e50782#code"
-                                                            target="_blank">
-                                                        smart contract
-                                                    </a> can be read
-                                                    by other smart contracts and decentralized applications. You can use
-                                                    your verified identity to make legal binding
-                                                    and also legally enforceable contracts/documents on the Ethereum
-                                                    blockchain.<br><br>
-
-                                                    Ethereum address can be connected to one OpenPGP key only, and one
-                                                    time only.<br><br>
-                                                    If OpenPGP key expires, user have to use another Ethereum address
-                                                    for new OpenPGP public key.<br><br>
-                                                    You can also read from and write to our smart contract from
-                                                    <a
-                                                            href="https://etherscan.io/address/0x12313dcf43120bd3d568deee13cb4c2c49e50782#readContract"
-                                                            target="_blank">
-                                                        etherscan
-                                                    </a><br>
-                                                    <b>For developers:</b> this service created to be as much smart
-                                                    contract developer friendly as possible.
-                                                    See smart contract verified code on
-                                                    <a href="https://etherscan.io/address/0x12313dcf43120bd3d568deee13cb4c2c49e50782#code"
-                                                       target="_blank">
-                                                        etherscan
-                                                    </a> Please, ask questions in our
-                                                    <a href="https://t.me/cryptonomicanet"
-                                                       target="_blank">
-                                                        telegram group
-                                                    </a>, send issues to
-                                                    <a href="https://github.com/Cryptonomica/cryptonomica/issues"
-                                                       target="_blank">
-                                                        issue tracker
-                                                    </a>
-                                                </p>
-                                            </div>
 
                                             <label ng-show="fingerprint">
                                                 <br>Your key:
@@ -242,7 +249,8 @@
                                                             Signed String
                                                         </td>
                                                         <td style="font-size: smaller;">
-                                                            <pre><code id="signedString">{{smartContractData.signedString}}</code></pre>
+                                                        <pre><code
+                                                                id="signedString">{{smartContractData.signedString}}</code></pre>
                                                             <div ng-show="smartContractData.signedString">
                                                                 <button class="ui tiny button"
                                                                         ng-click="copyToClipboard('#signedString')">

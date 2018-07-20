@@ -65,6 +65,7 @@
             $timeout($rootScope.progressbar.complete(), 1000);
 
             $scope.smartContractData = {};
+            $scope.showDescription = true;
 
             /* --- Alerts */
             $scope.alertDanger = null;  // red
