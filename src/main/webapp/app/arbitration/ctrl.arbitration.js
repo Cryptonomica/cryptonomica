@@ -36,6 +36,8 @@
                           $timeout) {
 
             $log.debug(controller_name, "started"); //
+            $log.debug('$state');
+            $log.debug($state);
             $timeout($rootScope.progressbar.complete(), 1000);
 
             /* --- Alerts */

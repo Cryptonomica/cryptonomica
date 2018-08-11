@@ -40,7 +40,53 @@
                          $timeout) {
 
             $log.debug(controller_name, "started"); //
+            $log.info('$state');
+            $log.info($state);
             $timeout($rootScope.progressbar.complete(), 1000);
+
+            /* --- Alerts */
+            $scope.alertDanger = null;  // red
+            $scope.alertWarning = null; // yellow
+            $scope.alertInfo = null;    // blue
+            $scope.alertSuccess = null; // green
+            $scope.alertMessage = {}; // grey
+
+            $scope.setAlertDanger = function (message) {
+                $scope.alertDanger = message;
+                $log.debug("$scope.alertDanger:", $scope.alertDanger);
+                // $scope.$apply(); not here
+                $scope.goTo("alertDanger");
+            };
+
+            $scope.setAlertWarning = function (message) {
+                $scope.alertWarning = message;
+                $log.debug("$scope.alertWarning:", $scope.alertWarning);
+                // $scope.$apply();
+                $scope.goTo("alertWarning");
+            };
+
+            $scope.setAlertInfo = function (message) {
+                $scope.alertInfo = message;
+                $log.debug("$scope.alertInfo:", $scope.alertInfo);
+                // $scope.$apply();
+                $scope.goTo("alertInfo");
+            };
+
+            $scope.setAlertSuccess = function (message) {
+                $scope.alertSuccess = message;
+                $log.debug("$scope.alertSuccess:", $scope.alertSuccess);
+                // $scope.$apply();
+                $scope.goTo("alertSuccess");
+            };
+
+            $scope.setAlertMessage = function (message, header) {
+                $scope.alertMessage = {};
+                $scope.alertMessage.header = header;
+                $scope.alertMessage.message = message;
+                $log.debug("$scope.alertMessage:", $scope.alertMessage);
+                // $scope.$apply();
+                $scope.goTo("alertMessage");
+            };
 
             // ======== Terms of Use: start  =======
             if (!$rootScope.currentUser.registeredCryptonomicaUser) {
@@ -158,19 +204,19 @@
                 $log.debug($scope.regForm);
 
                 if ($rootScope.stringIsNullUndefinedOrEmpty($scope.regForm.armoredPublicPGPkeyBlock)) {
-                    $rootScope.setAlertDanger("Please provide your public key");
+                    $scope.setAlertDanger("Please provide your public key");
                     return;
                 }
 
                 if ($scope.verifyPublicKeyData) {
 
                     if ($scope.privateKeyPasted) {
-                        $rootScope.setAlertDanger("Do not upload private key");
+                        $scope.setAlertDanger("Do not upload private key");
                         return;
                     }
 
                     if (!$scope.regForm.birthday) {
-                        $rootScope.setAlertDanger("Birthdate can not be empty");
+                        $scope.setAlertDanger("Birthdate can not be empty");
                         return;
                     }
 
@@ -179,7 +225,6 @@
                     if ($rootScope.alertWarning) {
                         $rootScope.alertWarning = null;
                     }
-
 
                     GApi.executeAuth('newUserRegistrationAPI', 'registerNewUser', $scope.regForm)
                         .then(
@@ -192,21 +237,28 @@
                                 $timeout($rootScope.progressbar.complete(), 1000);
                                 $state.go('home'); // TODO: <<<<
 
-                            })
+                            }, function (resp) {
+                                console.log("error (resp): ");
+                                $log.info(resp);
+                                // $scope.pgpPublicKeyDataError = resp;
+                                $scope.setAlertDanger(resp.message.replace('java.lang.Exception: ', ''));
+                                $rootScope.checkAuth();
+                                $timeout($rootScope.progressbar.complete(), 1000);
+                            }
+                        )
                         .catch(function (error) {
-                            console.log("error: ");
+                            console.log("error (catch): ");
                             $log.info(error);
-                            $rootScope.setAlertDanger(error.message);
+                            $scope.pgpPublicKeyDataError = error;
+                            $scope.setAlertDanger(error.message.replace('java.lang.Exception: ', ''));
                             $rootScope.checkAuth();
                             $timeout($rootScope.progressbar.complete(), 1000);
-
                         });
                 } else {
-                    $rootScope.setAlertDanger("Key can not be uploaded, please check key data and provide correct public key");
+                    $scope.setAlertDanger("Key can not be uploaded, please check key data and provide correct public key");
                 }
 
             }; // end registerNewUser
-
 
         }]);
 })();

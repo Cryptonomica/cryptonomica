@@ -73,7 +73,9 @@ app.run([
                   $location,
                   $log) {
 
-            $log.info('webapp started,  version: ', '3.1');
+            $log.info('webapp started,  version: ', '3.2');
+            $log.info('[app.js] $state');
+            $log.info($state);
 
             /* --- UI */
             $rootScope.sidebarVisible = true;
@@ -207,7 +209,10 @@ app.run([
                         } else if (!$rootScope.currentUser.registeredCryptonomicaUser) { // user not registered
                             $log.debug('user is not registered');
                             $timeout($rootScope.progressbar.complete(), 1000); // <<<<<<
-                            $state.go('registration');
+
+                            if (!($state.includes('openPGPOnline') || $state.includes('openPGPSoftware'))) {
+                                $state.go('registration');
+                            }
                         }
 
                         $rootScope.userCurrentImageLink = $sce.trustAsResourceUrl(resp.userCurrentImageLink);

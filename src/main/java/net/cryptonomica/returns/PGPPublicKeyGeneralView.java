@@ -26,7 +26,7 @@ public class PGPPublicKeyGeneralView implements Serializable {
     private Date exp; //..................................10
     private Integer bitStrength; //.......................11
     private String asciiArmored; //.......................12
-    private Boolean verified; //off-line verification.....13 // legacy
+    // private Boolean verified; //off-line verification.....13 // legacy
     private Boolean active; //............................14
     private List<String> verificationsWebSafeStrings; //..15
     private List<Long> verificationIDs; // ...............16
@@ -81,11 +81,11 @@ public class PGPPublicKeyGeneralView implements Serializable {
             this.asciiArmored = pgpPublicKeyData.getAsciiArmored().getValue();
         }
 
-        if (pgpPublicKeyData.getVerified() == null) {
-            this.verified = Boolean.FALSE;
-        } else {
-            this.verified = pgpPublicKeyData.getVerified();
-        }
+//        if (pgpPublicKeyData.getVerified() == null) {
+//            this.verified = Boolean.FALSE;
+//        } else {
+//            this.verified = pgpPublicKeyData.getVerified();
+//        }
 
         this.active = pgpPublicKeyData.getActive();
 
@@ -210,13 +210,13 @@ public class PGPPublicKeyGeneralView implements Serializable {
         this.asciiArmored = asciiArmored;
     }
 
-    public Boolean getVerified() {
-        return verified;
-    }
-
-    public void setVerified(Boolean verified) {
-        this.verified = verified;
-    }
+//    public Boolean getVerified() {
+//        return verified;
+//    }
+//
+//    public void setVerified(Boolean verified) {
+//        this.verified = verified;
+//    }
 
     public Boolean getActive() {
         return active;
