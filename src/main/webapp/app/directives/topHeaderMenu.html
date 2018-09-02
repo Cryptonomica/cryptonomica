@@ -1,0 +1,254 @@
+<div class="navslide navwrap">
+
+    <div class="ui menu icon borderless grid">
+
+        <a id="sidebarBtn" class="item labeled openbtn">
+            <i class="icon ion-md-menu big"></i>
+        </a>
+
+        <a id="fullScreenBtn" class="item labeled expandit colhidden" onclick="toggleFullScreen(document.body)">
+            <i class="icon ion-md-expand big"></i>
+        </a>
+
+        <div class="item ui">
+            <!--<div class="item ui colhidden">-->
+            <div class="ui icon input">
+                <!--<input id="instantFindFingerprint"-->
+                <!--size="40"-->
+                <input id="instantFindFingerprint"
+                       type="text"
+                       placeholder="Paste key fingerprint"
+                       ng-model="fingerprintToSearch"
+                       ng-change="instantFindFingerprint(fingerprintToSearch)"
+                >
+                <i class="search icon" ng-hide="instantFindFingerprintIsWorking"></i>
+            </div>
+            &nbsp;<i class="fa fa-refresh fa-spin fa-fw" ng-show="instantFindFingerprintIsWorking"></i>
+        </div>
+
+        <div class="item centered">
+            <h1 class="ui header">CRYPTONOMICA<sup title="beta">β</sup></h1>
+        </div>
+
+        <div class="right menu colhidden">
+
+            <!-- TODO: implement messages-->
+            <div id="messages" class="ui dropdown item labeled icon"
+                 ng-show="currentUser&&currentUser.registeredCryptonomicaUser">
+
+                <i class="icon ion-md-mail" style="font-size: 1.5em"></i>
+
+                <div class="ui red label mini circular" ng-show="newMessages"></div>
+
+                <div class="menu">
+
+                    <div class="header">
+                        New messages
+                    </div>
+
+                    <div class="item">
+                        No new messages
+                    </div>
+                    <div class="header">
+                        Old messages
+                    </div>
+                    <div class="item">
+                        No messages
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="ui dropdown item" ng-show="currentUser&&currentUser.loggedIn">
+
+                <img id="userAvatar" class="ui mini circular image"
+                     ng-src="{{gapi.user.picture}}">
+                <!--<img id="userAvatar" class="ui mini circular image" ng-src="{{googleUser.picture}}">-->
+
+                &nbsp;&nbsp;{{gapi.user.email}}
+                <!--&nbsp;&nbsp;{{googleUser.email}}-->
+
+                <i class="dropdown icon"></i>
+
+                <div class="menu">
+
+                    <a class="item" ui-sref="viewprofile({userId:currentUser.userId})">
+                        <i class="icofont icofont-data"></i>
+                        Show/edit profile
+                    </a>
+
+                    <a class="item" href="https://security.google.com/settings/security/permissions"
+                       title="Manage Google account permissions">
+                        <i class="icofont icofont-settings"></i>
+                        Change permissions
+                    </a>
+
+                    <a class="item logout" href="https://accounts.google.com/Logout">
+                        <i class="icofont icofont-logout"></i>
+                        Logout
+                    </a>
+
+                </div>
+
+            </div>
+
+            <a id="bookmarksBtn" class="item labeled rightsidebar computer only"
+               ng-show="currentUser&&currentUser.registeredCryptonomicaUser">
+                <i class="icon ion-md-bookmarks big"></i>
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    function toggleFullScreen(elem) {
+
+        console.log('toggleFullScreen');
+
+        if (
+            (document.fullScreenElement !== undefined && document.fullScreenElement === null)
+            || (document.msFullscreenElement !== undefined && document.msFullscreenElement === null)
+            || (document.mozFullScreen !== undefined && !document.mozFullScreen)
+            || (document.webkitIsFullScreen !== undefined && !document.webkitIsFullScreen)
+        ) {
+            if (elem.requestFullScreen) {
+                elem.requestFullScreen();
+            } else if (elem.mozRequestFullScreen) {
+                elem.mozRequestFullScreen();
+            } else if (elem.webkitRequestFullScreen) {
+                elem.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            }
+        } else {
+
+            if (document.cancelFullScreen) {
+                document.cancelFullScreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.webkitCancelFullScreen) {
+                document.webkitCancelFullScreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+        }
+    }
+
+    $(".ui.dropdown").dropdown({
+        allowCategorySelection: true,
+        transition: "fade up"
+    });
+
+    // using context
+    $('.ui.right.sidebar')
+        .sidebar({
+            context: $('#contextWrap .pusher'),
+            transition: 'slide out',
+            silent: true
+        })
+        .sidebar('attach events', '.rightsidebar');
+
+    $('#sidebarBtn')
+        .popup({
+            // position : 'right center',
+            target: '#sidebarBtn',
+            content: 'Collapse/expand sidebar'
+        });
+
+    $('#fullScreenBtn')
+        .popup({
+            // position : 'right center',
+            target: '#fullScreenBtn',
+            content: 'Toggle full screen mode'
+        });
+
+    $('#bookmarksBtn')
+        .popup({
+            // position : 'right center',
+            target: '#bookmarksBtn',
+            content: 'Click to see saved profiles and keys'
+        });
+
+    /* -------- side bar : */
+
+    // var isMobile = window.matchMedia("only screen and (max-width: 768px)");
+    var isMobile = window.matchMedia("only screen and (max-width: 768px)").matches;
+    var sideBarIsCollapsed;
+    var sideBarIsCollapsedManually;
+
+    function collapseSidebar() {
+        $(".ui.sidebar.left").addClass("very thin icon");
+        $(".navslide").addClass("marginlefting");
+        // $(".sidebar.left span").addClass("displaynone");
+        $(".hiddenCollapse").addClass("displaynone");
+        sideBarIsCollapsed = true;
+    }
+
+    function expandSidebar() {
+        $(".ui.sidebar.left").removeClass("very thin icon");
+        $(".navslide").removeClass("marginlefting");
+        // $(".sidebar.left span").removeClass("displaynone");
+        $(".hiddenCollapse").removeClass("displaynone");
+        sideBarIsCollapsed = false;
+    }
+
+    if (isMobile) {
+        console.log(" this is mobile device");
+        collapseSidebar();
+        // $(".computer.only").toggleClass("displaynone");
+        $(".computer.only").addClass("displaynone");
+    }
+
+
+    $(".openbtn").on("click", function () {
+
+        if (sideBarIsCollapsed) {
+            expandSidebar();
+        } else {
+            collapseSidebar();
+            sideBarIsCollapsedManually = true;
+        }
+
+    });
+
+    $(window).resize(function () {
+
+        if (isMobile || $(window).width() <= 768) {
+
+            console.log(" this is mobile device");
+            collapseSidebar();
+            // $(".computer.only").toggleClass("displaynone");
+            $(".computer.only").addClass("displaynone");
+
+        } else {
+
+            $(".computer.only").removeClass("displaynone");
+            if (!sideBarIsCollapsedManually) {
+                expandSidebar();
+            }
+
+        }
+
+        // if (ManualSideBarIsHidden === false) {
+        //
+        //     if ($(window).width() <= 767) {
+        //         if (!sideBarIsHidden) {
+        //             resizeSidebar("1");
+        //             sideBarIsHidden = true;
+        //             $(".colhidden").addClass("displaynone");
+        //         }
+        //     } else {
+        //         if (sideBarIsHidden) {
+        //             resizeSidebar("0");
+        //             sideBarIsHidden = false;
+        //             $(".colhidden").removeClass("displaynone");
+        //         }
+        //     }
+        // }
+    });
+
+</script>

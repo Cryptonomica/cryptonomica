@@ -1,0 +1,67 @@
+<div class="ui thin left sidebar inverted vertical menu visible">
+
+    <a class="item"><img src="app/img/logo.004.crop.white.svg"></a>
+    <a class="item">
+        2
+    </a>
+    <a class="item">
+        3
+    </a>
+
+</div>
+
+<div class="pusher">
+
+    <div class="ui containe left fixed">
+        <!-- Site content !-->
+        <h1 class="ui header">Cryptonomica</h1>
+
+        <div class="ui raised segment">
+
+            <p>
+                WHAT IS CRYPTONOMICA?
+                Cryptonomica is the global database of verified identities with service for signing electronic documents
+                and online dispute resolution.
+            </p>
+            <p>
+                WHY IT'S USEFUL FOR ME?
+                With Cryptonomica you can generate and upload your public cryptographic key (OpenPGP standard) to global
+                database, and add to this key verified data about key owner, i.e. about you. Than you can use your key
+                to securely sign documents worldwide, to encrypt documents, to resolve disputes online - faster and more
+                comfortable than ever.
+            </p>
+            <p>
+                HOW IS IT DIFFERENT FROM DOCUSIGN, ADOBESIGN, AND LOCAL DIGITAL SIGNATURE SERVICES?
+                We provide real identity check. As much verification as possible. We have notaries connected to our
+                system and we have our officers/representatives in different countries for face-to-face person
+                identification. We use best security practices and reliable open source cryptography. And it's global.
+            </p>
+
+        </div>
+
+        <button id="pushPageBtn" class="ui button">
+            click me
+        </button>
+        <button id="showSidebarBtn" class="ui button">
+            showSideba
+        </button>
+
+    </div>
+</div>
+<footer-main></footer-main>
+
+
+<script>
+    // showing multiple
+    $('.ui.sidebar').sidebar(
+        {
+            // context: '.visible.example .bottom.segment'
+            dimPage: false,
+            closable: false
+        }
+    );
+
+    $("#pushPageBtn").sidebar('push page');
+    $("#showSidebarBtn").sidebar('push page');
+
+</script>

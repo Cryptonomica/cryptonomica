@@ -1,160 +1,19 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="cryptonomica">
-
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <link rel="shortcut icon" href="favicon.ico?"/>
-    <!-- Octicons -->
-    <!-- https://octicons.github.com/usage/ -->
-    <link rel="stylesheet" href="vendors/octicons/octicons.css">
-    <!-- Font Awesome -->
-    <!-- https://fortawesome.github.io/Font-Awesome/cheatsheet/ -->
-    <link rel="stylesheet" href="vendors/font-awesome/css/font-awesome.min.css">
-    <!-- JQUERY -->
-    <!--<script src="vendors/jquery/jquery-2.2.0.min.js"></script>-->
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <!-- Bootstrap 4.0.0-alpha.2 -->
-    <!--<link rel="stylesheet" href="vendors/bootstrap/dist/css/bootstrap.min.css">-->
-    <!--<script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>-->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
-          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
-            integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
-            crossorigin="anonymous"></script>
+    <meta property="og:image"
+          content="https://cryptonomica.github.io/app/img/screenshots/2018.07.09.cryptonomica.screenshot.02.png"/>
+    <meta property="og:image:width" content="1138"/>
+    <meta property="og:image:height" content="1056"/>
 
-    <!-- AngularJS 1.4.9 -->
-    <script src="vendors/angularjs/angular.min.js"></script>
-    <script src="vendors/angularjs/angular-cookies.min.js"></script>
-    <!-- angular-ui-router 0.2.18  -->
-    <!-- https://github.com/angular-ui/ui-router/tree/legacy -->
-    <!-- http://angular-ui.github.io/ui-router/release/angular-ui-router.js -->
-    <!--<script src="vendors/angular-ui-router/0.2.18/angular-ui-router.min.js"></script>-->
-    <script src="vendors/angular-ui-router/0.4.2/angular-ui-router.min.js"></script>
-    <!-- ui-uploader-->
-    <!-- https://github.com/angular-ui/ui-uploader -->
-    <script src="vendors/angular-ui-uploader/1.1.3/dist/uploader.min.js"></script>
-    <!-- angular-google-gapi -->
-    <!-- https://github.com/maximepvrt/angular-google-gapi -->
-    <!--<script src="vendors/angular-google-gapi/0.1.2/angular-google-gapi.js"></script>-->
-    <script src="vendors/angular-google-gapi/1.0.0-beta.1/angular-google-gapi.min.js"></script>
-    <!-- angular-google-gapi/1.0.1 is much slower than 1.0.0-beta.1 -->
-    <!--<script src="vendors/angular-google-gapi/1.0.1/dist/angular-google-gapi.min.js"></script>-->
-
-    <!-- ngProgress 1.1.2-->
-    <!-- https://github.com/VictorBjelkholm/ngProgress -->
-    <script src="vendors/ngprogress/ngprogress.min.js"></script>
-    <link rel="stylesheet" href="vendors/ngprogress/ngProgress.css">
-    <!-- angular-md and dependencies -->
-    <!-- https://github.com/yaru22/angular-md -->
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.0.0/styles/default.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.0.0/highlight.min.js"></script>  -->
-    <script src="vendors/marked/marked.min.js"></script>
-    <script src="vendors/angular-md/angular-md.min.js"></script>
-    <!-- ngclipboard (Angularjs directive for clipboard.js ) https://sachinchoolur.github.io/ngclipboard/ -->
-    <script src="https://cdn.rawgit.com/zenorocha/clipboard.js/master/dist/clipboard.min.js"></script>
-    <script src="vendors/ngclipboard/1.1.1/ngclipboard.min.js"></script>
-    <!-- angular-file-saver https://github.com/alferov/angular-file-saver -->
-    <!--<script src="vendors/angular-file-saver/1.1.0/angular-file-saver.bundle.min.js"></script>-->
-    <script src="vendors/angular-file-saver/1.1.3/dist/angular-file-saver.bundle.min.js"></script>
-    <!-- Country select for AngularJS : http://alexcheng1982.github.io/angular-country-select/ -->
-    <!--<script src="vendors/angular-country-select/angular-country-select.js"></script>-->
-    <!--<script src="vendors/angular-country-select/bower_components/select2/select2.min.js"></script>-->
-    <!-- angular-ui/ui-date : https://github.com/angular-ui/ui-date -->
-    <!--<link rel="stylesheet" href="vendors/jquery-ui/1.11.4/jquery-ui.min.css"/>-->
-    <!--<link rel="stylesheet" href="vendors/jquery-ui/1.11.4/jquery-ui.theme.min.css"/>-->
-    <!--<script src="vendors/jquery-ui/1.11.4/jquery-ui.min.js"></script>-->
-    <!--<script src="vendors/angular-ui-date/date.js"></script>-->
-
-    <!-- angular-ui/ui-date (jQuery UI Datepicker for AngularJS) https://github.com/angular-ui/ui-date -->
-    <link rel="stylesheet" href="vendors/jquery-ui/themes/smoothness/jquery-ui.min.css">
-    <script src="vendors/jquery-ui/jquery-ui.min.js"></script>
-    <script src="vendors/angular-ui-date/date.js"></script>
-    <!-- Puigcerber/angular-country-picker : https://github.com/Puigcerber/angular-country-picker -->
-    <script src="vendors/angular-country-picker/country-picker.min.js"></script>
-
-    <!-- web3.js -->
-    <!--<script src="vendors/web3/dist/web3.min.js"></script>-->
-    <script src="vendors/web3/0.19.0/dist/web3.min.js"></script>
-
-    <!-- truffle -->
-    <!-- https://github.com/trufflesuite/truffle-contract (requires web3.js) -->
-    <script src="vendors/truffle-contract/dist/truffle-contract.min.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/openpgp/2.6.0/openpgp.min.js"
-            integrity="sha256-DIFHONFgXJ2Z/EIiFAzymz4x2z4Ge0K2mlxaxv7zitg="
-            crossorigin="anonymous"></script>
-
-    <!-- File saver -->
-    <!-- https://github.com/eligrey/FileSaver.js -->
-    <!-- https://eligrey.com/blog/saving-generated-files-on-the-client-side/ -->
-    <!-- https://eligrey.com/demos/FileSaver.js/ -->
-    <script src="https://cdn.rawgit.com/eligrey/Blob.js/0cef2746414269b16834878a8abc52eb9d53e6bd/Blob.js"></script>
-    <script src="https://cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d7691013401e171014e89/FileSaver.min.js"></script>
-
-    <!--  MY SCRIPTS -->
-    <script src="app/app.js"></script>
-    <script src="app/router.js"></script>
-    <script src="app/controller.js"></script>
-    <script src="app/user.service.js"></script>
-    <script src="app/home/controller.home.js"></script>
-    <script src="app/registration/controller.registration.js"></script>
-    <script src="app/dashboard/dashboard.controller.js"></script>
-    <script src="app/search/controller.search.js"></script>
-    <script src="app/viewprofile/controller.viewprofile.js"></script>
-    <!--<script src="app/showkey/showkey.controller.js"></script>-->
-    <script src="app/key/key.controller.js"></script>
-    <script src="app/verification/verification.controller.js"></script>
-    <script src="app/verification/verification.service.js"></script>
-    <script src="app/arbitrators/controller.showallarbitrators.js"></script>
-    <script src="app/notaries/controller.showAllNotaries.js"></script>
-    <script src="app/proofOfExistence/proofOfExistence.controller.js"></script>
-    <script src="app/directives/directives.js"></script>
-    <script src="app/test/test.controller.js"></script>
-    <script src="app/onlineVerification/onlineVerification.js"></script>
-    <script src="app/onlineVerification/onlineVerificationView.js"></script>
-    <script src="app/ethereum/controller.ethereumVerification.js"></script>
-    <script src="app/openPGPOnline/controller.openPGPOnline.js"></script>
-    <!--<script src="app/openPGPOnline/openPGPOnline.js"></script>-->
-    <!--        Title          -->
-    <title>Cryptonomica: identity proof, online dispute resolution, internationally enforceable electronic
-        contracts
+    <title>
+        Cryptonomica: identity proof, online dispute resolution, internationally enforceable electronic contracts
     </title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
 
-    <!-- NEW DESIGN BEGIN -->
-    <!-- Custom fonts for this theme -->
-    <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic'
-          rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=Raleway:400,100,200,300,600,500,700,800,900' rel='stylesheet'
-          type='text/css'>
-    <!-- Plugin CSS -->
-    <link href="/newdesign/vendor/animate.css/animate.min.css" rel="stylesheet" type="text/css">
-    <!-- Custom styles for this theme -->
-    <!-- Uncomment the color scheme you want to use! Red is chosen by default! -->
-    <link href="newdesign/css/vitality-purple.css" rel="stylesheet" type="text/css">
-
-    <!-- Temporary navbar container fix -->
-    <style>
-        .navbar-toggler {
-            z-index: 1;
-        }
-
-        @media (max-width: 576px) {
-            nav > .container {
-                width: 100%;
-            }
-        }
-    </style>
-
-    <!-- NEW DESIGN END -->
-
-    <link rel="stylesheet" type="text/css" href="app/app.css">
-
-    <!-- -->
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-116604144-1"></script>
     <script>
@@ -167,27 +26,173 @@
     </script>
     <!-- -->
 
+    <link rel="shortcut icon" href="favicon.ico?"/>
+
+    <!-- Facebook -->
+    <!--<meta property="og:title"-->
+    <!--content="Cryptonomica: identity proof, online dispute resolution, internationally enforceable electronic contracts"/>-->
+    <!--<meta property="og:type" content="website"/>-->
+    <!--<meta property="og:site_name" content="Cryptonomica"/>-->
+    <!--<meta property="og:image"-->
+    <!--content="https://cryptonomica.github.io/app/img/screenshots/2018.07.09.cryptonomica.screenshot.png"/>-->
+    <!--<meta property="og:image:width" content="450"/>-->
+    <!--<meta property="og:image:height" content="298"/>-->
+
+    <!-- (0) IcoFont -->
+    <!-- http://icofont.com -->
+    <!--http://icofont.com/icons/-->
+    <!-- (!) rel="stylesheet" is required -->
+    <link href="vendors/icofont/custom.icofont/css/icofont.css" rel="stylesheet">
+
+    <!--(1) Ionicons -->
+    <!-- https://ionicons.com/-->
+    <!-- https://ionicons.com/usage -->
+    <link href="https://unpkg.com/ionicons@4.1.2/dist/css/ionicons.min.css" rel="stylesheet">
+
+    <!-- (2) Font Awesome 4.7 -->
+    <!-- https://fontawesome.com/v4.7.0/icons/ -->
+    <!-- https://fontawesome.com/v4.7.0/examples/ -->
+    <link href="vendors/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- (3) JQUERY -->
+    <!--<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!--<script src="vendors/jquery/3.3.1/jquery-3.3.1.min.js"></script>-->
+
+    <!-- (4) Semantic UI --->
+    <link rel="stylesheet" href="vendors/semantic-ui/2.3.1/dist/semantic.min.css">
+    <!--<link rel="stylesheet" href="vendors/semantic-ui/2.3.1/dist/semantic.css">-->
+    <script src="vendors/semantic-ui/2.3.1/dist/semantic.min.js"></script>
+    <!--<script src="vendors/semantic-ui/2.3.1/dist/semantic.js"></script>-->
+
+    <!-- (5) web3.js -->
+    <!-- https://github.com/ethereum/wiki/wiki/JavaScript-API -->
+    <script src="vendors/bignumber.js/4.0.2/bignumber.min.js"></script>
+    <!--<script src="vendors/bignumber.js/4.0.2/bignumber.js"></script>-->
+    <script src="vendors/web3/0.20.6/dist/web3.min.js"></script>
+    <!--<script src="vendors/web3/0.20.6/dist/web3.js"></script>-->
+
+    <!-- (6) truffle -->
+    <script src="vendors/truffle-contract/3.0.5/truffle-contract.min.js"></script>
+    <!--<script src="vendors/truffle-contract/3.0.5/truffle-contract.js"></script>-->
+
+    <!-- (7) AngularJS -->
+    <!-- https://angularjs.org -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.10/angular.min.js"></script>
+    <!--<script src="vendors/angularjs/1.6.10/angular.js"></script>-->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.10/angular-cookies.min.js"></script>
+    <!--<script src="vendors/angularjs/1.6.10/angular-cookies.js"></script>-->
+
+    <!-- (8) angular-ui-router -->
+    <script src="vendors/ui-router/0.4.3/release/angular-ui-router.min.js"></script>
+    <!--<script src="vendors/ui-router/0.4.3/release/angular-ui-router.js"></script>-->
+
+    <!-- (9) ui-uploader-->
+    <!-- https://github.com/angular-ui/ui-uploader -->
+    <script src="vendors/angular-ui-uploader/1.1.3/dist/uploader.min.js"></script>
+    <!--<script src="vendors/angular-ui-uploader/1.1.3/dist/uploader.js"></script>-->
+
+    <!-- (10) angular-google-gapi -->
+    <!-- https://github.com/maximepvrt/angular-google-gapi -->
+    <script src="vendors/angular-google-gapi/0.1.3/angular-google-gapi.min.js"></script>
+    <!--<script src="vendors/angular-google-gapi/0.1.3/angular-google-gapi.js"></script>-->
+    <!---->
+    <!--<script src="vendors/angular-google-gapi/1.0.0-beta.1/dist/angular-google-gapi.js"></script>-->
+    <!--<script src="vendors/angular-google-gapi/1.0.0/dist/angular-google-gapi.js"></script>-->
+    <!--<script src="vendors/angular-google-gapi/1.0.1/dist/angular-google-gapi.js"></script>-->
+    <!--<script src="vendors/angular-google-gapi/ed166f5/angular-google-gapi.js"></script>-->
+
+    <!-- (11) ngProgress 1.1.2-->
+    <!-- https://github.com/VictorBjelkholm/ngProgress -->
+    <script src="vendors/ngprogress/ngprogress.min.js"></script>
+    <link rel="stylesheet" href="vendors/ngprogress/ngProgress.css">
+
+    <!-- (12) angular-md -->
+    <!-- https://github.com/yaru22/angular-md -->
+    <script src="vendors/marked/marked.min.js"></script>
+    <script src="vendors/angular-md/angular-md.min.js"></script>
+
+    <!-- (13) higlight.js -->
+    <!-- https://highlightjs.org -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <!-- for other available styles look into the highlight.js styles directory:
+    https://highlightjs.org/static/demo/
+    https://github.com/isagalaev/highlight.js/tree/master/src/styles
+    (and don't forget to add ".min" before ".css") -->
+
+    <!-- (14) ngclipboard (Angularjs directive for clipboard.js ) https://sachinchoolur.github.io/ngclipboard/ -->
+    <!--<script src="https://cdn.rawgit.com/zenorocha/clipboard.js/master/dist/clipboard.min.js"></script>-->
+    <!--<script src="vendors/ngclipboard/1.1.1/ngclipboard.min.js"></script>-->
+
+    <!-- (15) angular-file-saver https://github.com/alferov/angular-file-saver -->
+    <script src="vendors/angular-file-saver/1.1.3/dist/angular-file-saver.bundle.min.js"></script>
+    <!--<script src="vendors/angular-file-saver/1.1.3/dist/angular-file-saver.bundle.js"></script>-->
+
+    <!-- (16) angular-ui/ui-date (jQuery UI Datepicker for AngularJS) https://github.com/angular-ui/ui-date -->
+    <link rel="stylesheet" href="vendors/jquery-ui/themes/smoothness/jquery-ui.min.css">
+    <script src="vendors/jquery-ui/jquery-ui.min.js"></script>
+    <script src="vendors/angular-ui-date/date.js"></script>
+
+    <!-- (17) angular-country-picker : https://github.com/Puigcerber/angular-country-picker -->
+    <script src="vendors/angular-country-picker/country-picker.min.js"></script>
+
+    <!--(18)  OpenPGP.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/openpgp/2.6.2/openpgp.min.js"></script>
+    <!--<script src="vendors/openpgpjs/2.6.2/dist/openpgp.js"></script>-->
+
+    <!-- (19) File saver -->
+    <!-- https://github.com/eligrey/FileSaver.js -->
+    <!-- https://eligrey.com/blog/saving-generated-files-on-the-client-side/ -->
+    <!-- https://eligrey.com/demos/FileSaver.js/ -->
+    <!--<script src="https://cdn.rawgit.com/eligrey/Blob.js/0cef2746414269b16834878a8abc52eb9d53e6bd/Blob.min.js"></script>-->
+    <!--Refused to execute script from 'https://cdn.rawgit.com/eligrey/Blob.js/0cef2746414269b16834878a8abc52eb9d53e6bd/Blob.min.js'
+     because its MIME type ('') is not executable, and strict MIME type checking-->
+    <!---->
+    <script src="https://cdn.rawgit.com/eligrey/Blob.js/0cef2746414269b16834878a8abc52eb9d53e6bd/Blob.js"></script>
+    <script src="https://cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d7691013401e171014e89/FileSaver.min.js"></script>
+
+    <!-- (-20) Moment.js -->
+    <!-- http://momentjs.com/ -->
+    <!--<script src="/vendors/momentjs/2.22.2/moment.js"></script>-->
+
+    <!-- (-20) jquery.nicescroll -->
+    <!-- https://github.com/inuyaksa/jquery.nicescroll -->
+    <!--<script src="vendors/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>-->
+
+    <!-- Theme JS and CSS -->
+    <link rel="stylesheet" type="text/css" href="app/theme/main.css">
+
+    <!-- =====  MAIN SCRIPTS AND CSS ===== -->
+
+    <script src="app/app.js"></script>
+    <script src="app/router.js"></script>
+    <script src="app/controller.js"></script>
+    <script src="app/user.service.js"></script>
+    <script src="app/home/controller.home.js"></script>
+    <script src="app/registration/controller.registration.js"></script>
+    <script src="app/dashboard/dashboard.controller.js"></script>
+    <script src="app/search/controller.search.js"></script>
+    <script src="app/viewprofile/controller.viewprofile.js"></script>
+    <script src="app/key/key.controller.js"></script>
+    <script src="app/verification/verification.controller.js"></script>
+    <script src="app/verification/verification.service.js"></script>
+    <script src="app/arbitrators/controller.showallarbitrators.js"></script>
+    <script src="app/notaries/controller.showAllNotaries.js"></script>
+    <script src="app/proofOfExistence/proofOfExistence.controller.js"></script>
+    <script src="app/directives/directives.js"></script>
+    <script src="app/test/test.controller.js"></script>
+    <script src="app/onlineVerification/onlineVerification.js"></script>
+    <script src="app/onlineVerification/onlineVerificationView.js"></script>
+    <script src="app/ethereum/controller.ethereumVerification.js"></script>
+    <script src="app/openPGPOnline/controller.openPGPOnline.js"></script>
+    <script src="app/arbitration/ctrl.arbitration.js"></script>
+    <script src="app/ethereum/controller.verifyEthAddress.js"></script>
+    <!-- last css -->
+    <link rel="stylesheet" type="text/css" href="app/app.css">
+
 </head>
-<!--
-see:
-https://github.com/trufflesuite/truffle/issues/260
-https://gist.github.com/mpolci/52db63980897bcd19d77778045b20743
--->
-<!-- possible error:
-Uncaught Error: [ng:btstrpd]
-(App Already Bootstrapped)
-- check if we really need bootstrapping
--->
-<!--<script>-->
-
-<!--window.addEventListener(-->
-<!--'load',-->
-<!--function () {-->
-<!--angular.bootstrap(document, ['cryptonomica'])-->
-<!--}-->
-<!--)-->
-
-<!--</script>-->
 
 <div>
     <ui-view></ui-view>

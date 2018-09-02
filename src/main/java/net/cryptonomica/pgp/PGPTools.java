@@ -149,8 +149,19 @@ public class PGPTools {
             throws Exception {
 
         /* Validate fingerprint */
-        if (fingerprint == null || fingerprint.length() < 40 || fingerprint.length() > 40) {
-            throw new IllegalArgumentException("Invalid public key in request (fingerprint not valid)");
+        if (fingerprint == null || fingerprint.length() == 0) {
+            throw new IllegalArgumentException("fingerprint is null or empty string");
+        }
+
+        if (fingerprint.length() < 40) {
+            throw new IllegalArgumentException(fingerprint + " length is less than 40 symbols");
+        } else if (fingerprint.length() > 40) {
+            throw new IllegalArgumentException(fingerprint + " length is more than 40 symbols");
+        }
+
+        // see: https://stackoverflow.com/questions/33467536/how-to-check-if-a-string-is-made-only-of-letters-and-numbers
+        if (!fingerprint.matches("[a-zA-Z0-9]*")) {
+            throw new IllegalArgumentException("fingerprint can contain only letters and numbers");
         }
 
         /* Load PGPPublicKeyData from DB by fingerprint */
@@ -163,12 +174,12 @@ public class PGPTools {
                 .filter("fingerprintStr", fingerprint.toUpperCase())
                 .list();
 
-        LOG.warning("DS search result by fingerprint: " + GSON.toJson(pgpPublicKeyDataList));
+        LOG.warning("DB search result by fingerprint: " + GSON.toJson(pgpPublicKeyDataList));
         // if key not found trow an exception
         if (pgpPublicKeyDataList == null || pgpPublicKeyDataList.size() == 0) {
-            throw new IllegalArgumentException("Public PGP key with fingerprint"
+            throw new IllegalArgumentException("Public PGP key with fingerprint "
                     + fingerprint.toUpperCase()
-                    + "not found in DataBase");
+                    + " was not found in DataBase");
         }
         // check if there is only one key with given fingerprint in the database
         if (pgpPublicKeyDataList.size() > 1) {

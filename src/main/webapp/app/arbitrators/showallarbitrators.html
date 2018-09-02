@@ -1,60 +1,116 @@
-<div>
-    <header-main-menu></header-main-menu>
-    <navigation-menu></navigation-menu>
+<div id="contextWrap">
 
-    <div class="card card-block">
-        <!-- alert -->
-        <!-- http://www.quackit.com/bootstrap/bootstrap_4/tutorial/bootstrap_alerts.cfm -->
-        <div ng-show="resp.error.message" class="alert alert-danger" role="alert">
-            {{resp.error.message}}
+    <!-- left sidebar-->
+    <left-sidebar></left-sidebar>
+
+    <!--right sidebar-->
+    <right-sidebar></right-sidebar>
+
+    <div class="pusher">
+
+        <!--topHeaderMenu -->
+        <top-header-menu></top-header-menu>
+
+        <!-- ==== MAIN SECTION ====  -->
+
+        <div class="mainWrap navslide">
+
+            <div class="ui equal width left aligned padded grid stackable">
+
+                <!--Page Content-->
+
+                <div class="stretched row">
+
+                    <div class="column">
+
+                        <!-- Alerts -->
+                        <alerts></alerts>
+
+                        <div class="ui segments">
+
+                            <!-- Breadcrumb -->
+                            <div id="breadcrumb" class="ui segment">
+                                <div class="ui breadcrumb">
+                                    <a class="section" href="" ui-sref-active="active" ui-sref="home">Home</a>
+                                    <i class="right angle icon divider"></i>
+                                    <a class="section" href="" ui-sref-active="active"
+                                       ui-sref="arbitration">Arbitration</a>
+                                    <i class="right angle icon divider"></i>
+                                    <a class="section" href="" ui-sref-active="active" ui-sref="showallarbitrators">Arbitrators</a>
+                                    <!--<i class="right angle icon divider"></i>-->
+                                </div>
+                            </div>
+
+                            <div class="ui segment">
+
+                                <h3> List of recommended arbitrators: (TEST) </h3>
+
+                                <!-- alert -->
+                                <div id="alertDanger" ng-show="resp.error.message" class="ui negative message">
+                                    <i class="close icon" ng-click="resp.error.message=null"></i>
+                                    <div class="header">Error:</div>
+                                    <p>{{resp.error.message}}</p>
+                                </div>
+
+                                <!--  https://docs.angularjs.org/api/ng/directive/ngRepeat#iterating-over-object-properties
+                                <div ng-repeat="obj in collection track by $id(obj)">
+                                        {{obj.prop}}
+                                    </div>
+                                see: http://stackoverflow.com/questions/30907131/how-to-make-html-table-from-an-array-with-angular-js  -->
+                                <table class="ui selectable celled table" ng-show="resp.items">
+                                    <thead>
+                                    <tr>
+                                        <!--<th>Image</th>-->
+                                        <th>Last name</th>
+                                        <th>First name</th>
+                                        <th>Information</th>
+                                        <th>Profile</th>
+                                        <th>LinkedIn</th>
+                                        <th>Website</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="arbitratorGeneralView in resp.items">
+                                        <td>{{arbitratorGeneralView.lastName | titleCase}}</td>
+                                        <td>{{arbitratorGeneralView.firstName | titleCase}}</td>
+                                        <td>{{arbitratorGeneralView.arbitratorInfo}}</td>
+                                        <td>
+                                            <a href=""
+                                               ui-sref="viewprofile({ userId: arbitratorGeneralView.id })">
+                                                Show Profile
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="{{arbitratorGeneralView.linkedInProfileLink}}">
+                                                LinkedIn Profile
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="{{arbitratorGeneralView.webSiteLink}}">
+                                                website
+                                            </a>
+                                        </td>
+
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                        </div>
+
+                        <!-- FOOTER -->
+                        <footer-main></footer-main>
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
 
-        <h3> List of recommended arbitrators: (TEST) </h3>
-
-        <!--  https://docs.angularjs.org/api/ng/directive/ngRepeat#iterating-over-object-properties
-        <div ng-repeat="obj in collection track by $id(obj)">
-                {{obj.prop}}
-            </div>
-        see: http://stackoverflow.com/questions/30907131/how-to-make-html-table-from-an-array-with-angular-js  -->
-        <table class="table table-bordered table-hover" ng-show="resp.items">
-            <!-- for Bootstrap 4 table see:
-            http://www.quackit.com/bootstrap/bootstrap_4/tutorial/bootstrap_tables.cfm -->
-            <thead class="thead-default">
-            <tr>
-                <!--<th>Image</th>-->
-                <th>Last name</th>
-                <th>First name</th>
-                <th>Information</th>
-                <th>Profile</th>
-                <th>LinkedIn</th>
-                <th>Website</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="arbitratorGeneralView in resp.items">
-                <td class="capitalize">{{arbitratorGeneralView.lastName}}</td>
-                <td class="capitalize">{{arbitratorGeneralView.firstName}}</td>
-                <td>{{arbitratorGeneralView.arbitratorInfo}}</td>
-                <td>
-                    <a href=""
-                       ui-sref="viewprofile({ userId: arbitratorGeneralView.id })">
-                        Show Profile
-                    </a>
-                </td>
-                <td>
-                    <a href="{{arbitratorGeneralView.linkedInProfileLink}}">
-                        LinkedIn Profile
-                    </a>
-                </td>
-                <td>
-                    <a href="{{arbitratorGeneralView.webSiteLink}}">
-                        website
-                    </a>
-                </td>
-
-            </tr>
-            </tbody>
-        </table>
     </div>
-    <footer-main></footer-main>
+
 </div>
+

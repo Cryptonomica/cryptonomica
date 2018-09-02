@@ -1,47 +1,96 @@
-<header-main-menu></header-main-menu>
-<navigation-menu></navigation-menu>
+<div id="contextWrap">
 
-<div class="card card-block">
+    <!-- left sidebar-->
+    <left-sidebar></left-sidebar>
 
-    <!-- ERROR alert! -->
-    <div ng-show="result.error" class="alert alert-danger" role="alert">
-        {{result.error}}
+    <!--right sidebar-->
+    <right-sidebar></right-sidebar>
+
+    <div class="pusher">
+
+        <!--topHeaderMenu -->
+        <top-header-menu></top-header-menu>
+
+        <!-- ==== MAIN SECTION ====  -->
+
+        <div class="mainWrap navslide">
+
+            <div class="ui equal width left aligned padded grid stackable">
+
+                <!--Page Content-->
+
+                <div class="stretched row">
+
+                    <div class="column">
+
+                        <!-- Alerts -->
+                        <alerts></alerts>
+
+                        <div class="ui segments">
+
+                            <!-- Breadcrumb -->
+                            <div id="breadcrumb" class="ui segment">
+                                <div class="ui breadcrumb">
+                                    <a class="section" href="" ui-sref-active="active" ui-sref="home">Home</a>
+                                    <i class="right angle icon divider"></i>
+                                    <a class="section" href="" ui-sref-active="active" ui-sref="test">Offline
+                                        Verification Info</a>
+                                    <!--<i class="right angle icon divider"></i>-->
+                                </div>
+                            </div>
+
+                            <div class="ui segment">
+
+                                <!-- VERIFICATION INFO -->
+                                <!--
+                                verificationId
+                                verifiedOn
+                                verificationInfo
+                                verifiedByCryptonomicaUserId
+                                -->
+                                <table class="table table-bordered table-hover">
+                                    <tbody>
+
+                                    <tr>
+                                        <td><b>Verified on:</b></td>
+                                        <td>{{result.verifiedOn}}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><b>Verification info:</b></td>
+                                        <td>{{result.verificationInfo}}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><b>Verified by:</b></td>
+                                        <td>
+                                            <a href=""
+                                               title="Show user profile"
+                                               ui-sref="viewprofile({ userId: result.verifiedByCryptonomicaUserId })">
+                                                Show user profile
+                                            </a>
+                                        </td>
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                        </div>
+
+                        <!-- FOOTER -->
+                        <footer-main></footer-main>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
-
-    <!-- VERIFICATION INFO -->
-    <!--
-    verificationId
-    verifiedOn
-    verificationInfo
-    verifiedByCryptonomicaUserId
-    -->
-    <table class="table table-bordered table-hover">
-        <tbody>
-
-        <tr>
-            <td>Verified on:</td>
-            <td>{{result.verifiedOn}}</td>
-        </tr>
-
-        <tr>
-            <td>Verification info:</td>
-            <td>{{result.verificationInfo}}</td>
-        </tr>
-
-        <tr>
-            <td>Verified by:</td>
-            <td>
-                <a href=""
-                   title="Show user profile"
-                   ui-sref="viewprofile({ userId: result.verifiedByCryptonomicaUserId })">
-                    Show user profile
-                </a>
-            </td>
-        </tr>
-
-        </tbody>
-    </table>
 
 </div>
 
-<footer-main></footer-main>

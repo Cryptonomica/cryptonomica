@@ -5,7 +5,6 @@ var controller = angular.module('cryptonomica.controller', [
         'cryptonomica.controller.dashboard',
         'cryptonomica.controller.search',
         'cryptonomica.controller.viewprofile',
-        // 'cryptonomica.controller.showkey',
         'cryptonomica.controller.key',
         'cryptonomica.controller.verification',
         'cryptonomica.controller.showAllNotaries',
@@ -14,7 +13,9 @@ var controller = angular.module('cryptonomica.controller', [
         'cryptonomica.controller.onlineVerification',
         'cryptonomica.controller.onlineVerificationView',
         'cryptonomica.controller.ethereumVerification',
+        'cryptonomica.controller.verifyEthAddress',
         'cryptonomica.controller.openPGPOnline',
-        'cryptonomica.controller.test'
+        'cryptonomica.controller.test',
+        'cryptonomica.controller.arbitration'
     ]
 );

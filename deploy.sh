@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
+# to be able to deploy you have to be authorized:
+## gcloud auth login
 
 gcloud config set project cryptonomica-server
 
 gcloud app versions list
 # (max. 15 versions)
-# gcloud app versions delete ...
+# gcloud app versions delete ... (list separated by empty spaces, not commas)
 
 # see:
 # https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/appengine-java8/endpoints-v2-backend

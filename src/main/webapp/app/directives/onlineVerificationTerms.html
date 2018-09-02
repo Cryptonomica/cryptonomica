@@ -2,7 +2,7 @@
     <div class="card">
         <div class="card-header">
             <center>
-                <h5>Online key verification</h5>
+                <h2>Online key verification</h2>
             </center>
         </div>
         <div class="card-block">
@@ -11,7 +11,7 @@
                 <div id="acceptTermsText">
                     <md ng-include="'/app/onlineVerification/terms.md'"></md>
                 </div>
-
+                <br>
                 <fieldset class="form-group">
 
                     <!--<legend>accept online verification terms</legend>-->
@@ -27,8 +27,7 @@
                     </div>
 
 
-                    <button ng-click="acceptTerms()"
-                            role="button" type="button" class="btn btn-secondary">
+                    <button ng-click="acceptTerms()" class="ui button">
                         Accept
                     </button>
 
@@ -51,7 +50,8 @@
 
         </div>
     </div>
-    <button name="button" class="btn btn-secondary" role="button" ng-click="getOnlineVerification()">
+    <br>
+    <button name="button" class="ui button" ng-click="getOnlineVerification()">
         Next Step >>>
     </button>
     <br>

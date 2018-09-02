@@ -1,7 +1,5 @@
 package net.cryptonomica.returns;
 
-import com.googlecode.objectify.Key;
-import net.cryptonomica.entities.CryptonomicaUser;
 import net.cryptonomica.entities.PGPPublicKeyData;
 
 import java.io.Serializable;
@@ -17,7 +15,7 @@ public class PGPPublicKeyGeneralView implements Serializable {
     /* ----- */
     // @Id
     private String fingerprint; //.........................1
-    private String webSafeString; //.......................2
+    //    private String webSafeString; //.......................2
     private String cryptonomicaUserId; //..................3
     private String keyID; //...............................4
     private String userID; //..............................5
@@ -28,7 +26,7 @@ public class PGPPublicKeyGeneralView implements Serializable {
     private Date exp; //..................................10
     private Integer bitStrength; //.......................11
     private String asciiArmored; //.......................12
-    private Boolean verified; //off-line verification.....13 // legacy
+    // private Boolean verified; //off-line verification.....13 // legacy
     private Boolean active; //............................14
     private List<String> verificationsWebSafeStrings; //..15
     private List<Long> verificationIDs; // ...............16
@@ -54,16 +52,16 @@ public class PGPPublicKeyGeneralView implements Serializable {
 
         this.fingerprint = pgpPublicKeyData.getFingerprint();
 
-        if (pgpPublicKeyData.getWebSafeString() == null) {
-            this.webSafeString =
-                    Key.create(
-                            Key.create(CryptonomicaUser.class, pgpPublicKeyData.getCryptonomicaUserId()),
-                            PGPPublicKeyData.class,
-                            pgpPublicKeyData.getFingerprint()
-                    ).toWebSafeString();
-        } else {
-            this.webSafeString = pgpPublicKeyData.getWebSafeString();
-        }
+//        if (pgpPublicKeyData.getWebSafeString() == null) {
+//            this.webSafeString =
+//                    Key.create(
+//                            Key.create(CryptonomicaUser.class, pgpPublicKeyData.getCryptonomicaUserId()),
+//                            PGPPublicKeyData.class,
+//                            pgpPublicKeyData.getFingerprint()
+//                    ).toWebSafeString();
+//        } else {
+//            this.webSafeString = pgpPublicKeyData.getWebSafeString();
+//        }
 
         this.cryptonomicaUserId = pgpPublicKeyData.getCryptonomicaUserId();
         this.keyID = pgpPublicKeyData.getKeyID();
@@ -83,13 +81,14 @@ public class PGPPublicKeyGeneralView implements Serializable {
             this.asciiArmored = pgpPublicKeyData.getAsciiArmored().getValue();
         }
 
-        if (pgpPublicKeyData.getVerified() == null) {
-            this.verified = Boolean.FALSE;
-        } else {
-            this.verified = pgpPublicKeyData.getVerified();
-        }
+//        if (pgpPublicKeyData.getVerified() == null) {
+//            this.verified = Boolean.FALSE;
+//        } else {
+//            this.verified = pgpPublicKeyData.getVerified();
+//        }
 
         this.active = pgpPublicKeyData.getActive();
+
         this.verificationsWebSafeStrings = pgpPublicKeyData.getVerificationsWebSafeStrings();
 
         this.onlineVerificationFinished = pgpPublicKeyData.getOnlineVerificationFinished();
@@ -123,13 +122,13 @@ public class PGPPublicKeyGeneralView implements Serializable {
         this.fingerprint = fingerprint;
     }
 
-    public String getWebSafeString() {
-        return webSafeString;
-    }
-
-    public void setWebSafeString(String webSafeString) {
-        this.webSafeString = webSafeString;
-    }
+//    public String getWebSafeString() {
+//        return webSafeString;
+//    }
+//
+//    public void setWebSafeString(String webSafeString) {
+//        this.webSafeString = webSafeString;
+//    }
 
     public String getCryptonomicaUserId() {
         return cryptonomicaUserId;
@@ -211,13 +210,13 @@ public class PGPPublicKeyGeneralView implements Serializable {
         this.asciiArmored = asciiArmored;
     }
 
-    public Boolean getVerified() {
-        return verified;
-    }
-
-    public void setVerified(Boolean verified) {
-        this.verified = verified;
-    }
+//    public Boolean getVerified() {
+//        return verified;
+//    }
+//
+//    public void setVerified(Boolean verified) {
+//        this.verified = verified;
+//    }
 
     public Boolean getActive() {
         return active;

@@ -14,254 +14,251 @@
     );
 
     controller.controller(controller_name, [
-            '$scope',
-            '$sce',
-            '$rootScope',
-            '$http',
-            'GApi',
-            'GAuth',
-            'GData',
-            '$state',
-            'uiUploader',
-            '$log',
-            '$cookies',
-            '$timeout',
-            function regCtrl($scope,
-                             $sce,
-                             $rootScope,
-                             $http,
-                             GApi,
-                             GAuth,
-                             GData,
-                             $state,
-                             uiUploader,
-                             $log,
-                             $cookies,
-                             $timeout) {
+        '$scope',
+        '$sce',
+        '$rootScope',
+        '$http',
+        'GApi',
+        'GAuth',
+        'GData',
+        '$state',
+        'uiUploader',
+        '$log',
+        '$cookies',
+        '$timeout',
+        function regCtrl($scope,
+                         $sce,
+                         $rootScope,
+                         $http,
+                         GApi,
+                         GAuth,
+                         GData,
+                         $state,
+                         uiUploader,
+                         $log,
+                         $cookies,
+                         $timeout) {
 
-                // --- **** get user data
-                //$rootScope.getUserData(); // ? async -->
-                //if (!$rootScope.currentUser || !$rootScope.currentUser.loggedIn) {
-                //    $state.go('home');
-                //}
-                /*                GAuth.checkAuth().then(
-                 function () {
-                 $rootScope.getUserData(); // async?
-                 },
-                 function () {
-                 //$rootScope.getUserData();
-                 $log.error("[controller.registration.js] GAuth.checkAuth() - unsuccessful");
-                 $scope.alert = "User not logged in";
-                 }
-                 );*/
-                if (!$rootScope.currentUser) {
-                    GAuth.checkAuth().then(
-                        function () {
-                            $rootScope.getUserData(); // async?
-                        },
-                        function () {
-                            $log.debug('User not logged in');
-                            $state.go('landing');
-                        }
-                    );
+            $log.debug(controller_name, "started"); //
+            $log.info('$state');
+            $log.info($state);
+            $timeout($rootScope.progressbar.complete(), 1000);
+
+            /* --- Alerts */
+            $scope.alertDanger = null;  // red
+            $scope.alertWarning = null; // yellow
+            $scope.alertInfo = null;    // blue
+            $scope.alertSuccess = null; // green
+            $scope.alertMessage = {}; // grey
+
+            $scope.setAlertDanger = function (message) {
+                $scope.alertDanger = message;
+                $log.debug("$scope.alertDanger:", $scope.alertDanger);
+                // $scope.$apply(); not here
+                $scope.goTo("alertDanger");
+            };
+
+            $scope.setAlertWarning = function (message) {
+                $scope.alertWarning = message;
+                $log.debug("$scope.alertWarning:", $scope.alertWarning);
+                // $scope.$apply();
+                $scope.goTo("alertWarning");
+            };
+
+            $scope.setAlertInfo = function (message) {
+                $scope.alertInfo = message;
+                $log.debug("$scope.alertInfo:", $scope.alertInfo);
+                // $scope.$apply();
+                $scope.goTo("alertInfo");
+            };
+
+            $scope.setAlertSuccess = function (message) {
+                $scope.alertSuccess = message;
+                $log.debug("$scope.alertSuccess:", $scope.alertSuccess);
+                // $scope.$apply();
+                $scope.goTo("alertSuccess");
+            };
+
+            $scope.setAlertMessage = function (message, header) {
+                $scope.alertMessage = {};
+                $scope.alertMessage.header = header;
+                $scope.alertMessage.message = message;
+                $log.debug("$scope.alertMessage:", $scope.alertMessage);
+                // $scope.$apply();
+                $scope.goTo("alertMessage");
+            };
+
+            // ======== Terms of Use: start  =======
+            if (!$rootScope.currentUser.registeredCryptonomicaUser) {
+                // if ($rootScope.googleUser && !$rootScope.currentUser.registeredCryptonomicaUser) {
+                // if ($rootScope.currentUser.loggedIn && !$rootScope.currentUser.registeredCryptonomicaUser) {
+                $log.debug("[regCtrl] new user registration");
+                // see:
+                // https://stackoverflow.com/questions/27776174/type-error-cannot-read-property-childnodes-of-undefined
+                // https://stackoverflow.com/a/28630404/1697878
+
+                setTimeout(function () {
+                    $log.debug("show modal:");
+                    $log.debug($("#modalAcceptTerms"));
+                    $("#modalAcceptTerms").modal("show");
+                }, 0);
+
+            } else if (!$rootScope.currentUser.loggedIn) {
+                $log.debug("$rootScope.currentUser.loggedIn:", $rootScope.currentUser.loggedIn);
+            }
+
+            $scope.termsAccepted = false;
+            $scope.rejectTerms = function () {
+
+                $state.go('home');
+
+                // GAuth.logout()
+                //     .then(function (logoutResult) {
+                //         $log.debug('logoutResult:');
+                //         $log.debug(logoutResult);
+                //     })
+                //     .catch(function (error) {
+                //         $log.debug(error);
+                //     })
+                //     /* A finally callback will not receive any argument,
+                //     since there's no reliable means of determining if the promise was fulfilled or rejected.
+                //     This use case is for precisely when you do not care about the rejection reason,
+                //     or the fulfillment value, and so there's no need to provide it.*/
+                //     .finally(function () {
+                //         $rootScope.googleUser = null;
+                //         $rootScope.currentUser = null;
+                //         $state.go('home');
+                //     })
+
+            }; // end of $scope.rejectTerms
+
+            $scope.acceptTerms = function () {
+                $log.debug("terms accepted");
+                $scope.termsAccepted = true;
+            };
+
+            // ======== Terms of Use: end =======
+
+            /* ========= KEY upload start: */
+            $scope.regForm = {};
+            $scope.privateKeyPasted = false;
+
+            $scope.verifyPublicKeyData = function () {
+
+                // debug:
+                $log.debug('$scope.regForm.armoredPublicPGPkeyBlock: '
+                    + $scope.regForm.armoredPublicPGPkeyBlock
+                );
+
+                $scope.pgpPublicKeyData = null;
+                $scope.pgpPublicKeyDataError = null;
+                $scope.privateKeyPasted = false;
+
+                // $scope.pgpPublicKeyDataError = null; // use this:
+                if ($rootScope.stringIsNullUndefinedOrEmpty($scope.regForm.armoredPublicPGPkeyBlock)) {
+                    $scope.pgpPublicKeyDataError = null;
+                    return;
                 }
-                //
-                $scope.dateOptions = {changeYear: true, changeMonth: true, yearRange: '1900:-0'};
-                // --------------------------------------------------------------
-                $scope.regForm = {};
-                $scope.pgpPublicKeyUploadForm = {};
-                $scope.readFileContent = function ($fileContent) {
-                    // $scope.content = $fileContent;
-                    $scope.regForm.armoredPublicPGPkeyBlock = $fileContent;
-                    $scope.pgpPublicKeyUploadForm.asciiArmored = $fileContent;
-                    $log.debug('$scope.regForm.armoredPublicPGPkeyBlock: '
-                        + $scope.regForm.armoredPublicPGPkeyBlock
-                    );
-                    $log.debug(' $scope.pgpPublicKeyUploadForm.asciiArmored: '
-                        + $scope.pgpPublicKeyUploadForm.asciiArmored
-                    );
-                };
 
-                // --------------------------------------------------------------
-                $scope.getCsUploadURL = function () {
-                    GApi.executeAuth('uploadAPI', 'getCsUploadURL')
-                        .then(
-                            function (resp) {
-                                $scope.imageUploadUrl = $sce.trustAsResourceUrl(resp.imageUploadUrl);
-                                $scope.imageUploadKey = resp.imageUploadKey;
-                                console.log("$scope.getCsUploadURL resp:");
-                                console.log(resp);
-                            }, function (error) {
-                                console.log("$scope.getCsUploadURL error:");
-                                console.log(error);
-                            }
-                        )
-                }; // TODO: do we need this?
+                if ($scope.regForm.armoredPublicPGPkeyBlock.includes("PGP PRIVATE KEY BLOCK")) {
+                    $scope.pgpPublicKeyDataError = "(!) THIS IS PRIVATE KEY, DO NOT UPLOAD (!)";
+                    // $scope.$apply(); not here
+                    return;
+                }
 
-                /*    https://github.com/angular-ui/ui-uploader     */
-                $scope.btn_remove = function (file) {
-                    $log.info('deleting=' + file);
-                    uiUploader.removeFile(file);
-                };
-                $scope.btn_clean = function () {
-                    uiUploader.removeAll();
-                };
+                try {
 
-                $scope.uploadPic = function () {
-                    $rootScope.progressbar.start(); // <<<<<<<<<<<
-                    $scope.resp = {};
-                    $scope.resp.error = null;
-                    GApi.executeAuth('uploadAPI', 'getCsUploadURL')
-                        .then(
-                            function (resp) {
-                                $scope.imageUploadUrl = $sce.trustAsResourceUrl(resp.imageUploadUrl);
-                                $scope.imageUploadKey = resp.imageUploadKey;
-                                console.log("$scope.getCsUploadURL resp:");
-                                console.log(resp);
-                                $scope.btn_upload(); // <<<
-                            }, function (error) {
-                                console.log("$scope.getCsUploadURL error:");
-                                console.log(error);
-                            }
-                        );
-                    $rootScope.checkAuth();
-                    //$rootScope.$apply(); // - no
-                    $timeout($rootScope.progressbar.complete(), 1000);
-                };
+                    $scope.pgpPublicKeyData = $rootScope.readPublicKeyData($scope.regForm.armoredPublicPGPkeyBlock);
 
-                $scope.btn_upload = function () {
-                    $log.info('uploading...');
-                    uiUploader.startUpload({
-                        //url: 'http://realtica.org/ng-uploader/demo.html',
-                        url: $scope.imageUploadUrl,
-                        //concurrency: 1, //
-                        options: {
-                            withCredentials: true
-                        },
-                        headers: {
-                            //'Accept': 'application/json'
-                            'imageUploadKey': $scope.imageUploadKey,
-                            // see: https://stackoverflow.com/questions/40516226/access-control-allow-origin-issue-with-api
-                            'Access-Control-Allow-Origin': '*'
-                        },
-                        onProgress: function (file) {
-                            $log.info(file.name + '=' + file.humanSize);
-                            $scope.$apply();
-                        },
-                        onCompleted: function (file, response) {
-                            $log.info(file + 'response' + response);
-                            $rootScope.checkAuth();
-                            //$rootScope.userCurrentImageLink = $sce.trustAsResourceUrl($rootScope.userCurrentImageLink);
-                            //
-                        }
-                    });
-                }; // end btn_upload
+                } catch (error) {
+                    $log.debug(error);
+                    $scope.pgpPublicKeyDataError = "This is not a valid OpenPGP public key";
+                    // $rootScope.pgpPublicKeyDataError = "This is not a valid OpenPGP public key (" + error + ")";
+                    return;
+                }
 
-                $scope.files = [];
-                var element = document.getElementById('file1');
-                element.addEventListener('change', function (e) {
-                    var files = e.target.files;
-                    uiUploader.addFiles(files);
-                    $scope.files = uiUploader.getFiles();
-                    $scope.$apply();
-                });
+                if ($scope.stringIsNullUndefinedOrEmpty($scope.pgpPublicKeyData.userId)) {
+                    $scope.pgpPublicKeyDataError = "User ID is empty";
+                    return;
+                }
 
-                /* -------------------------------------------------*/
+                if ($scope.pgpPublicKeyData.bitsSize < 2048) {
+                    $scope.pgpPublicKeyDataError = "Key size is " + $scope.pgpPublicKeyData.bitsSize + "but min. 2048 required";
+                    return;
+                }
 
-                $scope.refreshPhoto = function () {
-                    $rootScope.checkAuth();
-                    $state.go('registration');
-                };
+                return true;
 
-                $scope.registerNewUser = function () {
-                    $rootScope.progressbar.start(); // <<<<<<<<<<<
-                    if ($scope.resp && $scope.resp.error) {
-                        $scope.resp.error = null;
+            };
+
+            $scope.readFileContent = function ($fileContent) {
+                $scope.regForm.armoredPublicPGPkeyBlock = $fileContent;
+                $scope.verifyPublicKeyData();
+            };
+
+            $scope.dateOptions = {changeYear: true, changeMonth: true, yearRange: '1900:-0'};
+
+            $scope.registerNewUser = function () {
+
+                $log.debug("$scope.regForm:");
+                $log.debug($scope.regForm);
+
+                if ($rootScope.stringIsNullUndefinedOrEmpty($scope.regForm.armoredPublicPGPkeyBlock)) {
+                    $scope.setAlertDanger("Please provide your public key");
+                    return;
+                }
+
+                if ($scope.verifyPublicKeyData) {
+
+                    if ($scope.privateKeyPasted) {
+                        $scope.setAlertDanger("Do not upload private key");
+                        return;
                     }
-                    $log.info($scope.regForm);
+
+                    if (!$scope.regForm.birthday) {
+                        $scope.setAlertDanger("Birthdate can not be empty");
+                        return;
+                    }
+
+                    $rootScope.progressbar.start(); // <<<<<<<<<<<
+
+                    if ($rootScope.alertWarning) {
+                        $rootScope.alertWarning = null;
+                    }
+
                     GApi.executeAuth('newUserRegistrationAPI', 'registerNewUser', $scope.regForm)
                         .then(
                             function (resp) {
                                 $scope.resp = resp; //
+                                console.log("resp: ");
+                                $log.info(resp);
                                 $rootScope.currentUser = resp.userProfileGeneralView;
-                                console.log("resp: ");
-                                $log.info(resp);
-                                $timeout($rootScope.progressbar.complete(), 1000);
                                 $rootScope.checkAuth();
+                                $timeout($rootScope.progressbar.complete(), 1000);
+                                $state.go('home'); // TODO: <<<<
+
                             }, function (resp) {
-                                console.log("error: ");
+                                console.log("error (resp): ");
                                 $log.info(resp);
-                                $scope.resp = resp; // resp.message or resp.error.message - java.lang.Exception:
-                                $timeout($rootScope.progressbar.complete(), 1000);
+                                // $scope.pgpPublicKeyDataError = resp;
+                                $scope.setAlertDanger(resp.message.replace('java.lang.Exception: ', ''));
                                 $rootScope.checkAuth();
+                                $timeout($rootScope.progressbar.complete(), 1000);
                             }
-                        );
-                    // $rootScope.checkAuth();
-                    //$scope.getCsUploadURL();
-                }; // end registerNewUser
-
-                /* ---- NEW KEY UPLOAD */
-                $scope.keyUploadFn = function () {
-                    $rootScope.progressbar.start(); // <<<<<<<<<<<
-                    if ($scope.resp && $scope.resp.error) {
-                        $scope.resp.error = null;
-                    }
-                    $scope.asciiArmoredKeyError = null;
-
-                    $log.info($scope.pgpPublicKeyUploadForm);
-
-                    // check if provided text is valid OpenPGP key:
-                    if ($rootScope.stringIsNullUndefinedOrEmpty($scope.pgpPublicKeyUploadForm.asciiArmored)) {
-                        $scope.asciiArmoredKeyError = 'Key form is empty';
-                        $timeout($rootScope.progressbar.complete(), 1000);
-                        // $scope.$apply();
-                        return;
-                    }
-                    try {
-                        var readArmored = openpgp.key.readArmored(
-                            $scope.pgpPublicKeyUploadForm.asciiArmored
-                        );
-                        $log.debug(readArmored);
-                        $log.debug('readArmored.keys.length : ', readArmored.keys.length);
-                        if (readArmored.keys.length === 0) {
-                            $log.debug('readArmored.keys.length === 0');
-                            $scope.asciiArmoredKeyError = "This is not valid OpenPGP key";
+                        )
+                        .catch(function (error) {
+                            console.log("error (catch): ");
+                            $log.info(error);
+                            $scope.pgpPublicKeyDataError = error;
+                            $scope.setAlertDanger(error.message.replace('java.lang.Exception: ', ''));
+                            $rootScope.checkAuth();
                             $timeout($rootScope.progressbar.complete(), 1000);
-                            // $scope.$apply();
-                            return;
-                        }
-                    } catch (error) {
-                        $log.debug(error.message);
-                        $scope.asciiArmoredKeyError =
-                            "This is not valid OpenPGP key";
-                        $timeout($rootScope.progressbar.complete(), 1000);
-                        // $scope.$apply();
-                        return;
-                    }
+                        });
+                } else {
+                    $scope.setAlertDanger("Key can not be uploaded, please check key data and provide correct public key");
+                }
 
-                    GApi.executeAuth('pgpPublicKeyAPI', 'uploadNewPGPPublicKey',
-                        $scope.pgpPublicKeyUploadForm // -> net.cryptonomica.forms.PGPPublicKeyUploadForm
-                    )
-                        .then(
-                            function (resp) {
-                                $scope.resp = resp;
-                                // net.cryptonomica.returns.PGPPublicKeyUploadReturn :
-                                // String messageToUser; // -> resp.messageToUser in alert
-                                // PGPPublicKeyGeneralView pgpPublicKeyGeneralView;
-                                console.log("resp: ");
-                                $log.info(resp);
-                                $timeout($rootScope.progressbar.complete(), 1000);
-                            }, function (resp) {
-                                console.log("error: ");
-                                $log.info(resp);
-                                $scope.resp = resp; // resp.message or resp.error.message - java.lang.Exception:
-                                $timeout($rootScope.progressbar.complete(), 1000);
-                            }
-                        );
+            }; // end registerNewUser
 
-                }; // end of $scope.keyUpload
-
-            }
-        ]
-    );
+        }]);
 })();

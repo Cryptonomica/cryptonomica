@@ -47,7 +47,8 @@
                                $anchorScroll,
                                $stateParams) {
 
-            $log.info(controller_name, " ver. 01 started");
+            $log.debug(controller_name, "started"); //
+            $timeout($rootScope.progressbar.complete(), 1000);
 
             if (!$rootScope.currentUser) {
                 GAuth.checkAuth().then(
@@ -68,6 +69,10 @@
             $scope.alertWarning = null; // yellow
             $scope.alertInfo = null;    // blue
             $scope.alertSuccess = null; // green
+            //
+            $scope.setFlag = function () {
+                $scope.flag = [$scope.nationality.toLowerCase(), 'flag']
+            };
             //
             $scope.error = {};
             $scope.getOnlineVerificationError = false;
@@ -153,8 +158,11 @@
                             $anchorScroll();
                         } else if ($scope.onlineVerification.onlineVerificationFinished) {
                             $scope.alertInfo = 'You entered all required data.'
-                                + ' Please wait for data verification by our compliance officer.';
+                                + ' Please wait for data verification by our compliance officer.'
+                                + " We'll send a message to "
+                                + $rootScope.currentUser.email;
                             $location.hash('alertInfo');
+
                             $anchorScroll();
                         } else {
                             // check current verification step:
@@ -233,7 +241,8 @@
                                     $log.info('uploading...');
                                     uiUploader.startUpload({
                                         //url: 'http://realtica.org/ng-uploader/demo.html',
-                                        url: $sce.trustAsResourceUrl('/docs'),
+                                        url: $sce.trustAsResourceUrl('https://cryptonomica-server.appspot.com/docs'),
+                                        // url: $sce.trustAsResourceUrl('/docs'),
                                         //concurrency: 1, //
                                         options: {
                                             withCredentials: true
@@ -475,7 +484,8 @@
             $scope.sendSms = function () {
                 $rootScope.progressbar.start(); // <<<<<<<<<<<
                 $log.info('$scope.sendSms ...');
-                GApi.executeAuth('onlineVerificationAPI',
+                GApi.executeAuth(
+                    'onlineVerificationAPI',
                     'sendSms',
                     {
                         "fingerprint": $stateParams.fingerprint,

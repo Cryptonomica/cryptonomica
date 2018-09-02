@@ -1,38 +1,145 @@
-<header-main-menu></header-main-menu>
+<div id="contextWrap">
 
-<div class="container">
-    <h5>Testing Directives</h5>
+    <!-- left sidebar-->
+    <left-sidebar></left-sidebar>
 
-    <test-directive-1></test-directive-1>
+    <!--right sidebar-->
+    <right-sidebar></right-sidebar>
 
-    <test-directive-2></test-directive-2>
+    <div class="pusher">
 
-    <hr>
+        <!--topHeaderMenu -->
+        <top-header-menu></top-header-menu>
 
-    <h5>
-        Buttons:
-    </h5>
+        <!-- ==== MAIN SECTION ====  -->
 
-    <!-- Provides extra visual weight and identifies the primary action in a set of buttons -->
-    <button type="button" class="btn btn-primary">Primary</button>
+        <div class="mainWrap navslide">
 
-    <!-- Secondary, outline button -->
-    <button type="button" class="btn btn-secondary">Secondary</button>
+            <div class="ui equal width left aligned padded grid stackable">
 
-    <!-- Indicates a successful or positive action -->
-    <button type="button" class="btn btn-success">Success</button>
+                <!--Page Content-->
 
-    <!-- Contextual button for informational alert messages -->
-    <button type="button" class="btn btn-info">Info</button>
+                <div class="stretched row">
 
-    <!-- Indicates caution should be taken with this action -->
-    <button type="button" class="btn btn-warning">Warning</button>
+                    <div class="column">
 
-    <!-- Indicates a dangerous or potentially negative action -->
-    <button type="button" class="btn btn-danger">Danger</button>
+                        <!-- Alerts -->
+                        <alerts></alerts>
 
-    <!-- Deemphasize a button by making it look like a link while maintaining button behavior -->
-    <button type="button" class="btn btn-link">Link</button>
+                        <div class="ui segments">
+
+                            <!-- Breadcrumb -->
+                            <div id="breadcrumb" class="ui segment">
+                                <div class="ui breadcrumb">
+                                    <a class="section" href="" ui-sref-active="active" ui-sref="home">Home</a>
+                                    <i class="right angle icon divider"></i>
+                                    <a class="section" href="" ui-sref-active="active" ui-sref="test">Test</a>
+                                    <!--<i class="right angle icon divider"></i>-->
+                                </div>
+                            </div>
+
+                            <div class="ui segment">
+                                <h2>Test</h2>
+                                <p>
+                                    Content goes here
+                                </p>
+                            </div>
+
+                            <div class="ui segment">
+                                <h2>Examples</h2>
+
+                                <div class="ui icon message">
+                                    <i class="notched circle loading icon"></i>
+                                    <div class="content">
+                                        <div class="header">
+                                            Just one second
+                                        </div>
+                                        <p>We're fetching that content for you.</p>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="ui segment">
+
+                                <form class="ui form">
+
+                                    <div class="field">
+
+                                        <label>Message</label>
+                                        <input type="text"
+                                               name="message"
+                                               placeholder="type your message..."
+                                               ng-model="message">
+                                    </div>
+
+                                    <!--<div>-->
+                                    <!--<p>{{message}}</p>-->
+                                    <!--<br>-->
+                                    <!--</div>-->
+
+                                    <button class="ui negative basic button" type="submit"
+                                            ng-click="setAlertDanger(message)">
+                                        Set Alert Danger
+                                    </button>
+                                    <button class="ui yellow basic button" type="submit"
+                                            ng-click="setAlertWarning(message)">
+                                        Set Alert Warning
+                                    </button>
+                                    <button class="ui primary basic button" type="submit"
+                                            ng-click="setAlertInfo(message)">
+                                        Set Alert Info
+                                    </button>
+                                    <button class="ui positive basic button" type="submit"
+                                            ng-click="setAlertSuccess(message)">
+                                        Set Alert Success
+                                    </button>
+                                    <button class="ui basic button" type="submit"
+                                            ng-click='setAlertMessage(message, "Message:")'>
+                                        Set Alert Message
+                                    </button>
+
+                                    <br>
+
+                                    <button class="ui negative button" type="submit"
+                                            ng-click="setAlertDanger(message)">
+                                        Set Alert Danger
+                                    </button>
+                                    <button class="ui yellow button" type="submit"
+                                            ng-click="setAlertWarning(message)">
+                                        Set Alert Warning
+                                    </button>
+                                    <button class="ui primary button" type="submit"
+                                            ng-click="setAlertInfo(message)">
+                                        Set Alert Info
+                                    </button>
+                                    <button class="ui positive button" type="submit"
+                                            ng-click="setAlertSuccess(message)">
+                                        Set Alert Success
+                                    </button>
+                                    <button class="ui button" type="submit"
+                                            ng-click='setAlertMessage(message, "Message:")'>
+                                        Set Alert Message
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                        <!-- FOOTER -->
+                        <footer-main></footer-main>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
-<footer-main></footer-main>
+

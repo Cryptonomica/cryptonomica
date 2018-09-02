@@ -1,94 +1,57 @@
-<div class="container-fluid">
-    <header-main-menu></header-main-menu>
+<div id="contextWrap">
 
-    <div>
-        <!-- Navigation -->
-        <div class="btn-group" role="group" ng-show="currentUser.registeredCryptonomicaUser">
-            <a class="btn btn-secondary active" href="/#" role="button">Home</a>
-            <a class="btn btn-secondary" href="/#/dashboard" role="button">Dashboard/Payments</a>
-            <a class="btn btn-secondary" href="/#/registration" role="button">Registration</a>
-            <a class="btn btn-secondary" href="/#/search" role="button">Search</a>
-            <a class="btn btn-secondary" href="/#/showallarbitrators" role="button">Show arbitrators</a>
-            <a class="btn btn-secondary" href="/#/proofOfExistence" role="button">Proof of existence</a>
-        </div>
-        <!-- -->
+    <!-- left sidebar-->
+    <left-sidebar></left-sidebar>
 
-        <div class="card card-block">
+    <!--right sidebar-->
+    <right-sidebar></right-sidebar>
 
-            <!-- Sandbox alert: -->
-            <div class="alert alert-warning alert-dismissible"
-                 role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                        aria-hidden="true">×</span></button>
-                Web-server is in beta, please send bug reports, questions or feature suggestions on
-                <a href="https://github.com/Cryptonomica/cryptonomica/issues">Github</a>
-                <br>
-                <!--
-                We have also 'sandbox' server on
-                <a href="https://cryptonomica.work">cryptonomica.work</a>
-                to play with.-->
-            </div>
+    <div class="pusher">
 
-            <md ng-include="'/app/home/content.home.md'"></md>
-        </div>
-        <!-- Notaries start -->
-        <button class="btn btn-secondary" role="button" id="searchForNotariesBtn" ng-click="searchForNotaries()">
-            Show Cryptonomica accredited notaries
-        </button>
-        <button class="btn btn-secondary" role="button" id="clearSearchForNotariesBtn"
-                ng-click="clearSearchForNotaries()">
-            Clear
-        </button>
-        <!-- -->
-        <div class="card card-block">
+        <!--topHeaderMenu -->
+        <top-header-menu></top-header-menu>
 
-            <!-- alert -->
-            <!-- http://www.quackit.com/bootstrap/bootstrap_4/tutorial/bootstrap_alerts.cfm -->
-            <div ng-show="resp.error.message" class="alert alert-danger" role="alert">
-                {{resp.error.message}}
-            </div>
+        <!--maincontent-->
+        <div class="mainWrap navslide">
 
-            <!--  https://docs.angularjs.org/api/ng/directive/ngRepeat#iterating-over-object-properties
-            <div ng-repeat="obj in collection track by $id(obj)">
-                    {{obj.prop}}
+            <div class="ui equal width left aligned padded grid stackable">
+                <!--Site Content-->
+                <div class="stretched row">
+
+                    <div class="column">
+
+                        <div class="ui segments">
+
+                            <div class="ui segment">
+                                <div class="ui breadcrumb">
+                                    <a class="section">Home</a>
+                                    <i class="right angle icon divider"></i>
+                                    <!--<a class="section">Store</a>-->
+                                    <!--<i class="right angle icon divider"></i>-->
+                                    <!--<div class="active section">T-Shirt</div>-->
+                                </div>
+                            </div>
+
+                            <div class="ui segment">
+                                <md ng-include="'/app/home/content.home.md'"></md>
+                                <br>
+                            </div>
+
+                        </div>
+                        <!-- FOOTER -->
+                        <footer-main></footer-main>
+
+                    </div>
+
                 </div>
-            see: http://stackoverflow.com/questions/30907131/how-to-make-html-table-from-an-array-with-angular-js  -->
-            <table class="table table-bordered table-hover" ng-show="resp.items">
-                <!-- for Bootstrap 4 table see:
-                http://www.quackit.com/bootstrap/bootstrap_4/tutorial/bootstrap_tables.cfm -->
-                <thead class="thead-default">
-                <tr>
-                    <th>Image</th>
-                    <th>Last name</th>
-                    <th>First name</th>
-                    <th>Information</th>
-                    <th>More info</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="notaryGeneralView in resp.items">
-                    <td><img ng-src="{{notaryGeneralView.userProfileGeneralView.userCurrentImageLink}}"
-                             class="img-thumbnail"
-                             title="{{notaryGeneralView.userProfileGeneralView.lastName}}"
-                             style="height: 100px; width:auto"
-                    >
 
-                    </td>
-                    <td class="capitalize">{{notaryGeneralView.userProfileGeneralView.lastName}}</td>
-                    <td class="capitalize">{{notaryGeneralView.userProfileGeneralView.firstName}}</td>
-                    <td>{{notaryGeneralView.notaryInfo}}</td>
-                    <td>
-                        <a href=""
-                           ui-sref="viewprofile({ userId: notaryGeneralView.userProfileGeneralView.userId })">
-                            Show Profile
-                        </a>
-                        <!--<a href="" ng-click="">show</a>-->
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            </div>
+
         </div>
-        <!-- Notaries end -->
+
     </div>
-    <footer-main></footer-main>
+
 </div>
+
+<!-- interface -->
+<!--<script src="/app/theme/main.js"></script>-->

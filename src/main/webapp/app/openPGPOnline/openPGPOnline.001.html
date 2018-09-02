@@ -1,0 +1,216 @@
+<!--
+use this id to access $scope in browser console:
+angular.element(document.getElementById('openPGPonlineCtrl')).scope();
+for example: $scope = angular.element(document.getElementById('ethVerificationCtrl')).scope();
+-->
+
+<div id="openPGPOnline">
+    <header-main-menu></header-main-menu>
+    <navigation-menu></navigation-menu>
+    <alerts></alerts>
+
+    <!-- ---- OpenPGP JS --- -->
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/openpgp/2.6.0/openpgp.min.js"-->
+    <!--integrity="sha256-DIFHONFgXJ2Z/EIiFAzymz4x2z4Ge0K2mlxaxv7zitg=" crossorigin="anonymous"></script>-->
+    <!-- openPGP.js link moved to index.html -->
+
+    <!-- File saver -->
+    <!-- https://github.com/eligrey/FileSaver.js -->
+    <!-- https://eligrey.com/blog/saving-generated-files-on-the-client-side/ -->
+    <!-- https://eligrey.com/demos/FileSaver.js/ -->
+    <script src="https://cdn.rawgit.com/eligrey/Blob.js/0cef2746414269b16834878a8abc52eb9d53e6bd/Blob.js"></script>
+    <script src="https://cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d7691013401e171014e89/FileSaver.min.js"></script>
+
+    <!--<script src="openPGPOnline.js"></script>-->
+    <script src="app/openPGPOnline/openPGPOnline.js"></script>
+
+    <!-- ---- main html  ---- -->
+
+    <div class="container">
+        <!--  -->
+        <div class="line"></div>
+        <h1>OpenPGP Online</h1>
+        <hr>
+        <!--  -->
+        <button id="useMockupData">
+            <i class="fa fa-arrow-down"></i>&nbsp;
+            (for testing only) Use mockup data
+        </button>
+        <br><br>
+        <!-- Key options BEGIN -->
+        <h5>Password for private key:</h5>
+        <textarea id="passphrase" rows="1" cols="71" placeholder="this is a very secret password"></textarea>
+        <div><strong>save the password in a safe place, private key can not be used without password</strong></div>
+        <h5>First name:</h5>
+        <textarea id="firstName" rows="1" cols="71" placeholder="John"></textarea>
+        <h5>Last name:</h5>
+        <textarea id="lastName" rows="1" cols="71" placeholder="Doe"></textarea>
+        <h5>User email:</h5>
+        <textarea id="userEmail" rows="1" cols="71" placeholder="john.doe@gmail.com"></textarea>
+        <h5>Valid for (years):</h5>
+        <input id="expire_in" type="number" min="1" max="10" placeholder="1" value="1">
+        <h5>Key size (strength) in bits:</h5>
+        <input id="numBits" input type="number" min="1024" max="4096" step="1024" placeholder="2048" value="2048">
+        <!-- Key options END -->
+
+        <div class="line"></div>
+        <div id="generateKeyOptionsMessage"></div>
+        <div class="line"></div>
+
+        <!-- generate keys buttons-->
+        <!--
+        <button id="generateKeysKbpgp">
+            <i class="fa fa-key"></i>&nbsp;Generate New Keys (kbpgp.js)
+        </button>
+        -->
+        <button id="generateKeysOpenPGPjs">
+            <i class="fa fa-key"></i>&nbsp;Generate New Keys
+        </button>
+        <div id="statusMessage"></div>
+
+        <!-- PUBLIC KEY -->
+        <h3>Public Key:</h3>
+        <button id="savePublicKeyToLocalStorageButton">Save to local browser storage</button>
+        <button id="removePublicKeyFromLocalStorageButton">Remove from local browser storage</button>
+        <div id="publicKeyLocalStorageMessage"></div>
+        <textarea id="pubkeyShow" rows="15" cols="71"></textarea>
+        <br>
+        <button id="readPublicKeyDataOpenPGPjs">Read Public Key Data</button>
+        <button id="savePublicKeyAsFile">Save as file</button>
+        <button id="copyPublicKeyToClipboard">Copy to clipboard</button>
+        <!--
+        &nbsp;
+        <button id="readPublicKeyDataKbpgp">Read Public Key Data with Kbpgp.js (? broken)</button>
+        &nbsp;
+        -->
+        <table>
+            <tr>
+                <td>Key ID: &nbsp;</td>
+                <td id="keyId"></td>
+            </tr>
+            <tr>
+                <td>Fingerprint: &nbsp;</td>
+                <td id="fingerprint"></td>
+            </tr>
+            <tr>
+                <td>User ID:</td>
+                <td id="userId"></td>
+            </tr>
+            <tr>
+                <td>Created:</td>
+                <td id="created"></td>
+            </tr>
+            <tr>
+                <td>Valid until:</td>
+                <td id="exp"></td>
+            </tr>
+            <tr>
+                <td>Key size (strength) in bits:</td>
+                <td id="bitsSize"></td>
+            </tr>
+        </table>
+
+        <!-- PRIVATE KEY -->
+        <h3>Private Key:</h3>
+        <button id="savePrivateKeyToLocalStorageButton">Save to local browser storage</button>
+        <button id="removePrivateKeyFromLocalStorageButton">Remove from local browser storage</button>
+        <div id="privateKeyLocalStorageMessage"></div>
+        <textarea id="privkeyShow" rows="15" cols="71"></textarea>
+        <br>
+        <button id="readPrivateKeyDataOpenPGPjs">Read Private Key Data</button>
+        <button id="savePrivateKeyAsFile">Save as file</button>
+        <button id="copyPrivateKeyToClipboard">Copy to clipboard</button>
+        <br>
+        <table>
+            <tr>
+                <td>Key ID: &nbsp;</td>
+                <td id="keyIdPrivate"></td>
+            </tr>
+            <tr>
+                <td>Fingerprint: &nbsp;</td>
+                <td id="fingerprintPrivate"></td>
+            </tr>
+            <tr>
+                <td>User ID:</td>
+                <td id="userIdPrivate"></td>
+            </tr>
+            <tr>
+                <td>Created:</td>
+                <td id="createdPrivate"></td>
+            </tr>
+            <tr>
+                <td>Valid until:</td>
+                <td id="expPrivate"></td>
+            </tr>
+            <tr>
+                <td>Key size (strength) in bits:</td>
+                <td id="bitsSizePrivate"></td>
+            </tr>
+        </table>
+
+        <!-- Use your keys -->
+        <div class="line"></div>
+        <h4>Use your keys:</h4>
+        <h3>
+            <i class="fa fa-file-text-o"></i>
+            Text to encrypt or sign:
+        </h3>
+        <textarea id="messageText" rows="3" cols="71"
+                  placeholder="this is a test message we want to encrypt or sign"></textarea>
+        <br>
+        <button id="encrypt">
+            <i class="fa fa-lock"></i>&nbsp;
+            Encrypt
+        </button>
+        <button id="signMessage">
+            <i class="fa fa-pencil-square-o"></i>&nbsp;
+            Sign
+        </button>
+        <div id="signMessageError"></div>
+        <br>
+        <h5>encrypted text:</h5>
+        <textarea id="encryptedText" rows="10" cols="71"></textarea>
+        <br>
+        <button id="saveEncryptedTextAsFile">Save as file</button>
+        <button id="copyEncryptedTextToClipboard">Copy to clipboard</button>
+
+        <!-- Signed text -->
+        <br><br>
+        <h5>signed text:</h5>
+        <textarea id="signedMessage" rows="10" cols="71"></textarea>
+        <br>
+        <button id="checkSignatureButton">
+            <!--<i class="fa fa-unlock"></i>&nbsp;-->
+            Check signature
+        </button>
+        <button id="saveSignedMessageAsFile">Save as file</button>
+        <button id="copySignedMessageToClipboard">Copy to clipboard</button>
+        <br>
+        <div id="checkSignatureResult"></div>
+
+        <!-- Decrypted message   -->
+        <br>
+        <button id="decryptButton">
+            <i class="fa fa-unlock"></i>&nbsp;
+            Decrypt (Private Key and its password required)
+        </button>
+        <br>
+        <textarea id="decryptedText" rows="10" cols="71"></textarea>
+        <br>
+        <button id="saveDecryptedTextAsFile">Save as file</button>
+        <button id="copyDecryptedTextToClipboard">Copy to clipboard</button>
+        <div class="line"></div>
+        <br>
+        <hr>
+        All operations with keys on this page are made only in the browser without transferring data to the server. You
+        can view the page code on
+        <a href="app/openPGPOnline/openPGPOnline.js">app/openPGPOnline/openPGPOnline.js</a>
+        You can also use <a href="https://ageyev.github.io/crypto/openpgp/">ageyev.github.io/crypto/openpgp/</a> with
+        the same functionality.
+        <hr>
+
+    </div>
+
+    <!-- ---- footer ---- -->
+    <footer-main></footer-main>
+</div>

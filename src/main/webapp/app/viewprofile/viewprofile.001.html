@@ -1,0 +1,235 @@
+<header-main-menu></header-main-menu>
+<navigation-menu></navigation-menu>
+
+<div class="card card-block">
+    <!--  -->
+    <div ng-show="alert" class="alert alert-danger" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+        </button>
+        {{alert}}
+    </div>
+    <div ng-show="error.message" class="alert alert-danger" role="alert">
+        <!--            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">×</span></button>
+            -->
+        {{error.message}}
+    </div>
+    <!-- TODO: to directive -->
+    <!-- TODO: if user already a notary show his notary info in the form-->
+    <hr>
+    <div ng-show="(currentUser && currentUser.cryptonomicaOfficer)||(currentUser && currentUser.notary)">
+        <h4>Notary menu: </h4>
+        <p>(you view this because you are an authorized notary or Cryptonomica officer)</p>
+        <button type="button" class="btn btn-default" ng-click="AddNotaryFormShowToogle()" title="Click to show">
+            Add/Edit Notary Credentials/Info
+        </button>
+        <div ng-show="AddNotaryFormShow">
+            <form id="AddNotaryForm" name="AddNotaryFORM">
+                <!-- Remember, since Bootstrap utilizes the HTML5 doctype, all inputs must have a type attribute. -->
+                <fieldset>
+                    <!--<legend>Add/Edit Notary Credentials/Info</legend>-->
+                    <!--// String notaryInfo; // info about a notary-->
+                    <label for="notaryInfo">Notary information:</label>
+                    <textarea id="notaryInfo" name="notaryInfo" class="form-control" ng-model="AddNotaryForm.notaryInfo"
+                              ng-required="true"></textarea>
+                    <br>
+                    <!--// String licenceIssuedBy;-->
+                    <label for="licenceIssuedBy">Notary licence issued by:</label>
+                    <input id="licenceIssuedBy" type="text" class="form-control"
+                           ng-model="AddNotaryForm.licenceIssuedBy" ng-required="true">
+                    <br>
+
+                    <!--// String LicenceCountry;-->
+                    <label for="licenceCountry">Licence country:</label>
+                    <!--<input id="licenceCountry" country-select ng-model="AddNotaryForm.licenceCountry">-->
+                    <select id="licenceCountry" name="licenceCountry" ng-model="AddNotaryForm.licenceCountry"
+                            pvp-country-picker class="c-select" ng-required="true"></select>
+                    <div ng-show="licenceCountryInvalid && AddNotaryFORM.licenceCountry.$invalid" style="color: red">
+                        Please, select country
+                    </div>
+                    <div ng-show="AddNotaryFORM.licenceCountry.$valid">Selected:
+                        {{AddNotaryForm.licenceCountry}}
+                    </div>
+                    <br>
+
+                    <!--// Date licenceIssuedOn;-->
+                    <label for="licenceIssuedOn">Licence issued on: </label>
+                    <!--<input ui-date id="licenceIssuedOn" ng-model="AddNotaryForm.licenceIssuedOn">-->
+                    <input
+
+                            ui-date="dateOptions"
+                            id="licenceIssuedOn"
+                            ng-model="AddNotaryForm.licenceIssuedOn"
+                            ng-required="true">
+                    <br>
+                    <!--// Date licenceValidUntil;-->
+                    <label for="licenceValidUntil">Licence valid until:</label>
+                    <!--<input ui-date id="licenceValidUntil" ng-model="AddNotaryForm.licenceValidUntil">-->
+                    <input
+                            ui-date="dateOptions"
+                            id="licenceValidUntil"
+                            ng-model="AddNotaryForm.licenceValidUntil">
+                    <span>(only if applicable)</span>
+                    <br>
+                    <!--// String licenceInfo;-->
+                    <label for="licenceInfo">Licence information:</label>
+                    <input id="licenceInfo" type="text" class="form-control" ng-model="AddNotaryForm.licenceInfo"
+                           ng-required="true">
+                    <br>
+                    <!--// String verificationInfo;-->
+                    <label for="verificationInfo">Information about notary data verification</label>
+                    <input id="verificationInfo" type="text" class="form-control"
+                           ng-model="AddNotaryForm.verificationInfo" ng-required="true">
+                    <br>
+                </fieldset>
+                <input type="submit" class="btn btn-default" ng-click="AddNotarySubmit()">
+            </form>
+            <hr>
+            <div ng-show="AddNotaryForm.error" class="alert alert-danger" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                {{AddNotaryForm.error}}
+            </div>
+            <div ng-show="AddNotaryForm.resp" class="alert alert-success" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                Notary data for
+                <br> First Name: {{AddNotaryForm.resp.result.userProfileGeneralView.firstName}}
+                <br> Last Name: {{AddNotaryForm.resp.result.userProfileGeneralView.lastName}}
+                <br> added/changed successful
+            </div>
+        </div>
+        <hr>
+        <!--  -->
+    </div>
+
+    <div ng-show="userProfileGeneralView">
+        <h3>User Data:</h3>
+        <a ng-href="{{userProfileGeneralView.userCurrentImageLink || 'https://placehold.it/100x100?text=No+Image-Uploaded'}}">
+            <img ng-src="{{userProfileGeneralView.userCurrentImageLink || 'https://placehold.it/100x100?text=No+Image-Uploaded'}}"
+                 style="height: 200px"
+                 class="pull-xs-left">
+        </a>
+
+        <br>
+        <table class="table table-bordered table-hover">
+            <!-- for Bootstrap 4 table see:
+                http://www.quackit.com/bootstrap/bootstrap_4/tutorial/bootstrap_tables.cfm -->
+            <tbody>
+            <tr>
+                <td>First Name:</td>
+                <td class="capitalize">{{userProfileGeneralView.firstName}}</td>
+            </tr>
+            <tr>
+                <td>Last Name:</td>
+                <td class="capitalize">{{userProfileGeneralView.lastName}}</td>
+            </tr>
+            <tr>
+                <td>Birthday:</td>
+                <td>{{userProfileGeneralView.birthday | date}}</td>
+            </tr>
+            <tr>
+                <td>email:</td>
+                <td>{{userProfileGeneralView.email}}</td>
+            </tr>
+            <tr>
+                <td>User info:</td>
+                <td>{{userProfileGeneralView.userInfo}}</td>
+            </tr>
+            <tr>
+                <td>Is an accredited lawyer:</td>
+                <td>{{userProfileGeneralView.lawyer}}</td>
+            </tr>
+            <tr>
+                <td>Is an accreditor notary:</td>
+                <td>{{userProfileGeneralView.notary}}</td>
+            </tr>
+            <tr>
+                <td>Is an arbitrator</td>
+                <td>{{userProfileGeneralView.arbitrator}}</td>
+            </tr>
+            <tr>
+                <td>Is a IACC officer:</td>
+                <td>{{userProfileGeneralView.cryptonomicaOfficer}}</td>
+            </tr>
+            </tbody>
+        </table>
+        <h4>User PGP public keys:</h4>
+        <div ng-hide="userProfileGeneralView.pgpPublicKeyGeneralViews">No keys uploaded for this user</div>
+        <!-- ArrayList<PGPPublicKeyGeneralView> pgpPublicKeyGeneralViews; -->
+        <table class="table table-bordered table-hover"
+               ng-repeat="key in userProfileGeneralView.pgpPublicKeyGeneralViews">
+            <thead>
+            <tr>
+                <th>keyID</th>
+                <th>
+                    <a href=""
+                       title="Show key info"
+                       ui-sref="key({fingerprint:key.fingerprint})">
+                        {{key.keyID}}
+                    </a>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <!--
+            <tr>
+                <td>userID</td>
+                <td>
+                    {{key.userID}}
+                </td>
+            </tr>
+            -->
+            <tr>
+                <td>fingerprint</td>
+                <td>
+                    <a href=""
+                       title="Show key info"
+                       ui-sref="key({fingerprint:key.fingerprint})">
+                        {{key.fingerprint}}
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>created</td>
+                <td>{{key.created}}</td>
+            </tr>
+            <tr>
+                <td>expires</td>
+                <td>{{key.exp}}</td>
+            </tr>
+            <!--
+            <tr>
+                <td>Bit strength</td>
+                <td>{{key.bitStrength}}</td>
+            </tr>
+            <tr>
+                <td>Verified:</td>
+                <td>{{key.verified}}</td>
+            </tr>
+            <tr>
+                <td>ASCII-armored PGP Public Key</td>
+                <td>
+                    <div ng-show="key">
+                        <div ng-hide="key.verified" class="keynotverified">
+                            <span>key not verified</span>
+                        </div>
+                        <div ng-show="key.verified" class="keyverified">
+                            <span>key verified</span>
+                        </div>
+                        <button class="btn" ngclipboard data-clipboard-target="#key{{$index}}">Copy to clipboard</button>
+                        <button class="btn" ng-click="download(key.asciiArmored)">Download as file</button>
+                        <div>
+                            <pre><code id="key{{$index}}" title="Public PGP Key">{{key.asciiArmored}}</code></pre>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            -->
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<footer-main></footer-main>

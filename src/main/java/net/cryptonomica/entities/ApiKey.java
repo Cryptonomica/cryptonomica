@@ -1,6 +1,7 @@
 package net.cryptonomica.entities;
 
 import com.google.appengine.api.datastore.Email;
+import com.google.appengine.api.datastore.Link;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
@@ -45,13 +46,17 @@ public class ApiKey
 
     private List<String> permissions;
 
+    @Index
+    private Link revocationWebhookUrl;
+    @Index
+    private Boolean revocationWebhookRegistered;
+
     /* --- Constructors */
 
     public ApiKey() {
         // this.apiKey = RandomStringUtils.randomAlphanumeric(33);
         this.entityCreated = new Date();
         this.permissions = new ArrayList<>();
-
     }
 
     /* --- Methods */
@@ -136,4 +141,21 @@ public class ApiKey
     public void setDiscountInPercentForPromoCodes(Integer discountInPercentForPromoCodes) {
         this.discountInPercentForPromoCodes = discountInPercentForPromoCodes;
     }
+
+    public Link getRevocationWebhookUrl() {
+        return revocationWebhookUrl;
+    }
+
+    public void setRevocationWebhookUrl(Link revocationWebhookUrl) {
+        this.revocationWebhookUrl = revocationWebhookUrl;
+    }
+
+    public Boolean getRevocationWebhookRegistered() {
+        return revocationWebhookRegistered;
+    }
+
+    public void setRevocationWebhookRegistered(Boolean revocationWebhookRegistered) {
+        this.revocationWebhookRegistered = revocationWebhookRegistered;
+    }
+
 }

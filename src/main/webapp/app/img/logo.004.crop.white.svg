@@ -14,7 +14,7 @@
    viewBox="0 0 994.99585 625.04749"
    id="svg4352"
    version="1.1"
-   inkscape:version="0.91 r13725"
+   inkscape:version="0.92.3 (unknown)"
    sodipodi:docname="logo.004.crop.white.svg"
    inkscape:export-filename="/home/viktor/Dropbox/2.BUS/#IACC/Logo and pics/Logo.Current/logo.004.crop.white.svg.png"
    inkscape:export-xdpi="283.21799"
@@ -70,7 +70,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>

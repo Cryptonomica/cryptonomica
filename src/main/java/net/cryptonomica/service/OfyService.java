@@ -46,6 +46,7 @@ public class OfyService {
         try{factory().register(StripePaymentForKeyVerification.class);}catch (Exception e){LOG.warning(e.getMessage());}
         try{factory().register(PromoCode.class);}catch (Exception e){LOG.warning(e.getMessage());}
         try{factory().register(ApiKey.class);}catch (Exception e){LOG.warning(e.getMessage());}
+        try{factory().register(MyBookmarks.class);}catch (Exception e){LOG.warning(e.getMessage());}
     }
 
     // Use this static method for getting the Objectify service factory.

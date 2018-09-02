@@ -67,7 +67,7 @@ public class CloudStorageServletDocuments extends HttpServlet {
         if (i > 0) {
             extension = objectName.substring(i + 1);
         }
-        resp.addHeader("Access-Control-Allow-Origin", "*");
+
         CloudStorageService.serveFileFromCloudStorage(
                 bucketName,
                 objectName,
@@ -76,7 +76,6 @@ public class CloudStorageServletDocuments extends HttpServlet {
         );
 
     } // end of doGet
-
 
     /**
      * Writes the payload of the incoming post as the contents of a file to GCS.
@@ -274,8 +273,35 @@ public class CloudStorageServletDocuments extends HttpServlet {
                 + "\"}";
         LOG.warning(jsonResponseStr);
 
+
+        resp.addHeader("Access-Control-Allow-Origin", req.getHeader("origin"));
+        //  resp.addHeader("Access-Control-Allow-Origin", "*");
+
+        // response.addHeader("Access-Control-Allow-Origin","http://localhost:4200");
+        // resp.addHeader("Access-Control-Max-Age", "1000");
+        resp.addHeader("Access-Control-Allow-Credentials", "true");
+        resp.addHeader("Access-Control-Allow-Methods", "GET,POST");
+        // resp.addHeader("Access-Control-Allow-Headers", "X-PINGOTHER, Origin, X-Auth-Token, X-Requested-With, Content-Type, Accept, Cache-Control, Pragma, authorization, accept, client-security-token");
+
         ServletUtils.sendJsonResponse(resp, jsonResponseStr);
 
     } // end doPost
+
+    //for Preflight
+    // to avoid following error::
+    // 'Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource;
+    // see: https://www.logicbig.com/tutorials/java-ee-tutorial/java-servlet/servlet-cors.html
+    @Override
+    protected void doOptions(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+
+        resp.addHeader("Access-Control-Allow-Origin", req.getHeader("origin"));
+        resp.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+        resp.addHeader("Access-Control-Allow-Headers", "imageUploadKey, userId, userEmail, fingerprint, nationality, verificationDocumentsUploadKey, origin, accept, content-type, authorization");
+
+        resp.setStatus(HttpServletResponse.SC_OK);
+
+
+    }
 
 }

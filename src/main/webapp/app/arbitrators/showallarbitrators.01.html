@@ -1,0 +1,62 @@
+<div>
+    <header-main-menu></header-main-menu>
+    <navigation-menu></navigation-menu>
+
+    <div class="card card-block">
+
+        <!-- alert -->
+        <!-- http://www.quackit.com/bootstrap/bootstrap_4/tutorial/bootstrap_alerts.cfm -->
+        <div ng-show="resp.error.message" class="alert alert-danger" role="alert">
+            {{resp.error.message}}
+        </div>
+
+        <h3> List of recommended arbitrators: (TEST) </h3>
+
+        <!--  https://docs.angularjs.org/api/ng/directive/ngRepeat#iterating-over-object-properties
+        <div ng-repeat="obj in collection track by $id(obj)">
+                {{obj.prop}}
+            </div>
+        see: http://stackoverflow.com/questions/30907131/how-to-make-html-table-from-an-array-with-angular-js  -->
+        <table class="table table-bordered table-hover" ng-show="resp.items">
+            <!-- for Bootstrap 4 table see:
+            http://www.quackit.com/bootstrap/bootstrap_4/tutorial/bootstrap_tables.cfm -->
+            <thead class="thead-default">
+            <tr>
+                <!--<th>Image</th>-->
+                <th>Last name</th>
+                <th>First name</th>
+                <th>Information</th>
+                <th>Profile</th>
+                <th>LinkedIn</th>
+                <th>Website</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="arbitratorGeneralView in resp.items">
+                <td class="capitalize">{{arbitratorGeneralView.lastName}}</td>
+                <td class="capitalize">{{arbitratorGeneralView.firstName}}</td>
+                <td>{{arbitratorGeneralView.arbitratorInfo}}</td>
+                <td>
+                    <a href=""
+                       ui-sref="viewprofile({ userId: arbitratorGeneralView.id })">
+                        Show Profile
+                    </a>
+                </td>
+                <td>
+                    <a href="{{arbitratorGeneralView.linkedInProfileLink}}">
+                        LinkedIn Profile
+                    </a>
+                </td>
+                <td>
+                    <a href="{{arbitratorGeneralView.webSiteLink}}">
+                        website
+                    </a>
+                </td>
+
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+    <footer-main></footer-main>
+</div>

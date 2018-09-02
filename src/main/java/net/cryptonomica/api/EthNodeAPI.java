@@ -310,6 +310,8 @@ public class EthNodeAPI {
 
         byte[] httpResponseContentBytes = httpResponse.getContent();
         String httpResponseContentString = new String(httpResponseContentBytes, StandardCharsets.UTF_8);
+        LOG.warning("httpResponseContentString:");
+        LOG.warning(httpResponseContentString);
 
         // Test:
         // Object resObj = new Gson().fromJson(httpResponseContentString, Object.class); // --- exception
@@ -514,8 +516,16 @@ public class EthNodeAPI {
 
         PGPPublicKeyData pgpPublicKeyData = PGPTools.getPGPPublicKeyDataFromDataBaseByFingerprint(unverifiedFingerprint);
 
-        Boolean keyVerifiedOffline = pgpPublicKeyData.getVerified();
-        Boolean keyVerifiedOnline = pgpPublicKeyData.getOnlineVerificationFinished();
+        Boolean keyVerifiedOffline = pgpPublicKeyData.getVerifiedOffline();
+        if (keyVerifiedOffline == null) {
+            keyVerifiedOffline = Boolean.FALSE;
+        }
+        // Boolean keyVerifiedOffline = pgpPublicKeyData.getVerified();
+        Boolean keyVerifiedOnline = pgpPublicKeyData.getVerifiedOnline();
+        if (keyVerifiedOnline == null) {
+            keyVerifiedOnline = Boolean.FALSE;
+        }
+        //  Boolean keyVerifiedOnline = pgpPublicKeyData.getOnlineVerificationFinished();
 
         if (!keyVerifiedOffline && !keyVerifiedOnline) {
             throw new Exception("Owner of the OpenPGP key "

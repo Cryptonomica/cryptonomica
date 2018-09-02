@@ -1,0 +1,404 @@
+﻿/* =============Extra Segment and Tooltip Color============= */
+.nightli {
+  background: #2e3e4e;
+  color: #fff;
+  text-shadow: none !important;
+  background-image: none !important;
+}
+
+.ui.inverted.nightli.bottom.popup:before,
+.ui.inverted.nightli.left.center.popup:before,
+.ui.inverted.nightli.right.center.popup:before,
+.ui.inverted.nightli.top.popup:before {
+  background: #2e3e4e !important;
+}
+
+.whiteli {
+  background: #fff !important;
+  color: #2e3e4e !important;
+  text-shadow: none !important;
+  background-image: none !important;
+}
+
+.ui.inverted.whiteli.bottom.popup:before,
+.ui.inverted.whiteli.left.center.popup:before,
+.ui.inverted.whiteli.right.center.popup:before,
+.ui.inverted.whiteli.top.popup:before {
+  background: #fff;
+}
+
+.redli {
+  background: #F25F5C !important;
+  color: #fff !important;
+  text-shadow: none !important;
+  background-image: none !important;
+}
+
+.ui.inverted.redli.bottom.popup:before,
+.ui.inverted.redli.left.center.popup:before,
+.ui.inverted.redli.right.center.popup:before,
+.ui.inverted.redli.top.popup:before {
+  background: #F25F5C;
+}
+
+.blueli {
+  background: #247BA0 !important;
+  color: #fff !important;
+  text-shadow: none !important;
+  background-image: none !important;
+}
+
+.ui.inverted.blueli.bottom.popup:before,
+.ui.inverted.blueli.left.center.popup:before,
+.ui.inverted.blueli.right.center.popup:before,
+.ui.inverted.blueli.top.popup:before {
+  background: #247BA0;
+}
+
+.yellowli {
+  background: #FFE066 !important;
+  color: #50514F !important;
+  text-shadow: none !important;
+  background-image: none !important;
+}
+
+.ui.inverted.yellowli.bottom.popup:before,
+.ui.inverted.yellowli.left.center.popup:before,
+.ui.inverted.yellowli.right.center.popup:before,
+.ui.inverted.yellowli.top.popup:before {
+  background: #FFE066;
+}
+
+.greyli {
+  background: #50514F !important;
+  color: #fff !important;
+  text-shadow: none !important;
+  background-image: none !important;
+}
+
+.ui.inverted.greyli.bottom.popup:before,
+.ui.inverted.greyli.left.center.popup:before,
+.ui.inverted.greyli.right.center.popup:before,
+.ui.inverted.greyli.top.popup:before {
+  background: #50514F;
+}
+
+.greenli {
+  background: #32936F !important;
+  color: #fff !important;
+  text-shadow: none !important;
+  background-image: none !important;
+}
+
+.ui.inverted.greenli.bottom.popup:before,
+.ui.inverted.greenli.left.center.popup:before,
+.ui.inverted.greenli.right.center.popup:before,
+.ui.inverted.greenli.top.popup:before {
+  background: #32936F;
+}
+
+.darkpurpleli {
+  background: #2A1A1F !important;
+  color: #fff !important;
+  text-shadow: none !important;
+  background-image: none !important;
+}
+
+.ui.inverted.darkpurpleli.bottom.popup:before,
+.ui.inverted.darkpurpleli.left.center.popup:before,
+.ui.inverted.darkpurpleli.right.center.popup:before,
+.ui.inverted.darkpurpleli.top.popup:before {
+  background: #2A1A1F;
+}
+
+.darkorangeli {
+  background: #764134 !important;
+  color: #fff !important;
+  text-shadow: none !important;
+  background-image: none !important;
+}
+
+.ui.inverted.darkorangeli.bottom.popup:before,
+.ui.inverted.darkorangeli.left.center.popup:before,
+.ui.inverted.darkorangeli.right.center.popup:before,
+.ui.inverted.darkorangeli.top.popup:before {
+  background: #764134;
+}
+
+.greenli2 {
+  background: #307473 !important;
+  color: #fff !important;
+  text-shadow: none !important;
+  background-image: none !important;
+}
+
+.ui.inverted.greenli2.bottom.popup:before,
+.ui.inverted.greenli2.left.center.popup:before,
+.ui.inverted.greenli2.right.center.popup:before,
+.ui.inverted.greenli2.top.popup:before {
+  background: #307473;
+}
+
+.pinkli {
+  background: #E76D83 !important;
+  color: #fff !important;
+  text-shadow: none !important;
+  background-image: none !important;
+}
+
+.ui.inverted.pinkli.bottom.popup:before,
+.ui.inverted.pinkli.left.center.popup:before,
+.ui.inverted.pinkli.right.center.popup:before,
+.ui.inverted.pinkli.top.popup:before {
+  background: #E76D83;
+}
+
+.lightyellowli {
+  background: #EFD28D !important;
+  color: #001011 !important;
+  text-shadow: none !important;
+  background-image: none !important;
+}
+
+.ui.inverted.lightyellowli.bottom.popup:before,
+.ui.inverted.lightyellowli.left.center.popup:before,
+.ui.inverted.lightyellowli.right.center.popup:before,
+.ui.inverted.lightyellowli.top.popup:before {
+  background: #EFD28D;
+}
+
+.darkli {
+  background: #001011 !important;
+  color: #fff !important;
+  text-shadow: none !important;
+  background-image: none !important;
+}
+
+.ui.inverted.darkli.bottom.popup:before,
+.ui.inverted.darkli.left.center.popup:before,
+.ui.inverted.darkli.right.center.popup:before,
+.ui.inverted.darkli.top.popup:before {
+  background: #001011;
+}
+
+.pinkli2 {
+  background: #C1839F !important;
+  color: #fff !important;
+  text-shadow: none !important;
+  background-image: none !important;
+}
+
+.ui.inverted.pinkli2.bottom.popup:before,
+.ui.inverted.pinkli2.left.center.popup:before,
+.ui.inverted.pinkli2.right.center.popup:before,
+.ui.inverted.pinkli2.top.popup:before {
+  background: #C1839F;
+}
+
+.lightbrownli {
+  background: #E1B07E !important;
+  color: #fff !important;
+  text-shadow: none !important;
+  background-image: none !important;
+}
+
+.ui.inverted.lightbrownli.bottom.popup:before,
+.ui.inverted.lightbrownli.left.center.popup:before,
+.ui.inverted.lightbrownli.right.center.popup:before,
+.ui.inverted.lightbrownli.top.popup:before {
+  background: #E1B07E;
+}
+/* =============Extra Segment and Tooltip Color============= */
+
+/* =============Extra Radio and Checkbox Color============= */
+.ui.toggle.checkbox input:checked ~ .box:before,
+.ui.toggle.checkbox input:checked ~ .coloring.red:before {
+  background: #F25F5C !important;
+}
+
+.ui.toggle.checkbox input:checked ~ .box:before,
+.ui.toggle.checkbox input:checked ~ .coloring.yellow:before {
+  background: #EFD28D !important;
+}
+
+.ui.toggle.checkbox input:checked ~ .box:before,
+.ui.toggle.checkbox input:checked ~ .coloring.blue:before {
+  background: #247BA0 !important;
+}
+
+.ui.toggle.checkbox input:checked ~ .box:before,
+.ui.toggle.checkbox input:checked ~ .coloring.green:before {
+  background: #307473 !important;
+}
+
+.ui.toggle.checkbox input:checked ~ .box:before,
+.ui.toggle.checkbox input:checked ~ .coloring.black:before {
+  background: #001011 !important;
+}
+
+.ui.toggle.checkbox input:checked ~ .box:before,
+.ui.toggle.checkbox input:checked ~ .coloring.orange:before {
+  background: orange !important;
+}
+
+.ui.toggle.checkbox input:checked ~ .box:before,
+.ui.toggle.checkbox input:checked ~ .coloring.grey:before {
+  background: #666 !important;
+}
+
+.ui.toggle.checkbox input:checked ~ .box:before,
+.ui.toggle.checkbox input:checked ~ .coloring.pink:before {
+  background: #C1839F !important;
+}
+
+.ui.toggle.checkbox input:checked ~ .box:before,
+.ui.toggle.checkbox input:checked ~ .coloring.brown:before {
+  background: #764134 !important;
+}
+
+.ui.slider.checkbox input:checked ~ .box:before,
+.ui.slider.checkbox input:checked ~ .coloring.red:before {
+  background: #F25F5C !important;
+}
+
+.ui.slider.checkbox input:checked ~ .box:before,
+.ui.slider.checkbox input:checked ~ .coloring.yellow:before {
+  background: #EFD28D !important;
+}
+
+.ui.slider.checkbox input:checked ~ .box:before,
+.ui.slider.checkbox input:checked ~ .coloring.blue:before {
+  background: #247BA0 !important;
+}
+
+.ui.slider.checkbox input:checked ~ .box:before,
+.ui.slider.checkbox input:checked ~ .coloring.green:before {
+  background: #307473 !important;
+}
+
+.ui.slider.checkbox input:checked ~ .box:before,
+.ui.slider.checkbox input:checked ~ .coloring.black:before {
+  background: #001011 !important;
+}
+
+.ui.slider.checkbox input:checked ~ .box:before,
+.ui.slider.checkbox input:checked ~ .coloring.orange:before {
+  background: orange !important;
+}
+
+.ui.slider.checkbox input:checked ~ .box:before,
+.ui.slider.checkbox input:checked ~ .coloring.grey:before {
+  background: #666 !important;
+}
+
+.ui.slider.checkbox input:checked ~ .box:before,
+.ui.slider.checkbox input:checked ~ .coloring.pink:before {
+  background: #C1839F !important;
+}
+
+.ui.slider.checkbox input:checked ~ .box:before,
+.ui.slider.checkbox input:checked ~ .coloring.brown:before {
+  background: #764134 !important;
+}
+
+.ui.radio.checkbox input:checked ~ .box:after,
+.ui.radio.checkbox input:checked ~ .coloring.red:after {
+  background: #F25F5C !important;
+}
+
+.ui.radio.checkbox input:checked ~ .box:after,
+.ui.radio.checkbox input:checked ~ .coloring.yellow:after {
+  background: #EFD28D !important;
+}
+
+.ui.radio.checkbox input:checked ~ .box:after,
+.ui.radio.checkbox input:checked ~ .coloring.blue:after {
+  background: #247BA0 !important;
+}
+
+.ui.radio.checkbox input:checked ~ .box:after,
+.ui.radio.checkbox input:checked ~ .coloring.green:after {
+  background: #307473 !important;
+}
+
+.ui.radio.checkbox input:checked ~ .box:after,
+.ui.radio.checkbox input:checked ~ .coloring.orange:after {
+  background: orange !important;
+}
+
+.ui.radio.checkbox input:checked ~ .box:after,
+.ui.radio.checkbox input:checked ~ .coloring.grey:after {
+  background: #666 !important;
+}
+
+.ui.radio.checkbox input:checked ~ .box:after,
+.ui.radio.checkbox input:checked ~ .coloring.pink:after {
+  background: #C1839F !important;
+}
+
+.ui.radio.checkbox input:checked ~ .box:after,
+.ui.radio.checkbox input:checked ~ .coloring.brown:after {
+  background: #764134 !important;
+}
+
+.ui.checkbox input:checked ~ .box:after,
+.ui.checkbox input:checked ~ .coloring.red:after {
+  color: #F25F5C !important;
+}
+
+.ui.checkbox input:checked ~ .box:after,
+.ui.checkbox input:checked ~ .coloring.yellow:after {
+  color: #EFD28D !important;
+}
+
+.ui.checkbox input:checked ~ .box:after,
+.ui.checkbox input:checked ~ .coloring.blue:after {
+  color: #247BA0 !important;
+}
+
+.ui.checkbox input:checked ~ .box:after,
+.ui.checkbox input:checked ~ .coloring.green:after {
+  color: #307473 !important;
+}
+
+.ui.checkbox input:checked ~ .box:after,
+.ui.checkbox input:checked ~ .coloring.orange:after {
+  color: orange !important;
+}
+
+.ui.checkbox input:checked ~ .box:after,
+.ui.checkbox input:checked ~ .coloring.grey:after {
+  color: #666 !important;
+}
+
+.ui.checkbox input:checked ~ .box:after,
+.ui.checkbox input:checked ~ .coloring.pink:after {
+  color: #C1839F !important;
+}
+
+.ui.checkbox input:checked ~ .box:after,
+.ui.checkbox input:checked ~ .coloring.brown:after {
+  color: #764134 !important;
+}
+.text-default{
+  color: #000;
+}
+.text-primary{
+  color: blue;
+}
+.text-warning{
+color:#DC851F;
+}
+.text-error{
+  color: #F25F5C;
+}
+.text-success{
+  color: #32936F;
+}
+.text-info{
+  color: #247BA0;
+}
+.text-danger{
+  color: #E71D36;
+}
+/* =============Extra Radio and Checkbox Color============= */

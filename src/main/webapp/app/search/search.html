@@ -1,133 +1,143 @@
-<div>
-    <header-main-menu></header-main-menu>
-    <navigation-menu></navigation-menu>
+<div id="contextWrap">
 
-    <div class="card card-block">
+    <!-- left sidebar-->
+    <left-sidebar></left-sidebar>
 
-        <h3>Search for users:</h3>
-        <!--  -->
-        <div ng-show="resp.error.message" class="alert alert-danger" role="alert">
-            <!--            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                                aria-hidden="true">×</span></button>
-            -->
-            {{resp.error.message}}
-        </div>
-        <div ng-show="resp.messageToUser" class="alert alert-success" role="alert">
-            <!--            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                                aria-hidden="true">×</span></button>
-            -->
-            {{resp.messageToUser}}
-        </div>
+    <!--right sidebar-->
+    <right-sidebar></right-sidebar>
 
-        <!-- search form begin -->
-        <form>
-            <fieldset class="form-group">
-                <label for="firstName">First Name</label>
-                <div class="row">
-                    <div class="col-xs-5">
-                        <input type="text" class="form-control" id="firstName" name="firstName"
-                               ng-model="form.firstName">
+    <div class="pusher">
+
+        <!--topHeaderMenu -->
+        <top-header-menu></top-header-menu>
+
+        <!-- ==== MAIN SECTION ====  -->
+
+        <div class="mainWrap navslide">
+
+            <div class="ui equal width left aligned padded grid stackable">
+
+                <!--Page Content-->
+
+                <div class="stretched row">
+
+                    <div class="column">
+
+                        <!-- Alerts -->
+                        <alerts></alerts>
+
+                        <div class="ui segments">
+
+                            <!-- Breadcrumb -->
+                            <div id="breadcrumb" class="ui segment">
+                                <div class="ui breadcrumb">
+                                    <a class="section" href="" ui-sref-active="active" ui-sref="home">Home</a>
+                                    <i class="right angle icon divider"></i>
+                                    <a class="section" href="" ui-sref-active="active" ui-sref="search">Search</a>
+                                    <!--<i class="right angle icon divider"></i>-->
+                                </div>
+                            </div>
+
+                            <div class="ui segment">
+
+                                <h3>Search for users</h3>
+
+                                <!-- messages -->
+                                <div ng-show="resp.error.message" class="ui negative message">
+                                    {{resp.error.message}}
+                                </div>
+                                <div ng-show="resp.messageToUser" class="ui positive message">
+                                    {{resp.messageToUser}}
+                                </div>
+
+                                <!-- search form begin -->
+                                <form class="ui form">
+
+                                    <div class="two fields">
+                                        <div class="field">
+                                            <label for="firstName">First Name:</label>
+                                            <input type="text" id="firstName" name="firstName"
+                                                   ng-model="form.firstName" autocomplete='given-name'>
+                                        </div>
+                                        <div class="field">
+                                            <label for="lastName">Last Name:</label>
+                                            <input type="text" id="lastName" name="lastName"
+                                                   ng-model="form.lastName" autocomplete='family-name'>
+                                        </div>
+                                    </div>
+
+                                    <div class="two fields">
+                                        <div class="field">
+                                            <label for="email">Email:</label>
+                                            <input type="email" id="email" name="email" ng-model="form.email"
+                                                   autocomplete='email'>
+                                        </div>
+                                        <div class="field">
+                                            <!---->
+                                        </div>
+                                    </div>
+
+                                    <button class="ui submit button" ng-click="doSearch()">
+                                        Search
+                                    </button>
+
+                                </form>
+
+                                <!--  https://docs.angularjs.org/api/ng/directive/ngRepeat#iterating-over-object-properties
+                                <div ng-repeat="obj in collection track by $id(obj)">
+                                        {{obj.prop}}
+                                    </div>
+                                see: http://stackoverflow.com/questions/30907131/how-to-make-html-table-from-an-array-with-angular-js  -->
+                                <br>
+                                <div ng-show="resp.profilesList" id="resultsTable">
+
+                                    <h3>Results:</h3>
+
+                                    <table class="ui celled table">
+                                        <thead>
+                                        <tr>
+                                            <th>Last name</th>
+                                            <th>First name</th>
+                                            <th>Birthday</th>
+                                            <th>Email</th>
+                                            <th>Information</th>
+                                            <th>More info</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr ng-repeat="userProfileGeneralView in resp.profilesList">
+                                            <td>{{userProfileGeneralView.lastName | titleCase}}</td>
+                                            <td>{{userProfileGeneralView.firstName | titleCase}}</td>
+                                            <td>{{userProfileGeneralView.birthday | date}}</td>
+                                            <td>{{userProfileGeneralView.email}}</td>
+                                            <td>{{userProfileGeneralView.userInfo}}</td>
+                                            <td>
+                                                <a href=""
+                                                   ui-sref="viewprofile({ userId: userProfileGeneralView.userId})">
+                                                    Show Profile
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- FOOTER -->
+                        <footer-main></footer-main>
+
                     </div>
-                    <div class="col-xs-5">
-                        <!--{{form.firstName}}-->
-                    </div>
+
                 </div>
-            </fieldset>
-            <fieldset class="form-group">
-                <label for="lastName">Last Name</label>
-                <div class="row">
-                    <div class="col-xs-5">
-                        <input type="text" class="form-control" id="lastName" name="lastName" ng-model="form.lastName">
-                    </div>
-                    <div class="col-xs-5">
-                        <!--{{form.lastName}}-->
-                    </div>
-                </div>
-            </fieldset>
-            <fieldset class="form-group">
-                <label for="email">email</label>
-                <div class="row">
-                    <div class="col-xs-5">
-                        <input type="email" class="form-control" id="email" name="email" ng-model="form.email">
-                    </div>
-                    <div class="col-xs-5">
-                        <!--{{form.email}}-->
-                    </div>
-                </div>
-            </fieldset>
 
-            <button
-                    type="button" role="button"
-                    class="btn btn-secondary"
-                    ng-click="doSearch()">Search
-            </button>
-
-        </form>
-        <!-- search form end -->
-        <br>
-        <h3>Search for a key:</h3>
-        <form>
-            <label for="fingerprint">Fingerprint</label>
-            <fieldset>
-                <div class="row">
-                    <div class="col-xs-5">
-                        <input type="text" class="form-control" id="fingerprint" name="fingerprint"
-                               ng-model="fingerprint">
-                    </div>
-                    <div class="col-xs-5">
-                        <!--{{form.firstName}}-->
-                    </div>
-                </div>
-
-                <!--<button type="submit" class="btn btn-default" ng-click="doSearch()">Search</button>-->
-                <div>
-                    <a class="btn btn-secondary" type="button"
-                       href="/#/key/{{fingerprint}}"
-                       role="button">Search
-                    </a>
-
-                </div>
-            </fieldset>
-        </form>
-
-
-        <!--  https://docs.angularjs.org/api/ng/directive/ngRepeat#iterating-over-object-properties
-        <div ng-repeat="obj in collection track by $id(obj)">
-                {{obj.prop}}
             </div>
-        see: http://stackoverflow.com/questions/30907131/how-to-make-html-table-from-an-array-with-angular-js  -->
-        <br>
-        <div ng-show="resp.profilesList" id="resultsTable">
-            <h3>Results:</h3>
-            <table class="table table-bordered table-hover">
-                <!-- for Bootstrap 4 table see:
-                http://www.quackit.com/bootstrap/bootstrap_4/tutorial/bootstrap_tables.cfm -->
-                <thead class="thead-default">
-                <tr>
-                    <th>Last name</th>
-                    <th>First name</th>
-                    <th>Birthday</th>
-                    <th>email</th>
-                    <th>Information</th>
-                    <th>More info</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="userProfileGeneralView in resp.profilesList">
-                    <td class="capitalize">{{userProfileGeneralView.lastName}}</td>
-                    <td class="capitalize">{{userProfileGeneralView.firstName}}</td>
-                    <td>{{userProfileGeneralView.birthday | date}}</td>
-                    <td>{{userProfileGeneralView.email}}</td>
-                    <td>{{userProfileGeneralView.userInfo}}</td>
-                    <td>
-                        <!--<a href="/#/viewprofile/{{userProfileGeneralView.userId}}" ng-click="">Show Profile</a>-->
-                        <a href="" ui-sref="viewprofile({ userId: userProfileGeneralView.userId })">Show Profile</a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+
         </div>
 
     </div>
-    <footer-main></footer-main>
+
 </div>
+

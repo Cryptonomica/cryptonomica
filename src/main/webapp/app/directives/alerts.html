@@ -1,28 +1,38 @@
 <div id="alerts">
 
-    <div id="alertDanger" ng-show="alertDanger" class="alert alert-danger alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert">
-            <span ng-click="alertDanger=null">&times;</span>
-        </button>
-        {{alertDanger}}
+    <!--<br>-->
+
+    <div id="alertDanger" ng-show="alertDanger" class="ui negative message">
+        <i class="close icon" ng-click="alertDanger=null"></i>
+        <div class="header">Error:</div>
+        <p>{{alertDanger}}</p>
     </div>
 
-    <div id="alertWarning" ng-show="alertWarning" class="alert alert-warning alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert">
-            <span ng-click="alertWarning=null">&times;</span></button>
-        {{alertWarning}}
+    <div id="alertWarning" ng-show="alertWarning" class="ui yellow message">
+        <i class="close icon" ng-click="alertWarning=null"></i>
+        <div class="header">Warning:</div>
+        <p>{{alertWarning}}</p>
     </div>
 
-    <div id="alertInfo" ng-show="alertInfo" class="alert alert-info alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert">
-            <span ng-click="alertInfo=null">&times;</span></button>
-        {{alertInfo}}
+    <div id="alertInfo" ng-show="alertInfo" class="ui info message">
+        <i class="close icon" ng-click="alertInfo=null"></i>
+        <div class="header">Info:</div>
+        <p>{{alertInfo}}</p>
     </div>
 
-    <div id="alertSuccess" ng-show="alertSuccess" class="alert alert-success alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert">
-            <span ng-click="alertSuccess=null">&times;</span></button>
-        {{alertSuccess}}
+    <div id="alertSuccess" ng-show="alertSuccess" class="ui positive message">
+        <i class="close icon" ng-click="alertSuccess=null"></i>
+        <div class="header">Success:</div>
+        <p>{{alertSuccess}}</p>
     </div>
+
+    <div id="alertMessage" ng-show="alertMessage.message||alertMessage.header" class="ui message">
+        <i class="close icon" ng-click="alertMessage=null"></i>
+        <!--<i class="close icon" ng-click="alertMessage={}"></i>-->
+        <div class="header" ng-show="alertMessage.header">{{alertMessage.header}}</div>
+        <p ng-show="alertMessage.message">{{alertMessage.message}}</p>
+    </div>
+
+    <!--<br>-->
 
 </div>

@@ -1,0 +1,149 @@
+<div class="ui sidebar vertical left menu overlay borderless visible sidemenu inverted  grey"
+     style="-webkit-transition-duration: 0.1s; transition-duration: 0.1s;">
+
+    <!-- ==== LOGIN / LOGOUT ==== -->
+
+    <a id="login" class="item" href="" style="margin-top: 1em" ng-click="login()"
+       ng-hide="currentUser.registeredCryptonomicaUser">
+        <!--<a id="login" class="item" href="" style="margin-top: 1em" ng-click="login()" ng-hide="currentUser.loggedIn">-->
+        <!--<a id="login" class="item" href="" style="margin-top: 1em" ng-click="login()" ng-hide="gdata.getUser()">-->
+        <i class="fa fa-sign-in titleIcon"></i>
+        <!--<span class="colhidden">Login/Register</span>-->
+        <span class="hiddenCollapse">Login/Register</span>
+    </a>
+
+    <!-- working solution -->
+    <a id="Logout" class="item logout" href="https://accounts.google.com/Logout" style="margin-top: 1em"
+       ng-show="currentUser.registeredCryptonomicaUser">
+        <i class="fa fa-sign-out titleIcon"></i>
+        <span class="hiddenCollapse">Logout</span>
+    </a>
+
+    <!-- ==== NAVIGATION ==== -->
+
+    <div class="ui divider"></div>
+
+    <a id="home" class="item" href="" ui-sref-active="active" ui-sref="home">
+        <i class="fa fa-home titleIcon"></i>
+        <!--<i class="icofont icofont-home titleIcon"></i>-->
+        <span class="hiddenCollapse">Home</span>
+    </a>
+
+    <a id="registration" class="item" href="" ui-sref-active="active" ui-sref="registration"
+       ng-hide="(currentUser&&currentUser.registeredCryptonomicaUser)&&(currentUser.userInfo !=='Neo')">
+        <!--ng-show="(currentUser&&currentUser.registeredCryptonomicaUser)&&(currentUser.webmaster||currentUser.tester)">-->
+        <i class="fa fa-user-plus titleIcon"></i>
+        <span class="hiddenCollapse">Registration</span>
+    </a>
+
+    <a id="viewprofile" class="item" href="" ui-sref-active="active" ui-sref="viewprofile({userId:currentUser.userId})"
+       ng-show="currentUser&&currentUser.registeredCryptonomicaUser">
+        <i class="icofont icofont-data titleIcon"></i>
+        <span class="hiddenCollapse">My Profile</span>
+    </a>
+
+    <a id="search" class="item" href="" ui-sref-active="active" ui-sref="search"
+       ng-show="currentUser&&currentUser.registeredCryptonomicaUser">
+        <!--<i class="icofont icofont-document-search titleIcon"></i>-->
+        <i class="icofont icofont-job-search titleIcon"></i>
+        <!--<i class="search icon titleIcon"></i>-->
+        <span class="hiddenCollapse">Search</span>
+    </a>
+
+    <a id="openPGPOnline" class="item" href="" ui-sref-active="active" ui-sref="openPGPOnline">
+        <i class="fa fa-key titleIcon"></i>
+        <span class="hiddenCollapse">OpenPGP Online</span>
+    </a>
+
+    <a id="verifyEthAddress" class="item" href="" ui-sref-active="active" ui-sref="verifyEthAddress">
+        <i class="ethereum icon titleIcon"></i>
+        <span class="hiddenCollapse">For Ethereum</span>
+    </a>
+
+    <a id="arbitration" class="item" href="" ui-sref-active="active" ui-sref="arbitration">
+        <i class="icofont icofont-law titleIcon"></i>
+        <span class="hiddenCollapse">Arbitration</span>
+    </a>
+
+    <a id="notaries" class="item" href="" ui-sref-active="active" ui-sref="notaries">
+        <i class="icofont icofont-stamp titleIcon"></i>
+        <span class="hiddenCollapse">Notaries</span>
+    </a>
+
+    <!-- for webmaster or tester : -->
+    <a id="test" class="item" href="" ui-sref-active="active" ui-sref="test"
+       ng-show="(currentUser&&currentUser.registeredCryptonomicaUser)&&(currentUser.userInfo==='Neo')">
+        <!--ng-show="(currentUser&&currentUser.registeredCryptonomicaUser)&&(currentUser.webmaster||currentUser.tester)">-->
+        <i class="fa fa-flask titleIcon"></i>
+        <!--<i class="icofont icofont-test-tube-alt titleIcon"></i>-->
+        <span class="hiddenCollapse">Test</span>
+    </a>
+
+    <a id="issues" class="item" href="https://github.com/Cryptonomica/cryptonomica/issues" target="_blank">
+        <i class="icofont icofont-support-faq titleIcon"></i>
+        <span class="hiddenCollapse">Submit an Issue</span>
+    </a>
+
+    <a id="help" class="item" href="https://github.com/Cryptonomica/cryptonomica/wiki" target="_blank">
+        <i class="fa fa-life-ring titleIcon"></i>
+        <span class="hiddenCollapse">Help/Wiki</span>
+    </a>
+
+    <!-- supported by -->
+    <div class="ui divider"></div>
+
+    <a class="item hiddenCollapse" href="http://www.hiil.org" target="_blank"
+       title="The Hague Institute for Innovation of Law">
+        <!--<div class="ui one mini inverted statistics">-->
+        <img class="ui image" src="/app/img/supported.by/Supported.by.HiiL.white.png" style="padding: 0px">
+        <!--</div>-->
+    </a>
+
+</div>
+
+<script>
+    /* ==== Popups ==== */
+
+    $('#login')
+        .popup({
+            // position: 'right center',
+            target: '#login',
+            // title: 'Google account:',
+            content: 'Login/register using Google account'
+        });
+
+    $('#logout')
+        .popup({
+            // position: 'right center',
+            target: '#logout',
+            // title: 'Google account:',
+            content: 'Logout'
+        });
+
+    /* ----- Popups: (not useful if just repeat menu item name */
+    // $('#home')
+    //     .popup({
+    //         // position: 'right center',
+    //         target: '#home',
+    //         // title: 'Google account:',
+    //         content: 'Home'
+    //     });
+    //
+    // $('#viewprofile')
+    //     .popup({
+    //         // position: 'right center',
+    //         target: '#viewprofile',
+    //         // title: 'Google account:',
+    //         content: 'Profile'
+    //     });
+    //
+    // $('#test')
+    //     .popup({
+    //         // position: 'right center',
+    //         target: '#test',
+    //         // title: 'Google account:',
+    //         content: 'Test'
+    //     });
+
+
+</script>

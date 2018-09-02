@@ -1,46 +1,41 @@
-<div class="container" id="smsCheckContainer">
-    <hr>
-    <div class="card">
-        <div class="card-header">
-            <center>
-                <h5>Phone verification</h5>
-            </center>
-        </div>
-        <div class="card-block">
-            <form>
+<center>
+    <h2>Phone verification</h2>
+</center>
 
-                <fieldset class="form-group">
-                    <legend>enter your pnone in international format</legend>
-                    <input type="tel" id="phoneNumber" class="form-control" placeholder="+972523333333"
-                           ng-model="phoneNumber">
-                    <br>
-                    <button ng-click="sendSms()"
-                            role="button" type="button" class="btn btn-secondary">
-                        Send SMS Message
-                    </button>
-                </fieldset>
+<form class="ui form">
 
-                <fieldset class="form-group">
-                    <legend>Enter received SMS message (7 digits)</legend>
-                    <input type="text" id="smsMessage" class="form-control" placeholder="1234567" ng-model="smsMessage">
-                    <br>
-                    <button ng-click="checkSms()"
-                            role="button" type="button" class="btn btn-secondary">
-                        Verify
-                    </button>
-                </fieldset>
-
-                <fieldset class="form-group">
-                    <legend>Result:</legend>
-                    <input type="text" id="smsResult" class="form-control" ng-model="smsResult" disabled>
-                </fieldset>
-
-            </form>
-        </div>
+    <!--<fieldset>-->
+    <div class="field">
+        <legend>Enter your pnone in international format:</legend>
+        <input type="tel" id="phoneNumber" placeholder="+972523333333" ng-model="phoneNumber" autocomplete="tel">
+        <br>
+        <button ng-click="sendSms()" class="ui small button">
+            Send SMS Message
+        </button>
     </div>
-    <button name="button" class="btn btn-secondary" role="button" ng-click="getOnlineVerification()">
-        Next Step >>>
-    </button>
-    <br>
-    <hr>
-</div>
+    <!--</fieldset>-->
+
+    <div class="field">
+
+        <legend>Enter 7 digits from received SMS message (check sms from +17349843608) :</legend>
+        <input type="text" id="smsMessage" class="form-control" placeholder="1234567" ng-model="smsMessage">
+        <br>
+        <button class="ui small button" ng-click="checkSms()"
+                role="button" type="button" class="btn btn-secondary">
+            Verify
+        </button>
+    </div>
+
+    <div class="field">
+        <legend>Result:</legend>
+        <input type="text" id="smsResult" class="form-control" ng-model="smsResult" disabled>
+    </div>
+
+</form>
+
+<button name="button" class="ui positive button" role="button" ng-click="getOnlineVerification()">
+    Next Step >>>
+</button>
+<br>
+
+

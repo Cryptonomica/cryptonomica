@@ -1,0 +1,499 @@
+<div id="contextWrap">
+
+    <!-- left sidebar-->
+    <left-sidebar></left-sidebar>
+
+    <!--right sidebar-->
+    <right-sidebar></right-sidebar>
+
+    <div class="pusher">
+
+        <!--topHeaderMenu -->
+        <top-header-menu></top-header-menu>
+
+        <!-- ==== MAIN SECTION ====  -->
+
+        <div class="mainWrap navslide">
+
+            <div class="ui equal width left aligned padded grid stackable">
+
+                <!--Page Content-->
+
+                <div class="stretched row">
+
+                    <div class="column">
+
+                        <!-- Alerts -->
+                        <alerts></alerts>
+
+                        <div class="ui segments">
+
+                            <!-- Breadcrumb -->
+                            <div id="breadcrumb" class="ui segment">
+                                <div class="ui breadcrumb">
+                                    <a class="section" href="" ui-sref-active="active" ui-sref="home">Home</a>
+                                    <i class="right angle icon divider"></i>
+                                    <a class="section active">Ethereum Address Verification</a>
+                                </div>
+                            </div>
+
+                            <div class="ui segment" ng-show="!currentNetwork.connected">
+                                <div id="alertDanger" class="ui negative message">
+                                    <i class="close icon" ng-click="alertDanger=null"></i>
+                                    <div class="header">Error:</div>
+                                    <p>
+                                        This service requires browser with Ethereum blockchain connection.<br>
+                                        Please use browser with MetaMask plugin, Mist browser, or or similar software.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="ui segment">
+
+                                <h2>
+                                    <i class="ethereum icon"></i>&nbsp;
+                                    Verify your Ethereum address/key with your OpenPGP key
+                                </h2>
+
+                                <div id="serviceDescription">
+                                    <br>
+                                    <p>
+                                        <b title="Click to hide/show description"
+                                           ng-click="showDescription=!showDescription">How it works?</b>
+                                    </p>
+                                    <div ng-show="showDescription">
+                                        <p>
+                                            To verify identity of Ethereum address private key owner (a person
+                                            who can send transactions from this address),
+                                            you have to sign a simple message with yor verified OpenPGP key, and
+                                            send this message from your Ethereum address to our smart contract.
+                                            Then you request our system to pull this signed message from smart
+                                            contract and check it's signature. If signature can be verified,
+                                            our server puts user data (first name, last name, birthdate,
+                                            nationality, OpenPGP key fingerprint, Ethereum address) to smart
+                                            contract.
+                                            <br><br>
+                                            User data from this
+                                            <a
+                                                    href="https://etherscan.io/address/0x846942953c3b2A898F10DF1e32763A823bf6b27f#code"
+                                                    target="_blank">
+                                                smart contract
+                                            </a> can be read
+                                            by other smart contracts and decentralized applications. You can use
+                                            your verified identity to make legal binding
+                                            and also legally enforceable contracts/documents on the Ethereum
+                                            blockchain.<br><br>
+
+                                            Ethereum address can be connected to one OpenPGP key only, and one
+                                            time only.<br><br>
+                                            If OpenPGP key expires, user have to use another Ethereum address
+                                            for new OpenPGP public key.<br><br>
+                                            You can also read from and write to our smart contract from
+                                            <a
+                                                    href="https://etherscan.io/address/0x846942953c3b2A898F10DF1e32763A823bf6b27f#readContract"
+                                                    target="_blank">
+                                                etherscan
+                                            </a><br>
+                                            <b>For developers:</b> this service created to be as much smart
+                                            contract developer friendly as possible.
+                                            See smart contract verified code on
+                                            <a href="https://etherscan.io/address/0x846942953c3b2A898F10DF1e32763A823bf6b27f#code"
+                                               target="_blank">
+                                                etherscan
+                                            </a> Please, ask questions in our
+                                            <a href="https://t.me/cryptonomicanet"
+                                               target="_blank">
+                                                telegram group
+                                            </a>, send issues to
+                                            <a href="https://github.com/Cryptonomica/cryptonomica/issues"
+                                               target="_blank">
+                                                issue tracker
+                                            </a>
+                                            <br>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div id="mainSection"
+                                     ng-show="currentUser&&currentNetwork.connected&&web3.version.network=='1'">
+
+                                    <form class="ui form">
+
+                                        <div class="field">
+                                            <label>Your ETH address:</label>
+                                            <b>
+                                                <a ng-href="{{etherscanLinkPrefix}}address/{{ethAccount}}">
+                                                    {{ethAccount}}
+                                                </a>
+                                            </b>
+                                        </div>
+
+
+                                        <div class="field" ng-show="userKeys.length > 0">
+
+                                            <label>
+                                                Choose your OpenPGP key (valid and verified) to associate with your ETH
+                                                address:
+                                            </label>
+
+                                            <!-- debug: -->
+                                            <!--userKeys.length: {{userKeys.length}}-->
+
+                                            <select class="ui fluid dropdown" ng-model="fingerprint">
+                                                <option value="">select your key</option>
+                                                <!--<option ng-repeat="option in data.availableOptions" value="{{option.id}}">{{option.name}}</option>-->
+                                                <option ng-repeat="fingerprintStr in userKeys"
+                                                        value="{{fingerprintStr}}">{{fingerprintStr}}
+                                                </option>
+                                            </select>
+
+                                            <label ng-show="fingerprint">
+                                                <br>Your key:
+                                                <a href=""
+                                                   title="Show key info"
+                                                   ui-sref="key({fingerprint:fingerprint})">
+                                                    {{fingerprint}}
+                                                </a>
+                                            </label>
+
+                                            <label ng-hide="fingerprint">
+                                                <br><span style="color: red; font-weight: bold">Please select OpenPGP key to be used</span>
+                                            </label>
+
+                                            <div class="ui negative message" ng-show="!userKeys||userKeys.length == 0">
+                                                <p>
+                                                    You don't have verified OpenPGP keys yet.
+                                                    Please verify your OpenPGP key before proceed with Ethereum address
+                                                    verification.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                    </form>
+
+
+                                    <section id="dataFromSmartContractSection" ng-show="userKeys.length > 0">
+
+                                        <div>
+                                            <br>
+                                            <button class="ui tiny button"
+                                                    ng-click="requestDataFromSmartContract()">
+                                                Get/Update Data From Smart Contract for this key
+                                                <!--<span ng-show="fingerprint">&nbsp;for {{fingerprint}}</span>-->
+                                            </button>
+
+                                            <div id="requestDataFromSmartContractError"
+                                                 ng-show="requestDataFromSmartContractError.error"
+                                                 class="ui negative message">
+                                                <i class="close icon"
+                                                   ng-click="requestDataFromSmartContractError.error=null"></i>
+                                                <div class="header">Error:</div>
+                                                <p>{{alertDanger}}</p>
+                                            </div>
+
+                                            <div id="dataFromSmartContract">
+
+                                                <table class="ui celled table">
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>OpenPGP key fingerprint:</td>
+                                                        <td>
+                                                            <a href=""
+                                                               title="Show key info"
+                                                               ui-sref="key({fingerprint:fingerprint})">
+                                                                {{fingerprint}}
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td>Ethereum address connected to this OpenPGP key:</td>
+
+                                                        <td>
+                                                            <a ng-show="smartContractData.ethAddressConnectedToFingerprint!='0x0000000000000000000000000000000000000000'"
+                                                               ng-href="{{etherscanLinkPrefix}}address/{{smartContractData.ethAddressConnectedToFingerprint}}"
+                                                               target="_blank">
+                                                                {{smartContractData.ethAddressConnectedToFingerprint}}
+                                                            </a>
+                                                            <div ng-show="smartContractData.ethAddressConnectedToFingerprint=='0x0000000000000000000000000000000000000000'">
+                                                                No verified ETH address for this key
+                                                            </div>
+
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td>Your Ethereum address:</td>
+                                                        <td>
+                                                            <a ng-href="{{etherscanLinkPrefix}}address/{{ethAccount}}"
+                                                               target="_blank">
+                                                                {{ethAccount}}
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td>String to sign</td>
+                                                        <td>
+                                                            <!--<div style="font-size: small;">-->
+                                                            <div>
+                                                                <span id="stringToSign">{{smartContractData.stringToSign}}</span>
+                                                            </div>
+                                                            <hr>
+                                                            <button class="ui tiny button"
+                                                                    ng-click="copyToClipboard('#stringToSign')">
+                                                                Copy to clipboard
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td>
+                                                            Signed String
+                                                        </td>
+                                                        <td style="font-size: smaller;">
+                                                        <pre><code
+                                                                id="signedString">{{smartContractData.signedString}}</code></pre>
+                                                            <div ng-show="smartContractData.signedString">
+                                                                <button class="ui tiny button"
+                                                                        ng-click="copyToClipboard('#signedString')">
+                                                                    Copy signed string to clipboard
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td>Signed string uploaded on:</td>
+                                                        <td>
+                                <span ng-show="smartContractData.signedStringUploadedOnUnixTime != 0">
+                                    {{smartContractData.signedStringUploadedOnDate | date:'yyyy-MM-dd HH:mm:ss Z'}}
+                                </span>
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td>Verification requested for OpenPGP key:</td>
+                                                        <td>
+                                                            <a href=""
+                                                               title="Show key info"
+                                                               ui-sref="key({fingerprint:smartContractData.unverifiedFingerprint})">
+                                                                {{smartContractData.unverifiedFingerprint}}
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td>Verified OpenPGP key for this ETH address:</td>
+                                                        <td>
+                                                            <a href=""
+                                                               title="Show key info"
+                                                               ui-sref="key({fingerprint:smartContractData.fingerprint})">
+                                                                {{smartContractData.fingerprint}}
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td>Verified user for this ETH address:</td>
+                                                        <td>
+                                                            {{smartContractData.firstName}}&nbsp;{{smartContractData.lastName}}&nbsp;
+                                                            <span ng-show="smartContractData.birthDateUnixTime && smartContractData.birthDateUnixTime > 0">
+                                    <br>born: {{smartContractData.birthDate | date:'yyyy-MM-dd'}}
+                                </span>
+                                                            <span ng-show="smartContractData.nationality">
+                                    , nationality: {{smartContractData.nationality}}
+                                </span>
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td>Verified on:</td>
+                                                        <td>
+                                <span ng-show="smartContractData.verificationAddedOnUnixTime && smartContractData.verificationAddedOnUnixTime > 0">
+                                    {{smartContractData.verificationAddedOnDate | date:'yyyy-MM-dd'}}(Unix time:&nbsp;{{smartContractData.verificationAddedOnUnixTime}})
+                                </span>
+                                                        </td>
+                                                    </tr>
+
+
+                                                    <tr>
+                                                        <td>Verification revoked on:</td>
+                                                        <td>
+                                <span ng-show="smartContractData.revokedOnUnixTime && smartContractData.revokedOnUnixTime > 0">
+                                    {{smartContractData.revokedOnDate | date:'yyyy-MM-dd'}}(Unix time:&nbsp;{{smartContractData.revokedOnUnixTime}})
+                                </span>
+                                                        </td>
+                                                    </tr>
+
+                                                    <!-- TODO: continue here >>>>> -->
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </section>
+
+                                    <!-- ////// UPLOAD SIGNED STRING \\\\\\ -->
+                                    <section id="uploadSignedString">
+                                        <!--<section id="uploadSignedString" ng-show="userKeys.length > 0">-->
+
+                                        <div ng-hide="smartContractData&&smartContractData.verificationAddedOnUnixTime&&smartContractData.verificationAddedOnUnixTime!=0">
+                                            <div ng-hide="smartContractData&&smartContractData.signedString">
+                                                <br>
+                                                <h2>Send signed string</h2>
+                                                <div> you have to sign string you got on previous step with your key
+                                                    (use
+                                                    <a href="https://github.com/Cryptonomica/arbitration-rules/blob/master/Arbitration_Rules/IACC/web-site/list.of.recommended.OpenPGP.software.md"
+                                                       target="_blank">your desktop software</a>
+                                                    or our
+                                                    <a ui-sref="openPGPOnline" target="_blank">online OpenPGP
+                                                        service</a>
+                                                    ), put signed text in this field, and than click 'send signed
+                                                    string'
+                                                    <span ng-show="smartContractData.priceForVerificationInEth">(current price {{smartContractData.priceForVerificationInEth}} ETH)</span>
+                                                </div>
+
+                                                <form class="ui form">
+
+                                                <textarea
+                                                        rows="13"
+                                                        ng-model="signedString"
+                                                        placeholder='Please, sign provided string ("{{smartContractData.stringToSign}}") with OpenPGP key {{fingerprint}} and place signed text here'>
+                                                </textarea>
+
+                                                </form>
+
+                                                <div id="uploadSignedStringError"
+                                                     ng-show="uploadSignedStringError"
+                                                     class="alert alert-danger alert-dismissible"
+                                                     role="alert">
+                                                    <!-- removed: dismiss button > if clicked uploadSignedStringError is null forever -->
+                                                    <!--<button type="button" class="close" data-dismiss="alert">-->
+                                                    <!--<span ng-click="uploadSignedStringError=null">&times;</span>-->
+                                                    <!--</button>-->
+                                                    {{uploadSignedStringError}}
+                                                </div>
+                                                <button
+                                                        class="ui secondary button"
+                                                        ng-class="{disabled: uploadSignedStringWorking}"
+                                                        ng-click="uploadSignedString()">
+                                                    Send Signed String to Smart Contract
+                                                    <span ng-show="uploadSignedStringWorking" title="loading...">
+                                                    <br><i class="fa fa-refresh fa-spin fa-fw"></i>&nbsp;Working ...
+                                                </span>
+                                                </button>
+                                                <br>
+                                                <!-- Show Transaction -->
+                                                <div ng-show="uploadSignedStringTx">
+                                                    See transaction:
+                                                    <b>
+                                                        <a href="" target="_blank"
+                                                           ng-href="{{etherscanLinkPrefix}}tx/{{uploadSignedStringTx.tx}}">
+                                                            {{uploadSignedStringTx.tx}}
+                                                        </a>
+                                                    </b>
+                                                    <br>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+
+                                    <!-- ////// VERIFY  \\\\\\ -->
+                                    <section id="verify"
+                                             ng-show="userKeys.length > 0 && smartContractData.verificationAddedOnUnixTime==0">
+
+                                        <div>
+
+                                            <div id="dataFromSmartContractBlock">
+                                                <div>
+                                                    After you put signed string to smart contract (check data from smart
+                                                    contract above) click 'Verify'
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <button id="verifyBtn"
+                                                    class="ui positive button"
+                                                    ng-disabled="uploadSignedStringWorking||verifyWorking"
+                                                    ng-click="verify()">
+                                                Verify
+                                                <span ng-show="verifyWorking" title="working...">
+                                                    <br>
+                                                    <i class="fa fa-refresh fa-spin fa-fw"></i>&nbsp;Working ...
+                                                </span>
+                                            </button>
+                                        </div>
+
+                                    </section>
+
+                                    <div id="verificationError" ng-show="verificationError" class="ui negative message">
+                                        <i class="close icon" ng-click="verificationError=null"></i>
+                                        <div class="header">Error:</div>
+                                        <p>{{verificationError}}</p>
+                                    </div>
+
+                                    <section id="verificationResult"
+                                             ng-show="verificationResult&&verificationResult.result">
+                                        <div>
+                                            <h3>Verification Result</h3>
+                                            <div>
+                                                This is your verification result:
+                                            </div>
+                                            <div id="verificationResultData">
+                                                <!--<b>{{verificationResult}}</b>-->
+                                                <b>{{verificationResult.result}}</b>
+                                            </div>
+                                        </div>
+                                    </section>
+
+                                    <hr>
+
+                                    <section id="networkInformation">
+                                        Information: <br>
+                                        Working with smart contract:<b><a
+                                            ng-href="{{etherscanLinkPrefix}}address/{{contract.address}}">{{contract.address}}</a></b>
+                                        <br>
+                                        Your Ethereum Account:
+                                        <b><a ng-href="{{etherscanLinkPrefix}}address/{{ethAccount}}">
+                                            {{ethAccount}}
+                                        </a></b>
+                                        <br>
+                                        Your Ethereum network: <b><a ng-href="{{etherscanLinkPrefix}}">{{currentNetwork.networkName}}</a>
+                                        (network id: {{currentNetwork.network_id}})</b><br>
+                                        Your Ethereum node: <b>{{currentNetwork.node}}</b><br>
+                                        last known block:
+                                        <b><a ng-href="{{etherscanLinkPrefix}}block/{{currentNetwork.lastKnownBlock}}">
+                                            {{currentNetwork.lastKnownBlock}}
+                                        </a></b><br>
+                                        web3.js version: <b>{{currentNetwork.web3Version}}</b><br>
+                                        Ethereum Protocol Version: <b>{{currentNetwork.ethereumProtocolVersion}}</b><br>
+                                        <!--{"network_id":"4","networkName":"Rinkeby Test Network","node":"MetaMask/v3.14.1","ethereumProtocolVersion":"0x3f","connected":true}-->
+                                        <hr>
+
+                                        <!--<h5>OpenPGP key data:</h5>-->
+                                        <!--{{pgpPublicKey}}-->
+                                        <!--<h5>your user data:</h5>-->
+                                        <!--{{currentUser}}-->
+                                    </section>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- FOOTER -->
+                        <footer-main></footer-main>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
