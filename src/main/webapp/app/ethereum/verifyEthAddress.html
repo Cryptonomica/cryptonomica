@@ -156,6 +156,10 @@
                                                 </a>
                                             </label>
 
+                                            <label ng-hide="fingerprint">
+                                                <br><span style="color: red; font-weight: bold">Please select OpenPGP key to be used</span>
+                                            </label>
+
                                             <div class="ui negative message" ng-show="!userKeys||userKeys.length == 0">
                                                 <p>
                                                     You don't have verified OpenPGP keys yet.
@@ -421,6 +425,12 @@
                                         </div>
 
                                     </section>
+
+                                    <div id="verificationError" ng-show="verificationError" class="ui negative message">
+                                        <i class="close icon" ng-click="verificationError=null"></i>
+                                        <div class="header">Error:</div>
+                                        <p>{{verificationError}}</p>
+                                    </div>
 
                                     <section id="verificationResult"
                                              ng-show="verificationResult&&verificationResult.result">

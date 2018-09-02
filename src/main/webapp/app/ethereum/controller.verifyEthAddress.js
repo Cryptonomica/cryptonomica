@@ -220,6 +220,9 @@
             $scope.userProfileGeneralView = null;
             $scope.userKeys = [];
             $scope.fingerprint = null; // used in <select>
+            if (!$rootScope.stringIsNullUndefinedOrEmpty($stateParams.fingerprint)) {
+                $scope.fingerprint = $stateParams.fingerprint;
+            }
             //
             $rootScope.progressbar.start(); // <<<<<<<<<<<
             GAuth.checkAuth()
@@ -579,9 +582,11 @@
                                                                 $log.debug('$scope.uploadSignedString txParameters: ');
                                                                 $log.debug(txParameters);
                                                                 $scope.contract.uploadSignedString(
-                                                                    $stateParams.fingerprint,
+                                                                    $scope.fingerprint,
+                                                                    // $stateParams.fingerprint,
                                                                     // as a key we use fingerprint as bytes32, like 0x57A5FEE5A34D563B4B85ADF3CE369FD9E77173E5
-                                                                    "0x" + $stateParams.fingerprint,
+                                                                    "0x" + $scope.fingerprint,
+                                                                    // "0x" + $stateParams.fingerprint,
                                                                     $scope.signedString,
                                                                     txParameters
                                                                 ).then(
@@ -635,7 +640,7 @@
                                                         function (error) {
                                                             $log.error("$scope.verify() error: ");
                                                             $log.error(error);
-                                                            $scope.verificationResult = error.message;
+                                                            $scope.verificationError = error.message;
                                                             $scope.verifyWorking = false;
                                                             // $scope.$apply(); // not needed here
                                                             $timeout($rootScope.progressbar.complete(), 1000);

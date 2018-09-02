@@ -107,6 +107,7 @@ public class PGPPublicKeyData {
     private Date revokedOn; //................................28
     @Index
     private String revokedBy; //..............................29
+    private String revocationNotes; //........................30 // <TODO: new
 
     /* --- Constructors: */
     public PGPPublicKeyData() {
@@ -455,6 +456,14 @@ public class PGPPublicKeyData {
 
     public void setRevokedBy(String revokedBy) {
         this.revokedBy = revokedBy;
+    }
+
+    public String getRevocationNotes() {
+        return revocationNotes;
+    }
+
+    public void setRevocationNotes(String revocationNotes) {
+        this.revocationNotes = revocationNotes;
     }
 
     // end getters and setters

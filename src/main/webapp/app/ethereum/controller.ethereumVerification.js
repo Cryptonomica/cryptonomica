@@ -282,7 +282,8 @@
                                             $log.debug("[ethVerificationCtrl] $scope.pgpPublicKey: ");
                                             $log.debug($scope.pgpPublicKey);
 
-                                            if (!$scope.pgpPublicKey.verified) {
+                                            if (!$scope.pgpPublicKey || (!$scope.pgpPublicKey.verifiedOffline && !$scope.pgpPublicKey.verifiedOnline)) {
+                                                // if (!$scope.pgpPublicKey.verified) {
                                                 $scope.setAlertDanger('This OpenPGP key is not verified. '
                                                 );
                                                 return;

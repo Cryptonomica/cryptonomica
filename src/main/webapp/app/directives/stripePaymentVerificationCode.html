@@ -40,11 +40,15 @@
     </form>
 
     <hr>
-    <!--ng-disabled="onlineVerification.onlineVerificationFinished"-->
 
-    <button name="button" class="ui positive button" ng-click="getOnlineVerification()">
-        Next Step >>>
-    </button>
+    <!--ng-disabled="onlineVerification.onlineVerificationFinished"-->
+    <div ng-hide="onlineVerification.onlineVerificationFinished">
+
+        <button name="button" class="ui positive button" ng-click="getOnlineVerification()">
+            Next Step >>>
+        </button>
+
+    </div>
 
     <br><br>
 </div>

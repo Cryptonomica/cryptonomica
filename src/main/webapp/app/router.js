@@ -106,7 +106,7 @@ router
                     templateUrl: 'app/ethereum/ethereumVerification.html'
                 })
                 .state('verifyEthAddress', {
-                    url: '/verifyEthAddress',
+                    url: '/verifyEthAddress/{fingerprint}',
                     controller: 'cryptonomica.controller.verifyEthAddress',
                     templateUrl: 'app/ethereum/verifyEthAddress.html'
                 })

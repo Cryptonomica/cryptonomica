@@ -591,7 +591,8 @@ public class StripePaymentsAPI {
                         .param("messageText",
                                 "New request for online verification received: \n\n"
                                         + "see entered data on:\n"
-                                        + "https://cryptonomica.net/#/onlineVerificationView/"
+                                        + "https://cryptonomica.net/#!/onlineVerificationView/"
+//                                        + "https://cryptonomica.net/#/onlineVerificationView/"
                                         + fingerprint + "\n\n"
                                         + "verification request data in JSON format: \n\n"
                                         + prettyGson.toJson(onlineVerificationView)
@@ -609,7 +610,8 @@ public class StripePaymentsAPI {
 
                                 "Your request for online verification received: \n\n"
                                         + "see entered data on:\n"
-                                        + "https://cryptonomica.net/#/onlineVerificationView/"
+                                        + "https://cryptonomica.net/#!/onlineVerificationView/"
+//                                        + "https://cryptonomica.net/#/onlineVerificationView/"
                                         + fingerprint + "\n\n"
 
                                         + "You entered all required data. Please wait for data verification by our compliance officer.\n\n"
