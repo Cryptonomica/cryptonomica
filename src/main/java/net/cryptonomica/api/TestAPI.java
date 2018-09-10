@@ -229,6 +229,8 @@ public class TestAPI {
 
 }
 
+/* ================= classes: */
+
 /**
  * The email bean that will be used in the getUserEmail response.
  */

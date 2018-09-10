@@ -551,7 +551,145 @@ public class PGPPublicKeyAPI {
     } // end of revokeKeyByAdmin
 
 
-    /* ---- TEMPORARY: */
+    /* ---------------- Statistics */
+
+    @ApiMethod(
+            name = "getStats",
+            path = "getStats",
+            httpMethod = ApiMethod.HttpMethod.GET
+    )
+    @SuppressWarnings("unused")
+    // get key by by fingerprint
+    public StatsView getStats(
+            final User googleUser
+    ) throws Exception {
+
+        /* Check authorization: */
+        // CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        StatsView result = new StatsView();
+
+        Integer usersRegisteredTotal = ofy().load().type(CryptonomicaUser.class).count();
+        Integer keysUploadedTotal = ofy().load().type(PGPPublicKeyData.class).count();
+
+        Integer keysVerifiedOnlineTotal = ofy().load().type(PGPPublicKeyData.class).filter("verifiedOnline ==", Boolean.TRUE).count();
+        Integer keysVerifiedOfflineTotal = ofy().load().type(PGPPublicKeyData.class).filter("verifiedOffline ==", Boolean.TRUE).count();
+
+        result.setUsersRegistered(usersRegisteredTotal);
+        result.setKeysUploaded(keysUploadedTotal);
+        result.setKeysVerifiedOnline(keysVerifiedOnlineTotal);
+        result.setKeysVerifiedOffline(keysVerifiedOfflineTotal);
+
+        return result;
+
+    } // end of revokeKeyByAdmin
+
+    @ApiMethod(
+            name = "getStatsByDate",
+            path = "getStatsByDate",
+            httpMethod = ApiMethod.HttpMethod.GET
+    )
+    @SuppressWarnings("unused")
+    // get key by by fingerprint
+    public StatsView getStatsByDate(
+            final User googleUser,
+            final @Named("year") Integer year, // "2015"
+            final @Named("month") Integer month, // "03"
+            final @Named("day") Integer day // "01"
+    ) throws Exception {
+
+        /* Check authorization: */
+        // CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        StatsView result = new StatsView();
+
+        Date start = new Date(year, month, day, 0, 0, 0);
+        Date end = new Date(year, month, day, 23, 59, 59);
+
+        Integer usersRegistered = ofy().load().type(CryptonomicaUser.class)
+                .filter("entityCreated >=", start)
+//                .filter("entityCreated <=", end)
+                .count();
+
+        Integer keysUploaded = ofy().load().type(PGPPublicKeyData.class)
+                .filter("entityCreated >=", start)
+//                .filter("entityCreated <=", end)
+                .count();
+
+        Integer keysVerifiedOnline = ofy().load().type(PGPPublicKeyData.class)
+                .filter("verifiedOnline ==", true)
+                .filter("entityCreated >=", start)
+//                .filter("entityCreated <=", end)
+                .count();
+
+        Integer keysVerifiedOffline = ofy().load().type(PGPPublicKeyData.class)
+                .filter("verifiedOffline ==", true)
+                .filter("entityCreated >=", start)
+//                .filter("entityCreated <=", end)
+                .count();
+
+        result.setUsersRegistered(usersRegistered);
+        result.setKeysUploaded(keysUploaded);
+        result.setKeysVerifiedOnline(keysVerifiedOnline);
+        result.setKeysVerifiedOffline(keysVerifiedOffline);
+
+        return result;
+
+    } // end of revokeKeyByAdmin
+
+    @ApiMethod(
+            name = "getVerificationStatsForAdminByDate",
+            path = "getVerificationStatsForAdminByDate",
+            httpMethod = ApiMethod.HttpMethod.GET
+    )
+    @SuppressWarnings("unused")
+    // get key by by fingerprint
+    public VerificationStatsForAdminView getVerificationStatsForAdminByDate(
+            final User googleUser,
+            final @Named("date") String date // "2015-07-23"
+    ) throws Exception {
+
+        /* Check authorization: */
+        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        VerificationStatsForAdminView result = new VerificationStatsForAdminView();
+
+        Integer usersRegistered = ofy().load().type(CryptonomicaUser.class)
+                .filter("entityCreated ==", date)
+                .count();
+
+        Integer verificationsTotal = ofy().load().type(OnlineVerification.class)
+                .filter("entityCreated ==", date)
+                .count();
+
+        Integer documentsUploaded = ofy().load().type(OnlineVerification.class)
+                .filter("entityCreated ==", date)
+                .filter("verificationDocumentsArray !=", null)
+                .count();
+
+        Integer videosUploaded = ofy().load().type(OnlineVerification.class)
+                .filter("entityCreated ==", date)
+                .filter("verificationVideoId !=", null)
+                .count();
+
+        Integer paymentsMade = ofy().load().type(OnlineVerification.class)
+                .filter("entityCreated ==", date)
+                .filter("verificationVideoId !=", null)
+                .count();
+
+        result.setDate(date);
+        result.setUsersRegistered(usersRegistered);
+        result.setDocumentsUploaded(documentsUploaded);
+        result.setVideosUploaded(videosUploaded);
+        result.setPaymentsMade(paymentsMade);
+
+        return result;
+
+    } // end of revokeKeyByAdmin
+
+
+    /* ==================== TEMPORARY: */
+
     @ApiMethod(
             name = "repairOldEntities",
             path = "repairOldEntities",

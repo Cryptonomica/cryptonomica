@@ -3,6 +3,7 @@ package net.cryptonomica.api;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.Named;
+import com.google.api.server.spi.config.Nullable;
 import com.google.api.server.spi.response.NotFoundException;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Email;
@@ -186,7 +187,10 @@ public class StripePaymentsAPI {
             final HttpServletRequest httpServletRequest,
             final User googleUser,
             final @Named("fingerprint") String fingerprint,
-            final @Named("promoCode") String promoCode
+            // @Nullable - see:
+            // https://cloud.google.com/endpoints/docs/frameworks/about-cloud-endpoints-frameworks
+            // https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/appengine-java8/endpoints-v2-backend/src/main/java/com/example/echo/Echo.java
+            final @Named("promoCode") @Nullable String promoCode
     )
             throws Exception {
 
