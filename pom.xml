@@ -80,6 +80,7 @@
             <artifactId>endpoints-framework</artifactId>
             <version>${endpoints.framework.version}</version>
         </dependency>
+
         <dependency>
             <!-- https://mvnrepository.com/artifact/com.google.endpoints/endpoints-management-control-appengine-all-->
             <groupId>com.google.endpoints</groupId>
@@ -88,11 +89,13 @@
             <!--<version>1.0.6</version>-->
             <version>1.0.7</version>
         </dependency>
+
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>
             <!--<version>1.9.59</version>-->
-            <version>1.9.63</version>
+            <!--<version>1.9.63</version>-->
+            <version>1.9.64</version>
         </dependency>
 
         <dependency>
@@ -272,7 +275,8 @@
             <artifactId>objectify</artifactId>
             <!--<version>5.1.10</version>-->
             <!--<version>5.1.16</version>-->
-            <version>5.1.17</version>
+            <!--<version>5.1.17</version>-->
+            <version>5.1.22</version>
         </dependency>
 
         <dependency>

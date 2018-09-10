@@ -80,4 +80,10 @@ To file a case just send your claim (notice of arbitration) by email to registra
 See:
 [more info on abitration](https://github.com/Cryptonomica/arbitration-rules)
 and
-[Arbitration Rules](https://github.com/Cryptonomica/arbitration-rules/blob/master/Arbitration_Rules/IACC/IACC-Arbitration-Rules.EN.signed.md)
+[Arbitration Rules](https://github.com/Cryptonomica/arbitration-rules/blob/master/Arbitration_Rules/IACC/IACC-Arbitration-Rules.EN.signed.md) 
+
+## Who uses Cryptonomica? 
+
+Cryptonomica used for KYC by [stocks.exchange](https://www.stocks.exchange/), a fully licenced Estonian cryptocurrency exchange service. 
+
+
