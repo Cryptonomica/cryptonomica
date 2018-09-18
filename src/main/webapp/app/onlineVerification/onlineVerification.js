@@ -122,6 +122,14 @@
                         // $log.debug(resp);
                         $scope.onlineVerification = resp; // OnlineVerificationView.java
 
+                        // if promocode used for payment, remove promocode from cookies and $rootScoope
+                        if (!$rootScope.stringIsNullUndefinedOrEmpty($scope.onlineVerification.promoCodeUsed)) {
+                            if ($cookies.get('promocode') === $scope.onlineVerification.promoCodeUsed) {
+                                $cookies.remove('promocode');
+                                $rootScope.promoCodeMessage = null;
+                            }
+                        }
+
                         // $log.debug('$scope.onlineVerification:');
                         // $log.debug($scope.onlineVerification);
                         console.log('$scope.onlineVerification:');
@@ -412,11 +420,20 @@
             }
 
             /* Functions for steps, that should be called when step loaded */
+
+            // --- Promocode
             $scope.promoCode = null;
+            if (!$rootScope.stringIsNullUndefinedOrEmpty($cookies.get('promocode'))) {
+                // https://docs.angularjs.org/api/ngCookies/service/$cookies
+                $scope.promoCode = $cookies.get('promocode');
+            }
+
             $scope.getPriceForKeyVerificationIsWorking = false;
             $scope.getPriceForKeyVerification = function () {
                 $log.debug("$scope.getPriceForKeyVerification started");
                 $scope.getPriceForKeyVerificationIsWorking = true;
+                $scope.getPriceForKeyVerificationError = null;
+                $scope.promoCodeAppiedMessage = null;
                 GApi.executeAuth(
                     'stripePaymentsAPI',
                     'getPriceForKeyVerification',
@@ -427,13 +444,22 @@
                 ).then(
                     function (IntegerWrapperObject) {
                         $scope.priceForKeyVerification = IntegerWrapperObject.number / 100; // from cents to dollars
+                        if ($scope.promoCode) {
+                            $scope.promoCodeAppiedMessage = true;
+                        }
                         console.log("$scope.priceForKeyVerification: ");
                         console.log($scope.priceForKeyVerification);
                         $scope.getPriceForKeyVerificationIsWorking = false;
                         $timeout($rootScope.progressbar.complete(), 1000);
                         // $scope.$apply(); // not here
                     }, function (getPriceForKeyVerificationError) {
-                        $scope.getPriceForKeyVerificationError = getPriceForKeyVerificationError;
+                        $scope.getPriceForKeyVerificationError = getPriceForKeyVerificationError.message;
+                        if (getPriceForKeyVerificationError.message && getPriceForKeyVerificationError.message.indexOf('promo code is not valid') >= 0) {
+                            if ($cookies.get('promocode') === $scope.promoCode) {
+                                $cookies.remove('promocode');
+                                $rootScope.promoCodeMessage = null;
+                            }
+                        }
                         console.log("$scope.getPriceForKeyVerificationError : ");
                         $log.error($scope.getPriceForKeyVerificationError);
                         $scope.getPriceForKeyVerificationIsWorking = false;
@@ -442,6 +468,7 @@
                     }
                 )
             };
+            $scope.getPriceForKeyVerification();
 
             $scope.getVideoUploadKey = function () {
                 GApi.executeAuth('onlineVerificationAPI', 'getVideoUploadKey')

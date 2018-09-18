@@ -554,13 +554,12 @@ public class PGPPublicKeyAPI {
     /* ---------------- Statistics */
 
     @ApiMethod(
-            name = "getStats",
-            path = "getStats",
+            name = "getStatsAllTime",
+            path = "getStatsAllTime",
             httpMethod = ApiMethod.HttpMethod.GET
     )
     @SuppressWarnings("unused")
-    // get key by by fingerprint
-    public StatsView getStats(
+    public StatsView getStatsAllTime(
             final User googleUser
     ) throws Exception {
 
@@ -582,7 +581,7 @@ public class PGPPublicKeyAPI {
 
         return result;
 
-    } // end of revokeKeyByAdmin
+    } // end of: public StatsView getStatsAllTime(
 
     @ApiMethod(
             name = "getStatsByDate",
@@ -590,12 +589,11 @@ public class PGPPublicKeyAPI {
             httpMethod = ApiMethod.HttpMethod.GET
     )
     @SuppressWarnings("unused")
-    // get key by by fingerprint
     public StatsView getStatsByDate(
             final User googleUser,
             final @Named("year") Integer year, // "2015"
-            final @Named("month") Integer month, // "03"
-            final @Named("day") Integer day // "01"
+            final @Named("month") Integer month, // "3"
+            final @Named("day") Integer day // "1"
     ) throws Exception {
 
         /* Check authorization: */
@@ -603,40 +601,82 @@ public class PGPPublicKeyAPI {
 
         StatsView result = new StatsView();
 
-        Date start = new Date(year, month, day, 0, 0, 0);
-        Date end = new Date(year, month, day, 23, 59, 59);
+        result.setDate(year.toString() + "-" + month.toString() + "-" + day.toString());
 
-        Integer usersRegistered = ofy().load().type(CryptonomicaUser.class)
-                .filter("entityCreated >=", start)
-//                .filter("entityCreated <=", end)
-                .count();
+        Date start = new Date(year - 1900, month - 1, day, 0, 0, 0);
+        Date end = new Date(year - 1900, month - 1, day, 23, 59, 59);
 
-        Integer keysUploaded = ofy().load().type(PGPPublicKeyData.class)
-                .filter("entityCreated >=", start)
-//                .filter("entityCreated <=", end)
-                .count();
+        // see:
+        // https://stackoverflow.com/questions/36351108/how-to-filter-on-basis-of-jodatime-in-objectify
 
-        Integer keysVerifiedOnline = ofy().load().type(PGPPublicKeyData.class)
+        result.setUsersRegistered(
+                ofy().load().type(CryptonomicaUser.class)
+                        .filter("entityCreated >=", start)
+                        .filter("entityCreated <=", end)
+                        .count()
+        );
+
+        result.setKeysUploaded(
+                ofy().load().type(PGPPublicKeyData.class)
+                        .filter("entityCreated >=", start)
+                        .filter("entityCreated <=", end)
+                        .count()
+        );
+
+/*
+To avoid having to scan the entire index table, the query mechanism relies on
+all of a query's potential results being adjacent to one another in the index.
+To satisfy this constraint, a single query may not use inequality comparisons
+(LESS_THAN, LESS_THAN_OR_EQUAL, GREATER_THAN, GREATER_THAN_OR_EQUAL, NOT_EQUAL)
+on more than one property across all of its filters
+[Source : https://cloud.google.com/appengine/docs/standard/java/datastore/query-restrictions ]
+https://stackoverflow.com/questions/21001371/why-gae-datastore-not-support-multiple-inequality-filter-on-different-properties
+*/
+//
+//        result.setDocumentsUploaded(
+//                ofy().load().type(OnlineVerification.class)
+//                        .filter("entityCreated >=", start)
+//                        .filter("entityCreated <=", end)
+//                        .filter("verificationDocumentsArray !=", null)
+//                        .count()
+//        );
+//
+//        result.setVideosUploaded(
+//                ofy().load().type(OnlineVerification.class)
+//                        .filter("entityCreated >=", start)
+//                        .filter("entityCreated <=", end)
+//                        .filter("verificationVideoId !=", null)
+//                        .count()
+//        );
+
+        result.setPaymentsMade(
+                ofy().load().type(OnlineVerification.class)
+                        .filter("entityCreated >=", start)
+                        .filter("entityCreated <=", end)
+                        .filter("paymentMade ==", true)
+                        .count()
+        );
+
+        result.setKeysVerifiedOnline(ofy().load().type(PGPPublicKeyData.class)
                 .filter("verifiedOnline ==", true)
                 .filter("entityCreated >=", start)
-//                .filter("entityCreated <=", end)
-                .count();
+                .filter("entityCreated <=", end)
+                .count()
+        );
 
-        Integer keysVerifiedOffline = ofy().load().type(PGPPublicKeyData.class)
-                .filter("verifiedOffline ==", true)
-                .filter("entityCreated >=", start)
-//                .filter("entityCreated <=", end)
-                .count();
-
-        result.setUsersRegistered(usersRegistered);
-        result.setKeysUploaded(keysUploaded);
-        result.setKeysVerifiedOnline(keysVerifiedOnline);
-        result.setKeysVerifiedOffline(keysVerifiedOffline);
+        result.setKeysVerifiedOffline(
+                ofy().load().type(PGPPublicKeyData.class)
+                        .filter("verifiedOffline ==", true)
+                        .filter("entityCreated >=", start)
+                        .filter("entityCreated <=", end)
+                        .count()
+        );
 
         return result;
 
-    } // end of revokeKeyByAdmin
+    } // end of:  public StatsView getStatsByDate(
 
+    /*
     @ApiMethod(
             name = "getVerificationStatsForAdminByDate",
             path = "getVerificationStatsForAdminByDate",
@@ -649,7 +689,7 @@ public class PGPPublicKeyAPI {
             final @Named("date") String date // "2015-07-23"
     ) throws Exception {
 
-        /* Check authorization: */
+        // Check authorization:
         CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
 
         VerificationStatsForAdminView result = new VerificationStatsForAdminView();
@@ -686,7 +726,7 @@ public class PGPPublicKeyAPI {
         return result;
 
     } // end of revokeKeyByAdmin
-
+    */
 
     /* ==================== TEMPORARY: */
 
@@ -716,82 +756,11 @@ public class PGPPublicKeyAPI {
                 ofy()
                         .load()
                         .type(PGPPublicKeyData.class)
-                        .filter(
-                                "verified",
-                                false
-                        )
-                        .list();
-        for (PGPPublicKeyData pgpPublicKeyData : pgpPublicKeyDataEntitiesList) {
-
-            if (!pgpPublicKeyData.getVerified()) { // <<< ! verified: false
-                pgpPublicKeyData.setVerifiedOffline(Boolean.FALSE);
-                Key<PGPPublicKeyData> pgpPublicKeyDataKey = ofy().save().entity(pgpPublicKeyData).now();
-                result.addKey(pgpPublicKeyData);
-            }
-
-        }
-
-        // true:
-        pgpPublicKeyDataEntitiesList =
-                ofy()
-                        .load()
-                        .type(PGPPublicKeyData.class)
-                        .filter(
-                                "verified",
-                                true
-                        )
                         .list();
 
         for (PGPPublicKeyData pgpPublicKeyData : pgpPublicKeyDataEntitiesList) {
-
-            if (pgpPublicKeyData.getVerified()) {
-                pgpPublicKeyData.setVerifiedOffline(Boolean.TRUE);
-                Key<PGPPublicKeyData> pgpPublicKeyDataKey = ofy().save().entity(pgpPublicKeyData).now();
-                result.addKey(pgpPublicKeyData);
-            }
-
-        }
-
-        /* Online Verification : */
-
-        // false:
-        pgpPublicKeyDataEntitiesList =
-                ofy()
-                        .load()
-                        .type(PGPPublicKeyData.class)
-                        .filter(
-                                "onlineVerificationFinished",
-                                false
-                        )
-                        .list();
-        for (PGPPublicKeyData pgpPublicKeyData : pgpPublicKeyDataEntitiesList) {
-
-            if (!pgpPublicKeyData.getOnlineVerificationFinished()) { // ! <<< onlineVerificationFinished: false
-                pgpPublicKeyData.setVerifiedOnline(Boolean.FALSE);
-                Key<PGPPublicKeyData> pgpPublicKeyDataKey = ofy().save().entity(pgpPublicKeyData).now();
-                result.addKey(pgpPublicKeyData);
-            }
-
-        }
-
-        // true:
-        pgpPublicKeyDataEntitiesList =
-                ofy()
-                        .load()
-                        .type(PGPPublicKeyData.class)
-                        .filter(
-                                "onlineVerificationFinished",
-                                true
-                        )
-                        .list();
-        for (PGPPublicKeyData pgpPublicKeyData : pgpPublicKeyDataEntitiesList) {
-
-            if (pgpPublicKeyData.getOnlineVerificationFinished()) {
-                pgpPublicKeyData.setVerifiedOnline(Boolean.TRUE);
-                Key<PGPPublicKeyData> pgpPublicKeyDataKey = ofy().save().entity(pgpPublicKeyData).now();
-                result.addKey(pgpPublicKeyData);
-            }
-
+            // Key<PGPPublicKeyData> pgpPublicKeyDataKey = ofy().save().entity(pgpPublicKeyData).now();
+            result.addKey(pgpPublicKeyData);
         }
 
         return result;

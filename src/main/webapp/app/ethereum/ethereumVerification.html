@@ -69,7 +69,7 @@
                                             ui-sref="viewprofile({userId:pgpPublicKey.cryptonomicaUserId})">{{pgpPublicKey.userID}}</a>)
                                         &nbsp;
 
-                                        <span ng-show=" pgpPublicKey.cryptonomicaUserId==currentUser.userId"
+                                        <span ng-show="pgpPublicKey.cryptonomicaUserId&&pgpPublicKey.cryptonomicaUserId==currentUser.userId"
                                               style="color: green">(this is your key)</span>
                                         <!--<span ng-show="pgpPublicKey.cryptonomicaUserId!=currentUser.userId">(it's not your key)</span>-->
                                         <br><br>
@@ -175,7 +175,7 @@
                                                         <td>Verified on:</td>
                                                         <td>
                                 <span ng-show="smartContractData.verificationAddedOnUnixTime && smartContractData.verificationAddedOnUnixTime > 0">
-                                    {{smartContractData.verificationAddedOnDate | date:'yyyy-MM-dd'}}(Unix time:&nbsp;{{smartContractData.verificationAddedOnUnixTime}})
+                                    {{smartContractData.verificationAddedOnDate | date:'yyyy-MM-dd'}}&nbsp;(Unix time:&nbsp;{{smartContractData.verificationAddedOnUnixTime}})
                                 </span>
                                                         </td>
                                                     </tr>

@@ -42,6 +42,7 @@ public class OnlineVerificationView implements Serializable {
     private String cryptonomicaUserId; //................................20
     private Date birthday; //............................................21
     private String nationality; // ......................................22
+    private String promoCodeUsed; //.....................................23
 
     /* --- Constructors: */
     public OnlineVerificationView() {
@@ -79,6 +80,7 @@ public class OnlineVerificationView implements Serializable {
                 this.verificationDocumentsArray.add(verificationDocumentId);
             }
         this.nationality = onlineVerification.getNationality();
+        this.promoCodeUsed = onlineVerification.getPromoCodeUsed();
     } // end of constructor;
 
     /* toString() */
@@ -264,4 +266,13 @@ public class OnlineVerificationView implements Serializable {
     public void setNationality(String nationality) {
         this.nationality = nationality;
     }
+
+    public String getPromoCodeUsed() {
+        return promoCodeUsed;
+    }
+
+    public void setPromoCodeUsed(String promoCodeUsed) {
+        this.promoCodeUsed = promoCodeUsed;
+    }
+
 }

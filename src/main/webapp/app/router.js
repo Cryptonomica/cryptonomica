@@ -30,6 +30,18 @@ router
                     //     }
                     // }
                 })
+                .state('promocode', {
+                    url: '/promocode/{promocode}',
+                    controller: 'cryptonomica.controller.promocode',
+                    // templateUrl: 'app/home/home.html',
+                    //
+                    // templateUrl: 'app/landing/landing.html',
+                    // resolve: {
+                    //     goat: function (GoatService) {
+                    //         return GoatService.getGoat();
+                    //     }
+                    // }
+                })
                 .state('landing', {
                     url: '/landing',
                     controller: 'cryptonomica.controller.home',

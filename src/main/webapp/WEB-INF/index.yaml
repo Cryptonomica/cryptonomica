@@ -1,0 +1,67 @@
+# see reference:
+# https://cloud.google.com/datastore/docs/tools/indexconfig
+# https://cloud.google.com/appengine/docs/standard/python/config/indexref
+# see also: https://cloud.google.com/datastore/docs/concepts/indexes
+# https://stackoverflow.com/questions/36351108/how-to-filter-on-basis-of-jodatime-in-objectify
+# see project indexes on:
+# https://console.cloud.google.com/datastore/indexes?project=cryptonomica-server
+# ("Below are the composite indexes for this application. These indexes are managed in your app's index configuration file")
+
+indexes:
+
+# ---- PGPPublicKeyData
+
+- kind: PGPPublicKeyData
+  ancestor: no
+  properties:
+  - name: verifiedOnline
+  - name: entityCreated
+
+- kind: PGPPublicKeyData
+  ancestor: no
+  properties:
+  - name: verifiedOffline
+  - name: entityCreated
+
+# --- OnlineVerification
+
+- kind: OnlineVerification
+  ancestor: no
+  properties:
+  - name: entityCreated
+  - name: termsAccepted
+
+- kind: OnlineVerification
+  ancestor: no
+  properties:
+  - name: entityCreated
+  - name: verificationDocumentsArray
+
+- kind: OnlineVerification
+  ancestor: no
+  properties:
+  - name: entityCreated
+  - name: verificationVideoId
+
+- kind: OnlineVerification
+  ancestor: no
+  properties:
+  - name: paymentMade
+  - name: entityCreated
+
+# --- StripePaymentForKeyVerification
+
+- kind: StripePaymentForKeyVerification
+  ancestor: no
+  properties:
+  - name: promoCodeIssuedBy
+  - name: entityCreated
+
+# --- TestEntity
+
+- kind: TestEntity
+  ancestor: no
+  properties:
+  - name: entityCreatedOnYear
+  - name: entityCreatedOnMonth
+  - name: entityCreatedOnDay

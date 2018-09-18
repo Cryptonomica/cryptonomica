@@ -337,7 +337,7 @@
 
                                                 // (1) mapping(bytes20 => address) public addressAttached
                                                 $scope.contract.addressAttached.call(
-                                                    // as a key we use fingerprint as bytes32, like 0x57A5FEE5A34D563B4B85ADF3CE369FD9E77173E5
+                                                    // as a key we use fingerprint as bytes20, like 0x57A5FEE5A34D563B4B85ADF3CE369FD9E77173E5
                                                     "0x" + $stateParams.fingerprint
                                                 )
                                                     .then(
@@ -379,20 +379,28 @@
                                                                         $scope.smartContractData.signedString = verification[8];
 
                                                                         $scope.$apply();
-                                                                        return $scope.contract.signedStringUploadedOnUnixTime.call($rootScope.web3.eth.defaultAccount);
+                                                                        // return $scope.contract.signedStringUploadedOnUnixTime.call($rootScope.web3.eth.defaultAccount);
                                                                     }
-                                                                )
-                                                                //  duplicate:
-                                                                // .then(function (signedStringUploadedOnUnixTime) {
-                                                                //         $scope.smartContractData.signedStringUploadedOnUnixTime = signedStringUploadedOnUnixTime.toNumber();
-                                                                //         $scope.smartContractData.signedStringUploadedOnDate =
-                                                                //             $rootScope.dateFromUnixTime(
-                                                                //                 $scope.smartContractData.signedStringUploadedOnUnixTime
-                                                                //             );
-                                                                //     }
-                                                                // )
+                                                                ).catch(function (error) { // TODO: check
+                                                                    $log.debug('$scope.contract.verification.call() error:');
+                                                                    $log.error(error);
+                                                                    $scope.requestDataFromSmartContractError.error = true;
+                                                                    $scope.requestDataFromSmartContractError.verification = error;
+                                                                    $scope.$apply();
+                                                                }
+                                                            )
+                                                            //  duplicate:
+                                                            // .then(function (signedStringUploadedOnUnixTime) {
+                                                            //         $scope.smartContractData.signedStringUploadedOnUnixTime = signedStringUploadedOnUnixTime.toNumber();
+                                                            //         $scope.smartContractData.signedStringUploadedOnDate =
+                                                            //             $rootScope.dateFromUnixTime(
+                                                            //                 $scope.smartContractData.signedStringUploadedOnUnixTime
+                                                            //             );
+                                                            //     }
+                                                            // )
                                                                 .catch(function (error) {
-                                                                        $log.debug('$scope.contract.verification.call() error:');
+                                                                        // $log.debug('$scope.contract.verification.call() error:');
+                                                                        $log.debug('$scope.contract.addressAttached.call() error:');
                                                                         $log.error(error);
                                                                         $scope.requestDataFromSmartContractError.error = true;
                                                                         $scope.requestDataFromSmartContractError.verification = error;

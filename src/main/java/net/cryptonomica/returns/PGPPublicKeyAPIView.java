@@ -58,7 +58,7 @@ public class PGPPublicKeyAPIView implements Serializable {
         this.lastName = pgpPublicKeyData.getLastName();
         // 7
         if (pgpPublicKeyData.getUserEmail() != null) {
-            this.userEmail = pgpPublicKeyData.getUserEmail().getEmail();
+            this.userEmail = pgpPublicKeyData.getUserEmail().getEmail().toLowerCase();
         }
         // 8
         if (onlineVerification == null) {
@@ -111,7 +111,7 @@ public class PGPPublicKeyAPIView implements Serializable {
         this.lastName = pgpPublicKeyData.getLastName();
         // 7
         if (pgpPublicKeyData.getUserEmail() != null) {
-            this.userEmail = pgpPublicKeyData.getUserEmail().getEmail();
+            this.userEmail = pgpPublicKeyData.getUserEmail().getEmail().toLowerCase();
         }
         // 8
         this.userPhoneNumber = userPhoneNumber;
@@ -160,7 +160,7 @@ public class PGPPublicKeyAPIView implements Serializable {
         this.lastName = pgpPublicKeyData.getLastName();
         // 7
         if (pgpPublicKeyData.getUserEmail() != null) {
-            this.userEmail = pgpPublicKeyData.getUserEmail().getEmail();
+            this.userEmail = pgpPublicKeyData.getUserEmail().getEmail().toLowerCase();
         }
         // 8
         this.userPhoneNumber = null; // < ! , to be assigned with setter method

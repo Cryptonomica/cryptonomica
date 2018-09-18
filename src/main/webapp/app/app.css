@@ -17,7 +17,8 @@
 }
 
 #footer {
-    background-color: rgba(222, 222, 222, 1.0);
+    /*background-color: rgba(222, 222, 222, 1.0);*/
+    background-color: rgba(219, 219, 219, 1.0);
 }
 
 .ui .form {
@@ -133,7 +134,8 @@ No js needed */
 
 a .socialLogo {
     font-size: 1.4em;
-    color: #9c9c9c !important;
+    color: #777777 !important;
+    /*color: #9c9c9c !important;*/
     /*color: black !important;*/
 }
 
@@ -179,5 +181,12 @@ a .socialLogo:hover {
     /*border-style: dotted;*/
     /*border-width: thin;*/
     /*padding: 0.5em;*/
+}
+
+/* ----- FORMS --------*/
+.inputError {
+    background: #FFF6F6 !important;
+    border-color: #E0B4B4 !important;
+    color: #9F3A38 !important;
 }
 

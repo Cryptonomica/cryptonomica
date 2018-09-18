@@ -574,29 +574,36 @@ public class EthNodeAPI {
                     "https://tomcatweb3j.cryptonomica.net/addVerificationData",
                     tomcatWeb3jAPIkey,
                     parameterMap
-
             );
 
-            byte[] httpResponseContentBytesFromAddVerificationDataServlet = httpResponseFromAddVerificationDataServlet.getContent();
+            try {
 
-            String httpResponseContentStringAddVerificationDataServlet = new String(
-                    httpResponseContentBytesFromAddVerificationDataServlet,
-                    StandardCharsets.UTF_8
-            );
+                byte[] httpResponseContentBytesFromAddVerificationDataServlet = httpResponseFromAddVerificationDataServlet.getContent();
 
-            LOG.warning(httpResponseContentStringAddVerificationDataServlet);
+                String httpResponseContentStringAddVerificationDataServlet = new String(
+                        httpResponseContentBytesFromAddVerificationDataServlet,
+                        StandardCharsets.UTF_8
+                );
 
-            result.setMessage(
-                    httpResponseContentStringAddVerificationDataServlet // tx receipt
-            );
+                LOG.warning(httpResponseContentStringAddVerificationDataServlet);
 
-        }
+                result.setMessage(
+                        httpResponseContentStringAddVerificationDataServlet // tx receipt
+                );
+
+            } catch (Exception e) {
+                LOG.severe(e.getMessage());
+                result.setMessage(
+                        "Can not check transaction. Please check smart contract data manually"
+                );
+            } // end of: catch
+
+        } // end of: if (result.getResult()) {..
 
         LOG.warning("result:");
         LOG.warning(GSON.toJson(result));
 
         return result;
     }
-
 
 }

@@ -1,7 +1,6 @@
 package net.cryptonomica.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.api.server.spi.auth.common.User;
 import com.google.api.server.spi.config.*;
 import com.google.api.server.spi.response.BadRequestException;
 import com.google.api.server.spi.response.NotFoundException;
@@ -9,19 +8,26 @@ import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
+import com.google.appengine.api.users.User;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.i18n.phonenumbers.NumberParseException;
+import com.googlecode.objectify.Key;
 import com.twilio.sdk.TwilioRestException;
 import net.cryptonomica.entities.CryptonomicaUser;
+import net.cryptonomica.entities.TestEntity;
+import net.cryptonomica.returns.IntegerWrapperObject;
 import net.cryptonomica.returns.StringWrapperObject;
 import net.cryptonomica.service.TwilioUtils;
 import net.cryptonomica.service.UserTools;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 
-/* see: https://stackoverflow.com/a/27148958/1697878 */
+import static net.cryptonomica.service.OfyService.ofy;
 
 
 /**
@@ -58,6 +64,8 @@ public class TestAPI {
 
     /* ---- Logger: */
     private static final Logger LOG = Logger.getLogger(TestAPI.class.getName());
+    /* --- Gson: */
+    private static final Gson GSON = new Gson();
 
     /**
      * Echoes the received message back. If n is a non-negative integer, the message is copied that
@@ -226,6 +234,142 @@ public class TestAPI {
         return response;
     }
     // [END google_id_token_auth]
+
+    //=========== TestEntity:
+    @SuppressWarnings("unused")
+    @ApiMethod(
+            name = "createTestEntity",
+            path = "createTestEntity",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    public TestEntity createTestEntity(
+            final User googleUser,
+            final @Named("entityName") String entityName,
+            final @Named("booleanProperty") @Nullable Boolean booleanProperty,
+            final @Named("stringProperty") @Nullable String stringProperty,
+            final @Named("dateProperty") @Nullable Date dateProperty // enter in format: 2018-09-13
+            /*
+            POST https://cryptonomica-server.appspot.com/_ah/api/testAPI/v1/createTestEntity?entityName=testEntity1&booleanProperty=true&stringProperty=some+text&dateProperty=2015-07-11
+            * */
+    ) throws UnauthorizedException {
+
+        /* --- Check authorization: */
+        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        TestEntity testEntity = new TestEntity();
+        //
+        testEntity.setEntityCreatedBy(googleUser);
+        testEntity.setEntityCreatedOn(new Date());
+
+        LOG.warning(testEntity.getEntityCreatedOn().toString());
+        LOG.warning(testEntity.getEntityCreatedOnYear().toString());
+        LOG.warning(testEntity.getEntityCreatedOnMonth().toString());
+        LOG.warning(testEntity.getEntityCreatedOnDay().toString());
+        //
+        testEntity.setEntityName(entityName);
+        testEntity.setBooleanProperty(booleanProperty);
+        testEntity.setStringProperty(stringProperty);
+        testEntity.setDateProperty(dateProperty);
+
+        ofy().save().entity(testEntity).now();
+
+        Key<TestEntity> testEntityKey = Key.create(TestEntity.class, entityName);
+        TestEntity response = ofy().load().key(testEntityKey).now();
+
+        LOG.warning(GSON.toJson(response));
+
+        return response;
+        /*
+        {
+            "entityName": "testEntity1",
+                "booleanProperty": true,
+                "stringProperty": "some text",
+                "dateProperty": "2015-07-11T00:00:00.000Z",
+                "entityCreatedOn": "2018-09-13T03:24:27.705Z",
+                "entityCreatedBy": {
+                "email": "user@gmail.com",
+                    "authDomain": "gmail.com",
+                    "userId": "1234567890....",
+                    "nickname": "user@gmail.com"
+        }
+        */
+    }
+
+    @SuppressWarnings("unused")
+    @ApiMethod(
+            name = "findTestEntitiesByDate",
+            path = "findTestEntitiesByDate",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    public ArrayList<TestEntity> findTestEntitiesByDate(
+            final User googleUser,
+//            final @Named("entityName") String entityName,
+            final @Named("year") Integer year,
+            final @Named("month") @Nullable Integer month,
+            final @Named("day") @Nullable Integer day
+            /*
+             * */
+    ) throws UnauthorizedException {
+
+        /* --- Check authorization: */
+        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        List<TestEntity> listOfEntities = null;
+        if (month == null && day == null) {
+            listOfEntities = ofy().load().type(TestEntity.class).filter("entityCreatedOnYear ==", year).list();
+
+        } else if (day == null) {
+            listOfEntities = ofy().load().type(TestEntity.class)
+                    .filter("entityCreatedOnYear ==", year)
+                    .filter("entityCreatedOnMonth ==", month)
+                    .list();
+        } else {
+            listOfEntities = ofy().load().type(TestEntity.class)
+                    .filter("entityCreatedOnYear ==", year)
+                    .filter("entityCreatedOnMonth ==", month)
+                    .filter("entityCreatedOnDay ==", day)
+                    .list();
+        }
+        return new ArrayList<>(listOfEntities);
+    }
+
+    @SuppressWarnings("unused")
+    @ApiMethod(
+            name = "countTestEntitiesByDate",
+            path = "countTestEntitiesByDate",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    public IntegerWrapperObject countTestEntitiesByDate(
+            final User googleUser,
+//            final @Named("entityName") String entityName,
+            final @Named("year") Integer year,
+            final @Named("month") @Nullable Integer month,
+            final @Named("day") @Nullable Integer day
+            /*
+             * */
+    ) throws UnauthorizedException {
+
+        /* --- Check authorization: */
+        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        Integer result = null;
+        if (month == null && day == null) {
+            result = ofy().load().type(TestEntity.class).filter("entityCreatedOnYear ==", year).count();
+
+        } else if (day == null) {
+            result = ofy().load().type(TestEntity.class)
+                    .filter("entityCreatedOnYear ==", year)
+                    .filter("entityCreatedOnMonth ==", month)
+                    .count();
+        } else {
+            result = ofy().load().type(TestEntity.class)
+                    .filter("entityCreatedOnYear ==", year)
+                    .filter("entityCreatedOnMonth ==", month)
+                    .filter("entityCreatedOnDay ==", day)
+                    .count();
+        }
+        return new IntegerWrapperObject(result);
+    }
 
 }
 

@@ -28,28 +28,28 @@ public class PGPPublicKeyData {
     // It makes possible to store the same key to different users - for testing
     @Parent // TODO: should we keep this?
     private Key<CryptonomicaUser> cryptonomicaUserKey; // .....1
-    @Id
     // @Id fields cannot be filtered on !!!!
+    @Id
     private String fingerprint; //.............................2
-    @Index
     // --- for filters in Objectify:
     // .filter("fingerprintStr", fingerprint.toUpperCase())
     // like: 05600EB8208485E6942666E06A7B21E2844C7980
-    private String fingerprintStr; //..........................3
     @Index
+    private String fingerprintStr; //..........................3
     // key of this entity as a website string,
     // can be used easy get a key
-    private String webSafeString; //...........................4
     @Index
+    private String webSafeString; //...........................4
     // cryptonomicaUserId of the key owner
     // (same as in @Parent )
+    @Index
     private String cryptonomicaUserId; //......................5
-    @Index
     // keyID, like [0xE77173E5]
-    private String keyID; // ..................................6
     @Index
+    private String keyID; // ..................................6
     // key userID,
     // like: John Silver <jonh.silver@gmail.com>;
+    @Index
     private String userID; //..................................7
     @Index
     private String firstName; //...............................8
@@ -63,11 +63,12 @@ public class PGPPublicKeyData {
     private Date exp; //......................................12
     @Index
     private int bitStrength; //...............................13
+    //
     private Text asciiArmored; //.............................14
     @Index // legacy:
     private Boolean verified; //.off-line verification........15
-    @Index
     // can be used to filter what to show
+    @Index
     private Boolean active; //................................16
     // verification info can be shown
     // by pressing button "show verification"
@@ -76,18 +77,21 @@ public class PGPPublicKeyData {
     private List<String> verificationsWebSafeStrings; //......17
     @Index
     private Boolean paid; //..................................18
+    //
     private Long PaymentDataID; //............................19
     @Index
     private Date entityCreated; //............................20
-    @Index
     // if user has a credit card with different spelling
     // of the last and first name
-    private String nameOnCard; //.............................21
     @Index
+    private String nameOnCard; //.............................21
+
     // onlineVerificationFinished - true when approved by
     // compliance officer
     // OnlineVerification entity ID -> fingerprint
+    @Index
     private Boolean onlineVerificationFinished; //............22
+    // TODO > transform to Integer year, Integer month, Integer day
     private Date userBirthday; //.............................23
     //
     // Nationality - from user passport or id document:
@@ -96,6 +100,7 @@ public class PGPPublicKeyData {
     // see: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
     // one key can have only one nationality defined
     // user enters this when
+    @Index
     private String nationality; //............................24
     @Index
     private Boolean verifiedOffline; //.......................25 // <TODO: new
@@ -107,6 +112,7 @@ public class PGPPublicKeyData {
     private Date revokedOn; //................................28
     @Index
     private String revokedBy; //..............................29
+    //
     private String revocationNotes; //........................30 // <TODO: new
 
     /* --- Constructors: */

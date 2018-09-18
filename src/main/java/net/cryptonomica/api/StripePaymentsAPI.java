@@ -190,22 +190,20 @@ public class StripePaymentsAPI {
             // @Nullable - see:
             // https://cloud.google.com/endpoints/docs/frameworks/about-cloud-endpoints-frameworks
             // https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/appengine-java8/endpoints-v2-backend/src/main/java/com/example/echo/Echo.java
-            final @Named("promoCode") @Nullable String promoCode
-    )
-            throws Exception {
+            final @Named("promoCode") @Nullable String promoCode) throws Exception {
 
         /* --- Ensure cryptonomica registered user */
         final CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaRegisteredUser(googleUser);
 
         /* --- record login: */
-        Login login = UserTools.registerLogin(httpServletRequest, googleUser);
+        String userAction = "net.cryptonomica.api.StripePaymentsAPI.getPriceForKeyVerification";
+        Login login = UserTools.registerLogin(httpServletRequest, googleUser, userAction);
 
         /* --- create return object */
         IntegerWrapperObject result = new IntegerWrapperObject();
 
         /* --- get OpenPGP key data */
-        PGPPublicKeyData pgpPublicKeyData = null;
-        pgpPublicKeyData = ofy()
+        PGPPublicKeyData pgpPublicKeyData = ofy()
                 .load()
                 .type(PGPPublicKeyData.class)
                 .filter("fingerprintStr", fingerprint)
@@ -219,11 +217,14 @@ public class StripePaymentsAPI {
         // get OnlineVerification object
         OnlineVerification onlineVerification = ofy()
                 .load()
-                .key(Key.create(OnlineVerification.class, fingerprint))
+                .key(
+                        Key.create(OnlineVerification.class, fingerprint)
+                )
                 .now();
+
         if (onlineVerification == null) {
-            LOG.severe("OnlineVerification record not found in data base");
-            throw new Exception("online verification record not found in data base, "
+            LOG.severe("OnlineVerification record for " + fingerprint + " not found in data base");
+            throw new Exception("online verification record for " + fingerprint + " not found in database, "
                     + "please start online verification from the beginning");
         }
 
@@ -275,7 +276,8 @@ public class StripePaymentsAPI {
         final CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaRegisteredUser(googleUser);
 
         /* --- record user login */
-        Login login = UserTools.registerLogin(httpServletRequest, googleUser);
+        String userAction = "net.cryptonomica.api.StripePaymentsAPI.processStripePayment";
+        Login login = UserTools.registerLogin(httpServletRequest, googleUser, userAction);
         LOG.warning(GSON.toJson(new LoginView(login)));
 
         // log info:
@@ -338,9 +340,12 @@ public class StripePaymentsAPI {
 
         /* --- Check promo code and calculate price  */
         final String promoCode = stripePaymentForm.getPromoCode();
-        if (promoCode != null && !promoCode.isEmpty()) {
+        PromoCode promoCodeEntity = null;
+        if (promoCode != null && !promoCode.isEmpty()) { // isEmpty() from String
             onlineVerification.setPromoCode(promoCode);
+            promoCodeEntity = ofy().load().key(Key.create(PromoCode.class, promoCode)).now();
         }
+
         Integer priceInCents = calculatePriceForKeyVerification(
                 pgpPublicKeyData,
                 onlineVerification,
@@ -350,7 +355,6 @@ public class StripePaymentsAPI {
         /* --- make code for payment (chargeCode) :*/
         final String chargeCode = RandomStringUtils.randomNumeric(7);
         LOG.warning("chargeCode: " + chargeCode); //
-
 
         /* --- process payment */
 
@@ -366,9 +370,26 @@ public class StripePaymentsAPI {
         cardMap.put("exp_month", stripePaymentForm.getCardExpMonth()); // Integer
         cardMap.put("exp_year", stripePaymentForm.getCardExpYear()); // Integer
         cardMap.put("name", nameOnCard);
+
+        //  --- Metadata , see: https://stripe.com/docs/api/java#metadata
+        Map<String, String> metadataMap = new HashMap<String, String>();
+
+        if (promoCode != null) {
+
+            metadataMap.put("promocode", promoCode);
+
+            Key<PromoCode> promoCodeKey = Key.create(PromoCode.class, promoCode);
+            if (promoCodeEntity != null) {
+                if (promoCodeEntity.getCreatedBy() != null) {
+                    metadataMap.put("promocodeCreatedBy", promoCodeEntity.getCreatedBy());
+                }
+            }
+        }
+
         //  --- chargeMap
         Map<String, Object> chargeMap = new HashMap<>();
         chargeMap.put("card", cardMap);
+        chargeMap.put("metadata", metadataMap); // TODO: check (new)
 
         //  amount - a positive integer in the smallest currency unit (e.g., 100 cents to charge $1.00
         chargeMap.put("amount", priceInCents); //
@@ -434,11 +455,15 @@ public class StripePaymentsAPI {
         stripePaymentForKeyVerification.setPaymentVerificationCode(chargeCode);
         stripePaymentForKeyVerification.setChargeLoginEntityId(login.getId());
         stripePaymentForKeyVerification.setPromoCodeUsed(promoCode);
+        if (promoCodeEntity != null && promoCodeEntity.getCreatedBy() != null) {
+            stripePaymentForKeyVerification.setPromoCodeIssuedBy(promoCodeEntity.getCreatedBy());
+        }
 
         Key<StripePaymentForKeyVerification> entityKey
                 = ofy().save().entity(stripePaymentForKeyVerification).now();
 
         onlineVerification.setPaymentMade(Boolean.TRUE);
+        onlineVerification.setPromoCodeUsed(promoCode);
         onlineVerification.setStripePaymentForKeyVerificationId(stripePaymentForKeyVerification.getId());
 
         ofy().save().entity(onlineVerification).now(); //
@@ -465,7 +490,8 @@ public class StripePaymentsAPI {
         final CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaRegisteredUser(googleUser);
 
         /* record login: */
-        Login login = UserTools.registerLogin(httpServletRequest, googleUser);
+        String userAction = "net.cryptonomica.api.StripePaymentsAPI.checkPaymentVerificationCode";
+        Login login = UserTools.registerLogin(httpServletRequest, googleUser, userAction);
 
         /* --- Check form: */
         LOG.warning("paymentVerificationCode from user: " + paymentVerificationCode);
@@ -701,6 +727,75 @@ public class StripePaymentsAPI {
 
         return new PromoCodeStringReturn(promoCode);
 
-    } // end of createPromoCodes()
+    } // end of: createPromoCodes()
+
+
+    @ApiMethod(
+            name = "getTotalPaymentsWithMyPromocodes",
+            path = "getTotalPaymentsWithMyPromocodes",
+            httpMethod = ApiMethod.HttpMethod.GET
+    )
+    @SuppressWarnings("unused")
+    public IntegerWrapperObject getTotalPaymentsWithMyPromocodes(
+            final HttpServletRequest httpServletRequest,
+            @Named("serviceName") String serviceName,
+            @Named("apiKeyString") String apiKeyString
+    ) throws Exception {
+
+        ApiKey apiKey = ApiKeysService
+                .checkApiKey(
+                        httpServletRequest, serviceName, apiKeyString
+                );
+
+        IntegerWrapperObject result = new IntegerWrapperObject();
+
+        result.setMessage(serviceName + " referred, total payments");
+
+        result.setNumber(
+                ofy().load().type(StripePaymentForKeyVerification.class)
+                        .filter("promoCodeIssuedBy ==", serviceName)
+                        .count()
+        );
+
+        return result;
+
+    } // end of: public IntegerWrapperObject getTotalPaymentsWithMyPromocodes(
+
+    @ApiMethod(
+            name = "getPaymentsWithMyPromocodesByDate",
+            path = "getPaymentsWithMyPromocodesByDate",
+            httpMethod = ApiMethod.HttpMethod.GET
+    )
+    @SuppressWarnings("unused")
+    public IntegerWrapperObject getPaymentsWithMyPromocodesByDate(
+            final HttpServletRequest httpServletRequest,
+            @Named("serviceName") String serviceName,
+            @Named("apiKeyString") String apiKeyString,
+            final @Named("year") Integer year, // "2015"
+            final @Named("month") Integer month, // "3"
+            final @Named("day") Integer day // "1"
+    ) throws Exception {
+
+        ApiKey apiKey = ApiKeysService
+                .checkApiKey(
+                        httpServletRequest, serviceName, apiKeyString
+                );
+
+        IntegerWrapperObject result = new IntegerWrapperObject();
+
+        result.setMessage(year.toString() + "-" + month.toString() + "-" + day.toString());
+        Date start = new Date(year - 1900, month - 1, day, 0, 0, 0);
+        Date end = new Date(year - 1900, month - 1, day, 23, 59, 59);
+
+        result.setNumber(
+                ofy().load().type(StripePaymentForKeyVerification.class)
+                        .filter("promoCodeIssuedBy ==", serviceName)
+                        .filter("entityCreated >=", start)
+                        .filter("entityCreated <=", end)
+                        .count()
+        );
+        return result;
+
+    } // end of: public IntegerWrapperObject getPaymentsWithMyPromocodesByDate(
 
 }

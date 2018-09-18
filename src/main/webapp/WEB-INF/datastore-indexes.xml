@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- (!!!) > not used currently > use index.yaml -->
+
+<!-- see:
+https://cloud.google.com/appengine/docs/standard/java/config/indexref
+https://cloud.google.com/appengine/docs/standard/java/config/indexconfig
+-->
+
+<datastore-indexes
+        autoGenerate="true">
+
+    <!-- PGPPublicKeyData -->
+
+    <datastore-index kind="PGPPublicKeyData" ancestor="false" source="manual">
+        <property name="verifiedOnline" direction="asc"/>
+        <property name="entityCreated" direction="asc"/>
+    </datastore-index>
+
+    <datastore-index kind="PGPPublicKeyData" ancestor="false" source="manual">
+        <property name="verifiedOffline" direction="asc"/>
+        <property name="entityCreated" direction="asc"/>
+    </datastore-index>
+
+    <!-- OnlineVerification -->
+
+    <datastore-index kind="OnlineVerification" ancestor="false" source="manual">
+        <property name="entityCreated" direction="asc"/>
+        <property name="termsAccepted" direction="asc"/>
+    </datastore-index>
+
+    <datastore-index kind="OnlineVerification" ancestor="false" source="manual">
+        <property name="entityCreated" direction="asc"/>
+        <property name="verificationDocumentsArray" direction="asc"/>
+    </datastore-index>
+
+    <datastore-index kind="OnlineVerification" ancestor="false" source="manual">
+        <property name="entityCreated" direction="asc"/>
+        <property name="verificationVideoId" direction="asc"/>
+    </datastore-index>
+
+    <datastore-index kind="OnlineVerification" ancestor="false" source="manual">
+        <property name="entityCreated" direction="asc"/>
+        <property name="paymentMade" direction="asc"/>
+    </datastore-index>
+
+    <datastore-index kind="TestEntity" ancestor="false" source="manual">
+        <property name="entityCreatedOnYear" direction="asc"/>
+        <property name="entityCreatedOnMonth" direction="asc"/>
+        <property name="entityCreatedOnDay" direction="asc"/>
+    </datastore-index>
+
+</datastore-indexes>
