@@ -39,7 +39,8 @@ public class UserTools {
 
     public static Login registerLogin(
             final HttpServletRequest httpServletRequest,
-            final User googleUser) {
+            final User googleUser,
+            final String userAction) {
         // Register login of this Cryptonomica User:
         Login login = new Login();
         String userIP = httpServletRequest.getHeader("X-FORWARDED-FOR"); // IP
@@ -49,7 +50,8 @@ public class UserTools {
         // Get an UserAgentStringParser and analyze the requesting client
         // see example on: http://uadetector.sourceforge.net/usage.html
         UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
-        ReadableUserAgent agent = parser.parse(httpServletRequest.getHeader("User-Agent"));
+        String userAgentString = httpServletRequest.getHeader("User-Agent");
+        ReadableUserAgent agent = parser.parse(userAgentString);
         String userBrowser = agent.getName();
         String userOS = agent.getOperatingSystem().getName();
         //
@@ -58,6 +60,7 @@ public class UserTools {
         String country = null;
         String region = null;
         String city = null;
+
         JSONObject ipInfoIoJSON = GetJSONfromURL.getIpInfoIo(userIP);
 
         if (ipInfoIoJSON != null) {
@@ -100,6 +103,7 @@ public class UserTools {
         login.setRegion(region);
         login.setCountry(country);
         login.setProvider(userProviderOrg);
+        login.setUserAgentString(userAgentString);
         // --- save Login:
         Key<Login> loginKey = ofy().save().entity(login).now();
         login = ofy().load().key(loginKey).now();

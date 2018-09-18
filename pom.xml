@@ -275,8 +275,8 @@
             <artifactId>objectify</artifactId>
             <!--<version>5.1.10</version>-->
             <!--<version>5.1.16</version>-->
-            <!--<version>5.1.17</version>-->
-            <version>5.1.22</version>
+            <version>5.1.17</version>
+            <!--<version>5.1.22</version>-->
         </dependency>
 
         <dependency>

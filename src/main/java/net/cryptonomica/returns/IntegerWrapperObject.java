@@ -16,6 +16,10 @@ public class IntegerWrapperObject implements Serializable {
     public IntegerWrapperObject() {
     }
 
+    public IntegerWrapperObject(Integer number) {
+        this.number = number;
+    }
+
     /* ---- Getters and Setters: */
 
     public Integer getNumber() {

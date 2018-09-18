@@ -157,7 +157,8 @@ public class NewUserRegistrationAPI {
                 .key(pgpPublicKeyDataKey)
                 .now();
         //
-        Login login = UserTools.registerLogin(httpServletRequest, googleUser);
+        String userAction = "net.cryptonomica.api.NewUserRegistrationAPI.registerNewUser";
+        Login login = UserTools.registerLogin(httpServletRequest, googleUser, userAction);
         //
 
         ArrayList<PGPPublicKeyData> pgpPublicKeyDataArrayList = new ArrayList<>();

@@ -86,9 +86,9 @@
                     </div>
 
                     <!--<div class="field">-->
-                        <!--<input name="cardExpYear" placeholder="Year: last two digits" type="text" size="2" maxlength="2"-->
-                               <!--ng-model="stripePaymentForm.cardExpYear"-->
-                               <!--autocomplete='cc-exp-year'>-->
+                    <!--<input name="cardExpYear" placeholder="Year: last two digits" type="text" size="2" maxlength="2"-->
+                    <!--ng-model="stripePaymentForm.cardExpYear"-->
+                    <!--autocomplete='cc-exp-year'>-->
                     <!--</div>-->
 
                     <div class="field">
@@ -115,22 +115,22 @@
         </div>
 
         <div class="field">
+
             <div class="two fields">
-
-                <!--<div class="field">-->
-                <!--<label>Price:&nbsp;EUR&nbsp;{{priceForKeyVerification}}&nbsp;</label>-->
-                <!--&lt;!&ndash;<input type="text" size="3" ng-model="priceForKeyVerification" disabled>&ndash;&gt;-->
-                <!--</div>-->
-
-
                 <div class="field">
                     <label>Promotional code (if applicable):</label>
-                    <input type="text" size="11" ng-model="promoCode" placeholder="case sensitive">
+
+                    <!-- ng-class="{error:getPriceForKeyVerificationError}" -->
+                    <!--<div class="ui input error">-->
+                    <input type="text" size="11" ng-model="promoCode" placeholder="case sensitive"
+                           ng-class="{inputError:getPriceForKeyVerificationError}">
+                    <!--</div>-->
+
                     <button id="applyPromoCode"
                             ng-class="{disabled: getPriceForKeyVerificationIsWorking}"
                             ng-click="getPriceForKeyVerification()"
                             class="ui small button">
-                        Apply Promo Code
+                        Refresh price / apply promocode
                         <span ng-show="getPriceForKeyVerificationIsWorking" title="working...">
                         <br> <i class="fa fa-refresh fa-spin fa-fw"></i>
                     </span>
@@ -138,7 +138,14 @@
                 </div>
 
                 <div class="field">
-                    <label>Price:&nbsp;EUR&nbsp;{{priceForKeyVerification}}&nbsp;</label>
+                    <label ng-click="getPriceForKeyVerification()" title="click to refresh">
+                        Price:&nbsp;
+                        <a href="" style="font-weight: bold">
+                            EUR&nbsp;{{priceForKeyVerification}}
+                        </a>
+                        &nbsp;
+                        <span ng-show="promoCodeAppiedMessage">(with promocode:&nbsp;{{promoCode}})</span>
+                    </label>
                     <button id="submitPayment"
                             ng-class="{disabled: submitPaymentWorking}"
                             ng-click="submitPayment()"
@@ -151,8 +158,15 @@
                 </div>
 
             </div>
-        </div>
 
+        </div>
+        <div class="field" ng-show="getPriceForKeyVerificationError">
+            <div class="ui negative message">
+                <i class="close icon" ng-click="getPriceForKeyVerificationError=null"></i>
+                <div class="header">Error:</div>
+                <p>{{getPriceForKeyVerificationError}}</p>
+            </div>
+        </div>
 
     </form>
     <hr>

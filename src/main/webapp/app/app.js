@@ -73,7 +73,7 @@ app.run([
                   $location,
                   $log) {
 
-            $log.info('webapp started,  version: ', '3.2');
+            $log.info('webapp started,  version: ', '3.4');
             $log.info('[app.js] $state');
             $log.info($state);
 
@@ -415,6 +415,20 @@ app.run([
 
                     return publicKey;
                 };
+
+            // =============== Promo code
+            // $rootScope.messagesToUser = {};
+            // $rootScope.messagesToUser.color = null;
+            // $rootScope.messagesToUser.messagesArray = []; // not implemented yet
+            // $rootScope.promoCode = null;
+            // $rootScope.messagesToUser.oldMessagesArray = [];
+            if (!$rootScope.stringIsNullUndefinedOrEmpty($cookies.get('promocode'))) {
+                // https://docs.angularjs.org/api/ngCookies/service/$cookies
+                $rootScope.promoCodeMessage = $cookies.get('promocode');
+            }
+            // if ($scope.promoCode) {
+            //     $scope.getPriceForKeyVerification();
+            // }
 
             // =============== Function calls:
             $rootScope.progressbar = ngProgressFactory.createInstance();

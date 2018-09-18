@@ -27,7 +27,7 @@
         </div>
 
         <div class="item centered">
-            <h1 class="ui header">CRYPTONOMICA<sup title="beta">β</sup></h1>
+            <h1 class="ui header">CRYPTONOMICA<sup title="beta" style="color: #60c8fa">β</sup></h1>
         </div>
 
         <div class="right menu colhidden">
@@ -38,28 +38,35 @@
 
                 <i class="icon ion-md-mail" style="font-size: 1.5em"></i>
 
-                <div class="ui red label mini circular" ng-show="newMessages"></div>
+                <!--<div class="ui red label mini circular" ng-show="newMessagesRed"></div>-->
+                <div class="ui green label mini circular" ng-show="promoCodeMessage" style="margin-left: -0.5em;"></div>
 
                 <div class="menu">
-
                     <div class="header">
                         New messages
                     </div>
 
-                    <div class="item">
+                    <!-- promo code -->
+                    <div class="item" ng-show="promoCodeMessage" title="click to copy to clipboard"
+                         ng-click="copyToClipboard('#promoCodeMessage')">
+                        your promo code for key verification: &nbsp;
+                        <span id="promoCodeMessage" style="font-weight: bolder">{{promoCodeMessage}}</span>
+                    </div>
+
+                    <div class="item" ng-hide="promoCodeMessage">
                         No new messages
                     </div>
+
                     <div class="header">
                         Old messages
                     </div>
                     <div class="item">
                         No messages
                     </div>
-
                 </div>
             </div>
 
-            <div class="ui dropdown item" ng-show="currentUser&&currentUser.loggedIn">
+            <div id="accountOptions" class="ui dropdown item" ng-show="currentUser&&currentUser.loggedIn">
 
                 <img id="userAvatar" class="ui mini circular image"
                      ng-src="{{gapi.user.picture}}">
@@ -171,6 +178,20 @@
             // position : 'right center',
             target: '#bookmarksBtn',
             content: 'Click to see saved profiles and keys'
+        });
+
+    $('#accountOptions')
+        .popup({
+            // position : 'right center',
+            target: '#accountOptions',
+            content: 'Click to see account settings'
+        });
+
+    $('#messages')
+        .popup({
+            // position : 'right center',
+            target: '#messages',
+            content: 'Click to see messages'
         });
 
     /* -------- side bar : */

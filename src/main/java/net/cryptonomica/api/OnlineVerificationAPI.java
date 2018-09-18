@@ -97,13 +97,14 @@ public class OnlineVerificationAPI {
                 .now();
 
         if (onlineVerification == null) {
+            // if verification data were requested by key owner:
             if (requester.getUserId().equalsIgnoreCase(pgpPublicKeyData.getCryptonomicaUserId())) {
                 onlineVerification = new OnlineVerification(pgpPublicKeyData);
                 ofy()
                         .save()
                         .entity(onlineVerification)
                         .now();
-            } else {
+            } else { // if requested by other users:
                 throw new NotFoundException("Online verification data for fingerprint " + fingerprint + " not found");
             }
         }

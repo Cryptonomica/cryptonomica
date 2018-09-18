@@ -22,7 +22,7 @@ public class OnlineVerification implements Serializable { // -- can be returned 
     @Id
     private String Id; // fingerprint ...................................1
     // Objectify Key of PGPPublicKeyData
-    // @Index // <-- not neded
+    // @Index // <-- not needed
     private String pgpPublicKeyDataUrlSafeKey; // .......................2
     /* They have to create also a human-readable DB record, thus data can be duplicated to make record self-explaining */
     @Index
@@ -65,7 +65,8 @@ public class OnlineVerification implements Serializable { // -- can be returned 
     // Phone
     @Index
     private String phoneNumber; // +972523333333 ........................16
-    // Credit Card
+    //
+    // StripePaymentForKeyVerification @Id private Long id
     @Index
     private Long stripePaymentForKeyVerificationId; //...................17
     @Index
@@ -88,6 +89,8 @@ public class OnlineVerification implements Serializable { // -- can be returned 
     // PromoCode
     @Index
     private String promoCode; // ........................................26
+    @Index
+    private String promoCodeUsed; // ....................................27
 
     /* ----- Constructors: */
     public OnlineVerification() {
@@ -337,4 +340,11 @@ public class OnlineVerification implements Serializable { // -- can be returned 
         this.promoCode = promoCode;
     }
 
+    public String getPromoCodeUsed() {
+        return promoCodeUsed;
+    }
+
+    public void setPromoCodeUsed(String promoCodeUsed) {
+        this.promoCodeUsed = promoCodeUsed;
+    }
 }

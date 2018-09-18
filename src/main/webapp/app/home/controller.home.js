@@ -21,44 +21,44 @@
         '$rootScope',
         // '$http',
         '$log',
-        '$sce',
+        // '$sce',
         'GApi',
         'GAuth',
         'GData',
         '$state',
+        // '$stateParams',
         // '$cookies',
         '$timeout',
         function homeCtrl($scope,
                           $rootScope,
                           // $http,
                           $log,
-                          $sce,
+                          // $sce,
                           GApi,
                           GAuth,
                           GData,
                           $state,
+                          // $stateParams,
                           // $cookies,
                           $timeout) {
 
             $log.debug(controller_name, "started"); //
             $log.debug('$state');
             $log.debug($state);
-            $log.debug
             $timeout($rootScope.progressbar.complete(), 1000);
 
             // TODO: for test, remove
             // hljs.initHighlightingOnLoad();
             // > works better:
-            $('pre code').each(function (i, block) {
-                hljs.highlightBlock(block);
-            });
+            // $('pre code').each(function (i, block) {
+            //     hljs.highlightBlock(block);
+            // });
 
-
-            if ($rootScope.currentUser) {
-                // show menu for registered user
-            } else {
-                // $rootScope.checkAuth();
-            }
+            // if ($rootScope.currentUser) {
+            //     // show menu for registered user
+            // } else {
+            //     // $rootScope.checkAuth();
+            // }
 
         } // end function homeCtl
 

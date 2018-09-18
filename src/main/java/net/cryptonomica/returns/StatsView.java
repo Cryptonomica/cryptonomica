@@ -7,6 +7,10 @@ public class StatsView implements Serializable {
     private String date;
     private Integer usersRegistered;
     private Integer keysUploaded;
+    private Integer verificationsStarted;
+    private Integer documentsUploaded;
+    private Integer videosUploaded;
+    private Integer paymentsMade;
     private Integer keysVerifiedOnline;
     private Integer keysVerifiedOffline;
 
@@ -41,6 +45,38 @@ public class StatsView implements Serializable {
         this.keysUploaded = keysUploaded;
     }
 
+    public Integer getVerificationsStarted() {
+        return verificationsStarted;
+    }
+
+    public void setVerificationsStarted(Integer verificationsStarted) {
+        this.verificationsStarted = verificationsStarted;
+    }
+
+    public Integer getDocumentsUploaded() {
+        return documentsUploaded;
+    }
+
+    public void setDocumentsUploaded(Integer documentsUploaded) {
+        this.documentsUploaded = documentsUploaded;
+    }
+
+    public Integer getVideosUploaded() {
+        return videosUploaded;
+    }
+
+    public void setVideosUploaded(Integer videosUploaded) {
+        this.videosUploaded = videosUploaded;
+    }
+
+    public Integer getPaymentsMade() {
+        return paymentsMade;
+    }
+
+    public void setPaymentsMade(Integer paymentsMade) {
+        this.paymentsMade = paymentsMade;
+    }
+
     public Integer getKeysVerifiedOnline() {
         return keysVerifiedOnline;
     }
@@ -56,4 +92,5 @@ public class StatsView implements Serializable {
     public void setKeysVerifiedOffline(Integer keysVerifiedOffline) {
         this.keysVerifiedOffline = keysVerifiedOffline;
     }
+
 }

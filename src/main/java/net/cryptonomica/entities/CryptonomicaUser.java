@@ -93,15 +93,19 @@ public class CryptonomicaUser {
     @Index
     // https://stripe.com/docs/api/java#customer_object
     private String stripeCustomerId;//............................................................29
+    @Index
+    private Date entityCreatedOn; // .............................................................30
 
     /* --- Constructors: */
 
     public CryptonomicaUser() {
+        this.entityCreatedOn = new Date();
     }
 
     public CryptonomicaUser(User googleUser,
                             PGPPublicKeyData pgpPublicKeyData,
-                            NewUserRegistrationForm newUserRegistrationForm) {
+                            NewUserRegistrationForm newUserRegistrationForm
+    ) {
         this.userId = googleUser.getUserId();
         this.webSafeStringKey = Key.create(
                 CryptonomicaUser.class, googleUser.getUserId()
@@ -123,6 +127,7 @@ public class CryptonomicaUser {
                         cryptonomicaUserKey, PGPPublicKeyData.class, pgpPublicKeyData.getFingerprint()
                 )
         );
+        this.entityCreatedOn = new Date();
     } // end of constructor from newUserRegistrationForm
 
     // ------ Getters and Setters:
@@ -366,4 +371,13 @@ public class CryptonomicaUser {
     public void setStripeCustomerId(String stripeCustomerId) {
         this.stripeCustomerId = stripeCustomerId;
     }
+
+    public Date getEntityCreatedOn() {
+        return entityCreatedOn;
+    }
+
+    public void setEntityCreatedOn(Date entityCreatedOn) {
+        this.entityCreatedOn = entityCreatedOn;
+    }
+
 }

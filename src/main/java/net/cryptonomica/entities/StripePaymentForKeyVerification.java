@@ -43,10 +43,12 @@ public class StripePaymentForKeyVerification {
     //
     @Index
     private String promoCodeUsed; // .........................12
+    @Index
+    private String promoCodeIssuedBy; //.partnerID...........13
 
     // private Key<Login> getPriceForKeyVerificationLogin;//
-    private Long chargeLoginEntityId; //......................13
-    private Long checkPaymentVerificationCodeLoginEntityId; //14
+    private Long chargeLoginEntityId; //......................14
+    private Long checkPaymentVerificationCodeLoginEntityId; //15
 
     /* ---- Constructors */
 
@@ -153,6 +155,14 @@ public class StripePaymentForKeyVerification {
         this.promoCodeUsed = promoCodeUsed;
     }
 
+    public String getPromoCodeIssuedBy() {
+        return promoCodeIssuedBy;
+    }
+
+    public void setPromoCodeIssuedBy(String promoCodeIssuedBy) {
+        this.promoCodeIssuedBy = promoCodeIssuedBy;
+    }
+
     public Long getChargeLoginEntityId() {
         return chargeLoginEntityId;
     }
@@ -168,6 +178,5 @@ public class StripePaymentForKeyVerification {
     public void setCheckPaymentVerificationCodeLoginEntityId(Long checkPaymentVerificationCodeLoginEntityId) {
         this.checkPaymentVerificationCodeLoginEntityId = checkPaymentVerificationCodeLoginEntityId;
     }
-
 }
 

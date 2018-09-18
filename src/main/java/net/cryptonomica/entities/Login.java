@@ -7,7 +7,7 @@ import com.googlecode.objectify.annotation.*;
 import java.util.Date;
 
 /**
- * for securiry reasons we can track and show to user his latest logins
+ * for security reasons we can track and show to user his latest logins
  * -- need to define when to save new logins (may be if some info changes)
  */
 @Entity // -> net.cryptonomica.service.OfyService
@@ -18,22 +18,35 @@ public class Login {
     @Id
     Long id;
     @Index
-    Date loginDate;
+    private Date loginDate;
     @Index
-    Email loginEmail; //
-    String IP;
-    String userBrowser;
-    String userOS;
-    String hostname;
-    String city;
-    String region;
-    String country;
-    String provider; // "org" (provider) (f.e.: "AS1680 013 NetVision Ltd")
+    private String userAction;
+    @Index
+    private Email loginEmail; //
+    @Index
+    private String IP;
+    @Index
+    private String userBrowser;
+    @Index
+    private String userOS;
+    @Index
+    private String hostname;
+    @Index
+    private String city;
+    @Index
+    private String region;
+    @Index
+    private String country;
+    @Index
+    private String provider; // "org" (provider) (f.e.: "AS1680 013 NetVision Ltd")
+    // no index
+    private String userAgentString;
 
     public Login() {
     }
 
     // ------ Getters and Setters:
+
 
     public Key<CryptonomicaUser> getCryptonomicaUserKey() {
         return cryptonomicaUserKey;
@@ -57,6 +70,14 @@ public class Login {
 
     public void setLoginDate(Date loginDate) {
         this.loginDate = loginDate;
+    }
+
+    public String getUserAction() {
+        return userAction;
+    }
+
+    public void setUserAction(String userAction) {
+        this.userAction = userAction;
     }
 
     public Email getLoginEmail() {
@@ -130,4 +151,13 @@ public class Login {
     public void setProvider(String provider) {
         this.provider = provider;
     }
+
+    public String getUserAgentString() {
+        return userAgentString;
+    }
+
+    public void setUserAgentString(String userAgentString) {
+        this.userAgentString = userAgentString;
+    }
+
 }
