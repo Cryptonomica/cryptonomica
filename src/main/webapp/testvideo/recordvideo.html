@@ -134,7 +134,14 @@
         // mediaRecorder.mimeType = 'video/mp4';
         var formData; //
 
-        document.getElementById('video').setAttribute('src', window.URL.createObjectURL(stream));
+        // see: https://www.fxsitecompat.com/en-CA/docs/2017/url-createobjecturl-stream-has-been-deprecated/
+        try {
+            document.getElementById('video').setAttribute('src', window.URL.createObjectURL(stream));
+        } catch (e) {
+            console.log(e);
+            video.srcObject = stream;
+        }
+
 
         mediaRecorder.ondataavailable = function (blob) {
             // POST/PUT "Blob" using FormData/XHR2
