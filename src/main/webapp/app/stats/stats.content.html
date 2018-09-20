@@ -1,0 +1,59 @@
+<html>
+
+<div class="ui four column grid" ng-click="getStatsAllTime()" title="Click to refresh">
+
+    <div class="column">
+        <center>
+            <h3>Users registered</h3>
+        </center>
+        <div class="ui segment">
+            <center>
+                <span id="usersRegistered" class="counter">{{statsAllTime.usersRegistered}}</span>
+            </center>
+        </div>
+    </div>
+
+    <div class="column">
+        <center>
+            <h3>Keys uploaded</h3>
+        </center>
+
+        <div class="ui segment">
+            <center>
+                <span id="keysUploaded" class="counter">{{statsAllTime.keysUploaded}}</span>
+            </center>
+        </div>
+    </div>
+
+    <div class="column">
+        <center>
+            <h3>Keys verified online</h3>
+        </center>
+        <div class="ui segment">
+            <center>
+                <span id="keysVerifiedOnline" class="counter"> {{statsAllTime.keysVerifiedOnline}}</span>
+            </center>
+        </div>
+    </div>
+
+    <div class="column">
+        <center>
+            <h3>Keys verified offline</h3>
+        </center>
+        <div class="ui segment">
+            <center>
+                <span id="keysVerifiedOffline" class="counter">{{statsAllTime.keysVerifiedOffline}}</span>
+            </center>
+        </div>
+    </div>
+
+</div>
+
+<center>
+    <br>
+    <!--<h2 ng-click="getOnlineVerificationsByCountry()" title="click to refresh">Keys Verified Online by Country</h2>-->
+    <h2>Keys Verified Online by Country</h2>
+    <div id="vmap" style="width: 800px; height: 400px;"></div>
+</center>
+
+</html>

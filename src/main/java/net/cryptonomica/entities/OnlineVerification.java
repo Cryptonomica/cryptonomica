@@ -62,42 +62,47 @@ public class OnlineVerification implements Serializable { // -- can be returned 
     // Online Verification Documents:
     // @Index
     private ArrayList<String> verificationDocumentsArray; // ............15
+    @Index
+    private Boolean verificationDocumentsUploaded; //....................16
     // Phone
     @Index
-    private String phoneNumber; // +972523333333 ........................16
+    private String phoneNumber; // +972523333333 ........................17
     //
     // StripePaymentForKeyVerification @Id private Long id
     @Index
-    private Long stripePaymentForKeyVerificationId; //...................17
+    private Long stripePaymentForKeyVerificationId; //...................18
     @Index
-    private Boolean paymentMade; //......................................18
+    private Boolean paymentMade; //......................................19
     @Index
-    private Boolean paymentVerified; //..................................19
+    private Boolean paymentVerified; //..................................20
     // All:
     @Index
-    private Boolean onlineVerificationFinished;// .......................20
+    private Boolean onlineVerificationFinished;// .......................21
     @Index
-    private Boolean onlineVerificationDataVerified; // ..................21
+    private Boolean onlineVerificationDataVerified; // ..................22
     @Index
-    private Boolean termsAccepted; // user accepted terms ...............22
+    private Boolean termsAccepted; // user accepted terms ...............23
     @Index
-    private String cryptonomicaUserId;//.................................23
+    private String cryptonomicaUserId;//.................................24
     @Index
-    private Date birthday; //............................................24
+    private Date birthday; //............................................25
     @Index
-    private String nationality; //.......................................25
+    private String nationality; //.......................................26
     // PromoCode
     @Index
-    private String promoCode; // ........................................26
+    private String promoCode; // ........................................27
     @Index
-    private String promoCodeUsed; // ....................................27
+    private String promoCodeUsed; // ....................................28
 
     /* ----- Constructors: */
     public OnlineVerification() {
         this.entityCreated = new Date();
-        this.allowedUsers = new ArrayList<>();
-        this.verificationDocumentsArray = new ArrayList<>();
         this.termsAccepted = false;
+        this.verificationDocumentsArray = new ArrayList<>();
+        this.verificationDocumentsUploaded = false;
+        //
+        this.allowedUsers = new ArrayList<>();
+
     } // end empty args constructor
 
     public OnlineVerification(PGPPublicKeyData pgpPublicKeyData) {
@@ -127,7 +132,11 @@ public class OnlineVerification implements Serializable { // -- can be returned 
     }
 
     public boolean addVerificationDocument(String verificationDocumentId) {
-        return this.verificationDocumentsArray.add(verificationDocumentId);
+        Boolean result = this.verificationDocumentsArray.add(verificationDocumentId);
+        if (result && this.verificationDocumentsArray.size() == 2) {
+            this.verificationDocumentsUploaded = true;
+        }
+        return result;
     }
 
     /* ----- Getters and Setters:   */
@@ -250,6 +259,14 @@ public class OnlineVerification implements Serializable { // -- can be returned 
 
     public void setVerificationDocumentsArray(ArrayList<String> verificationDocumentsArray) {
         this.verificationDocumentsArray = verificationDocumentsArray;
+    }
+
+    public Boolean getVerificationDocumentsUploaded() {
+        return verificationDocumentsUploaded;
+    }
+
+    public void setVerificationDocumentsUploaded(Boolean verificationDocumentsUploaded) {
+        this.verificationDocumentsUploaded = verificationDocumentsUploaded;
     }
 
     public String getPhoneNumber() {

@@ -101,6 +101,7 @@ app.run([
             GApi.load('ethNodeAPI', 'v1', BASE);            // 10
             GApi.load('onlineVerificationAPI', 'v1', BASE); // 11
             GApi.load('stripePaymentsAPI', 'v1', BASE);     // 12
+            GApi.load('statisticsAPI', 'v1', BASE);         // 13
             //
             GAuth.setClient(CLIENT);
             GAuth.setScope(

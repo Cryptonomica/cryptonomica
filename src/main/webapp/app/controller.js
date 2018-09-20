@@ -17,6 +17,7 @@ var controller = angular.module('cryptonomica.controller', [
         'cryptonomica.controller.openPGPOnline',
         'cryptonomica.controller.test',
         'cryptonomica.controller.arbitration',
-        'cryptonomica.controller.promocode'
+        'cryptonomica.controller.promocode',
+        'cryptonomica.controller.stats'
     ]
 );

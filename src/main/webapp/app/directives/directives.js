@@ -103,13 +103,13 @@
         };
     });
     // ------------------------------------------------------------------------------
-    d.directive('recordVideoJs', function () {
-        return {
-            restrict: 'EA', //E = element, A = attribute, C = class, M = comment
-            // <record-video-js></record-video-js>
-            templateUrl: 'app/directives/recordVideoJs.html'
-        };
-    });
+    // d.directive('recordVideoJs', function () {
+    //     return {
+    //         restrict: 'EA', //E = element, A = attribute, C = class, M = comment
+    //         // <record-video-js></record-video-js>
+    //         templateUrl: 'app/directives/recordVideoJs.html'
+    //     };
+    // });
     // ------------------------------------------------------------------------------
     d.directive('textForCamera', function () {
         return {
