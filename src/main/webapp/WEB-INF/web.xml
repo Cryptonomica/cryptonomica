@@ -50,7 +50,8 @@
                 net.cryptonomica.api.VisitorAPI,
                 net.cryptonomica.api.VerificationAPI,
                 net.cryptonomica.api.OnlineVerificationAPI,
-                net.cryptonomica.api.TestAPI
+                net.cryptonomica.api.TestAPI,
+                net.cryptonomica.api.StatisticsAPI
             </param-value>
         </init-param>
         <!--<init-param>-->

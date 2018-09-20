@@ -15,7 +15,7 @@
     <packaging>war</packaging>
     <!-- see: https://enterprise.google.com/supportcenter/managecases#Case/0016000001H3c9i/U-13985468 -->
     <!--<version>v-1-0</version>-->
-    <version>v-2-1</version>
+    <version>v-3-1</version>
 
     <groupId>net.cryptonomica</groupId>
     <artifactId>cryptonomica</artifactId>

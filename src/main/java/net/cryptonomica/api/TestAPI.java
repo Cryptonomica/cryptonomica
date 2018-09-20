@@ -22,9 +22,7 @@ import net.cryptonomica.service.TwilioUtils;
 import net.cryptonomica.service.UserTools;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 import static net.cryptonomica.service.OfyService.ofy;
@@ -369,6 +367,35 @@ public class TestAPI {
                     .count();
         }
         return new IntegerWrapperObject(result);
+    }
+
+    @SuppressWarnings("unused")
+    @ApiMethod(
+            name = "testResponse",
+            path = "testResponse",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    // HashMap<String, Integer> as response works!!! (endpoints.framework.version: 2.0.9)
+    public HashMap<String, Integer> testResponse(
+            // Injected types: (see: https://cloud.google.com/endpoints/docs/frameworks/java/parameter-and-return-types)
+            final com.google.appengine.api.users.User googleUser,
+            final javax.servlet.http.HttpServletRequest request,
+            final javax.servlet.ServletContext servletContext
+            /*
+             * */
+    ) throws UnauthorizedException {
+
+        /* --- Check authorization: */
+        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        // https://docs.oracle.com/javaee/7/api/javax/servlet/ServletContext.html
+        // Enumeration attributeNames = servletContext.getAttributeNames();
+
+        HashMap<String, Integer> result = new HashMap<>();
+        Integer integer = 33;
+        result.put("Test Key", integer);
+
+        return result;
     }
 
 }

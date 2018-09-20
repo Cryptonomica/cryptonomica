@@ -1,0 +1,57 @@
+<div id="contextWrap">
+
+    <!-- left sidebar-->
+    <left-sidebar></left-sidebar>
+
+    <!--right sidebar-->
+    <right-sidebar></right-sidebar>
+
+    <div class="pusher">
+
+        <!--topHeaderMenu -->
+        <top-header-menu></top-header-menu>
+
+        <!--maincontent-->
+        <div class="mainWrap navslide">
+
+            <div class="ui equal width left aligned padded grid stackable">
+                <!--Site Content-->
+                <div class="stretched row">
+
+                    <div class="column">
+
+                        <div class="ui segments">
+
+                            <div class="ui segment">
+                                <div class="ui breadcrumb">
+                                    <a class="section">Statistics</a>
+                                    <i class="right angle icon divider"></i>
+                                    <!--<a class="section">Store</a>-->
+                                    <!--<i class="right angle icon divider"></i>-->
+                                    <!--<div class="active section">T-Shirt</div>-->
+                                </div>
+                            </div>
+
+                            <div class="ui segment">
+                                <div ng-include="'/app/stats/stats.content.html'"></div>
+                                <br>
+                            </div>
+
+                        </div>
+                        <!-- FOOTER -->
+                        <footer-main></footer-main>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- interface -->
+<!--<script src="/app/theme/main.js"></script>-->

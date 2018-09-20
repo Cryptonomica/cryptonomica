@@ -7,6 +7,9 @@
 # https://console.cloud.google.com/datastore/indexes?project=cryptonomica-server
 # ("Below are the composite indexes for this application. These indexes are managed in your app's index configuration file")
 
+# to update indexes:
+# gcloud app deploy ./src/main/webapp/WEB-INF/index.yaml
+
 indexes:
 
 # ---- PGPPublicKeyData
@@ -22,6 +25,18 @@ indexes:
   properties:
   - name: verifiedOffline
   - name: entityCreated
+
+- kind: PGPPublicKeyData
+  ancestor: no
+  properties:
+  - name: verifiedOnline
+  - name: nationality
+
+- kind: PGPPublicKeyData
+  ancestor: no
+  properties:
+  - name: verifiedOffline
+  - name: nationality
 
 # --- OnlineVerification
 

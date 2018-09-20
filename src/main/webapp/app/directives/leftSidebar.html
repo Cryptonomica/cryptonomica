@@ -1,6 +1,12 @@
 <div class="ui sidebar vertical left menu overlay borderless visible sidemenu inverted  grey"
      style="-webkit-transition-duration: 0.1s; transition-duration: 0.1s;">
 
+    <!--
+    icons:
+    https://icofont.com/icons
+    https://semantic-ui.com/elements/icon.html
+    -->
+
     <!-- ==== LOGIN / LOGOUT ==== -->
 
     <a id="login" class="item" href="" style="margin-top: 1em" ng-click="login()"
@@ -82,6 +88,15 @@
     <a id="issues" class="item" href="https://github.com/Cryptonomica/cryptonomica/issues" target="_blank">
         <i class="icofont icofont-support-faq titleIcon"></i>
         <span class="hiddenCollapse">Submit an Issue</span>
+    </a>
+
+    <a id="stats" class="item" href="" ui-sref-active="active" ui-sref="stats">
+        <!--<i class="chart line icon titleIcon"></i>-->
+        <!--<i class="chart bar outline icon titleIcon"></i>-->
+        <i class="chart bar icon titleIcon"></i>
+        <!--<i class="icofont icofont-chart-growth titleIcon"></i>-->
+        <!--<i class="fas fa-chart-line titleIcon"></i>-->
+        <span class="hiddenCollapse">Stats</span>
     </a>
 
     <a id="help" class="item" href="https://github.com/Cryptonomica/cryptonomica/wiki" target="_blank">

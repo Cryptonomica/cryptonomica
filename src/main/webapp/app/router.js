@@ -42,11 +42,6 @@ router
                     //     }
                     // }
                 })
-                .state('landing', {
-                    url: '/landing',
-                    controller: 'cryptonomica.controller.home',
-                    templateUrl: 'app/landing/landing.html',
-                })
                 .state('registration', {
                     url: '/registration',
                     controller: 'cryptonomica.controller.registration',
@@ -146,6 +141,11 @@ router
                     url: '/dashboard',
                     controller: 'cryptonomica.controller.dashboard',
                     templateUrl: 'app/dashboard/dashboard.html'
+                })
+                .state('stats', {
+                    url: '/stats',
+                    controller: 'cryptonomica.controller.stats',
+                    templateUrl: 'app/stats/stats.html'
                 })
         } // end of function ($stateProvider)..
     ]); // end of .config
