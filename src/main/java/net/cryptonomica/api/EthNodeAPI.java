@@ -464,17 +464,18 @@ public class EthNodeAPI {
             final @Named("ethereumAcc") String ethereumAcc
     ) throws IllegalArgumentException, UnauthorizedException, Exception {
 
-        BooleanWrapperObject result = new BooleanWrapperObject();
-
         // ensure registered user ( - may be later only for verified):
         CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaRegisteredUser(googleUser);
 
         // check form:
-        LOG.warning("ethereumAcc" + ethereumAcc);
+        LOG.warning("ethereumAcc : " + ethereumAcc);
 
         if (ethereumAcc == null || ethereumAcc.equals("")) {
             throw new IllegalArgumentException("Provided text is to short or empty");
         }
+
+
+        BooleanWrapperObject result = new BooleanWrapperObject();
 
         String tomcatWeb3jAPIkey = ofy()
                 .load()
@@ -585,6 +586,7 @@ public class EthNodeAPI {
                         StandardCharsets.UTF_8
                 );
 
+                LOG.warning("httpResponseContentStringAddVerificationDataServlet:");
                 LOG.warning(httpResponseContentStringAddVerificationDataServlet);
 
                 result.setMessage(

@@ -3,8 +3,6 @@ package net.cryptonomica.api;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.Named;
-import com.google.appengine.api.users.User;
-import com.google.gson.Gson;
 import net.cryptonomica.constants.Constants;
 import net.cryptonomica.entities.CryptonomicaUser;
 import net.cryptonomica.entities.OnlineVerification;
@@ -39,7 +37,7 @@ public class StatisticsAPI {
     /* --- Logger: */
     private static final Logger LOG = Logger.getLogger(StatisticsAPI.class.getName());
     /* --- Gson */
-    private static final Gson GSON = new Gson();
+    // private static final Gson GSON = new Gson();
 
 
     /* ---------------- Statistics */
@@ -51,8 +49,10 @@ public class StatisticsAPI {
     )
     @SuppressWarnings("unused")
     public StatsView getStatsAllTime(
-            final User googleUser
-    ) throws Exception {
+            // final User googleUser
+    )
+    // throws Exception
+    {
 
         /* Check authorization: */
         // CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
@@ -81,11 +81,13 @@ public class StatisticsAPI {
     )
     @SuppressWarnings("unused")
     public StatsView getStatsByDate(
-            final User googleUser,
+            // final User googleUser,
             final @Named("year") Integer year, // "2015"
             final @Named("month") Integer month, // "3"
             final @Named("day") Integer day // "1"
-    ) throws Exception {
+    )
+    // throws Exception
+    {
 
         /* Check authorization: */
         // CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
@@ -102,8 +104,8 @@ public class StatisticsAPI {
 
         result.setUsersRegistered(
                 ofy().load().type(CryptonomicaUser.class)
-                        .filter("entityCreated >=", start)
-                        .filter("entityCreated <=", end)
+                        .filter("entityCreatedOn >=", start)
+                        .filter("entityCreatedOn <=", end)
                         .count()
         );
 
@@ -178,7 +180,9 @@ https://stackoverflow.com/questions/21001371/why-gae-datastore-not-support-multi
 //            final User googleUser,
             final @Named("year") Integer year, // "2015"
             final @Named("month") Integer month // "3"
-    ) throws Exception {
+    )
+    //  throws Exception
+    {
 
         /* Check authorization: */
         // CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
@@ -202,8 +206,8 @@ https://stackoverflow.com/questions/21001371/why-gae-datastore-not-support-multi
 
         result.setUsersRegistered(
                 ofy().load().type(CryptonomicaUser.class)
-                        .filter("entityCreated >=", start)
-                        .filter("entityCreated <=", end)
+                        .filter("entityCreatedOn >=", start)
+                        .filter("entityCreatedOn <=", end)
                         .count()
         );
 
@@ -275,8 +279,10 @@ https://stackoverflow.com/questions/21001371/why-gae-datastore-not-support-multi
     )
     @SuppressWarnings("unused")
     public HashMap<String, Integer> onlineVerificationsByCountry(
-            final User googleUser
-    ) throws Exception {
+            // final User googleUser
+    )
+    // throws Exception
+    {
 
         /* Check authorization: */
         // CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
