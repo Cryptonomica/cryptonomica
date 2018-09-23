@@ -339,7 +339,8 @@ public class StripePaymentsAPI {
         }
 
         /* --- Check promo code and calculate price  */
-        final String promoCode = stripePaymentForm.getPromoCode();
+        LOG.warning("stripePaymentForm.getPromoCode() : " + stripePaymentForm.getPromoCode());
+        final String promoCode = stripePaymentForm.getPromoCode(); // <<< can be null
         PromoCode promoCodeEntity = null;
         if (promoCode != null && !promoCode.isEmpty()) { // isEmpty() from String
             onlineVerification.setPromoCode(promoCode);
@@ -459,14 +460,21 @@ public class StripePaymentsAPI {
             stripePaymentForKeyVerification.setPromoCodeIssuedBy(promoCodeEntity.getCreatedBy());
         }
 
-        Key<StripePaymentForKeyVerification> entityKey
+        Key<StripePaymentForKeyVerification> entityKeyStripePaymentForKeyVerification
                 = ofy().save().entity(stripePaymentForKeyVerification).now();
+        // load entity with entity 'Name/ID' and 'entityCreated' fields; // TODO: ? use fingerprint as id ?
+        stripePaymentForKeyVerification = ofy().load().key(entityKeyStripePaymentForKeyVerification).now();
+        LOG.warning("stripePaymentForKeyVerification : " + GSON.toJson(stripePaymentForKeyVerification));
 
         onlineVerification.setPaymentMade(Boolean.TRUE);
         onlineVerification.setPromoCodeUsed(promoCode);
         onlineVerification.setStripePaymentForKeyVerificationId(stripePaymentForKeyVerification.getId());
 
-        ofy().save().entity(onlineVerification).now(); //
+        Key<OnlineVerification> entityKeyOnlineVerification = ofy().save().entity(onlineVerification).now(); //
+
+        // load entity from DB for logs and testing | TODO: can be removed
+        onlineVerification = ofy().load().key(entityKeyOnlineVerification).now();
+        LOG.warning("onlineVerification : " + GSON.toJson(onlineVerification));
 
         return stripePaymentReturn;
 

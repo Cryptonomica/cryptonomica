@@ -5,6 +5,7 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -12,7 +13,7 @@ import java.util.Date;
  */
 @Entity // -> net.cryptonomica.service.OfyService
 // @Cache
-public class StripePaymentForKeyVerification {
+public class StripePaymentForKeyVerification implements Serializable {
 
     @Id
     private Long id; //........................................1

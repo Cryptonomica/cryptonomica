@@ -65,14 +65,23 @@ public class PGPTools {
 //    <!-- was a bug reading userID in key DSA + ElGamal -->
 
 
+//    // > does not work in BC 1.54:
+//    private static PGPPublicKey readPublicKey(InputStream iKeyStream) throws IOException {
+//        PGPPublicKeyRing newKey = new PGPPublicKeyRing(new ArmoredInputStream(iKeyStream));
+//        return newKey.getPublicKey();
+//    }
+
+
+    // > for BC 1.60:
     private static PGPPublicKey readPublicKey(InputStream iKeyStream) throws IOException {
-        PGPPublicKeyRing newKey = new PGPPublicKeyRing(new ArmoredInputStream(iKeyStream));
+//        PGPPublicKeyRing newKey = new PGPPublicKeyRing(new ArmoredInputStream(iKeyStream));
+        PGPPublicKeyRing newKey = new PGPPublicKeyRing(new ArmoredInputStream(iKeyStream), new JcaKeyFingerprintCalculator());
         return newKey.getPublicKey();
     }
 
+
     public static PGPPublicKey readPublicKeyFromString(String armoredPublicPGPkeyBlock)
             throws IOException, PGPException {
-
         InputStream in = new ByteArrayInputStream(armoredPublicPGPkeyBlock.getBytes());
         PGPPublicKey pgpPublicKey = readPublicKey(in);
         in.close();

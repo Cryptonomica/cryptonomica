@@ -497,6 +497,8 @@
                                                                         )
                                                                         // TODO: duplicate:
                                                                         .then(function (signedStringUploadedOnUnixTime) {
+                                                                            $log.debug("signedStringUploadedOnUnixTime:", signedStringUploadedOnUnixTime);
+                                                                            $log.debug("signedStringUploadedOnUnixTime.toNumber():", signedStringUploadedOnUnixTime.toNumber());
                                                                             $scope.smartContractData.signedStringUploadedOnUnixTime = signedStringUploadedOnUnixTime.toNumber();
                                                                             $scope.smartContractData.signedStringUploadedOnDate =
                                                                                 $rootScope.dateFromUnixTime(
@@ -527,6 +529,8 @@
                                                     }
 
                                                 };
+
+                                                /* ---- UPLOAD SIGNED STRING */
 
                                                 $scope.uploadSignedString = function () {
                                                     $rootScope.progressbar.start(); // <<<<<<<
@@ -567,6 +571,7 @@
                                                                 $log.debug('[ethVerificationCtrl] priceForVerificationInWei:');
                                                                 $log.debug(priceForVerificationInWei);
                                                                 $scope.priceForVerificationInWei = priceForVerificationInWei.toNumber();
+                                                                // https://github.com/ethereum/wiki/wiki/JavaScript-API#parameters-25
                                                                 var txParameters = {};
                                                                 if ($scope.priceForVerificationInWei === null) {
                                                                     $scope.uploadSignedStringError =
@@ -577,6 +582,7 @@
                                                                     return;
                                                                 }
                                                                 txParameters.value = $scope.priceForVerificationInWei;
+                                                                txParameters.value = $scope.gasPrice = 30 * 1000000000;
                                                                 txParameters.from = $scope.ethAccount;
                                                                 // txParameters.gas = ; //
                                                                 $log.debug('$scope.uploadSignedString txParameters: ');
@@ -603,6 +609,10 @@
                                                                         $log.debug('$scope.contract.uploadSignedString error:');
                                                                         $log.error(error);
                                                                         $scope.uploadSignedStringError = error.toString();
+                                                                        if ($scope.uploadSignedStringError.indexOf("wasn't processed in 240 seconds") >= 0) {
+                                                                            $scope.uploadSignedStringError = $scope.uploadSignedStringError +
+                                                                                " (but it can be mined, please, update/refresh data from smart contract)"
+                                                                        }
                                                                         $scope.uploadSignedStringWorking = false;
                                                                         $scope.$apply();
                                                                         $timeout($rootScope.progressbar.complete(), 1000); // <<<<<<
@@ -619,6 +629,8 @@
                                                         }
                                                     );
                                                 };
+
+                                                /* --------- VERIFY */
 
                                                 $scope.verify = function () {
                                                     $rootScope.progressbar.start(); // <<<<<<<

@@ -14,14 +14,23 @@ import com.google.gson.GsonBuilder;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.googlecode.objectify.Key;
 import com.twilio.sdk.TwilioRestException;
+import net.cryptonomica.entities.AppSettings;
 import net.cryptonomica.entities.CryptonomicaUser;
 import net.cryptonomica.entities.TestEntity;
 import net.cryptonomica.returns.IntegerWrapperObject;
 import net.cryptonomica.returns.StringWrapperObject;
 import net.cryptonomica.service.TwilioUtils;
 import net.cryptonomica.service.UserTools;
+import net.cryptonomica.testing.TestContract;
+import org.web3j.crypto.Credentials;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.protocol.core.methods.response.Web3ClientVersion;
+import org.web3j.protocol.http.HttpService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.math.BigInteger;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -397,6 +406,100 @@ public class TestAPI {
 
         return result;
     }
+
+
+    @SuppressWarnings("unused")
+    @ApiMethod(
+            name = "setIntegerValueInTestContract",
+            path = "setIntegerValueInTestContract",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    // HashMap<String, Integer> as response works!!! (endpoints.framework.version: 2.0.9)
+    public IntegerWrapperObject setIntegerValueInTestContract(
+            // Injected types: (see: https://cloud.google.com/endpoints/docs/frameworks/java/parameter-and-return-types)
+            final com.google.appengine.api.users.User googleUser,
+            // final javax.servlet.http.HttpServletRequest request,
+            // final javax.servlet.ServletContext servletContext,
+            final @Named("integerValue") Integer integerValue
+            /*
+             * */
+    ) throws UnauthorizedException, IOException {
+
+        /* --- Check authorization: */
+        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        final String infuraApiKey = ofy()
+                .load()
+                .key(Key.create(AppSettings.class, "infuraApiKey"))
+                .now()
+                .getValue();
+        final String infuraApiVersion = "v3";
+        final String network = "kovan";
+        String infuraEndpointURL = "https://" + network + ".infura.io/" + infuraApiVersion + "/" + infuraApiKey;
+        Web3j web3 = Web3j.build(new HttpService(infuraEndpointURL));
+
+        try {
+            Web3ClientVersion web3ClientVersion = web3.web3ClientVersion().send();
+            LOG.warning("Ethereum node : " + web3ClientVersion.getWeb3ClientVersion());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        final String ethPrivateKey = ofy()
+                .load()
+                .key(Key.create(AppSettings.class, "ethTestPrivateKey"))
+                .now()
+                .getValue();
+        Credentials credentials = Credentials.create(ethPrivateKey);
+        LOG.warning("eth address : " + credentials.getAddress());
+
+        final String contractAddress = "0xcb7c802cac6b547e4ac8115f0834e1db467d1abb";
+        final BigInteger GAS_PRICE = BigInteger.valueOf(10_000_000_000L); //
+        final BigInteger GAS_LIMIT_MAX = BigInteger.valueOf(8_000_000);
+
+        // https://docs.web3j.io/smart_contracts.html#construction-and-deployment
+        TestContract testContract = TestContract.load(
+                contractAddress,
+                web3,
+                credentials,
+                GAS_PRICE,
+                GAS_LIMIT_MAX
+        );
+
+        String txHash = null;
+        TransactionReceipt txReceipt = null;
+        Integer integerValueFromContract = null;
+        try {
+            txHash = testContract.setIntegerValue(BigInteger.valueOf(integerValue)).send().getTransactionHash();
+
+            // https://docs.web3j.io/trouble.html#i-m-submitting-a-transaction-but-it-s-not-being-mined
+            // you loop through the following expecting to eventually get a receipt once the transaction is mined
+
+            Optional<TransactionReceipt> optionalTxReceipt = web3.ethGetTransactionReceipt(txHash).send().getTransactionReceipt();
+            // System.out.println("optional : " + optionalTxReceipt.toString());
+            // System.out.println("optional.isPresent() : " + optionalTxReceipt.isPresent());
+            while (!optionalTxReceipt.isPresent()) {
+                optionalTxReceipt = web3.ethGetTransactionReceipt(txHash).send().getTransactionReceipt();
+            }
+
+            txReceipt = optionalTxReceipt.get();
+
+            integerValueFromContract = testContract.integerValue().send().intValue();
+
+        } catch (Exception e) {
+            LOG.severe(e.getMessage());
+            throw new IOException("Please check contract manually, transaction may be failed");
+        }
+
+        String txReceiptStr = txReceipt.toString();
+
+        IntegerWrapperObject result = new IntegerWrapperObject();
+        result.setNumber(integerValueFromContract);
+        result.setMessage(txReceiptStr);
+
+        return result;
+    }
+
 
 }
 

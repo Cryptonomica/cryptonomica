@@ -60,23 +60,24 @@ public class TestPGPTools {
             "-----END PGP SIGNATURE-----";
 
     private static String plaintext = "0xecb6b43927394073b072b263e4ead230f1a6987bcab9f067918192d6bdccc8c1";
-    private static String signedString2 = "-----BEGIN PGP SIGNED MESSAGE----- Hash: SHA256 0xecb6b43927394073b072b263e4ead230f1a6987bcab9f067918192d6bdccc8c1 -----BEGIN PGP SIGNATURE----- Version: GnuPG v2 iQEcBAEBCAAGBQJZbW5IAAoJEGp7IeKETHmADTsIAJpELl5bSanJ9fxMuUDQSm3/ n5jCgaBLh0XbA122rEm/6KZLb6jRk771u8NUTrCNky2xSRvCCV+CFKvQ1qOQ0m3j GTDFRqfs3TYMG0nShFA8k9+wXZI+d/iM7DnOxwLO5JM/lGViPs2i6pYEOHf0Jenl CS2vslcu0IILduq0mmljKXjcqtRu1whatFtXU/inCV1grAfQJHuI6ZmdDg4ntTUj mCGrDWrAQfsrgQtlnqeIs/4U8gLQFjlsBhJKstLKbkGnVbHtmwZDmq69dzrLUuwO T2pTl/i4YZ02bGxo8Lx3zvDXZocwtRrMtfR4koeFHt4ctgIIIQ/6dZaWg4rbiO0= =uOl8 -----END PGP SIGNATURE-----";
+    // signedString2 > Cannot recognize input data
+    // private static String signedString2 = "-----BEGIN PGP SIGNED MESSAGE----- Hash: SHA256 0xecb6b43927394073b072b263e4ead230f1a6987bcab9f067918192d6bdccc8c1 -----BEGIN PGP SIGNATURE----- Version: GnuPG v2 iQEcBAEBCAAGBQJZbW5IAAoJEGp7IeKETHmADTsIAJpELl5bSanJ9fxMuUDQSm3/ n5jCgaBLh0XbA122rEm/6KZLb6jRk771u8NUTrCNky2xSRvCCV+CFKvQ1qOQ0m3j GTDFRqfs3TYMG0nShFA8k9+wXZI+d/iM7DnOxwLO5JM/lGViPs2i6pYEOHf0Jenl CS2vslcu0IILduq0mmljKXjcqtRu1whatFtXU/inCV1grAfQJHuI6ZmdDg4ntTUj mCGrDWrAQfsrgQtlnqeIs/4U8gLQFjlsBhJKstLKbkGnVbHtmwZDmq69dzrLUuwO T2pTl/i4YZ02bGxo8Lx3zvDXZocwtRrMtfR4koeFHt4ctgIIIQ/6dZaWg4rbiO0= =uOl8 -----END PGP SIGNATURE-----";
     private static String signedString3 =
             "-----BEGIN PGP SIGNED MESSAGE-----\n" +
-            "Hash: SHA256\n" +
-            "\n" +
-            "0xf5695854e7c7121ca7f84e65b122b3b1f3e9fc503ee2f4b9bc45846a04f20ef7\n" +
-            "-----BEGIN PGP SIGNATURE-----\n" +
-            "Version: GnuPG v2\n" +
-            "\n" +
-            "iQEcBAEBCAAGBQJaAu3fAAoJEGp7IeKETHmA4b4H/03CqZBsqQwzqx4qWY8Xo94r\n" +
-            "Ha7fk4FBO1Fe8h+zVT6C3MCZc8ZX2B0SsQafGNZMhugDpUCds+DPO2zf7wguBk+U\n" +
-            "SvtQ3xi5iicT0RubcV2hI4jhbL4DvVBv7DeCab44HxAfl7leW3Ft6LAmrR/Hcrc7\n" +
-            "njo6Nz3T/NvSFNaQXBK1uP8bCZMhc+zqOg5C9uEAVNtKa2iPTm6vbuQGDdp9UKBg\n" +
-            "BI6OrTYF4QGeUlxL2A6DpRiZfX0NXlPXjLL0b34fc05xWVXWJjhAw85VgdQwIgmH\n" +
-            "zBQMjW3e9dnDJodrosl+TQ1LGkQLy+R6BPX5JoBDa59F0ncyfO+Z+ILrv+hLLbQ=\n" +
-            "=TEa2\n" +
-            "-----END PGP SIGNATURE-----";
+                    "Hash: SHA256\n" +
+                    "\n" +
+                    "0xf5695854e7c7121ca7f84e65b122b3b1f3e9fc503ee2f4b9bc45846a04f20ef7\n" +
+                    "-----BEGIN PGP SIGNATURE-----\n" +
+                    "Version: GnuPG v2\n" +
+                    "\n" +
+                    "iQEcBAEBCAAGBQJaAu3fAAoJEGp7IeKETHmA4b4H/03CqZBsqQwzqx4qWY8Xo94r\n" +
+                    "Ha7fk4FBO1Fe8h+zVT6C3MCZc8ZX2B0SsQafGNZMhugDpUCds+DPO2zf7wguBk+U\n" +
+                    "SvtQ3xi5iicT0RubcV2hI4jhbL4DvVBv7DeCab44HxAfl7leW3Ft6LAmrR/Hcrc7\n" +
+                    "njo6Nz3T/NvSFNaQXBK1uP8bCZMhc+zqOg5C9uEAVNtKa2iPTm6vbuQGDdp9UKBg\n" +
+                    "BI6OrTYF4QGeUlxL2A6DpRiZfX0NXlPXjLL0b34fc05xWVXWJjhAw85VgdQwIgmH\n" +
+                    "zBQMjW3e9dnDJodrosl+TQ1LGkQLy+R6BPX5JoBDa59F0ncyfO+Z+ILrv+hLLbQ=\n" +
+                    "=TEa2\n" +
+                    "-----END PGP SIGNATURE-----";
 
     public static void main(String[] args) {
         // // see: https://stackoverflow.com/questions/9660967/bouncy-castle-no-such-provider-exception
@@ -90,12 +91,12 @@ public class TestPGPTools {
             e.printStackTrace();
         }
 
-        try {
-            Boolean result2 = PGPTools.verifySignedString(signedString2, publicKey);
-            System.out.println("result: " + result2);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Boolean result2 = PGPTools.verifySignedString(signedString2, publicKey);
+//            System.out.println("result: " + result2);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         try {
             PGPPublicKey pgpPublicKey = PGPTools.readPublicKeyFromString(publicKey);
