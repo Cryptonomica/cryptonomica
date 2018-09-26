@@ -265,8 +265,10 @@ public class NotaryAPI {
             final User verifyingPerson, // google user
             final VerifyPGPPublicKeyForm verifyPGPPublicKeyForm // 4 properties
     ) throws Exception {
+
         /* Check authorization: */
-        CryptonomicaUser cryptonomicaUser = UserTools.ensureNotaryOrCryptonomicaOfficer(verifyingPerson);
+        // CryptonomicaUser cryptonomicaUser = UserTools.ensureNotaryOrCryptonomicaOfficer(verifyingPerson);
+        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(verifyingPerson);
 
         /* Validate form (3 properties): */
         // 1)
@@ -321,9 +323,10 @@ public class NotaryAPI {
         PGPPublicKeyData pgpPublicKeyData = PGPTools.getPGPPublicKeyDataFromDataBaseByFingerprint(fingerprint);
 
         /* Check if key paid */
-        if (pgpPublicKeyData.getPaid() == null || pgpPublicKeyData.getPaid() == Boolean.FALSE) {
-            throw new Exception("This key is unpaid, and can not be verified. Please make a payment first.");
-        }
+        // TODO: add this check >>>
+//        if (pgpPublicKeyData.getPaid() == null || pgpPublicKeyData.getPaid() == Boolean.FALSE) {
+//            throw new Exception("This key is unpaid, and can not be verified. Please make a payment first.");
+//        }
 
         // create verification
         Key<PGPPublicKeyData> pgpPublicKeyDataKEY = Key.create(pgpPublicKeyData);

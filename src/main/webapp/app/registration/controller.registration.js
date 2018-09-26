@@ -139,7 +139,9 @@
 
             // ======== Terms of Use: end =======
 
+
             /* ========= KEY upload start: */
+
             $scope.regForm = {};
             $scope.privateKeyPasted = false;
 
@@ -190,6 +192,51 @@
                 return true;
 
             };
+
+            // > first try to load key from browser storage
+            var storageType = 'localStorage'; // or 'sessionStorage'
+            var storageAvailable = function () {
+                try {
+                    var storage = window[storageType],
+                        x = '__storage_test__';
+                    storage.setItem(x, x);
+                    storage.removeItem(x);
+                    return true;
+                }
+                catch (e) {
+                    return e instanceof DOMException && (
+                            // everything except Firefox
+                        e.code === 22 ||
+                        // Firefox
+                        e.code === 1014 ||
+                        // test name field too, because code might not be present
+                        // everything except Firefox
+                        e.name === 'QuotaExceededError' ||
+                        // Firefox
+                        e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+                        // acknowledge QuotaExceededError only if there's something already stored
+                        storage.length !== 0;
+                }
+            }();
+
+            $log.debug("storageAvailable: " + storageAvailable);
+            // > don't do this, users upload false (old) strings
+            if (storageAvailable) {
+                // > don't do this, users upload false (old) strings
+                // $scope.signedString = localStorage.getItem('signedString');
+                $scope.publicKeyArmoredFromLocalStorage = localStorage.getItem("myPublicKey");
+                if ($scope.publicKeyArmored) {
+                    $scope.regForm.armoredPublicPGPkeyBlock = $scope.publicKeyArmoredFromLocalStorage;
+                    try {
+                        $scope.pgpPublicKeyData = $rootScope.readPublicKeyData($scope.regForm.armoredPublicPGPkeyBlock);
+                        $scope.verifyPublicKeyData();
+                    } catch (error) {
+                        $log.debug(error);
+                        $scope.pgpPublicKeyDataError =
+                            "Public PGP key stored in local browser storage is not a valid OpenPGP public key";
+                    }
+                }
+            }
 
             $scope.readFileContent = function ($fileContent) {
                 $scope.regForm.armoredPublicPGPkeyBlock = $fileContent;

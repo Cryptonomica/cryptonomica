@@ -112,14 +112,18 @@ app.run([
                 GAuth.checkAuth()
                     .then(
                         function (result) {
-
-                            $log.debug('[app.js] user is logged in:');
-                            $log.debug(result);
+                            //
+                            // $log.debug('[app.js] user is logged in:');
+                            // $log.debug(result); // undefined
 
                             $log.debug('$rootScope.gapi.user:');
                             $log.debug($rootScope.gapi.user);
                             // used in 'registration.html' etc.:
                             $rootScope.googleUser = $rootScope.gapi.user;
+                            if ($rootScope.gapi && $rootScope.gapi.user && $rootScope.gapi.user.email) {
+                                $log.debug("$rootScope.gapi.user.email: ", $rootScope.gapi.user.email);
+                                $cookies.put('userEmail', $rootScope.gapi.user.email);
+                            }
                             //
                             // does not work:
                             // $log.debug("$rootScope.gapi.auth.getToken():");
@@ -155,6 +159,10 @@ app.run([
                         $log.debug($rootScope.gapi.user);
                         // >
                         $rootScope.googleUser = $rootScope.gapi.user;
+                        if ($rootScope.gapi && $rootScope.gapi.user && $rootScope.gapi.user.email) {
+                            $log.debug("$rootScope.gapi.user.email: ", $rootScope.gapi.user.email);
+                            $cookies.put('userEmail', $rootScope.gapi.user.email);
+                        }
                         $('#userAvatar')
                             .popup({
                                 // position : 'right center',

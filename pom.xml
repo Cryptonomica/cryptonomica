@@ -269,7 +269,8 @@
             <!--<version>1.54</version>-->
             <!-- was a bug reading userID in key DSA + ElGamal in BC 1.54 -->
             <!--<version>1.47</version>-->
-            <version>1.60</version>
+            <version>1.54</version>
+            <!--<version>1.60</version>-->
         </dependency>
 
         <dependency>

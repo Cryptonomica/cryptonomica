@@ -8,9 +8,11 @@ import org.bouncycastle.openpgp.*;
 import org.bouncycastle.openpgp.operator.jcajce.JcaKeyFingerprintCalculator;
 import org.bouncycastle.openpgp.operator.jcajce.JcaPGPContentVerifierBuilderProvider;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.Security;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -209,9 +211,17 @@ public class PGPTools {
             String signedString,
             String pgpPublicKeyAsciiArmored // pgpPublicKeyData.getAsciiArmored().getValue()
     ) throws Exception {
+
         PGPPublicKey publicKey = readPublicKeyFromString(pgpPublicKeyAsciiArmored);
-        Boolean result = verifyText(signedString, publicKey);
-        return result;
+
+        LOG.warning(
+                "Public Key fingerprint: "
+                        + DatatypeConverter.printHexBinary(
+                        publicKey.getFingerprint() // < returns byte[]
+                )
+        );
+
+        return verifyText(signedString, publicKey);
     }
 
     public static Boolean verifyText(String plainText, PGPPublicKey publicKey) throws Exception {
@@ -237,6 +247,7 @@ public class PGPTools {
             ByteArrayInputStream signatureIn = new ByteArrayInputStream(signatureStr.getBytes("UTF8"));
 
             Boolean result = verifyFile(signedDataIn, signatureIn, publicKey);
+
             LOG.warning("verification result: " + result);
 
             return result;
@@ -245,17 +256,19 @@ public class PGPTools {
         throw new Exception("Cannot recognize input data");
     }
 
-
     public static Boolean verifyFile(
             InputStream signedDataIn, // signed data
             InputStream signatureIn, //  signature
             PGPPublicKey pgpPublicKey) //  key
             throws Exception {
+
         signatureIn = PGPUtil.getDecoderStream(signatureIn);
-        //dataIn = PGPUtil.getDecoderStream(dataIn); // not needed
+
+        //dataIn = PGPUtil.getDecoderStream(dataIn); // not needed > Exception
+
         PGPObjectFactory pgpObjectFactory = new PGPObjectFactory(
                 signatureIn,
-                new JcaKeyFingerprintCalculator() // <<<< TODO: check if this is correct
+                new JcaKeyFingerprintCalculator()
         );
 
         PGPSignatureList pgpSignatureList = null;
@@ -267,11 +280,12 @@ public class PGPTools {
             if (o == null)
                 throw new Exception("pgpObjectFactory.nextObject() returned null");
         } catch (Exception ex) {
-
             throw new Exception("Invalid input data"); //
         }
 
         if (o instanceof PGPCompressedData) {
+
+            LOG.warning("(o instanceof PGPCompressedData):true");
 
             PGPCompressedData pgpCompressedData = (PGPCompressedData) o;
             pgpObjectFactory = new PGPObjectFactory(
@@ -281,10 +295,13 @@ public class PGPTools {
             pgpSignatureList = (PGPSignatureList) pgpObjectFactory.nextObject();
 
         } else {
+
+            LOG.warning("(o instanceof PGPCompressedData):false");
             pgpSignatureList = (PGPSignatureList) o;
         }
 
-        int ch;
+        LOG.warning("pgpSignatureList.size(): " + pgpSignatureList.size());
+
 
         // A PGP signatureObject
         // https://www.borelly.net/cb/docs/javaBC-1.4.8/pg/index.html?org/bouncycastle/openpgp/PGPSignature.html
@@ -303,22 +320,52 @@ public class PGPTools {
         // https://www.borelly.net/cb/docs/javaBC-1.4.8/pg/org/bouncycastle/openpgp/PGPSignature.html#initVerify(org.bouncycastle.openpgp.PGPPublicKey,%20java.security.Provider)
         // Deprecated. use init(PGPContentVerifierBuilderProvider, PGPPublicKey)
 
+        // see: https://stackoverflow.com/questions/3711754/why-java-security-nosuchproviderexception-no-such-provider-bc
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         signatureObject.init(
-                new JcaPGPContentVerifierBuilderProvider(),
+                // new JcaPGPContentVerifierBuilderProvider(),
+                new JcaPGPContentVerifierBuilderProvider().setProvider("BC"),
+                // if:
+                // org.bouncycastle.openpgp.PGPException: cannot create signature: no such provider: BC
+                // add:  Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
                 pgpPublicKey
         );
 
+        int ch;
         while ((ch = signedDataIn.read()) >= 0) {
             signatureObject.update((byte) ch);
         }
 
-        if (signatureObject.verify()) {
-            return Boolean.TRUE;
-        } else {
-            return Boolean.FALSE;
+        try {
+            // see: https://stackoverflow.com/questions/30529640/long-to-hex-string
+            // https://docs.oracle.com/javase/8/docs/api/java/lang/Long.html#toHexString-long-
+            LOG.warning("signatureObject.getKeyID(): " + signatureObject.getKeyID() + " " + Long.toHexString(signatureObject.getKeyID()));
+            LOG.warning("pgpPublicKey.getKeyID(): " + pgpPublicKey.getKeyID() + " " + Long.toHexString(pgpPublicKey.getKeyID()));
+            LOG.warning("signatureObject.getCreationTime(): " + signatureObject.getCreationTime());
+            LOG.warning("signed text:");
+            // LOG.warning();
+        } catch (Exception e) {
+            LOG.severe(e.getMessage());
         }
 
-    } // end of verifyFile()
+        if (!signatureObject.verify()) {
 
+            String pgpExceptionMessage;
+            try {
+                pgpExceptionMessage = "Key to verify: "
+                        + Long.toHexString(signatureObject.getKeyID())
+//                        + ", key to verify "
+//                        + Long.toHexString(pgpPublicKey.getKeyID())
+                        + ", signature made on " + signatureObject.getCreationTime();
+            } catch (Exception e) {
+                throw new PGPException("Signature is invalid");
+            }
+            throw new PGPException(pgpExceptionMessage);
+        }
+
+        return Boolean.TRUE;
+
+
+    } // end of verifyFile()
 
 }

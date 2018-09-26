@@ -139,7 +139,8 @@
                                             <!-- debug: -->
                                             <!--userKeys.length: {{userKeys.length}}-->
 
-                                            <select class="ui fluid dropdown" ng-model="fingerprint">
+                                            <select class="ui fluid dropdown" ng-model="fingerprint"
+                                                    ng-change="requestDataFromSmartContract()">
                                                 <option value="">select your key</option>
                                                 <!--<option ng-repeat="option in data.availableOptions" value="{{option.id}}">{{option.name}}</option>-->
                                                 <option ng-repeat="fingerprintStr in userKeys"
@@ -176,8 +177,12 @@
 
                                         <div>
                                             <br>
-                                            <button class="ui tiny button"
+                                            <button class="ui tiny button" ng-disabled="!fingerprint"
                                                     ng-click="requestDataFromSmartContract()">
+                                                 <span ng-show="requestDataFromSmartContractIsWorking"
+                                                       title="loading...">
+                                                    <i class="fa fa-refresh fa-spin fa-fw"></i>&nbsp;
+                                                </span>
                                                 Get/Update Data From Smart Contract for this key
                                                 <!--<span ng-show="fingerprint">&nbsp;for {{fingerprint}}</span>-->
                                             </button>
@@ -232,7 +237,7 @@
                                                         </td>
                                                     </tr>
 
-                                                    <tr>
+                                                    <tr ng-hide="smartContractData.signedString.length>10">
                                                         <td>String to sign</td>
                                                         <td>
                                                             <!--<div style="font-size: small;">-->
@@ -240,10 +245,20 @@
                                                                 <span id="stringToSign">{{smartContractData.stringToSign}}</span>
                                                             </div>
                                                             <hr>
+
                                                             <button class="ui tiny button"
                                                                     ng-click="copyToClipboard('#stringToSign')">
                                                                 Copy to clipboard
                                                             </button>
+
+
+                                                            <button class="ui tiny button"
+                                                                    ng-disabled="!signButtonEnabled"
+                                                                    ng-click="sign()">
+                                                                Sign and put to form <br>
+                                                                (if private key saved to local storage)
+                                                            </button>
+
                                                         </td>
                                                     </tr>
 
@@ -266,13 +281,13 @@
                                                     <tr>
                                                         <td>Signed string uploaded on:</td>
                                                         <td>
-                                <span ng-show="smartContractData.signedStringUploadedOnUnixTime != 0">
-                                    {{smartContractData.signedStringUploadedOnDate | date:'yyyy-MM-dd HH:mm:ss Z'}}
-                                </span>
+                                                            <span ng-show="smartContractData.signedStringUploadedOnUnixTime != 0">
+                                                                {{smartContractData.signedStringUploadedOnDate | date:'yyyy-MM-dd HH:mm:ss Z'}}
+                                                            </span>
                                                         </td>
                                                     </tr>
 
-                                                    <tr>
+                                                    <tr ng-show="smartContractData.unverifiedFingerprint">
                                                         <td>Verification requested for OpenPGP key:</td>
                                                         <td>
                                                             <a href=""
@@ -283,8 +298,11 @@
                                                         </td>
                                                     </tr>
 
-                                                    <tr>
-                                                        <td>Verified OpenPGP key for this ETH address:</td>
+                                                    <tr ng-show="smartContractData.ethAddressConnectedToFingerprint!='0x0000000000000000000000000000000000000000'">
+                                                        <td>
+                                                            Verified OpenPGP key for ETH address
+                                                            {{smartContractData.ethAddressConnectedToFingerprint}} :
+                                                        </td>
                                                         <td>
                                                             <a href=""
                                                                title="Show key info"
@@ -294,40 +312,38 @@
                                                         </td>
                                                     </tr>
 
-                                                    <tr>
-                                                        <td>Verified user for this ETH address:</td>
+                                                    <tr ng-show="smartContractData.ethAddressConnectedToFingerprint!='0x0000000000000000000000000000000000000000'">
+                                                        <td>Verified user for ETH address
+                                                            {{smartContractData.ethAddressConnectedToFingerprint}}:
+                                                        </td>
                                                         <td>
                                                             {{smartContractData.firstName}}&nbsp;{{smartContractData.lastName}}&nbsp;
                                                             <span ng-show="smartContractData.birthDateUnixTime && smartContractData.birthDateUnixTime > 0">
-                                    <br>born: {{smartContractData.birthDate | date:'yyyy-MM-dd'}}
-                                </span>
+                                                                <br>born: {{smartContractData.birthDate | date:'yyyy-MM-dd'}}
+                                                            </span>
                                                             <span ng-show="smartContractData.nationality">
-                                    , nationality: {{smartContractData.nationality}}
-                                </span>
+                                                                , nationality: {{smartContractData.nationality}}
+                                                            </span>
                                                         </td>
                                                     </tr>
 
-                                                    <tr>
+                                                    <tr ng-show="smartContractData.verificationAddedOnUnixTime && smartContractData.verificationAddedOnUnixTime > 0">
                                                         <td>Verified on:</td>
                                                         <td>
-                                <span ng-show="smartContractData.verificationAddedOnUnixTime && smartContractData.verificationAddedOnUnixTime > 0">
-                                    {{smartContractData.verificationAddedOnDate | date:'yyyy-MM-dd'}}
-                                    &nbsp;(Unix time:&nbsp;{{smartContractData.verificationAddedOnUnixTime}})
-                                </span>
+                                                            {{smartContractData.verificationAddedOnDate |
+                                                            date:'yyyy-MM-dd'}}
+                                                            &nbsp;(Unix time:&nbsp;{{smartContractData.verificationAddedOnUnixTime}})
                                                         </td>
                                                     </tr>
 
-                                                    <tr>
+                                                    <tr ng-show="smartContractData.revokedOnUnixTime && smartContractData.revokedOnUnixTime > 0">
                                                         <td>Verification revoked on:</td>
                                                         <td>
-                                <span ng-show="smartContractData.revokedOnUnixTime && smartContractData.revokedOnUnixTime > 0">
-                                    {{smartContractData.revokedOnDate | date:'yyyy-MM-dd'}}(Unix time:&nbsp;{{smartContractData.revokedOnUnixTime}})
-                                </span>
+                                                            <span style="color: red; font-weight: bold">
+                                                                {{smartContractData.revokedOnDate | date:'yyyy-MM-dd'}}(Unix time:&nbsp;{{smartContractData.revokedOnUnixTime}})
+                                                            </span>
                                                         </td>
                                                     </tr>
-
-                                                    <!-- TODO: continue here >>>>> -->
-
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -342,24 +358,35 @@
                                             <div ng-hide="smartContractData&&smartContractData.signedString">
                                                 <br>
                                                 <h2>Send signed string</h2>
-                                                <div> you have to sign string you got on previous step with your key
-                                                    (use
+                                                <div>
+                                                    You have to sign string you got on previous step with your key. To
+                                                    sing string use
                                                     <a href="https://github.com/Cryptonomica/arbitration-rules/blob/master/Arbitration_Rules/IACC/web-site/list.of.recommended.OpenPGP.software.md"
-                                                       target="_blank">your desktop software</a>
+                                                       target="_blank">
+                                                        your desktop software
+                                                    </a>
                                                     or our
-                                                    <a ui-sref="openPGPOnline" target="_blank">online OpenPGP
-                                                        service</a>
-                                                    ), put signed text in this field, and than click 'send signed
-                                                    string'
-                                                    <span ng-show="smartContractData.priceForVerificationInEth">(current price {{smartContractData.priceForVerificationInEth}} ETH)</span>
+                                                    <a ui-sref="openPGPOnline" target="_blank">
+                                                        online OpenPGP service.
+                                                    </a>
+                                                    Put signed text in this field, and than click 'Send Signed String to
+                                                    Smart Contract'.<br>
+                                                    <span ng-show="smartContractData.priceForVerificationInEth">
+                                                        Current price for ETH address verification is {{smartContractData.priceForVerificationInEth}} ETH.
+                                                    </span>
+                                                    <br>
+                                                    We also recommend that you set gas price in MetaMask higher than the
+                                                    proposed by MetaMask
+                                                    <br>
+
                                                 </div>
 
                                                 <form class="ui form">
 
-                                                <textarea
-                                                        rows="13"
-                                                        ng-model="signedString"
-                                                        placeholder='Please, sign provided string ("{{smartContractData.stringToSign}}") with OpenPGP key {{fingerprint}} and place signed text here'>
+                                                <textarea id="signedStringInput"
+                                                          rows="13"
+                                                          ng-model="signedString"
+                                                          placeholder='Please, sign provided string ("{{smartContractData.stringToSign}}") with OpenPGP key {{fingerprint}} and place signed text here'>
                                                 </textarea>
 
                                                 </form>
@@ -371,16 +398,42 @@
                                                     <p>{{uploadSignedStringError}}</p>
                                                 </div>
 
+                                                <div id="checkSignatureError" ng-show="checkSignatureError"
+                                                     class="ui negative message">
+                                                    <i class="close icon" ng-click="checkSignatureError=null"></i>
+                                                    <div class="header">Error:</div>
+                                                    <p>{{checkSignatureError}}</p>
+                                                </div>
 
-                                                <button
+                                                <div id="checkSignatureResult" ng-show="checkSignatureResult"
+                                                     class="ui positive message">
+                                                    <i class="close icon" ng-click="checkSignatureResult=null"></i>
+                                                    <div class="header">Success:</div>
+                                                    <p>{{checkSignatureResult}}</p>
+                                                </div>
+
+
+                                                <button id="checkSignatureButton"
                                                         class="ui secondary button"
                                                         ng-class="{disabled: uploadSignedStringWorking}"
+                                                        ng-click="checkSignature()">
+                                                    Check signature
+                                                    <span ng-show="checkSignatureIsWorking" title="loading...">
+                                                    <br><i class="fa fa-refresh fa-spin fa-fw"></i>&nbsp;Working ...
+                                                </span>
+                                                </button>
+
+                                                <button id="uploadSignedStringButton"
+                                                        class="ui primary button"
+                                                        ng-class="{disabled: uploadSignedStringWorking}"
+                                                        ng-disabled="uploadSignedStringButtonDisabled" ;
                                                         ng-click="uploadSignedString()">
                                                     Send Signed String to Smart Contract
                                                     <span ng-show="uploadSignedStringWorking" title="loading...">
                                                     <br><i class="fa fa-refresh fa-spin fa-fw"></i>&nbsp;Working ...
                                                 </span>
                                                 </button>
+
                                                 <br>
                                                 <!-- Show Transaction -->
                                                 <div ng-show="uploadSignedStringTx">
@@ -404,7 +457,8 @@
                                         <div>
 
                                             <div id="dataFromSmartContractBlock">
-                                                <div>
+                                                <div style="font-weight: bold">
+                                                    <br>
                                                     After you put signed string to smart contract (check data from smart
                                                     contract above) click 'Verify'
                                                 </div>
@@ -430,19 +484,12 @@
                                         <p>{{verificationError}}</p>
                                     </div>
 
-                                    <section id="verificationResult"
-                                             ng-show="verificationResult&&verificationResult.result">
-                                        <div>
-                                            <h3>Verification Result</h3>
-                                            <div>
-                                                This is your verification result:
-                                            </div>
-                                            <div id="verificationResultData">
-                                                <!--<b>{{verificationResult}}</b>-->
-                                                <b>{{verificationResult.result}}</b>
-                                            </div>
-                                        </div>
-                                    </section>
+                                    <div id="verificationResult" ng-show="verificationResult"
+                                         class="ui positive message">
+                                        <i class="close icon" ng-click="verificationResult=null"></i>
+                                        <div class="header">Success:</div>
+                                        <p>{{verificationResult}}</p>
+                                    </div>
 
                                     <hr>
 

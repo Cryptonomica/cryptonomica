@@ -211,6 +211,7 @@
                                             </div>
                                         </td>
                                     </tr>
+                                    <!--
                                     <tr>
                                         <td>
 
@@ -219,9 +220,110 @@
 
                                         </td>
                                     </tr>
+                                    -->
 
                                     </tbody>
                                 </table>
+                                <br>
+
+                                <!-- NOTARY KEY VERIFICATION START -->
+
+                                <div ng-show="(currentUser && currentUser.cryptonomicaOfficer)||(currentUser && currentUser.notary)">
+                                    <hr>
+                                    <h3>Notary menu: </h3>
+                                    <p>(you view this because you are an authorized notary or Cryptonomica officer)</p>
+
+                                    <button
+                                            class="ui tiny button"
+                                            ng-click="KeyVerificationFormShowToggle()"
+                                            title="Click to show">
+                                        Show/hide key verification form
+                                    </button>
+
+                                    <div ng-show="KeyVerificationFormShow">
+                                        <form id="KeyVerificationFORM" name="KeyVerificationFORM" class="ui form">
+                                            <!-- Remember, since Bootstrap utilizes the HTML5 doctype, all inputs must have a type attribute. -->
+                                            <fieldset>
+                                                <br>
+                                                <!-- User nationality: -->
+                                                <label for="nationality">
+                                                    User nationality (according to passport or similar document):
+                                                </label>
+                                                <br>
+
+                                                <select id="nationality" name="nationality"
+                                                        ng-model="VerifyPGPPublicKeyForm.nationality"
+                                                        pvp-country-picker
+                                                        class="c-select"
+                                                        ng-required="true">
+                                                </select>
+
+                                                <div ng-show="VerifyPGPPublicKeyForm.nationality == null || VerifyPGPPublicKeyForm.nationality.length < 1"
+                                                     style="color: red">
+                                                    Please, select nationality
+                                                </div>
+                                                <div ng-show="VerifyPGPPublicKeyForm.nationality">
+                                                    Selected: <b>{{VerifyPGPPublicKeyForm.nationality}}</b>
+                                                </div>
+                                                <br>
+
+                                                <!-- basedOnDocument -->
+                                                <label for="basedOnDocument">
+                                                    Document(s) provided for verification:
+                                                </label>
+                                                <br>
+                                                <div class="ui fluid input">
+                                                    <input id="basedOnDocument" type="text"
+                                                           placeholder="for example: Israeli Passport # 1234567 issued by 'Jerusalem' on 2017-01-01 "
+                                                           ng-model="VerifyPGPPublicKeyForm.basedOnDocument"
+                                                           ng-required="true">
+                                                </div>
+                                                <br>
+
+                                                <!--// verificationInfo-->
+                                                <label for="verificationInfo">Place where verification was made:</label>
+                                                <br>
+                                                <div class="ui fluid input">
+                                                    <input id="verificationInfo"
+                                                           name="verificationInfo"
+                                                           ng-model="VerifyPGPPublicKeyForm.verificationInfo"
+                                                           placeholder="for example: International House, 24 Holborn Viaduct, London, United Kingdom"
+                                                           ng-required="true">
+                                                </div>
+                                                <br>
+                                            </fieldset>
+                                            <p>
+                                                Please: before you click 'Submit', make a photo or scan of user document
+                                                ID in good quality, and send this photo or scan to
+                                                <a href="mailto:support@cryptonomica.net">support@cryptonomica.net</a>
+                                            </p>
+                                            <input type="submit" value="Submit"
+                                                   class="btn btn-default"
+                                                   ng-click="verifyPGPPublicKeyFormSubmit()">
+                                        </form>
+                                        <hr>
+
+                                        <!-- Success message: -->
+                                        <div ng-show="VerifyPGPPublicKeyReturn.messageToUser"
+                                             class="ui positive message">
+                                            <!--<i class="close icon" ng-click="alertSuccess=null"></i>-->
+                                            <div class="header">Success:</div>
+                                            <p>{{VerifyPGPPublicKeyReturn.messageToUser}}</p>
+                                        </div>
+
+                                        <!-- Error message: -->
+                                        <div id="verifyKeyError" ng-show="verifyKeyError" class="ui negative message">
+                                            <i class="close icon" ng-click="verifyKeyError=null"></i>
+                                            <div class="header">Error:</div>
+                                            <p>{{verifyKeyError.message}}</p>
+                                        </div>
+
+                                    </div>
+                                    <hr>
+                                    <!--  -->
+                                </div>
+
+                                <!-- NOTARY KEY VERIFICATION END -->
 
                             </div>
 
