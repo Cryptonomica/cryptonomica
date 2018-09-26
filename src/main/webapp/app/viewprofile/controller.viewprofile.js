@@ -234,6 +234,7 @@
                 /* ---- NEW KEY UPLOAD */
 
                 $scope.pgpPublicKeyUploadForm = {};
+                $scope.privateKeyPasted = false;
 
                 $scope.verifyPublicKeyData = function () {
 
@@ -242,7 +243,7 @@
                         + $scope.pgpPublicKeyUploadForm.asciiArmored
                     );
 
-                    $scope.pgpPublicKeyData = null;
+                    // $scope.pgpPublicKeyData = null;
                     $scope.pgpPublicKeyDataError = null;
                     $scope.privateKeyPasted = false;
 
@@ -276,10 +277,55 @@
                         $scope.pgpPublicKeyDataError = "Key size is " + $scope.pgpPublicKeyData.bitsSize + "but min. 2048 required";
                         return;
                     }
-
                     return true;
-
                 };
+
+                // > first try to load key from browser storage
+                var storageType = 'localStorage'; // or 'sessionStorage'
+                var storageAvailable = function () {
+                    try {
+                        var storage = window[storageType],
+                            x = '__storage_test__';
+                        storage.setItem(x, x);
+                        storage.removeItem(x);
+                        return true;
+                    }
+                    catch (e) {
+                        return e instanceof DOMException && (
+                                // everything except Firefox
+                            e.code === 22 ||
+                            // Firefox
+                            e.code === 1014 ||
+                            // test name field too, because code might not be present
+                            // everything except Firefox
+                            e.name === 'QuotaExceededError' ||
+                            // Firefox
+                            e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+                            // acknowledge QuotaExceededError only if there's something already stored
+                            storage.length !== 0;
+                    }
+                }();
+
+                $log.debug("storageAvailable: " + storageAvailable);
+                // > don't do this, users upload false (old) strings
+                if (storageAvailable) {
+                    // > don't do this, users upload false (old) strings
+                    // $scope.signedString = localStorage.getItem('signedString');
+                    $scope.publicKeyArmoredFromLocalStorage = localStorage.getItem("myPublicKey");
+                    $log.debug("$scope.publicKeyArmoredFromLocalStorage:", $scope.publicKeyArmoredFromLocalStorage);
+                    if ($scope.publicKeyArmoredFromLocalStorage) {
+                        $scope.pgpPublicKeyUploadForm.asciiArmored = $scope.publicKeyArmoredFromLocalStorage;
+                        try {
+                            $scope.pgpPublicKeyData = $rootScope.readPublicKeyData($scope.pgpPublicKeyUploadForm.asciiArmored);
+                            $scope.verifyPublicKeyData();
+                        } catch (error) {
+                            $log.debug(error);
+                            $scope.pgpPublicKeyDataError =
+                                "Public PGP key stored in local browser storage is not a valid OpenPGP public key";
+                        }
+                    }
+
+                }
 
                 $scope.readFileContent = function ($fileContent) {
                     $scope.pgpPublicKeyUploadForm.asciiArmored = $fileContent;
@@ -304,8 +350,9 @@
                                 console.log("pgpPublicKeyUploadReturn: ");
                                 $log.info(pgpPublicKeyUploadReturn);
                                 $scope.keyUploadSuccessMessage = pgpPublicKeyUploadReturn.messageToUser;
-
-                                $timeout($rootScope.progressbar.complete(), 1000);
+                                // reload page >
+                                $scope.viewprofile();
+                                // $timeout($rootScope.progressbar.complete(), 1000); // < in $scope.viewprofile();
                             }, function (error) {
                                 console.log("error: ");
                                 $log.info(error);

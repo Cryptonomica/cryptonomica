@@ -33,7 +33,9 @@ public class UserTools {
     public static void ensureGoogleAuth(final User googleUser) throws UnauthorizedException {
         if (googleUser == null) {
             LOG.warning("User not logged in");
-            throw new UnauthorizedException("Authorization required");
+            throw new UnauthorizedException(
+                    "Authorization required. (You may need to reload/refresh this page and login with your Google account)"
+            );
         }
     } // end of ensureGoogleAuth method
 

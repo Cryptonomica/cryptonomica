@@ -550,6 +550,36 @@ public class PGPPublicKeyAPI {
 
     } // end of revokeKeyByAdmin
 
+    @ApiMethod(
+            name = "verifySignatureWithFingerprint",
+            path = "verifySignatureWithFingerprint",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    @SuppressWarnings("unused")
+    public BooleanWrapperObject verifySignatureWithFingerprint(
+            // final HttpServletRequest httpServletRequest,
+            final User googleUser,
+            final @Named("fingerprint") String fingerprint,
+            final @Named("signedText") String signedText
+    ) throws Exception {
+
+        // ensure registered user
+        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaRegisteredUser(googleUser);
+
+        PGPPublicKeyData pgpPublicKeyData = PGPTools.getPGPPublicKeyDataFromDataBaseByFingerprint(fingerprint);
+        String asciiArmoredPublicKey = pgpPublicKeyData.getAsciiArmored().getValue();
+
+        LOG.warning("asciiArmoredPublicKey:");
+        LOG.warning(asciiArmoredPublicKey);
+
+        BooleanWrapperObject result = new BooleanWrapperObject();
+        result.setResult(
+                PGPTools.verifySignedString(signedText, asciiArmoredPublicKey)
+        );
+        LOG.warning("signature verification result: " + result.getResult());
+
+        return result;
+    }
 
     /* ==================== TEMPORARY: */
 

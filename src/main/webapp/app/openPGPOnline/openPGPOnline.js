@@ -5,6 +5,8 @@
 * API: http://openpgpjs.org/openpgpjs/doc/
 * */
 
+// TODO: replace with angularjs controller functions
+
 $(function () {
 
     "use strict";
@@ -41,6 +43,12 @@ $(function () {
 
     var myPublicKey;
     var myPrivateKey;
+
+    // var userEmail = Cookies.get('userEmail');
+    // console.log("Cookies.get('userEmail') : ", Cookies.get('userEmail'));
+    // if (userEmail) {
+    //     $("#userEmail").val(userEmail);
+    // }
 
     var loadPublicKeyFromLocalStorage = function () {
         if (storageAvailable) {

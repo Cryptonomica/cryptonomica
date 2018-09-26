@@ -80,28 +80,28 @@
                 $scope.alertDanger = message;
                 $log.debug("$scope.alertDanger:", $scope.alertDanger);
                 // $scope.$apply(); not here
-                $scope.goTo("alertDanger");
+                $rootScope.goTo("alertDanger");
             };
 
             $scope.setAlertWarning = function (message) {
                 $scope.alertWarning = message;
                 $log.debug("$scope.alertWarning:", $scope.alertWarning);
                 // $scope.$apply();
-                $scope.goTo("alertWarning");
+                $rootScope.goTo("alertWarning");
             };
 
             $scope.setAlertInfo = function (message) {
                 $scope.alertInfo = message;
                 $log.debug("$scope.alertInfo:", $scope.alertInfo);
                 // $scope.$apply();
-                $scope.goTo("alertInfo");
+                $rootScope.goTo("alertInfo");
             };
 
             $scope.setAlertSuccess = function (message) {
                 $scope.alertSuccess = message;
                 $log.debug("$scope.alertSuccess:", $scope.alertSuccess);
                 // $scope.$apply();
-                $scope.goTo("alertSuccess");
+                $rootScope.goTo("alertSuccess");
             };
 
             $scope.setAlertMessage = function (message, header) {
@@ -110,7 +110,7 @@
                 $scope.alertMessage.message = message;
                 $log.debug("$scope.alertMessage:", $scope.alertMessage);
                 // $scope.$apply();
-                $scope.goTo("alertMessage");
+                $rootScope.goTo("alertMessage");
             };
             /* ---- */
             // example from:
@@ -213,16 +213,24 @@
             }();
             $log.debug("storageAvailable: " + storageAvailable);
 
+            // > don't do this, users upload false (old) strings
             if (storageAvailable) {
-                $scope.signedString = localStorage.getItem('signedString');
+                // > don't do this, users upload false (old) strings
+                // $scope.signedString = localStorage.getItem('signedString');
+                $scope.privateKeyArmored = localStorage.getItem("myPrivateKey");
+                if ($scope.privateKeyArmored) {
+                    $scope.privateKeyInLocalStorage = openpgp.key.readArmored($scope.privateKeyArmored).keys[0];
+                    $scope.privateKeyInLocalStorageFingerprint = $scope.privateKeyInLocalStorage.primaryKey.fingerprint.toUpperCase();
+                    $scope.signButtonEnabled = true;
+                    if ($stateParams.fingerprint && $scope.privateKeyInLocalStorageFingerprint && $stateParams.fingerprint !== $scope.privateKeyInLocalStorageFingerprint) {
+                        $scope.signButtonEnabled = false;
+                    }
+                }
             }
 
             $scope.userProfileGeneralView = null;
             $scope.userKeys = [];
             $scope.fingerprint = null; // used in <select>
-            if (!$rootScope.stringIsNullUndefinedOrEmpty($stateParams.fingerprint)) {
-                $scope.fingerprint = $stateParams.fingerprint;
-            }
             //
             $rootScope.progressbar.start(); // <<<<<<<<<<<
             GAuth.checkAuth()
@@ -277,7 +285,85 @@
                         $log.debug("$scope.userKeys:");
                         $log.debug($scope.userKeys);
 
+                        if ($scope.userKeys.indexOf($scope.privateKeyInLocalStorageFingerprint) > -1) {
+                            $scope.fingerprint = $scope.privateKeyInLocalStorageFingerprint;
+                        }
+
+                        if ($scope.userKeys.indexOf($stateParams.fingerprint) > -1) {
+                            $scope.fingerprint = $stateParams.fingerprint;
+                        }
+
                     } //
+
+                    $scope.sign = function () {
+
+                        if (!$scope.privateKeyInLocalStorage) { // openpgpjs obj
+                            return;
+                        } else {
+                            $log.debug("$scope.privateKeyInLocalStorage");
+                            $log.debug($scope.privateKeyInLocalStorage);
+                        }
+
+                        var passphrase = prompt("Please enter password for private key "
+                            + $scope.privateKeyInLocalStorageFingerprint
+                            + " (check if you use the key you really intended to use)"
+                        );
+                        if ($rootScope.stringIsNullUndefinedOrEmpty(passphrase)) {
+                            $scope.setAlertDanger("Password is empty");
+                            return;
+                        }
+
+                        var privateKeyEncrypted;
+
+                        try {
+                            privateKeyEncrypted = openpgp.key.readArmored($scope.privateKeyArmored).keys[0];
+                            console.log("typeof privateKeyEncrypted: ", typeof privateKeyEncrypted);
+
+                            var privateKeyDecryptionResult = privateKeyEncrypted.decrypt(passphrase); // boolean
+
+                            if (!privateKeyDecryptionResult) {
+                                $scope.setAlertDanger("Can not decrypt private key with fingerprint ", $scope.privateKeyInLocalStorageFingerprint);
+                                return;
+                            }
+
+                        } catch (error) {
+                            $scope.setAlertDanger(error);
+                            console.log(error);
+                            return;
+                        }
+
+                        var privateKeyDecrypted = privateKeyEncrypted;
+                        var messageToSign = "I hereby confirm that the address "
+                            + $scope.ethAccount.toLowerCase()
+                            + " is my Ethereum address";
+                        var signObj = {
+                            data: messageToSign, // cleartext input to be signed
+                            privateKeys: privateKeyDecrypted, // array of keys or single key with decrypted secret key data to sign cleartext
+                            armor: true // (optional) if the return value should be ascii armored or the message object
+                        };
+                        var signedMessageObj = {};
+                        // see: https://openpgpjs.org/openpgpjs/doc/openpgp.js.html#line285
+                        // https://openpgpjs.org/openpgpjs/doc/module-openpgp.html
+                        openpgp.sign(signObj)
+                            .then(function (res) { //
+                                // @return {Promise<String|CleartextMessage>} ASCII armored message or the message of type CleartextMessage
+                                signedMessageObj = res;
+                                console.log(JSON.stringify(signedMessageObj));
+                                console.log(signedMessageObj.data);
+                                $scope.signedString = signedMessageObj.data;
+                                privateKeyDecrypted = null;
+                                passphrase = null;
+                                $scope.$apply();
+                                $rootScope.goTo("signedStringInput");
+                            })
+                            .catch(function (error) {
+                                console.log("sign message error:");
+                                console.log(error);
+                                $scope.setAlertDanger(error);
+                                privateKeyDecrypted = null;
+                                passphrase = null;
+                            });
+                    };
 
                     // ---->>>>
 
@@ -344,8 +430,6 @@
                                 $scope.$apply();
                                 $log.error(error);
                             } else {
-
-                                // TODO: (!!!) change in production
                                 if (result !== "1") { // not MainNet
                                     $scope.setAlertDanger(
                                         "Service works on Ethereum MainNet, but you are connected to another Ethereum Network"
@@ -430,6 +514,9 @@
 
                                                 $scope.requestDataFromSmartContract = function () {
                                                     $rootScope.progressbar.start(); // <<<<<<<
+                                                    $scope.requestDataFromSmartContractIsWorking = true;
+
+                                                    $scope.checkSignatureError = null;
 
                                                     // if ($scope.ethAccount) {
                                                     //     $scope.smartContractData.stringToSign =
@@ -445,7 +532,7 @@
                                                         $scope.requestDataFromSmartContractError = {};
                                                         // $scope.smartContractData = {}; // <<< not here because of $scope.smartContractData.stringToSign
                                                         // (1) mapping(bytes20 => address) public addressAttached
-                                                        $scope.contract.addressAttached.call($scope.fingerprint)
+                                                        $scope.contract.addressAttached.call("0x" + $scope.fingerprint)
                                                             .then(function (ethAddressConnectedToFingerprint) {
                                                                     $scope.smartContractData.ethAddressConnectedToFingerprint = ethAddressConnectedToFingerprint;
                                                                     $scope.$apply();
@@ -504,6 +591,8 @@
                                                                                 $rootScope.dateFromUnixTime(
                                                                                     $scope.smartContractData.signedStringUploadedOnUnixTime
                                                                                 );
+                                                                            $scope.requestDataFromSmartContractIsWorking = false;
+                                                                            $scope.$apply();
                                                                             $timeout($rootScope.progressbar.complete(), 1000); // <<<<<<
                                                                         })
                                                                         .catch(function (error) {
@@ -511,6 +600,7 @@
                                                                             $log.error(error);
                                                                             $scope.requestDataFromSmartContractError.error = true;
                                                                             $scope.requestDataFromSmartContractError.verification = error;
+                                                                            $scope.requestDataFromSmartContractIsWorking = false;
                                                                             $scope.$apply();
                                                                             $timeout($rootScope.progressbar.complete(), 1000); // <<<<<<
                                                                         });
@@ -530,8 +620,13 @@
 
                                                 };
 
-                                                /* ---- UPLOAD SIGNED STRING */
+                                                // if $scope.fingerprint defined, run:
+                                                if ($scope.fingerprint) {
+                                                    $scope.requestDataFromSmartContract();
+                                                }
 
+                                                /* ---- UPLOAD SIGNED STRING */
+                                                $scope.uploadSignedStringButtonDisabled = true;
                                                 $scope.uploadSignedString = function () {
                                                     $rootScope.progressbar.start(); // <<<<<<<
                                                     $log.debug('$scope.uploadSignedString() started;');
@@ -540,9 +635,7 @@
                                                     $log.debug($scope.signedString);
                                                     $scope.uploadSignedStringError = null;
                                                     $scope.uploadSignedStringWorking = true;
-                                                    $log.debug('$scope.uploadSignedString starts');
-                                                    $log.debug('signed string: ');
-                                                    $log.debug($scope.signedString);
+
                                                     if ($rootScope.stringIsNullUndefinedOrEmpty($scope.signedString)) {
                                                         $scope.uploadSignedStringError = 'Signed string not provided';
                                                         $scope.uploadSignedStringWorking = false;
@@ -561,16 +654,12 @@
                                                         return;
                                                     }
                                                     $scope.uploadSignedStringTx = null;
-
-                                                    if (storageAvailable) {
-                                                        localStorage.setItem('signedString', $scope.signedString);
-                                                    }
-
                                                     $scope.contract.priceForVerificationInWei.call()
                                                         .then(function (priceForVerificationInWei) {
+
+                                                                $scope.priceForVerificationInWei = priceForVerificationInWei.toNumber();
                                                                 $log.debug('[ethVerificationCtrl] priceForVerificationInWei:');
                                                                 $log.debug(priceForVerificationInWei);
-                                                                $scope.priceForVerificationInWei = priceForVerificationInWei.toNumber();
                                                                 // https://github.com/ethereum/wiki/wiki/JavaScript-API#parameters-25
                                                                 var txParameters = {};
                                                                 if ($scope.priceForVerificationInWei === null) {
@@ -581,12 +670,17 @@
                                                                     $timeout($rootScope.progressbar.complete(), 1000); // <<<<<<
                                                                     return;
                                                                 }
+
                                                                 txParameters.value = $scope.priceForVerificationInWei;
-                                                                txParameters.value = $scope.gasPrice = 30 * 1000000000;
+                                                                txParameters.gasPrice = $scope.gasPrice = 19 * 1000000000; // < this will be price proposed by MetaMask
                                                                 txParameters.from = $scope.ethAccount;
                                                                 // txParameters.gas = ; //
+
                                                                 $log.debug('$scope.uploadSignedString txParameters: ');
                                                                 $log.debug(txParameters);
+
+                                                                // CryptonomicaVerification.sol :
+                                                                // function uploadSignedString(string _fingerprint, bytes20 _fingerprintBytes20, string _signedString) public payable {
                                                                 $scope.contract.uploadSignedString(
                                                                     $scope.fingerprint,
                                                                     // $stateParams.fingerprint,
@@ -600,7 +694,7 @@
                                                                         $log.debug('[ethVerificationCtrl] uploadSignedString result:');
                                                                         $log.debug(tx);
                                                                         $scope.uploadSignedStringTx = tx;
-                                                                        $scope.requestDataFromSmartContract();// < update data (async)
+                                                                        // $scope.requestDataFromSmartContract();// < update data (async)
                                                                         $scope.uploadSignedStringWorking = false;
                                                                         $scope.$apply();
                                                                         $timeout($rootScope.progressbar.complete(), 1000); // <<<<<<
@@ -630,20 +724,81 @@
                                                     );
                                                 };
 
-                                                /* --------- VERIFY */
+                                                /* --------- CHECK SIGNATURE */
 
+                                                $scope.checkSignature = function () {
+                                                    $rootScope.progressbar.start(); // <<<<<<<
+                                                    $scope.checkSignatureIsWorking = true;
+                                                    $scope.checkSignatureError = null;
+
+                                                    if (!$scope.fingerprint) {
+                                                        $scope.checkSignatureError = "OpenPGP key not selected";
+                                                        $scope.checkSignatureIsWorking = false;
+                                                        $timeout($rootScope.progressbar.complete(), 1000);
+                                                        return;
+                                                    } else if (!$scope.signedString) {
+                                                        $scope.checkSignatureError = "No signed string";
+                                                        $scope.checkSignatureIsWorking = false;
+                                                        $timeout($rootScope.progressbar.complete(), 1000);
+                                                        return;
+                                                    }
+
+                                                    GApi.executeAuth(
+                                                        'pgpPublicKeyAPI',
+                                                        'getPGPPublicKeyByFingerprint',
+                                                        {"fingerprint": $scope.fingerprint}
+                                                    ).then(function (resp) {
+                                                            $log.info("PGPPublicKeyGeneralView: ");
+                                                            $log.info(resp);
+                                                            $scope.pgpPublicKeyGeneralView = resp;
+
+                                                            var options = {};
+                                                            options.message = openpgp.cleartext.readArmored($scope.signedString);
+                                                            options.publicKeys = openpgp.key.readArmored(resp.asciiArmored).keys;
+                                                            return openpgp.verify(options);
+                                                        }
+                                                    ).then(function (verified) {
+                                                        // console.log("verified:");
+                                                        // console.log(verified);
+                                                        console.log("verified.signatures:");
+                                                        console.log(verified.signatures);
+                                                        $scope.signatureValid = verified.signatures[0].valid; // true/false
+                                                        if ($scope.signatureValid) {
+                                                            $scope.checkSignatureResult = "Signature is valid for OpenPGP key"
+                                                                + $scope.pgpPublicKeyGeneralView.fingerprint;
+                                                            $scope.uploadSignedStringButtonDisabled = false;
+                                                        } else {
+                                                            $scope.checkSignatureError = "Signature is NOT valid for OpenPGP key"
+                                                                + $scope.pgpPublicKeyGeneralView.fingerprint;
+                                                            $scope.uploadSignedStringButtonDisabled = true;
+                                                        }
+                                                        $scope.checkSignatureIsWorking = false;
+                                                        // $scope.$apply(); // not needed here
+                                                        $timeout($rootScope.progressbar.complete(), 1000);
+                                                    }).catch(function (error) {
+                                                        $log.error(" $scope.checkSignature error: ");
+                                                        $log.error(error);
+                                                        $scope.checkSignatureError = error.message;
+                                                        $scope.checkSignatureIsWorking = false;
+                                                        // $scope.$apply(); // not needed here
+                                                        $timeout($rootScope.progressbar.complete(), 1000);
+                                                    });
+                                                };
+
+                                                /* --------- VERIFY */
                                                 $scope.verify = function () {
                                                     $rootScope.progressbar.start(); // <<<<<<<
                                                     $scope.verifyWorking = true;
                                                     GApi.executeAuth(
                                                         'ethNodeAPI',
-                                                        'verifyEthAddress', //
+                                                        // 'verifyEthAddress', //
+                                                        'verifyEthAddressInfura',
                                                         {"ethereumAcc": $scope.ethAccount}
                                                     ).then(
                                                         function (resp) {
                                                             $log.info("$scope.verify() resp: ");
                                                             $log.info(resp);
-                                                            $scope.verificationResult = resp;
+                                                            $scope.verificationResult = "EHT address verified, please refresh smart contract data";
                                                             $scope.requestDataFromSmartContract();
                                                             $scope.verifyWorking = false;
                                                             // $scope.$apply(); // not needed here

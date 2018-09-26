@@ -1,17 +1,21 @@
 package net.cryptonomica.testing;
 
+import com.google.gson.Gson;
 import net.cryptonomica.pgp.PGPTools;
-import org.bouncycastle.openpgp.PGPPublicKey;
 
-import javax.xml.bind.DatatypeConverter;
-import java.util.Arrays;
+import java.util.logging.Logger;
 
 /**
  * Created by viktor on 18/07/17
  */
 public class TestPGPTools {
 
-    public static String publicKey = "-----BEGIN PGP PUBLIC KEY BLOCK-----\n" +
+    /* ---- Logger */
+    private static final Logger LOG = Logger.getLogger(TestPGPTools.class.getName());
+    /* --- Gson: */
+    private static final Gson GSON = new Gson();
+
+    public static String publicKey1 = "-----BEGIN PGP PUBLIC KEY BLOCK-----\n" +
             "Version: GnuPG v2\n" +
             "\n" +
             "mQENBFh3xoIBCAC5X05PdGXugxPP30G9YxcEBXes6o5GdboltS+tXcSm4iXPmhKZ\n" +
@@ -79,17 +83,72 @@ public class TestPGPTools {
                     "=TEa2\n" +
                     "-----END PGP SIGNATURE-----";
 
+    private static String signedString4 =
+            "-----BEGIN PGP SIGNED MESSAGE-----\n" +
+                    "Hash: SHA256\n" +
+                    "\n" +
+                    "I hereby confirm that the address 0x5f5028d68b210de560264b6a2cc1b08c42288845 is my Ethereum address\n" +
+                    "-----BEGIN PGP SIGNATURE-----\n" +
+                    "Version: OpenPGP.js v2.6.2\n" +
+                    "Comment: https://openpgpjs.org\n" +
+                    "\n" +
+                    "wsBcBAEBCAAQBQJbqo6QCRAuBmKPWSkYtgAAqqQIAKSj97VsbYYk7WSFnshz\n" +
+                    "0CpMPVxS+bp/UQrI2ZR0E89R+vhFk3EsxhOAIW5NdnXetC4S25+Xq7xVfA4S\n" +
+                    "Wsi9PPHn0sOWl10BB+LTTTKiM46Srg/n0jw7fNhRSvvCfd0E6xy6ZRkEiHHM\n" +
+                    "b2Lw7BJG/tMCcdrELN7tX90/yaP6GHi+TWeyPYjmqvosC38MQPmjuoIk4Gml\n" +
+                    "9WMg561+DBc8Jvgn3crmBmVbcpvgFVgRA8qVMo+UmDgAJZuqNvh4+z++Kdfs\n" +
+                    "iJHdvZsTXK9OmXA68p11SHZ3swG31d4pp7etRLGCyeeWc+yKTfMvC93d9dd9\n" +
+                    "W7NaeQTGuxmbMU67Sc+k15k=\n" +
+                    "=KLCk\n" +
+                    "-----END PGP SIGNATURE-----\n";
+    private static String asciiArmoredPublicKey4 =
+            "-----BEGIN PGP PUBLIC KEY BLOCK-----\n" +
+                    "Version: OpenPGP.js v2.6.2\n" +
+                    "Comment: https://openpgpjs.org\n" +
+                    "\n" +
+                    "xsBNBFuqbrUBCAC+sYnPeIDexk3R9TO+MAO0dYpUiIv8VfGCT5CMlBd1p9Y+\n" +
+                    "UtE53RRvr6DYT5SqtGL9QERg7ARA0jpsWB1bfJn9Y0eUXbZYBnEB+bBe/1FD\n" +
+                    "p4BHJcnU3CBtwqz2v5ZA7EuFTLIAaLKaHCme1boxXbxOZm0GsJtoel20+Dw8\n" +
+                    "UKuJnp8ETFCTx1Nh0mT7k+FOq+aWQW4BujroEQgHUDDYBM1vNz/jLP/3k8jC\n" +
+                    "OoNYyI0ggF9//06jIFCC+pVhnKo0EqtgtR6cPnLTvmN7EhzFWWNoX0hFmK7p\n" +
+                    "xvbcBGAOtdkBw/nEr2P1bCyqgSPsXioBmxCfGwKZKGQefmUvPfZDhzGlABEB\n" +
+                    "AAHNN1Zpa3RvciBBZ2V5ZXYgPGFnZXlldkBpbnRlcm5hdGlvbmFsLWFyYml0\n" +
+                    "cmF0aW9uLm9yZy51az7CwHsEEAEIAC8FAluqbrUFCQHhM4AGCwkHCAMCCRAu\n" +
+                    "BmKPWSkYtgQVCAoCAxYCAQIZAQIbAwIeAQAAso0H/jLaG/gwtOOYLnZAPisG\n" +
+                    "5b53ABSt5m8gOmUNpIYygY66HRe3hp3Jp7IbkVy6YgSm+4X/gLJemTYrL4my\n" +
+                    "Ma9DuWvTlXv4VGEdJvVom9/zwqwZXpu2p9TgYr4c3bZ8v3AnWBEP0kVkKDVt\n" +
+                    "Vd/zJtVruKZv5bOaUG1ZMLzLJ9Zru/qjTmKaEXeXlZFdeyMs/jaT31wERX7H\n" +
+                    "nJYXl7SS+xaI6rQH9O5YpSBW85/xP0mMf/tCc9BSgaM/HhevDbfrJWUtxH6Y\n" +
+                    "Ci0YY67jC9Zf/TTRikAdNu/fiyQwQiB3ZNSLtAzHwEXn9kbv+HmBoedXpr0N\n" +
+                    "2PNJkRNuqxCDvF7wA9bof6fOwE0EW6putQEIANoZCcmDTv+SVWWiGBqp1UDf\n" +
+                    "SLuYKj/2ER5z98Z28AunLHnfJMn5UUsaMSjem0rqmQq6ozTT1Iwd2jG+KPcm\n" +
+                    "UgkftzoVj+YFGvczI71/Khm4d5Wam9OsGm3Z+3bHMSwn2dHx0l99nfkS/r/W\n" +
+                    "EJAJ3nZZvQIODoERSfb7ytOI+Qd5h9Gs+lU0I0jBD65TOYN+myx0LZDRToBS\n" +
+                    "fAz8bXK67aF14UZhL3GtMyo08EzOz8DuuI3ilkUbe28gL0OA8A8XtnkUQVVR\n" +
+                    "kqJECXr93twzaqBDZGupM02GkDwucbwae13hxXoCeZiGAT2c96LweLD3a4A5\n" +
+                    "L8VSe+PInjoTZG8R0tUAEQEAAcLAZQQYAQgAGQUCW6putQUJAeEzgAkQLgZi\n" +
+                    "j1kpGLYCGwwAABs2CACSOny6IV5SU14Csl9Xw7eztRPzBEMKQ1j7gh5aX7NC\n" +
+                    "V3YlYspkuRPWOUH876M3Kjk78ycRK3BdOVETXNBE7AnnJWRhE8VochcC2RKV\n" +
+                    "uta60TaXENCjTHExa7A6ZCjWYSbIesRNyfg90N1amKOjG6N9HOf/4+3IpFY1\n" +
+                    "swWpyxKKPVoDdFQbFizDkCVpEBlixE7k0AxrefkADK5tSVkIWhHQY7TAjlRn\n" +
+                    "PVexgnsS6xCRTv2WpsgbHY+XbyOiMUxENEXrMoLmesPHSB9LU1+yhj7h5Ey2\n" +
+                    "6eCkrIBlCNpSClk2zbUl6lPigS/NNebMUhhtrWAUuIYaRWJHOHC6c316Ea5/\n" +
+                    "\n" +
+                    "=12Z7\n" +
+                    "-----END PGP PUBLIC KEY BLOCK-----\n";
+
+
     public static void main(String[] args) {
         // // see: https://stackoverflow.com/questions/9660967/bouncy-castle-no-such-provider-exception
         // Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
-        try {
-            Boolean result1 = PGPTools.verifySignedString(signedString1, publicKey);
-            System.out.println("result: " + result1);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Boolean result1 = PGPTools.verifySignedString(signedString1, publicKey);
+//            System.out.println("result: " + result1);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
 //        try {
 //            Boolean result2 = PGPTools.verifySignedString(signedString2, publicKey);
@@ -98,41 +157,70 @@ public class TestPGPTools {
 //            e.printStackTrace();
 //        }
 
+//        try {
+//            PGPPublicKey pgpPublicKey = PGPTools.readPublicKeyFromString(publicKey);
+//
+//            byte[] fingerprintByteArray = pgpPublicKey.getFingerprint();
+//            String fingerprintStr = DatatypeConverter.printHexBinary(fingerprintByteArray);
+//            byte[] fingerprintByteArrayParsedFromStr = DatatypeConverter.parseHexBinary(fingerprintStr);
+//
+//            System.out.println("fingerprintStr: " + fingerprintStr);
+//
+//            System.out.println("fingerprintByteArray.length:" + fingerprintByteArray.length);
+//            System.out.println("fingerprintByteArrayParsedFromStr.length:" + fingerprintByteArrayParsedFromStr.length);
+//
+//            System.out.println(
+//                    "fingerprintByteArray.equals(DatatypeConverter.parseHexBinary(fingerprintStr)): " +
+//                            fingerprintByteArray.equals(DatatypeConverter.parseHexBinary(fingerprintStr))
+//                    // false
+//                    // "Cause they're not equal, ie: they're different arrays with equal elements inside"
+//                    // see: https://stackoverflow.com/a/9499610/1697878
+//            );
+//
+//            System.out.println(
+//                    // see: https://stackoverflow.com/a/9499597/1697878
+//                    "Arrays.equals(fingerprintByteArray, fingerprintByteArrayParsedFromStr): " +
+//                            Arrays.equals(fingerprintByteArray, fingerprintByteArrayParsedFromStr)
+//            );
+//
+//            System.out.println("fingerprintByteArray.toString(): " + fingerprintByteArray.toString());
+//
+//            System.out.println(
+//                    // see: https://stackoverflow.com/questions/9655181/how-to-convert-a-byte-array-to-a-hex-string-in-java#comment12709256_9855338
+//                    "DatatypeConverter.printHexBinary(fingerprintByteArray): " + DatatypeConverter.printHexBinary(fingerprintByteArray)
+//            );
+//
+//
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
         try {
-            PGPPublicKey pgpPublicKey = PGPTools.readPublicKeyFromString(publicKey);
+//            PGPPublicKey pgpPublicKey = PGPTools.readPublicKeyFromString(asciiArmoredPublicKey4);
+//
+//            byte[] fingerprintByteArray = pgpPublicKey.getFingerprint();
+//            String fingerprintStr = DatatypeConverter.printHexBinary(fingerprintByteArray);
+//
+//            System.out.println("fingerprintStr: " + fingerprintStr);
+//
+//            byte[] fingerprintByteArrayParsedFromStr = DatatypeConverter.parseHexBinary(fingerprintStr);
+//            System.out.println("fingerprintByteArray.length:" + fingerprintByteArray.length);
+//            System.out.println("fingerprintByteArrayParsedFromStr.length:" + fingerprintByteArrayParsedFromStr.length);
+//
+//            System.out.println(
+//                    // see: https://stackoverflow.com/a/9499597/1697878
+//                    "Arrays.equals(fingerprintByteArray, fingerprintByteArrayParsedFromStr): " +
+//                            Arrays.equals(fingerprintByteArray, fingerprintByteArrayParsedFromStr)
+//            );
 
-            byte[] fingerprintByteArray = pgpPublicKey.getFingerprint();
-            String fingerprintStr = DatatypeConverter.printHexBinary(fingerprintByteArray);
-            byte[] fingerprintByteArrayParsedFromStr = DatatypeConverter.parseHexBinary(fingerprintStr);
+             Boolean result1 = PGPTools.verifySignedString(signedString4, asciiArmoredPublicKey4);
+             System.out.println("signature verification result: " + result1);
 
-            System.out.println("fingerprintStr: " + fingerprintStr);
-
-            System.out.println("fingerprintByteArray.length:" + fingerprintByteArray.length);
-            System.out.println("fingerprintByteArrayParsedFromStr.length:" + fingerprintByteArrayParsedFromStr.length);
-
-            System.out.println(
-                    "fingerprintByteArray.equals(DatatypeConverter.parseHexBinary(fingerprintStr)): " +
-                            fingerprintByteArray.equals(DatatypeConverter.parseHexBinary(fingerprintStr))
-                    // false
-                    // "Cause they're not equal, ie: they're different arrays with equal elements inside"
-                    // see: https://stackoverflow.com/a/9499610/1697878
-            );
-
-            System.out.println(
-                    // see: https://stackoverflow.com/a/9499597/1697878
-                    "Arrays.equals(fingerprintByteArray, fingerprintByteArrayParsedFromStr): " +
-                            Arrays.equals(fingerprintByteArray, fingerprintByteArrayParsedFromStr)
-            );
-
-            System.out.println("fingerprintByteArray.toString(): " + fingerprintByteArray.toString());
-
-            System.out.println(
-                    // see: https://stackoverflow.com/questions/9655181/how-to-convert-a-byte-array-to-a-hex-string-in-java#comment12709256_9855338
-                    "DatatypeConverter.printHexBinary(fingerprintByteArray): " + DatatypeConverter.printHexBinary(fingerprintByteArray)
-            );
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
+
 }

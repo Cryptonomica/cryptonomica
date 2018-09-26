@@ -219,6 +219,7 @@
                     }
                 };
 
+                /* (!!!) > to make verification in key field 'paid' should be 'true'*/
                 var verifyKey = function () {
                     $rootScope.progressbar.start(); // <<<<<<
                     $scope.VerifyPGPPublicKeyForm.fingerprint = $stateParams.fingerprint;

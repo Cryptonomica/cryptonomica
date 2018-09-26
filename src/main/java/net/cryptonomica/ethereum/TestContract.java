@@ -1,4 +1,4 @@
-package net.cryptonomica.testing;
+package net.cryptonomica.ethereum;
 
 import org.web3j.abi.EventEncoder;
 import org.web3j.abi.TypeReference;

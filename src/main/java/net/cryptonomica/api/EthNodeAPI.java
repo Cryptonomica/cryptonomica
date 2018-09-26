@@ -3,35 +3,37 @@ package net.cryptonomica.api;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.Named;
+import com.google.api.server.spi.response.NotFoundException;
 import com.google.api.server.spi.response.UnauthorizedException;
-import com.google.appengine.api.taskqueue.Queue;
-import com.google.appengine.api.taskqueue.QueueFactory;
-import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.appengine.api.urlfetch.HTTPResponse;
 import com.google.appengine.api.users.User;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.googlecode.objectify.Key;
 import net.cryptonomica.constants.Constants;
 import net.cryptonomica.entities.AppSettings;
 import net.cryptonomica.entities.CryptonomicaUser;
 import net.cryptonomica.entities.PGPPublicKeyData;
 import net.cryptonomica.entities.VerificationRequestDataFromSC;
-import net.cryptonomica.forms.EthAddDocForm;
-import net.cryptonomica.forms.GetDocBySha256Form;
+import net.cryptonomica.ethereum.CryptonomicaVerification;
+import net.cryptonomica.ethereum.Web3jFactory;
+import net.cryptonomica.ethereum.Web3jServices;
 import net.cryptonomica.pgp.PGPTools;
 import net.cryptonomica.returns.BooleanWrapperObject;
 import net.cryptonomica.returns.StringWrapperObject;
 import net.cryptonomica.returns.VerificationStruct;
 import net.cryptonomica.service.HttpService;
 import net.cryptonomica.service.UserTools;
-import org.apache.commons.text.WordUtils;
+import org.bouncycastle.openpgp.PGPException;
 import org.bouncycastle.openpgp.PGPPublicKey;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 
-import java.io.Serializable;
+import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import static net.cryptonomica.service.OfyService.ofy;
@@ -60,200 +62,6 @@ public class EthNodeAPI {
 
     private static final Logger LOG = Logger.getLogger(EthNodeAPI.class.getName());
     private static final Gson GSON = new Gson();
-
-    @ApiMethod(
-            name = "addDoc",
-            path = "addDoc",
-            httpMethod = ApiMethod.HttpMethod.POST
-    )
-    @SuppressWarnings("unused")
-    // stores provided document on the Ethereum blockchain
-    public Object ethAddDoc(
-//            final HttpServletRequest httpServletRequest,
-            final User googleUser,
-            final EthAddDocForm ethAddDocForm //
-    ) throws IllegalArgumentException, UnauthorizedException {
-
-        // ensure registered user ( - may be later only for verified users):
-        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaRegisteredUser(googleUser);
-
-        // check form:
-        LOG.warning("ethAddDocForm" + ethAddDocForm + " from " + cryptonomicaUser.getEmail().getEmail());
-        if (ethAddDocForm == null
-                || ethAddDocForm.getDocText() == null
-                || ethAddDocForm.getDocText().length() < 12
-                || ethAddDocForm.getDocText().equals("")
-                ) {
-            throw new IllegalArgumentException("Provided text is to short or empty");
-        }
-
-        if (ethAddDocForm.getDocText() != null && ethAddDocForm.getDocText().length() > 1700) {
-            throw new IllegalArgumentException("Provided text is to long");
-        }
-
-        /* ---- Send request to Ethereum node: */
-        // make request obj:
-        EthNodeAPI.AddDocRequestObj addDocRequestObj = new EthNodeAPI.AddDocRequestObj();
-
-        String ethnodeApiKey = ofy()
-                .load()
-                .key(Key.create(AppSettings.class, "EthnodeApiKey"))
-                .now().getValue();
-
-        addDocRequestObj.setApikey(ethnodeApiKey);
-        addDocRequestObj.setPublisher(cryptonomicaUser.getEmail().getEmail());
-        addDocRequestObj.setText(ethAddDocForm.getDocText());
-
-        String urlAddress = "https://ethnode.cryptonomica.net/api/proofofexistence-add";
-        HTTPResponse httpResponse = HttpService.postWithPayload(
-                urlAddress,
-                addDocRequestObj.publisher,
-                addDocRequestObj.text,
-                ethnodeApiKey
-        );
-
-        LOG.warning("httpResponse: " + new Gson().toJson(httpResponse));
-        // httpResponse: {"responseCode":200,"headers":[{"name":"Content-Type","value":"application/json"},
-        // {"name":"Date","value":"Mon, 11 Jul 2016 00:55:47 GMT"},{"name":"Connection","value":"keep-alive"},
-        // {"name":"Content-Length","value":"3448"}],"combinedHeadersMap":{"Content-Type":"application/json","Date":
-        // "Mon, 11 Jul 2016 00:55:47 GMT","Connection":"keep-alive","Content-Length":"3448"},
-        // "content":[123,34,116,120,72,97,115,104,34,58,34,48,120,99
-        // --- valid JSON with headers, and 'content' encoded
-
-        byte[] httpResponseContentBytes = httpResponse.getContent();
-        String httpResponseContentString = new String(httpResponseContentBytes, StandardCharsets.UTF_8);
-
-        // Test:
-        Object resObj = new Gson().fromJson(httpResponseContentString, Object.class);
-
-        LOG.warning("resObj: " + new Gson().toJson(resObj));
-        // resObj: {"txHash":"0xc1897ca491e7dec1537be5935734d863f0c17e3e154f22fa06a7e4d66384b6e2","tx":{"blockHash":"
-        // -- valid JSON !!!
-
-        // if success send an email to user:
-        final Queue queue = QueueFactory.getDefaultQueue();
-        Gson prettyGson = new GsonBuilder().setPrettyPrinting().create();
-        queue.add(
-                TaskOptions.Builder
-                        .withUrl(
-                                "/_ah/SendGridServlet")
-                        .param("email",
-                                googleUser.getEmail()
-                        )
-                        .param("messageSubject",
-                                "You have stored document on blockchain")
-                        .param("messageText",
-                                "Hello! \n\n"
-                                        + WordUtils.capitalize(cryptonomicaUser.getFirstName()) + " "
-                                        + WordUtils.capitalize(cryptonomicaUser.getLastName()) + ",\n\n"
-                                        + "You sent a document to the blockchain!" + "\n\n"
-                                        + "Document text: " + "\n"
-                                        + ethAddDocForm.getDocText() + "\n\n"
-                                        + "with the following result: " + "\n"
-                                        + httpResponseContentString + "\n\n"
-                                        + "Best regards, \n\n"
-                                        + "Cryptonomica team\n\n"
-                                        + "if you think it's wrong or it is an error, please write to admin@cryptonomica.net \n"
-                        )
-        );
-        //
-        return resObj;
-    } //
-
-    /* ---- AddDocRequestObj Class: */
-
-    @ApiMethod(
-            name = "getDocBySha256",
-            path = "getDocBySha256",
-            httpMethod = ApiMethod.HttpMethod.POST
-    )
-    @SuppressWarnings("unused")
-    // get doc by sha256
-    public Object ethGetDocBySha256(
-//            final HttpServletRequest httpServletRequest,
-            final User googleUser,
-            final GetDocBySha256Form getDocBySha256Form
-    ) throws IllegalArgumentException, UnauthorizedException {
-
-        // ensure registered user ( - may be later only for verificated):
-        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaRegisteredUser(googleUser);
-
-        // check form:
-        LOG.warning("getDocBySha256Form" + getDocBySha256Form);
-        if (getDocBySha256Form == null
-                || getDocBySha256Form.getSha256() == null
-                || getDocBySha256Form.getSha256().length() < 64
-                || getDocBySha256Form.getSha256().equals("")
-                ) {
-            throw new IllegalArgumentException("Provided text is to short or empty");
-        }
-
-        if (getDocBySha256Form.getSha256() != null && getDocBySha256Form.getSha256().length() > 64) {
-            throw new IllegalArgumentException("Provided hash is to long");
-        }
-
-        /* ---- Send request to Ethereum node: */
-
-        String ethnodeApiKey = ofy()
-                .load()
-                .key(Key.create(AppSettings.class, "EthnodeApiKey"))
-                .now().getValue();
-
-        String urlAddress = "https://ethnode.cryptonomica.net/api/proofofexistence-get";
-
-        HTTPResponse httpResponse = HttpService.getDocBySha256(
-                urlAddress,
-                "0x" + getDocBySha256Form.getSha256(),
-                ethnodeApiKey
-        );
-
-        LOG.warning("httpResponse: " + new Gson().toJson(httpResponse));
-
-        byte[] httpResponseContentBytes = httpResponse.getContent();
-        String httpResponseContentString = new String(httpResponseContentBytes, StandardCharsets.UTF_8);
-
-        // Test:
-        Object resObj = new Gson().fromJson(httpResponseContentString, Object.class);
-        LOG.warning("resObj: " + new Gson().toJson(resObj));
-
-        return resObj;
-    } //
-
-    private class AddDocRequestObj implements Serializable {
-
-        private String apikey;
-        private String publisher; // email
-        private String text; // text to store
-
-        AddDocRequestObj() {
-        }
-
-        public String getApikey() {
-            return apikey;
-        }
-
-        void setApikey(String apikey) {
-            this.apikey = apikey;
-        }
-
-        public String getPublisher() {
-            return publisher;
-        }
-
-        void setPublisher(String publisher) {
-            this.publisher = publisher;
-        }
-
-        public String getText() {
-            return text;
-        }
-
-        public void setText(String text) {
-            this.text = text;
-        }
-    } // end AddDocRequestObj
-
-
 
     /*------------------------------------------------------------------------*/
     /* ---------------- for https://tomcatweb3j.cryptonomica.net -------------*/
@@ -606,6 +414,193 @@ public class EthNodeAPI {
         LOG.warning(GSON.toJson(result));
 
         return result;
+    }
+
+    /*------------------------------------------------------------------------*/
+    /* ---------------- for INFURA  ----------=============================---*/
+    /*------------------------------------------------------------------------*/
+
+    @ApiMethod(
+            name = "verifyEthAddressInfura",
+            path = "verifyEthAddressInfura",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    @SuppressWarnings("unused")
+    public TransactionReceipt verifyEthAddressInfura(
+            // final HttpServletRequest httpServletRequest,
+            final User googleUser,
+            final @Named("ethereumAcc") String ethereumAcc
+    ) throws Exception {
+
+        // ensure registered user
+        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaRegisteredUser(googleUser);
+
+        /* --- check form --- */
+        LOG.warning("ethereumAcc : " + ethereumAcc);
+        if (ethereumAcc.isEmpty()) {
+            throw new IllegalArgumentException("Provided ETH account address is empty");
+        } else if (ethereumAcc.length() > 42) {
+            throw new IllegalArgumentException("ETH address length should be 42 characters");
+        } else if (ethereumAcc.indexOf("0x") != 0) {
+            throw new IllegalArgumentException("ETH address should begin with '0x' ");
+        }
+
+        Web3j web3j = Web3jFactory.getWeb3jObject("mainnet");
+        CryptonomicaVerification cryptonomicaVerification = Web3jFactory.getCryptonomicaVerificationContract();
+
+        String signedString = cryptonomicaVerification.signedString(ethereumAcc).send();
+        LOG.warning("signedString from smart contract:");
+        LOG.warning(signedString);
+
+        if (signedString == null || signedString.isEmpty()) {
+            throw new IllegalArgumentException("No signed string uploaded from address " + ethereumAcc);
+        }
+
+        if (!signedString.toLowerCase().contains("I hereby confirm that the address".toLowerCase())
+                || !signedString.toLowerCase().contains(ethereumAcc.toLowerCase())
+                || !signedString.toLowerCase().contains("is my Ethereum address".toLowerCase())
+                ) {
+            throw new IllegalArgumentException("Uploaded string does not contain required text");
+        }
+
+        String unverifiedFingerprint = cryptonomicaVerification.unverifiedFingerprint(ethereumAcc).send();
+        LOG.warning("unverifiedFingerprint from smart conract:");
+        LOG.warning(unverifiedFingerprint);
+
+        if (unverifiedFingerprint == null || unverifiedFingerprint.isEmpty()) {
+            throw new IllegalArgumentException("No fingerprint for "
+                    + ethereumAcc
+                    + " found in smart contract. Can not proceed with verification");
+        }
+
+        /* --- get PGPPublicKeyData from DB */
+
+        PGPPublicKeyData pgpPublicKeyData =
+                PGPTools.getPGPPublicKeyDataFromDataBaseByFingerprint(unverifiedFingerprint);
+
+        /*  --- check if OpenPGP key registered and verified on Cryptonomica */
+        if (pgpPublicKeyData == null) {
+            throw new NotFoundException("OpenPGP key "
+                    + unverifiedFingerprint
+                    + " not registered on Cryptonomica. Can not process with ETH address verification for "
+                    + ethereumAcc);
+        }
+
+        Boolean keyVerifiedOffline = pgpPublicKeyData.getVerifiedOffline();
+        if (keyVerifiedOffline == null) {
+            keyVerifiedOffline = Boolean.FALSE;
+        }
+        Boolean keyVerifiedOnline = pgpPublicKeyData.getVerifiedOnline();
+        if (keyVerifiedOnline == null) {
+            keyVerifiedOnline = Boolean.FALSE;
+        }
+        if (!keyVerifiedOffline && !keyVerifiedOnline) {
+            throw new IllegalArgumentException("Owner of the OpenPGP key "
+                    + pgpPublicKeyData.getFingerprint()
+                    + " not verified. Can not process with ETH address verification for "
+                    + ethereumAcc
+            );
+        }
+
+        String asciiArmoredPublicKey = pgpPublicKeyData.getAsciiArmored().getValue();
+        LOG.warning("asciiArmoredPublicKey:");
+        LOG.warning(asciiArmoredPublicKey);
+
+        try {
+            PGPTools.verifySignedString(signedString, asciiArmoredPublicKey);
+        } catch (PGPException e) {
+
+            throw new PGPException(
+                    "Signature verification of following text:  "
+                            + signedString
+                            + "   with key "
+                            + unverifiedFingerprint
+                            + " was failed. "
+                            + e.getMessage()
+            );
+        }
+
+        /* --- if signature verified (i.e. exception above not thrown), place data to smart contract */
+
+        String txHash = null;
+        TransactionReceipt txReceipt = null; // < result
+        try {
+/* Solidity:
+function addVerificationData(
+    address _acc, //
+    string _fingerprint, // "57A5FEE5A34D563B4B85ADF3CE369FD9E77173E5"
+    bytes20 _fingerprintBytes20, // "0x57A5FEE5A34D563B4B85ADF3CE369FD9E77173E5"
+    uint _keyCertificateValidUntil, //
+    string _firstName, //
+    string _lastName, //
+    uint _birthDate, //
+    string _nationality) public {
+*/
+            txHash = cryptonomicaVerification.addVerificationData(
+                    ethereumAcc,
+                    unverifiedFingerprint,
+                    Web3jServices.bytes20FromHexString(unverifiedFingerprint).getValue(),
+                    BigInteger.valueOf(pgpPublicKeyData.getExp().getTime() / 1000),
+                    pgpPublicKeyData.getFirstName(),
+                    pgpPublicKeyData.getLastName(),
+                    BigInteger.valueOf(pgpPublicKeyData.getUserBirthday().getTime() / 1000),
+                    pgpPublicKeyData.getNationality()
+            ).send().getTransactionHash();
+
+            LOG.warning("tx send, tx hash: " + txHash);
+
+            // https://docs.web3j.io/trouble.html#i-m-submitting-a-transaction-but-it-s-not-being-mined
+            // you loop through the following expecting to eventually get a receipt once the transaction is mined
+            Optional<TransactionReceipt> optionalTxReceipt = web3j.ethGetTransactionReceipt(txHash).send().getTransactionReceipt();
+            while (!optionalTxReceipt.isPresent()) {
+                optionalTxReceipt = web3j.ethGetTransactionReceipt(txHash).send().getTransactionReceipt();
+            }
+            txReceipt = optionalTxReceipt.get();
+        } catch (Exception e) {
+            LOG.severe(e.getMessage());
+            throw new IOException("Please check contract manually, transaction may be failed");
+        }
+
+        return txReceipt;
+        /*
+{
+ "transactionReceipt": {
+  "transactionHash": "0x95c8758d5cd47cee0b52728d922b4504445bcb0336bb547fc3008dc6f2d36ef6",
+  "transactionIndex": 0,
+  "blockHash": "0xa4f13410cf440605013d3786bf1f7e94b0211337894bb07ec4d1eb39fba1b4cc",
+  "blockNumber": 8844339,
+  "cumulativeGasUsed": 28634,
+  "gasUsed": 28634,
+  "status": "0x1",
+  "logs": [
+   {
+    "removed": false,
+    "logIndex": 0,
+    "transactionIndex": 0,
+    "transactionHash": "0x95c8758d5cd47cee0b52728d922b4504445bcb0336bb547fc3008dc6f2d36ef6",
+    "blockHash": "0xa4f13410cf440605013d3786bf1f7e94b0211337894bb07ec4d1eb39fba1b4cc",
+    "blockNumber": 8844339,
+    "address": "0xcb7c802cac6b547e4ac8115f0834e1db467d1abb",
+    "data": "0x0000000000000000000000000000000000000000000000000000000000000013000000000000000000000000000000000000000000000000000000000000000b",
+    "type": "mined",
+    "topics": [
+     "0xcf19d10be998a11a4f3dffa95dd7fd6f55bf303a251f296c3f2e3278302c90b4",
+     "0x00000000000000000000000007bad6bda22a830f58fda19eba45552c44168600"
+    ],
+    "transactionIndexRaw": "0x0",
+    "blockNumberRaw": "0x86f433",
+    "logIndexRaw": "0x0"
+   }
+  ],
+  "logsBloom": "0x00000000002000000000000000000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000002000000000000000000000000000000000000000000000000000000800001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000004000000000000080000000000000000000000000000000000000000000000",
+  "statusOK": true,
+  "transactionIndexRaw": "0x0",
+  "blockNumberRaw": "0x86f433",
+  "cumulativeGasUsedRaw": "0x6fda",
+  "gasUsedRaw": "0x6fda"
+ }
+        */
+
     }
 
 }
