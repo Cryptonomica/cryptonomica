@@ -141,6 +141,14 @@ public class OnlineVerification implements Serializable { // -- can be returned 
 
     /* ----- Getters and Setters:   */
 
+    // --- custom :
+
+    public void setUserEmail(Email userEmail) {
+        this.userEmail = new Email(userEmail.getEmail().toLowerCase());
+    }
+
+    // --- generated:
+
     public String getId() {
         return Id;
     }
@@ -159,10 +167,6 @@ public class OnlineVerification implements Serializable { // -- can be returned 
 
     public Email getUserEmail() {
         return userEmail;
-    }
-
-    public void setUserEmail(Email userEmail) {
-        this.userEmail = userEmail;
     }
 
     public String getLastName() {

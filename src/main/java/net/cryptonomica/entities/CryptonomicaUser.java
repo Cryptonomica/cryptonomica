@@ -138,6 +138,10 @@ public class CryptonomicaUser {
         this.imageUploadKey = null;
     }
 
+    public void setEmail(Email email) {
+        this.email = new Email(email.getEmail().toLowerCase());
+    }
+
     // general:
 
     public String getUserId() {
@@ -190,10 +194,6 @@ public class CryptonomicaUser {
 
     public Email getEmail() {
         return email;
-    }
-
-    public void setEmail(Email email) {
-        this.email = email;
     }
 
     public Text getUserInfo() {
