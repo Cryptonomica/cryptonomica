@@ -798,7 +798,8 @@
                                                         function (resp) {
                                                             $log.info("$scope.verify() resp: ");
                                                             $log.info(resp);
-                                                            $scope.verificationResult = "EHT address verified, please refresh smart contract data";
+                                                            $scope.verificationResult =
+                                                                "EHT address verified, please refresh smart contract data";
                                                             $scope.requestDataFromSmartContract();
                                                             $scope.verifyWorking = false;
                                                             // $scope.$apply(); // not needed here

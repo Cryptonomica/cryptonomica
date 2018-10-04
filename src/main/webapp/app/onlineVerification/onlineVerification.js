@@ -334,11 +334,10 @@
                                 $timeout($rootScope.progressbar.complete(), 1000);
                                 // $scope.$apply(); // not here
 
-                            } else if (nullUndefinedEmptySting($scope.onlineVerification.paymentMade)
+                            } else if (nullUndefinedEmptySting($scope.onlineVerification.paymentMade) // < payment not made
                                 || !$scope.onlineVerification.paymentMade) {
 
                                 $scope.stripePaymentForOnlineKeyVerification = true;
-                                $scope.getPriceForKeyVerification();
 
                             } else if (nullUndefinedEmptySting($scope.onlineVerification.paymentVerified)
                                 || !$scope.onlineVerification.paymentVerified) {
@@ -468,7 +467,7 @@
                     }
                 )
             };
-            $scope.getPriceForKeyVerification();
+            $scope.getPriceForKeyVerification(); // << run
 
             $scope.getVideoUploadKey = function () {
                 GApi.executeAuth('onlineVerificationAPI', 'getVideoUploadKey')
