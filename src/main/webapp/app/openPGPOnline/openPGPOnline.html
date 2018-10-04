@@ -1,4 +1,4 @@
-<div id="contextWrap">
+<div id="contextWrap" xmlns="http://www.w3.org/1999/html">
     <!-- left sidebar-->
     <left-sidebar></left-sidebar>
     <!--right sidebar-->
@@ -37,12 +37,36 @@
                                 <div class="ui form">
 
                                     <h3>Password for private key:</h3>
-                                    <!--<textarea id="passphrase"-->
-                                    <!--rows="1"-->
-                                    <!--cols="71"-->
-                                    <!--placeholder="this is a very secret password">-->
-                                    <!--</textarea>-->
-                                    <input id="passphrase" type="text" autocomplete="new-password">
+                                    <script>
+                                        // https://www.w3schools.com/howto/howto_js_toggle_password.asp
+                                        function toggleShowPassword() {
+                                            var passphrase = document.getElementById("passphrase");
+                                            var showPasswordIcon = document.getElementById("showPasswordIcon");
+                                            if (passphrase.type === "password") {
+                                                passphrase.type = "text";
+                                                showPasswordIcon.className = "eye icon";
+                                                showPasswordIcon.title = "click to hide password";
+                                            } else {
+                                                passphrase.type = "password";
+                                                showPasswordIcon.className = "eye slash icon";
+                                                showPasswordIcon.title = "click to show password";
+                                            }
+                                        }
+                                    </script>
+
+                                    <div class="ui fluid labeled input">
+
+                                        <div class="ui label" onclick="toggleShowPassword()">
+                                            <i id="showPasswordIcon" class="eye slash icon"
+                                               title="click to show password"></i>
+                                        </div>
+
+                                        <input id="passphrase" type="password" autocomplete="new-password">
+                                        <!--<input id="passphrase" type="text" autocomplete="new-password">-->
+
+                                    </div>
+
+
                                     <div>
                                         <strong>
                                             save the password in a safe place:
@@ -51,21 +75,29 @@
                                     </div>
 
                                     <h3>First name:</h3>
-                                    <input type="text" id="firstName" placeholder="John" autocomplete='given-name'>
+                                    <div class="ui fluid input">
+                                        <input type="text" id="firstName" placeholder="John" autocomplete='given-name'>
+                                    </div>
 
                                     <h3>Last name:</h3>
-                                    <input type="text" id="lastName" placeholder="Doe" autocomplete='family-name'>
+                                    <div class="ui fluid input">
+                                        <input type="text" id="lastName" placeholder="Doe" autocomplete='family-name'>
+                                    </div>
 
                                     <h3>User email:</h3>
                                     <input type="email" id="userEmail" placeholder="john.doe@gmail.com"
                                            autocomplete='email'>
 
                                     <h3>Valid for (years):</h3>
-                                    <input id="expire_in" type="number" min="1" max="10" placeholder="1" value="1">
+                                    <div class="ui fluid input">
+                                        <input id="expire_in" type="number" min="1" max="10" placeholder="1" value="1">
+                                    </div>
 
                                     <h3>Key size (strength) in bits:</h3>
-                                    <input id="numBits" input type="number" min="1024" max="4096" step="1024"
-                                           placeholder="2048" value="2048">
+                                    <div class="ui fluid input">
+                                        <input id="numBits" input type="number" min="1024" max="4096" step="1024"
+                                               placeholder="2048" value="2048">
+                                    </div>
 
                                     <!-- Key options END -->
                                     <div class="line"></div>

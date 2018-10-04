@@ -76,7 +76,6 @@ public class PGPTools {
 
     // > for BC 1.60:
     private static PGPPublicKey readPublicKey(InputStream iKeyStream) throws IOException {
-//        PGPPublicKeyRing newKey = new PGPPublicKeyRing(new ArmoredInputStream(iKeyStream));
         PGPPublicKeyRing newKey = new PGPPublicKeyRing(new ArmoredInputStream(iKeyStream), new JcaKeyFingerprintCalculator());
         return newKey.getPublicKey();
     }
@@ -206,7 +205,6 @@ public class PGPTools {
         return pgpPublicKeyData;
     } // end of getPGPPublicKeyDataFromDataBaseByFingerprint()
 
-    // ---------------------------- NEW (2017-05-29):
     public static Boolean verifySignedString(
             String signedString,
             String pgpPublicKeyAsciiArmored // pgpPublicKeyData.getAsciiArmored().getValue()
@@ -232,7 +230,6 @@ public class PGPTools {
 
         Matcher regexMatcher = regex.matcher(plainText);
 
-        // if input test is a signed plaintext
         if (regexMatcher.find()) {
 
             String signedDataStr = regexMatcher.group(1);
@@ -274,34 +271,28 @@ public class PGPTools {
         PGPSignatureList pgpSignatureList = null;
         Object o;
 
-        // get adn check: pgpObjectFactory.nextObject()
         try {
             o = pgpObjectFactory.nextObject();
             if (o == null)
                 throw new Exception("pgpObjectFactory.nextObject() returned null");
         } catch (Exception ex) {
-            throw new Exception("Invalid input data"); //
+            throw new Exception("Invalid input data");
         }
 
         if (o instanceof PGPCompressedData) {
-
             LOG.warning("(o instanceof PGPCompressedData):true");
-
             PGPCompressedData pgpCompressedData = (PGPCompressedData) o;
             pgpObjectFactory = new PGPObjectFactory(
                     pgpCompressedData.getDataStream(),
-                    new JcaKeyFingerprintCalculator() // <<<< TODO: check if this is correct
+                    new JcaKeyFingerprintCalculator()
             );
             pgpSignatureList = (PGPSignatureList) pgpObjectFactory.nextObject();
-
         } else {
-
             LOG.warning("(o instanceof PGPCompressedData):false");
             pgpSignatureList = (PGPSignatureList) o;
         }
 
         LOG.warning("pgpSignatureList.size(): " + pgpSignatureList.size());
-
 
         // A PGP signatureObject
         // https://www.borelly.net/cb/docs/javaBC-1.4.8/pg/index.html?org/bouncycastle/openpgp/PGPSignature.html
@@ -333,7 +324,10 @@ public class PGPTools {
 
         int ch;
         while ((ch = signedDataIn.read()) >= 0) {
-            signatureObject.update((byte) ch);
+            // 13  CR  (carriage return)
+            if (ch != 13) { // >> (!!!) added 2018.09.27
+                signatureObject.update((byte) ch);
+            }
         }
 
         try {
@@ -354,8 +348,6 @@ public class PGPTools {
             try {
                 pgpExceptionMessage = "Key to verify: "
                         + Long.toHexString(signatureObject.getKeyID())
-//                        + ", key to verify "
-//                        + Long.toHexString(pgpPublicKey.getKeyID())
                         + ", signature made on " + signatureObject.getCreationTime();
             } catch (Exception e) {
                 throw new PGPException("Signature is invalid");
@@ -364,7 +356,6 @@ public class PGPTools {
         }
 
         return Boolean.TRUE;
-
 
     } // end of verifyFile()
 

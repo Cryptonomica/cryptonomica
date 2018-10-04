@@ -50,6 +50,22 @@ $(function () {
     //     $("#userEmail").val(userEmail);
     // }
 
+    // https://www.w3schools.com/howto/howto_js_toggle_password.asp
+    // var toggleShowPassword = function toggleShowPassword () {
+    //     var passphrase = document.getElementById("passphrase");
+    //     var showPasswordIcon = document.getElementById("showPasswordIcon");
+    //
+    //     if (passphrase.type === "password") {
+    //         passphrase.type = "text";
+    //         showPasswordIcon.style = "eye icon";
+    //         showPasswordIcon.title = "click to show password";
+    //     } else {
+    //         passphrase.type = "password";
+    //         showPasswordIcon.style = "eye slash icon";
+    //         showPasswordIcon.title = "click to show password";
+    //     }
+    // };
+
     var loadPublicKeyFromLocalStorage = function () {
         if (storageAvailable) {
             myPublicKey = localStorage.getItem('myPublicKey');

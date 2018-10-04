@@ -340,7 +340,7 @@ public class StripePaymentsAPI {
 
         /* --- Check promo code and calculate price  */
         LOG.warning("stripePaymentForm.getPromoCode() : " + stripePaymentForm.getPromoCode());
-        final String promoCode = stripePaymentForm.getPromoCode(); // <<< can be null
+        final String promoCode = stripePaymentForm.getPromoCode(); // <<< can be null (!)
         PromoCode promoCodeEntity = null;
         if (promoCode != null && !promoCode.isEmpty()) { // isEmpty() from String
             onlineVerification.setPromoCode(promoCode);
@@ -435,14 +435,16 @@ public class StripePaymentsAPI {
         if (charge.getStatus().equalsIgnoreCase("succeeded")) {
             stripePaymentReturn.setResult(true);
             stripePaymentReturn.setMessageToUser("Payment succeeded");
+
+            /* --- invalidate promo code */
+            if (promoCode != null) {
+                invalidatePromoCode(promoCode, googleUser, fingerprint);
+            }
+
         } else {
             stripePaymentReturn.setResult(false);
             stripePaymentReturn.setMessageToUser("Payment not succeeded");
         }
-
-        /* --- invalidate promo code */
-
-        invalidatePromoCode(promoCode, googleUser, fingerprint);
 
         /* --- create and store payment information*/
 

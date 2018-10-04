@@ -181,16 +181,18 @@ public class PGPPublicKeyData {
         String userEmailDirty = null;
         try {
             userEmailDirty = userIdList.get(userIdList.size() - 1);
+            userEmailDirty = userEmailDirty.toLowerCase();
         } catch (Exception e) {
             LOG.warning("userEmailDirty = userIdList.get(userIdList.size() - 1); Exception: ");
             LOG.warning(e.getMessage());
         }
 
         try {
-            this.userEmail = new Email(userEmailDirty
-                    .substring(
-                            1, userEmailDirty.length() - 2
-                    )
+            this.userEmail = new Email(
+                    userEmailDirty // << should be lowercase already
+                            .substring(
+                                    1, userEmailDirty.length() - 2
+                            )
             );
         } catch (Exception e) {
             LOG.warning("this.userEmail = new Email(userEmailDirty ... Exception: ");
@@ -309,7 +311,7 @@ public class PGPPublicKeyData {
     }
 
     public void setUserEmail(Email userEmail) {
-        this.userEmail = userEmail;
+        this.userEmail = new Email(userEmail.getEmail().toLowerCase());
     }
 
     public Date getCreated() {
