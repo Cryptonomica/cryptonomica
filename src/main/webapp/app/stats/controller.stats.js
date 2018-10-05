@@ -48,6 +48,7 @@
                 delay: 10,
                 time: 1000
             };
+
             $scope.getStatsAllTime = function () {
                 // $rootScope.progressbar.start(); // <<<<<<<<<<<
                 GApi.execute('statisticsAPI', 'getStatsAllTime')
@@ -68,6 +69,9 @@
                             keysVerifiedOnlineAnimation.start();
                             keysVerifiedOfflineAnimation.start();
 
+                            // >>> build map:
+                            $scope.getOnlineVerificationsByCountry();
+
                             // $timeout($rootScope.progressbar.complete(), 1000);
                         }, function (error) {
                             console.log("$scope.getStatsAllTime error: ");
@@ -79,6 +83,20 @@
                     );
             };
 
+
+            var countCountries = function (mapData) {
+                var counter = 0;
+                for (var key in mapData) {
+                    if (mapData.hasOwnProperty(key)) {
+                        if (mapData[key] > 0) {
+                            // $log.debug(key, " : ", mapData[key]);
+                            counter++;
+                        }
+                    }
+                }
+                return counter;
+            };
+
             $scope.getOnlineVerificationsByCountry = function () {
                 // $rootScope.progressbar.start(); // <<<<<<<<<<<
                 $scope.mapData = null;
@@ -86,17 +104,17 @@
                     .then(
                         function (result) {
 
-                            $log.debug(" $scope.getOnlineVerificationsByCountry result: ");
-                            $log.debug(result);
-                            $scope.mapData = result; //
+                            // $log.debug(" $scope.getOnlineVerificationsByCountry result: ");
+                            // $log.debug(result);
 
+                            $scope.mapData = result; //
+                            //
                             var mapOptionsObject = {
                                 map: 'world_en',
                                 backgroundColor: '#fff',
                                 color: '#ffffff',
                                 hoverColor: '#60c8fa',
                                 hoverOpacity: 0.7,
-                                // selectedColor: '#666666',
                                 selectedColor: '#60c8fa',
                                 // enableZoom: false,
                                 enableZoom: true,
@@ -134,7 +152,12 @@
                             };
 
                             $('#vmap').vectorMap(mapOptionsObject);
+
+                            $scope.countriesCounter = countCountries($scope.mapData);
+                            var countriesCounterAnimation = new CountUp("countriesCounter", 0, $scope.countriesCounter);
+                            countriesCounterAnimation.start();
                             // $timeout($rootScope.progressbar.complete(), 1000);
+
                         }, function (error) {
                             console.log("$scope.getOnlineVerificationsByCountry error: ");
                             console.log(error);
@@ -147,7 +170,6 @@
 
             // run functions:
             $scope.getStatsAllTime();
-            $scope.getOnlineVerificationsByCountry();
 
         } // end function statsCtl
 

@@ -1,10 +1,16 @@
 <html>
 
+<style>
+    .counter {
+        font-weight: bold
+    }
+</style>
+
 <div class="ui four column grid" ng-click="getStatsAllTime()" title="Click to refresh">
 
     <div class="column">
         <center>
-            <h3>Users registered</h3>
+            <div>Users registered</div>
         </center>
         <div class="ui segment">
             <center>
@@ -15,7 +21,7 @@
 
     <div class="column">
         <center>
-            <h3>Keys uploaded</h3>
+            <div>Keys uploaded</div>
         </center>
 
         <div class="ui segment">
@@ -27,7 +33,7 @@
 
     <div class="column">
         <center>
-            <h3>Keys verified online</h3>
+            <div>Keys verified online</div>
         </center>
         <div class="ui segment">
             <center>
@@ -38,7 +44,7 @@
 
     <div class="column">
         <center>
-            <h3>Keys verified offline</h3>
+            <div>Keys verified offline</div>
         </center>
         <div class="ui segment">
             <center>
@@ -52,8 +58,14 @@
 <center>
     <br>
     <!--<h2 ng-click="getOnlineVerificationsByCountry()" title="click to refresh">Keys Verified Online by Country</h2>-->
-    <h2>Keys Verified Online by Country</h2>
+    <h2 ng-click="getStatsAllTime()" title="Click to refresh">Keys Verified Online by Country</h2>
+
     <div id="vmap" style="width: 800px; height: 400px;"></div>
+
+    <div ng-click="getStatsAllTime()" title="Click to refresh">
+        Total countries:
+        <span id="countriesCounter" class="counter"> {{countriesCounter}}</span>
+    </div>
 </center>
 
 </html>
