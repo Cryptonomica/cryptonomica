@@ -203,6 +203,8 @@ public class NewUserRegistrationAPI {
                                         + "1) go to 'My profile', 2) click on key ID and go to page with key data , "
                                         + "3) click green button 'Verify online' and follow instructions provided by web application"
                                         + "\n\n"
+                                        + "Should you have any questions, please, do not hesitate to contact us"
+                                        + " via support@cryptonomica.net or telegram https://t.me/cryptonomicanet \n\n"
                                         + "Best regards, \n\n"
                                         + "Cryptonomica team\n\n"
                                         + new Date().toString()
