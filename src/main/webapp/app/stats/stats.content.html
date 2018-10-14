@@ -6,66 +6,71 @@
     }
 </style>
 
-<div class="ui four column grid" ng-click="getStatsAllTime()" title="Click to refresh">
+<!--<div class="ui four column grid" ng-click="getStatsAllTime()" title="Click to refresh">-->
+<div class="ui cards" ng-click="getStatsAllTime()" title="Click to refresh">
+    <!--<div class="ui four cards" ng-click="getStatsAllTime()" title="Click to refresh">-->
 
-    <div class="column">
-        <center>
-            <div>Users registered</div>
-        </center>
-        <div class="ui segment">
+    <div class="ui centered card">
+        <div class="content">
             <center>
-                <span id="usersRegistered" class="counter">{{statsAllTime.usersRegistered}}</span>
+                <div class="header">Users registered:</div>
+                <div class="description">
+                    <span id="usersRegistered" class="counter">{{statsAllTime.usersRegistered}}</span>
+                </div>
             </center>
         </div>
     </div>
 
-    <div class="column">
-        <center>
-            <div>Keys uploaded</div>
-        </center>
-
-        <div class="ui segment">
+    <div class="ui centered card">
+        <div class="content">
             <center>
-                <span id="keysUploaded" class="counter">{{statsAllTime.keysUploaded}}</span>
+                <div class="header">Keys uploaded:</div>
+                <div class="description">
+                    <span id="keysUploaded" class="counter">{{statsAllTime.keysUploaded}}</span>
+                </div>
             </center>
         </div>
     </div>
 
-    <div class="column">
-        <center>
-            <div>Keys verified online</div>
-        </center>
-        <div class="ui segment">
+    <div class="ui centered card">
+        <div class="content">
             <center>
-                <span id="keysVerifiedOnline" class="counter"> {{statsAllTime.keysVerifiedOnline}}</span>
+                <div class="header">Keys verified offline:</div>
+                <div class="description">
+                    <span id="keysVerifiedOffline" class="counter">{{statsAllTime.keysVerifiedOffline}}</span>
+                </div>
             </center>
         </div>
     </div>
 
-    <div class="column">
-        <center>
-            <div>Keys verified offline</div>
-        </center>
-        <div class="ui segment">
+    <div class="ui centered card">
+        <div class="content">
             <center>
-                <span id="keysVerifiedOffline" class="counter">{{statsAllTime.keysVerifiedOffline}}</span>
+                <div class="header">Keys verified online:</div>
+                <div class="description">
+                    <span id="keysVerifiedOnline" class="counter"> {{statsAllTime.keysVerifiedOnline}}</span>
+                </div>
             </center>
         </div>
     </div>
 
 </div>
 
-<center>
-    <br>
-    <!--<h2 ng-click="getOnlineVerificationsByCountry()" title="click to refresh">Keys Verified Online by Country</h2>-->
-    <h2 ng-click="getStatsAllTime()" title="Click to refresh">Keys Verified Online by Country</h2>
+<div id="mapContainer" class="ui segment">
+    <!--<div id="mapContainer" class="ui centered card">-->
+    <center>
+        <!--<br>-->
+        <!--<h2 ng-click="getOnlineVerificationsByCountry()" title="click to refresh">Keys Verified Online by Country</h2>-->
+        <h3 ng-click="getStatsAllTime()" title="Click to refresh">Keys Verified Online by Country</h3>
 
-    <div id="vmap" style="width: 800px; height: 400px;"></div>
+        <!--<div id="vmap"></div>-->
+        <div id="vmap" style="width: 800px; height: 400px;"></div>
 
-    <div ng-click="getStatsAllTime()" title="Click to refresh">
-        Total countries:
-        <span id="countriesCounter" class="counter"> {{countriesCounter}}</span>
-    </div>
-</center>
+        <div ng-click="getStatsAllTime()" title="Click to refresh">
+            Total countries:
+            <span id="countriesCounter" class="counter"> {{countriesCounter}}</span>
+        </div>
+    </center>
+</div>
 
 </html>
