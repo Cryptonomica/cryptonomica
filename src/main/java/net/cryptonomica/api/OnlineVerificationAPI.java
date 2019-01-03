@@ -17,14 +17,15 @@ import com.twilio.sdk.TwilioRestException;
 import com.twilio.sdk.resource.instance.Message;
 import net.cryptonomica.constants.Constants;
 import net.cryptonomica.entities.*;
-import net.cryptonomica.returns.BooleanWrapperObject;
-import net.cryptonomica.returns.OnlineVerificationView;
-import net.cryptonomica.returns.StringWrapperObject;
+import net.cryptonomica.returns.*;
 import net.cryptonomica.service.TwilioUtils;
 import net.cryptonomica.service.UserTools;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -113,7 +114,7 @@ public class OnlineVerificationAPI {
                 || (requester.getCryptonomicaOfficer() != null && requester.getCryptonomicaOfficer())
                 // || (requester.getNotary() != null && requester.getNotary()) // TODO: should all notaries have access?
                 || (onlineVerification.getAllowedUsers().contains(requester.getUserId()))
-                ) {
+        ) {
             LOG.warning(
                     "user " + requester.getUserId() + "is allowed to get online verification data for key " + fingerprint
             );
@@ -459,7 +460,7 @@ public class OnlineVerificationAPI {
 
     } // end of acceptTerms();
 
-    // /* --- Approve online verification (for Cryptonomica Complience Officer)  */
+    /* --- Approve online verification (for Cryptonomica Compliance Officer)  */
     @ApiMethod(
             name = "approve",
             path = "approve",
@@ -494,7 +495,7 @@ public class OnlineVerificationAPI {
         OnlineVerification onlineVerification = ofy()
                 .load().key(Key.create(OnlineVerification.class, fingerprint)).now();
         if (onlineVerification == null) {
-            throw new NotFoundException("OnlineVeriication entity for fingerprint "
+            throw new NotFoundException("OnlineVerification entity for fingerprint "
                     + fingerprint
                     + " does not exist in data base"
             );
@@ -596,5 +597,139 @@ public class OnlineVerificationAPI {
 
     } // end of approve ;
 
+    @ApiMethod(
+            name = "getWaitingForVerification",
+            path = "getWaitingForVerification",
+            httpMethod = ApiMethod.HttpMethod.GET
+    )
+    @SuppressWarnings("unused")
+    public OnlineVerificationsList getWaitingForVerification(final User googleUser) throws UnauthorizedException {
+
+        /* >>>>> (!!!!!!) Check authorization: */
+        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        OnlineVerificationsList result = new OnlineVerificationsList();
+
+/*
+To avoid having to scan the entire index table, the query mechanism relies on
+all of a query's potential results being adjacent to one another in the index.
+To satisfy this constraint, a single query may not use inequality comparisons
+(LESS_THAN, LESS_THAN_OR_EQUAL, GREATER_THAN, GREATER_THAN_OR_EQUAL, NOT_EQUAL)
+on more than one property across all of its filters
+[Source : https://cloud.google.com/appengine/docs/standard/java/datastore/query-restrictions ]
+https://stackoverflow.com/questions/21001371/why-gae-datastore-not-support-multiple-inequality-filter-on-different-properties
+*/
+        List<OnlineVerification> onlineVerifications = ofy().load().type(OnlineVerification.class)
+                .filter("onlineVerificationFinished", true)
+                // .filter("onlineVerificationDataVerified", false) // < can be null
+                .filter("onlineVerificationDataVerified !=", true)
+                .list();
+
+        result.setOnlineVerifications(
+                new ArrayList<>(onlineVerifications)
+        );
+
+        result.setCounter(onlineVerifications.size());
+
+        return result;
+
+    } // end of:  public StatsView getStatsByDate(
+
+
+    @ApiMethod(
+            name = "removeVideoWithMessage",
+            path = "removeVideoWithMessage",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    @SuppressWarnings("unused")
+    public BooleanWrapperObject removeVideoWithMessage(
+            final User googleUser,
+            final @Named("messageToUser") String messageToUser,
+            final @Named("fingerprint") String fingerprint
+            // see: https://cloud.google.com/appengine/docs/java/endpoints/exceptions
+    ) throws UnauthorizedException, BadRequestException, NotFoundException, NumberParseException,
+            IllegalArgumentException {
+
+        /* --- Check authorization : CRYPTONOMICA OFFICER ONLY !!! */
+        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        /* --- Check input: */
+        if (fingerprint == null || fingerprint.equals("") || fingerprint.length() != 40) {
+            throw new IllegalArgumentException("fingerprint is missing or invalid");
+        }
+
+        // Check if OnlineVerification entity exists:
+        OnlineVerification onlineVerification = ofy()
+                .load().key(Key.create(OnlineVerification.class, fingerprint)).now();
+        if (onlineVerification == null) {
+            throw new NotFoundException("OnlineVeriication entity for fingerprint "
+                    + fingerprint
+                    + " does not exist in data base"
+            );
+        } else if (onlineVerification.getOnlineVerificationDataVerified() != null
+                && onlineVerification.getOnlineVerificationDataVerified()) {
+            throw new BadRequestException("OnlineVerification already approved");
+        } else if (onlineVerification.getVerificationVideoId() == null) {
+            // >> temporary removed:
+            // throw new BadRequestException("No video stored for this verification, nothing to remove");
+        }
+
+        onlineVerification.setOnlineVerificationFinished(Boolean.FALSE);
+        onlineVerification.setVerificationVideoId(null);
+
+        // save data to data store:
+        ofy()
+                .save()
+                .entity(onlineVerification)
+                .now();
+
+        // Send email to user:
+        final Queue queue = QueueFactory.getDefaultQueue();
+        queue.add(
+                TaskOptions.Builder
+                        .withUrl(
+                                "/_ah/SendGridServlet")
+                        .param("email",
+                                onlineVerification.getUserEmail().getEmail()
+                        )
+                        .param("emailCC",
+                                "verification@cryptonomica.net"
+                        )
+                        .param("messageSubject",
+                                "[cryptonomica]" + onlineVerification.getKeyID() + " your video cannot be accepted "
+
+                        )
+                        .param("messageText",
+                                "Dear "
+                                        + onlineVerification.getFirstName().toUpperCase() + " ,\n\n"
+                                        + "Video you uploaded for verification of public key certificate with fingerprint : \n"
+                                        + fingerprint + "\n"
+                                        + "cannot be accepted\n\n"
+                                        + "Reason: \n"
+                                        + messageToUser
+                                        + "\n\n"
+                                        // + "https://cryptonomica.net/#/onlineVerificationView/" + fingerprint + "\n"
+                                        + "Please go to \n"
+                                        + "https://cryptonomica.net/#!/onlineVerificationView/" + fingerprint + "\n"
+                                        + "and upload new video.\n\n"
+                                        + "Should you have any questions, please, do not hesitate to contact us"
+                                        + " via support@cryptonomica.net or telegram https://t.me/cryptonomicanet \n\n"
+                                        + "Best regards, \n\n"
+                                        + "Cryptonomica team\n\n"
+                                        + new Date().toString()
+                                        + "\n\n"
+                                        + "if you think it's wrong or it is an error, "
+                                        + "please write to support@cryptonomica.net\n\n"
+                        )
+        );
+
+        // create result object:
+        BooleanWrapperObject result = new BooleanWrapperObject(true,
+                "video removed"
+        );
+
+        return result;
+
+    } // end of removeVideoWithMessage ;
 
 }

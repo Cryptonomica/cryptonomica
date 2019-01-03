@@ -25,6 +25,11 @@ https://cloud.google.com/appengine/docs/standard/java/config/indexconfig
     <!-- OnlineVerification -->
 
     <datastore-index kind="OnlineVerification" ancestor="false" source="manual">
+        <property name="onlineVerificationFinished" direction="asc"/>
+        <property name="onlineVerificationDataVerified" direction="asc"/>
+    </datastore-index>
+
+    <datastore-index kind="OnlineVerification" ancestor="false" source="manual">
         <property name="entityCreated" direction="asc"/>
         <property name="termsAccepted" direction="asc"/>
     </datastore-index>

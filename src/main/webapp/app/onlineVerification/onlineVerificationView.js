@@ -243,23 +243,44 @@
                 $scope.getPGPPublicKeyByFingerprint(); // >>> this is also 'next step'
             }
 
-            /* ---- Approve OnlineVerification (for Cryptonomica complience officer) : */
+            /* ---- for Cryptonomica compliance officer : */
+            $scope.messageToUser = null;
+            $scope.removeVideoWithMessage = function () {
+                $log.debug('$scope.removeVideoWithMessage started');
+                $rootScope.progressbar.start(); // <<<<<<<<<<<
+
+                GApi.executeAuth('onlineVerificationAPI',
+                    'removeVideoWithMessage', {
+                        "fingerprint": $stateParams.fingerprint,
+                        "messageToUser": $scope.messageToUser,
+                    })
+                    .then(function (response) { // BooleanWrapperObject.java
+                        $log.debug(response);
+                        $scope.approveResponse = response.message;
+                        $timeout($rootScope.progressbar.complete(), 1000);
+                    })
+                    .catch(function (error) {
+                        $log.debug(error);
+                        $scope.approveResponseError = error;
+                        $timeout($rootScope.progressbar.complete(), 1000);
+                    });
+            }; // end of $scope.removeVideoWithMessage() ;
+
+
             $scope.onlineVerificationApproved = null;
             $scope.approve = function () {
-                $log.debug('$$scope.approve strarted');
+                $log.debug('$scope.approve started');
                 $rootScope.progressbar.start(); // <<<<<<<<<<<
                 $scope.approveSuccess = null;
                 $scope.approveError = null;
                 $scope.approveResponse = null;
                 /// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
                 GApi.executeAuth('onlineVerificationAPI',
-                    'approve',
-                    {
+                    'approve', {
                         "fingerprint": $stateParams.fingerprint,
                         "verificationNotes": $scope.verificationNotes,
                         "onlineVerificationApproved": $scope.onlineVerificationApproved
-                    }
-                )
+                    })
                     .then(
                         function (approveResponse) { // BooleanWrapperObject.java
                             $log.debug(approveResponse);
