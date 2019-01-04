@@ -244,6 +244,7 @@
             }
 
             /* ---- for Cryptonomica compliance officer : */
+
             $scope.messageToUser = null;
             $scope.removeVideoWithMessage = function () {
                 $log.debug('$scope.removeVideoWithMessage started');
@@ -265,6 +266,31 @@
                         $timeout($rootScope.progressbar.complete(), 1000);
                     });
             }; // end of $scope.removeVideoWithMessage() ;
+
+            $scope.newFirstName = null;
+            $scope.newLastName = null;
+            $scope.changeName = function () {
+                $log.debug('$scope.changeName started');
+                $rootScope.progressbar.start(); // <<<<<<<<<<<
+
+                GApi.executeAuth('onlineVerificationAPI',
+                    'changeName', {
+                        "fingerprint": $stateParams.fingerprint,
+                        "userID": $scope.onlineVerification.userID,
+                        "firstName": $scope.newFirstName,
+                        "lastName":  $scope.newLastName
+                    })
+                    .then(function (response) { // BooleanWrapperObject.java
+                        $log.debug(response);
+                        $scope.approveResponse = response.message; // <<< TODO: change mame
+                        $timeout($rootScope.progressbar.complete(), 1000);
+                    })
+                    .catch(function (error) {
+                        $log.debug(error);
+                        $scope.approveResponseError = error;
+                        $timeout($rootScope.progressbar.complete(), 1000);
+                    });
+            }; // end of $scope.changeName() ;
 
 
             $scope.onlineVerificationApproved = null;

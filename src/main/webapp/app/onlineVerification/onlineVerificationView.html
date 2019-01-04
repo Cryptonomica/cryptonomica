@@ -57,11 +57,13 @@
                                 <table class="ui celled table">
                                     <tbody>
                                     <tr>
-                                        <td>Key fingerprint:</td>
+                                        <td>Key</td>
                                         <td class="capitalize">
                                             <a ui-sref="key({fingerprint: onlineVerification.fingerprint})">
                                                 {{onlineVerification.fingerprint}}
                                             </a>
+                                            <br>
+                                            {{onlineVerification.userIdFromKey}}
                                         </td>
                                     </tr>
                                     <tr>
@@ -163,8 +165,15 @@
                                             </video>
                                         </a>
                                     </div>
-                                </div>
 
+                                    <div id="dataForVideo" ng-show="currentUser.cryptonomicaOfficer">
+                                        {{onlineVerification.firstName}}&nbsp;
+                                        {{onlineVerification.lastName}}&nbsp;&nbsp;&nbsp;
+                                        {{onlineVerification.userEmail}}&nbsp;
+                                        {{onlineVerification.keyID}}&nbsp;
+                                    </div>
+
+                                </div>
                                 <hr>
 
                                 <!-- for Compliance Officer: START  -->
@@ -210,6 +219,27 @@
                                         <fieldset>
 
                                             <div class="field">
+                                                <h2>Change user name </h2>
+
+                                                <label for="newFirstName">New first name: </label>
+                                                <input id="newFirstName" type="text" class="form-control"
+                                                       ng-model="newFirstName">
+                                                <br>
+
+                                                <label for="newLastName">New last name: </label>
+                                                <input id="newLastName" type="text" class="form-control"
+                                                       ng-model="newLastName">
+                                                <br>
+
+                                                <button ng-click="changeName"
+                                                        class="ui button" type="submit">
+                                                    Change Name
+                                                </button>
+
+                                            </div>
+                                            <hr>
+
+                                            <div class="field">
                                                 <h2>Remove video</h2>
                                                 <label for="messageToUser">Message to user: </label>
 
@@ -222,13 +252,11 @@
                                                     Remove video and send message to user
                                                 </button>
                                             </div>
-
-
                                             <hr>
-                                            <hr>
+
                                             <div class="field">
 
-                                                <h2>Approve</h2>
+                                                <h2 style="background-color: lightgreen">Approve</h2>
 
                                                 <div class="ui checkbox">
                                                     <input type="checkbox" ng-model="onlineVerificationApproved">

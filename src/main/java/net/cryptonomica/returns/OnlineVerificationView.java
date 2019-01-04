@@ -43,13 +43,16 @@ public class OnlineVerificationView implements Serializable {
     private Date birthday; //............................................21
     private String nationality; // ......................................22
     private String promoCodeUsed; //.....................................23
+    private String userIdFromKey; //.....................................24
 
     /* --- Constructors: */
     public OnlineVerificationView() {
     }
 
     public OnlineVerificationView(OnlineVerification onlineVerification,
-                                  ArrayList<VerificationDocument> verificationDocumentArrayList) {
+                                  ArrayList<VerificationDocument> verificationDocumentArrayList,
+                                  String userIdFromKey
+    ) {
         this.fingerprint = onlineVerification.getId(); //
         this.pgpPublicKeyDataUrlSafeKey = onlineVerification.getPgpPublicKeyDataUrlSafeKey();
         if (onlineVerification.getUserEmail() != null) {
@@ -81,6 +84,7 @@ public class OnlineVerificationView implements Serializable {
             }
         this.nationality = onlineVerification.getNationality();
         this.promoCodeUsed = onlineVerification.getPromoCodeUsed();
+        this.userIdFromKey = userIdFromKey;
     } // end of constructor;
 
     /* toString() */
@@ -273,6 +277,14 @@ public class OnlineVerificationView implements Serializable {
 
     public void setPromoCodeUsed(String promoCodeUsed) {
         this.promoCodeUsed = promoCodeUsed;
+    }
+
+    public String getUserIdFromKey() {
+        return userIdFromKey;
+    }
+
+    public void setUserIdFromKey(String userIdFromKey) {
+        this.userIdFromKey = userIdFromKey;
     }
 
 }

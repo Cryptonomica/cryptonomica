@@ -17,6 +17,7 @@ import com.twilio.sdk.TwilioRestException;
 import com.twilio.sdk.resource.instance.Message;
 import net.cryptonomica.constants.Constants;
 import net.cryptonomica.entities.*;
+import net.cryptonomica.pgp.PGPTools;
 import net.cryptonomica.returns.*;
 import net.cryptonomica.service.TwilioUtils;
 import net.cryptonomica.service.UserTools;
@@ -55,6 +56,25 @@ public class OnlineVerificationAPI {
     /* --- Gson */
     private static final Gson GSON = new Gson();
 
+    private static OnlineVerification loadOnlineVerification(String fingerprint) throws NotFoundException {
+
+        OnlineVerification onlineVerification = ofy()
+                .load()
+                .key(
+                        Key.create(OnlineVerification.class, fingerprint)
+                )
+                .now();
+
+        if (onlineVerification == null) {
+            throw new NotFoundException("OnlineVeriication entity for fingerprint "
+                    + fingerprint
+                    + " does not exist in data base"
+            );
+        }
+
+        return onlineVerification;
+    }
+
     /* --- Get online verification info by OpenPGP Public Key fingerprint  : */
     @ApiMethod(
             name = "getOnlineVerificationByFingerprint",
@@ -67,23 +87,14 @@ public class OnlineVerificationAPI {
             final User googleUser,
             final @Named("fingerprint") String fingerprint
             // see: https://cloud.google.com/appengine/docs/java/endpoints/exceptions
-    ) throws UnauthorizedException, BadRequestException, NotFoundException {
+    ) throws Exception {
 
         /* --- Check input: */
         if (fingerprint == null || fingerprint.equals("") || fingerprint.length() != 40) {
             throw new BadRequestException("fingerprint is missing or invalid");
         }
 
-        PGPPublicKeyData pgpPublicKeyData = ofy()
-                .load()
-                .type(PGPPublicKeyData.class)
-                .filter("fingerprintStr", fingerprint)
-                .first()
-                .now();
-
-        if (pgpPublicKeyData == null) {
-            throw new NotFoundException("Key with fingerprint " + fingerprint + " not found");
-        }
+        PGPPublicKeyData pgpPublicKeyData = PGPTools.getPGPPublicKeyDataFromDataBaseByFingerprint(fingerprint);
 
         /* --- Check authorization: */
         // only allowed users can get verification data:
@@ -149,7 +160,8 @@ public class OnlineVerificationAPI {
 
         OnlineVerificationView onlineVerificationView = new OnlineVerificationView(
                 onlineVerification,
-                verificationDocumentArrayList
+                verificationDocumentArrayList,
+                pgpPublicKeyData.getUserID()
         );
         LOG.warning("onlineVerificationView:");
         LOG.warning(onlineVerificationView.toString());
@@ -635,6 +647,83 @@ https://stackoverflow.com/questions/21001371/why-gae-datastore-not-support-multi
 
     } // end of:  public StatsView getStatsByDate(
 
+
+    /* allows admin to change user name */
+    @ApiMethod(
+            name = "changeName",
+            path = "changeName",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    @SuppressWarnings("unused")
+    public BooleanWrapperObject changeName(
+            final User googleUser,
+            final @Named("firstName") String firstName,
+            final @Named("lastName") String lastName,
+            final @Named("fingerprint") String fingerprint,
+            final @Named("userID") String userID
+            // see: https://cloud.google.com/appengine/docs/java/endpoints/exceptions
+    ) throws Exception {
+
+        /* --- Check authorization : CRYPTONOMICA OFFICER ONLY !!! */
+        CryptonomicaUser admin = UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        /* --- load entities */
+        // 1
+        CryptonomicaUser cryptonomicaUser = cryptonomicaUser = ofy()
+                .load()
+                .key(
+                        Key.create(CryptonomicaUser.class, userID)
+                )
+                .now();
+        // 2
+        PGPPublicKeyData pgpPublicKeyData = PGPTools.getPGPPublicKeyDataFromDataBaseByFingerprint(fingerprint);
+        // 3
+        OnlineVerification onlineVerification = loadOnlineVerification(fingerprint);
+
+        /* --- change entities*/
+        // 1
+        String oldFirstName = cryptonomicaUser.getFirstName();
+        cryptonomicaUser.setFirstName(firstName);
+        String oldLastName = cryptonomicaUser.getLastName();
+        cryptonomicaUser.setLastName(lastName);
+        // 2
+        pgpPublicKeyData.setFirstName(firstName);
+        pgpPublicKeyData.setLastName(lastName);
+        // 3
+        onlineVerification.setFirstName(firstName);
+        onlineVerification.setLastName(lastName);
+
+        /* --- record changes */
+        CryptonomicaLog cryptonomicaLog = new CryptonomicaLog();
+        cryptonomicaLog.setChangedBy(admin.getUserId());
+        cryptonomicaLog.setChangedByEmail(admin.getEmail().getEmail());
+        cryptonomicaLog.setUserWhoseDataIsChanged(cryptonomicaUser.getUserId());
+        cryptonomicaLog.setUserWhoseDataIsChangedEmail(cryptonomicaUser.getEmail().getEmail());
+        String action =
+                "name changed from "
+                        + oldFirstName + " " + oldFirstName
+                        + "to "
+                        + firstName + " " + lastName;
+        cryptonomicaLog.setAction(action);
+
+        /* --- save entities */
+        ofy().save().entity(cryptonomicaUser); // async
+        ofy().save().entity(pgpPublicKeyData);
+        ofy().save().entity(onlineVerification);
+        ofy().save().entity(cryptonomicaLog);
+
+        // save data to data store:
+        ofy()
+                .save()
+                .entity(onlineVerification)
+                .now();
+
+        // create result object:
+        BooleanWrapperObject result = new BooleanWrapperObject(true, action);
+
+        return result;
+
+    } // end of changeName() ;
 
     @ApiMethod(
             name = "removeVideoWithMessage",

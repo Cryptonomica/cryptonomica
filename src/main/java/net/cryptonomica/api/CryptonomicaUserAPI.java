@@ -83,6 +83,7 @@ public class CryptonomicaUserAPI {
         } catch (Exception e) {
             LOG.warning(e.getMessage());
         }
+
         if (cryptonomicaUser == null) {
             userProfileGeneralView = new UserProfileGeneralView();
             userProfileGeneralView.setLoggedIn(true);

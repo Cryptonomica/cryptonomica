@@ -47,6 +47,7 @@ public class OfyService {
         try{factory().register(PromoCode.class);}catch (Exception e){LOG.warning(e.getMessage());}
         try{factory().register(ApiKey.class);}catch (Exception e){LOG.warning(e.getMessage());}
         try{factory().register(MyBookmarks.class);}catch (Exception e){LOG.warning(e.getMessage());}
+        try{factory().register(CryptonomicaLog.class);}catch (Exception e){LOG.warning(e.getMessage());}
         try{factory().register(TestEntity.class);}catch (Exception e){LOG.warning(e.getMessage());}
     }
 
