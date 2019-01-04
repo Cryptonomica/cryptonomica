@@ -1,4 +1,6 @@
+#
 # see reference:
+#
 # https://cloud.google.com/datastore/docs/tools/indexconfig
 # https://cloud.google.com/appengine/docs/standard/python/config/indexref
 # see also: https://cloud.google.com/datastore/docs/concepts/indexes
@@ -7,8 +9,9 @@
 # https://console.cloud.google.com/datastore/indexes?project=cryptonomica-server
 # ("Below are the composite indexes for this application. These indexes are managed in your app's index configuration file")
 
-# to update indexes:
+# >>>>>>>>>>>>>>>> to update indexes <<<<<<<<<<<<<<<<<<<
 # gcloud app deploy ./src/main/webapp/WEB-INF/index.yaml
+# to see indexes on GAE: https://console.cloud.google.com/datastore/indexes?project=cryptonomica-server
 
 indexes:
 
@@ -39,6 +42,12 @@ indexes:
   - name: nationality
 
 # --- OnlineVerification
+
+- kind: OnlineVerification
+  ancestor: no
+  properties:
+    - name: onlineVerificationFinished
+    - name: onlineVerificationDataVerified
 
 - kind: OnlineVerification
   ancestor: no

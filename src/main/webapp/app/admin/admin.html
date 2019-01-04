@@ -1,0 +1,66 @@
+<div id="contextWrap">
+
+    <!-- left sidebar-->
+    <left-sidebar></left-sidebar>
+
+    <!--right sidebar-->
+    <right-sidebar></right-sidebar>
+
+    <div class="pusher">
+
+        <!--topHeaderMenu -->
+        <top-header-menu></top-header-menu>
+
+        <!-- ==== MAIN SECTION ====  -->
+
+        <div class="mainWrap navslide">
+
+            <div class="ui equal width left aligned padded grid stackable">
+
+                <!--Page Content-->
+
+                <div class="stretched row">
+
+                    <div class="column">
+
+                        <!-- Alerts -->
+                        <alerts></alerts>
+
+                        <div class="ui segments">
+
+                            <!-- Breadcrumb -->
+                            <div id="breadcrumb" class="ui segment">
+
+                                <div class="ui breadcrumb">
+                                    <a class="section" href="" ui-sref-active="active" ui-sref="home">Home</a>
+                                    <i class="right angle icon divider"></i>
+                                    <a class="section" href="" ui-sref-active="active"
+                                       ui-sref="admin">Admin</a>
+                                    <!--<i class="right angle icon divider"></i>-->
+                                </div>
+                            </div>
+
+                            <div class="ui segment">
+
+                                <div ng-include="'/app/admin/admin.content.html'"></div>
+                                <br>
+
+                            </div>
+
+                        </div>
+
+                        <!-- FOOTER -->
+                        <footer-main></footer-main>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+

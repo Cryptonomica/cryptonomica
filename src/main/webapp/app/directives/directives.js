@@ -46,16 +46,6 @@
         };
     });
 
-    // --------------------------------------------------------------------------OLD----
-    d.directive('headerMainMenu', function () {
-        return {
-            restrict: 'EA', //E = element, A = attribute, C = class, M = comment
-            // <header-main-menu></header-main-menu>
-            // replace: 'true', // >> error
-            templateUrl: 'app/directives/headerMainMenu.html'
-        };
-    });
-
     // ------------------------------------------------------------------------------
     d.directive('alerts', function () {
         return {
@@ -82,15 +72,6 @@
             restrict: 'EA', //E = element, A = attribute, C = class, M = comment
             // <navigation-menu></navigation-menu>
             templateUrl: 'app/directives/navigationMenu.html'
-        };
-    });
-    // ------------------------------------------------------------------------------
-    d.directive('headerLandingPage', function () {
-        return {
-            restrict: 'EA', //E = element, A = attribute, C = class, M = comment
-            // <header-landing-page></header-landing-page>
-            // replace: 'true', // >> error
-            templateUrl: 'app/directives/headerLandingPage.html'
         };
     });
 

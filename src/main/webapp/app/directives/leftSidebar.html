@@ -104,6 +104,15 @@
         <span class="hiddenCollapse">Help/Wiki</span>
     </a>
 
+    <!-- for compliance officer  : -->
+    <a id="admin" class="item" href="" ui-sref-active="active" ui-sref="admin"
+       ng-show="(currentUser&&currentUser.registeredCryptonomicaUser)&&(currentUser.cryptonomicaOfficer===true)">
+        <!--ng-show="(currentUser&&currentUser.registeredCryptonomicaUser)&&(currentUser.webmaster||currentUser.tester)">-->
+        <i class="fa fa-user-md titleIcon"></i>
+        <!--<i class="icofont icofont-test-tube-alt titleIcon"></i>-->
+        <span class="hiddenCollapse">Admin</span>
+    </a>
+
     <!-- supported by -->
     <div class="ui divider"></div>
 

@@ -58,7 +58,7 @@ public class OnlineVerification implements Serializable { // -- can be returned 
     /* verification data: */
     // Online Verification Video:
     @Index
-    private String verificationVideoId; // ramdom string 33 char.........14
+    private String verificationVideoId; // random string 33 char.........14
     // Online Verification Documents:
     // @Index
     private ArrayList<String> verificationDocumentsArray; // ............15

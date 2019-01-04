@@ -32,6 +32,12 @@ public class PGPTools {
     /* --- Gson: */
     private static final Gson GSON = new Gson();
 
+    public static void checkFingerprint(String fingerprint) {
+        if (fingerprint == null || fingerprint.equals("") || fingerprint.length() != 40) {
+            throw new IllegalArgumentException("fingerprint is missing or invalid");
+        }
+    }
+
 //    <!-- was a bug reading userID in key DSA + ElGamal --> :
 //    /**
 //     * A simple routine that opens a key ring file and loads the first available key
@@ -79,7 +85,6 @@ public class PGPTools {
         PGPPublicKeyRing newKey = new PGPPublicKeyRing(new ArmoredInputStream(iKeyStream), new JcaKeyFingerprintCalculator());
         return newKey.getPublicKey();
     }
-
 
     public static PGPPublicKey readPublicKeyFromString(String armoredPublicPGPkeyBlock)
             throws IOException, PGPException {

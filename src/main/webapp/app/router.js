@@ -147,5 +147,10 @@ router
                     controller: 'cryptonomica.controller.stats',
                     templateUrl: 'app/stats/stats.html'
                 })
+                .state('admin', {
+                    url: '/admin',
+                    controller: 'cryptonomica.controller.admin',
+                    templateUrl: 'app/admin/admin.html'
+                })
         } // end of function ($stateProvider)..
     ]); // end of .config

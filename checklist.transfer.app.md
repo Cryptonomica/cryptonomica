@@ -1,5 +1,5 @@
 
-## Moving from sandbox to prodution;
+## Moving from sandbox to production;
 
 - [ ] change app id in appengine-web.xml ;
 - [ ] change app id in pom.xml ;

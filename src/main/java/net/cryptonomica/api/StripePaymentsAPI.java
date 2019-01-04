@@ -326,7 +326,7 @@ public class StripePaymentsAPI {
         } else if (
                 !stripePaymentForm.getCardHolderFirstName().equalsIgnoreCase(pgpPublicKeyData.getFirstName())
                         || !stripePaymentForm.getCardHolderLastName().equalsIgnoreCase(pgpPublicKeyData.getLastName())
-                ) {
+        ) {
             throw new Exception(
                     "You have to pay with credit card with the same first and last name as in your OpenPGP key."
                             + " If your card has different spelling of your name than passport,"
@@ -609,7 +609,8 @@ public class StripePaymentsAPI {
 
         OnlineVerificationView onlineVerificationView = new OnlineVerificationView(
                 onlineVerification,
-                verificationDocumentArrayList
+                verificationDocumentArrayList,
+                pgpPublicKeyData.getUserID()
         );
 
         /* --- send email to cryptonomica compliance officers and to user  */

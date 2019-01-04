@@ -57,11 +57,13 @@
                                 <table class="ui celled table">
                                     <tbody>
                                     <tr>
-                                        <td>Key fingerprint:</td>
+                                        <td>Key</td>
                                         <td class="capitalize">
                                             <a ui-sref="key({fingerprint: onlineVerification.fingerprint})">
                                                 {{onlineVerification.fingerprint}}
                                             </a>
+                                            <br>
+                                            {{onlineVerification.userIdFromKey}}
                                         </td>
                                     </tr>
                                     <tr>
@@ -133,22 +135,23 @@
                                     <h3>Verification documents:</h3>
                                 </center>
 
+                                <div class="ui medium images">
 
-                                <a ng-href="https://cryptonomica.net/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[0]}}"
-                                   class="imageLink"
-                                   target="_blank">
-                                    <img id="doc1"
-                                         ng-src="https://cryptonomica.net/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[0]}}"
-                                         class="verificationDoc"/>
-                                </a>
+                                    <a ng-href="https://cryptonomica.net/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[0]}}"
+                                       class="imageLink"
+                                       target="_blank">
+                                        <img id="doc1"
+                                             ng-src="https://cryptonomica.net/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[0]}}"/>
+                                    </a>
 
-                                <a ng-href="https://cryptonomica.net/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[1]}}"
-                                   class="imageLink"
-                                   target="_blank">
-                                    <img id="doc2"
-                                         ng-src="https://cryptonomica.net/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[1]}}"
-                                         class="verificationDoc"/>
-                                </a>
+                                    <a ng-href="https://cryptonomica.net/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[1]}}"
+                                       class="imageLink"
+                                       target="_blank">
+                                        <img id="doc2"
+                                             ng-src="https://cryptonomica.net/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[1]}}"/>
+                                    </a>
+
+                                </div>
 
                                 <hr>
 
@@ -162,12 +165,22 @@
                                             </video>
                                         </a>
                                     </div>
-                                </div>
 
+                                    <div id="dataForVideo" ng-show="currentUser.cryptonomicaOfficer">
+                                        {{onlineVerification.firstName}}&nbsp;
+                                        {{onlineVerification.lastName}}&nbsp;&nbsp;&nbsp;
+                                        {{onlineVerification.userEmail}}&nbsp;
+                                        {{onlineVerification.keyID}}&nbsp;
+                                    </div>
+
+                                </div>
                                 <hr>
+
+                                <!-- for Compliance Officer: START  -->
 
                                 <div id="approve" ng-show="currentUser.cryptonomicaOfficer">
 
+                                    <h1>Compliance Actions:</h1>
                                     <p>(you see this because you are Cryptonomica compliance officer)</p>
 
                                     <!-- Approve Alerts: -->
@@ -206,28 +219,69 @@
                                         <fieldset>
 
                                             <div class="field">
-                                                <div class="ui checkbox">
+                                                <h2>Change user name </h2>
 
+                                                <label for="newFirstName">New first name: </label>
+                                                <input id="newFirstName" type="text" class="form-control"
+                                                       ng-model="newFirstName">
+                                                <br>
+
+                                                <label for="newLastName">New last name: </label>
+                                                <input id="newLastName" type="text" class="form-control"
+                                                       ng-model="newLastName">
+                                                <br>
+
+                                                <button ng-click="changeName()"
+                                                        class="ui button" type="submit">
+                                                    Change Name
+                                                </button>
+
+                                            </div>
+                                            <hr>
+
+                                            <div class="field">
+                                                <h2>Remove video</h2>
+                                                <label for="messageToUser">Message to user: </label>
+
+                                                <input id="messageToUser" type="text" class="form-control"
+                                                       ng-model="messageToUser">
+                                                <br>
+
+                                                <button ng-click="removeVideoWithMessage()"
+                                                        class="ui button" type="submit">
+                                                    Remove video and send message to user
+                                                </button>
+                                            </div>
+                                            <hr>
+
+                                            <div class="field">
+
+                                                <h2 style="background-color: lightgreen">Approve</h2>
+
+                                                <div class="ui checkbox">
                                                     <input type="checkbox" ng-model="onlineVerificationApproved">
 
                                                     <label><b>Approve data entered for online verification</b></label>
                                                 </div>
+
+
+                                                <label for="verificationNotes">Verification notes: </label>
+
+                                                <input id="verificationNotes" type="text" class="form-control"
+                                                       ng-model="verificationNotes">
+                                                <br>
+
+                                                <button ng-click="approve()"
+                                                        class="ui button" type="submit">
+                                                    Approve
+                                                </button>
                                             </div>
-
-                                            <label for="verificationNotes">Verification notes: </label>
-
-                                            <input id="verificationNotes" type="text" class="form-control"
-                                                   ng-model="verificationNotes">
-                                            <br>
-
-                                            <button ng-click="approve()"
-                                                    class="ui button" type="submit">
-                                                Approve
-                                            </button>
 
                                         </fieldset>
                                     </form>
+
                                 </div>
+                                <!-- for Compliance Officer: END  -->
 
                             </div>
 

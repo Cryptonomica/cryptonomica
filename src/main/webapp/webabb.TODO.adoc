@@ -7,14 +7,14 @@ v1.0, 2018-05-08
 == Tasks
 
 * [ ] when new key uploaded in the message make fingerprint a link: user can go to key certificate page immediately
-* [ ] repair video recording (only first seconds are recorded)
+* [x] repair video recording (only first seconds are recorded)
 * [ ] repair 'TypeError: Illegal constructor' on #/key/... :
 
       <button class="btn ng-isolate-scope" ngclipboard="" data-clipboard-target="#ASCIIarmored">
 
 * [ ] make expired keys in list of user keys shadowed
-* [ ] update to next version of angular-google-gapi and change all controllers to support new version
-* [ ] move from bootstrap to semantic ui
+* [x] update to next version of angular-google-gapi and change all controllers to support new version
+* [x] move from bootstrap to semantic ui
 * [ ] make verify online button disabled if already verified
 * [ ] after login if user have no verified key show him page with key upload form, else show 'my profile' page
 * [ ] if user has no verified key show him a message on every page with link to key online verification pages
@@ -22,5 +22,8 @@ v1.0, 2018-05-08
 * [ ] show semantic ui badges on keys (red for unverified, green for online verified, blue right for notary verified)
 * [ ] in table with keys on #/viewprofile/... create table headers
 * [ ] sort keys on #/viewprofile/ -> show new keys on top of the list
+
+* [ ] arbitration agreement in smart contract
+* [ ] multilateral arbitration agreement in smart contract
 
 

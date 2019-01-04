@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 // example from:
 // https://github.com/trufflesuite/truffle-artifactor#artifactorgenerateoptions-networks

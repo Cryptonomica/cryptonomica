@@ -1,0 +1,38 @@
+<!-- verification requests -->
+
+Total:&nbsp;{{onlineVerifications.counter}}
+
+<table class="ui celled table">
+    <tbody ng-repeat="onlineVerification in onlineVerifications.onlineVerifications">
+    <tr>
+
+        <td>{{$index}}</td>
+
+        <td>{{onlineVerification.firstName}} &nbsp; {{onlineVerification.lastName}}</td>
+
+        <td>{{onlineVerification.nationality}}</td>
+
+        <td>
+            <i ng-class="onlineVerification.nationality.toLowerCase()+' flag'"></i>
+        </td>
+
+
+        <td>
+            <a href=""
+               title="click to see online verification data"
+               ui-sref="onlineVerificationView({fingerprint:onlineVerification.fingerprintStr})">
+                {{onlineVerification.fingerprintStr}}
+            </a>
+        </td>
+
+        <td>
+            <a href=""
+               title="click to see user profile"
+               ui-sref="viewprofile({userId:onlineVerification.cryptonomicaUserId})">
+                {{onlineVerification.userEmail.email}}
+            </a>
+        </td>
+
+    </tr>
+    </tbody>
+</table>
