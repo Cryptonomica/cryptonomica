@@ -270,15 +270,21 @@
             $scope.newFirstName = null;
             $scope.newLastName = null;
             $scope.changeName = function () {
-                $log.debug('$scope.changeName started');
+
+                $log.debug('$scope.changeName started: ' + $scope.newFirstName + ' ' + $scope.newLastName + " for " + $scope.onlineVerification.cryptonomicaUserId);
+                if ($rootScope.stringIsNullUndefinedOrEmpty($scope.newFirstName) || $rootScope.stringIsNullUndefinedOrEmpty($scope.newFirstName)) {
+                    $scope.approveResponseError = "name and first name can not be null or empty";
+                    return;
+                }
+
                 $rootScope.progressbar.start(); // <<<<<<<<<<<
 
                 GApi.executeAuth('onlineVerificationAPI',
                     'changeName', {
                         "fingerprint": $stateParams.fingerprint,
-                        "userID": $scope.onlineVerification.userID,
+                        "userID": $scope.onlineVerification.cryptonomicaUserId,
                         "firstName": $scope.newFirstName,
-                        "lastName":  $scope.newLastName
+                        "lastName": $scope.newLastName
                     })
                     .then(function (response) { // BooleanWrapperObject.java
                         $log.debug(response);

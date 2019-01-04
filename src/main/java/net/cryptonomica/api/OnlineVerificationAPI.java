@@ -667,6 +667,8 @@ https://stackoverflow.com/questions/21001371/why-gae-datastore-not-support-multi
         /* --- Check authorization : CRYPTONOMICA OFFICER ONLY !!! */
         CryptonomicaUser admin = UserTools.ensureCryptonomicaOfficer(googleUser);
 
+        LOG.warning("ChangeName request. Parameters: " + firstName + " " + lastName + " " + fingerprint + " " + userID);
+
         /* --- load entities */
         // 1
         CryptonomicaUser cryptonomicaUser = cryptonomicaUser = ofy()
@@ -702,21 +704,21 @@ https://stackoverflow.com/questions/21001371/why-gae-datastore-not-support-multi
         String action =
                 "name changed from "
                         + oldFirstName + " " + oldFirstName
-                        + "to "
+                        + " to "
                         + firstName + " " + lastName;
         cryptonomicaLog.setAction(action);
 
         /* --- save entities */
-        ofy().save().entity(cryptonomicaUser); // async
-        ofy().save().entity(pgpPublicKeyData);
-        ofy().save().entity(onlineVerification);
-        ofy().save().entity(cryptonomicaLog);
+        try{
+            ofy().save().entity(cryptonomicaUser).now();
+            ofy().save().entity(pgpPublicKeyData).now();
+            ofy().save().entity(onlineVerification).now();
+            ofy().save().entity(cryptonomicaLog).now();
+        } catch (Exception e){
+            LOG.severe(e.getMessage());
+            throw new Exception("Error saving data to DB: " + e.getMessage());
+        }
 
-        // save data to data store:
-        ofy()
-                .save()
-                .entity(onlineVerification)
-                .now();
 
         // create result object:
         BooleanWrapperObject result = new BooleanWrapperObject(true, action);

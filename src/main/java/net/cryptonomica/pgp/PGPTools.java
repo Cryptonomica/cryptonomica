@@ -86,7 +86,6 @@ public class PGPTools {
         return newKey.getPublicKey();
     }
 
-
     public static PGPPublicKey readPublicKeyFromString(String armoredPublicPGPkeyBlock)
             throws IOException, PGPException {
         InputStream in = new ByteArrayInputStream(armoredPublicPGPkeyBlock.getBytes());
