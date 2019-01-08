@@ -73,7 +73,7 @@ app.run([
                   $location,
                   $log) {
 
-            $log.info('webapp started,  version: ', '3.7');
+            $log.info('webapp started,  version: ', '3.8');
             $log.info('[app.js] $state');
             $log.info($state);
 
@@ -85,6 +85,8 @@ app.run([
 
             $rootScope.gdata = GData;
             $rootScope.gaeProjectDomain = "cryptonomica-server.appspot.com";
+            $rootScope.supportEmail = "support@cryptonomica.zendesk.com";
+
             // (WEB_CLIENT_ID)
             var CLIENT = '762021407984-9ab8gugumsg30rrqgvma9htfkqd3uid5.apps.googleusercontent.com';
             var BASE = 'https://cryptonomica-server.appspot.com/_ah/api';
