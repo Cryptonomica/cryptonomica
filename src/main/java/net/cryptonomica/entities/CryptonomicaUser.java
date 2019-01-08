@@ -4,6 +4,7 @@ import com.google.appengine.api.datastore.Email;
 import com.google.appengine.api.datastore.Link;
 import com.google.appengine.api.datastore.Text;
 import com.google.appengine.api.users.User;
+import com.google.gson.Gson;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
@@ -11,6 +12,7 @@ import com.googlecode.objectify.annotation.Ignore;
 import com.googlecode.objectify.annotation.Index;
 import net.cryptonomica.forms.NewUserRegistrationForm;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -25,7 +27,7 @@ import java.util.Date;
 
 @Entity // -> net.cryptonomica.service.OfyService
 // @Cache // -- may be should not stored in cache to be able view changes faster
-public class CryptonomicaUser {
+public class CryptonomicaUser implements Serializable {
 
     /* Logger */
     // private static final Logger LOG = Logger.getLogger(CryptonomicaUser.class.getName());
@@ -38,10 +40,10 @@ public class CryptonomicaUser {
     // see: savedCryptonomicaUserKey.toWebSafeString();
     private String webSafeStringKey; //...........................................................2
     @Index
-    // ? if user changes firstname
+    // TODO: if user changes first name?
     private String firstName; // .................................................................3
     @Index
-    // ? if user changes lastname
+    // TODO: if user changes last name?
     private String lastName; //...................................................................4
     // non indexed:
     private Date birthday; //.....................................................................5
@@ -124,29 +126,29 @@ public class CryptonomicaUser {
         Key<CryptonomicaUser> cryptonomicaUserKey = Key.create(CryptonomicaUser.class, googleUser.getUserId());
         this.publicKeys.add(
                 Key.create(
-                        cryptonomicaUserKey, PGPPublicKeyData.class, pgpPublicKeyData.getFingerprint()
+                        cryptonomicaUserKey, PGPPublicKeyData.class, pgpPublicKeyData.getFingerprint().toUpperCase()
                 )
         );
         this.entityCreatedOn = new Date();
     } // end of constructor from newUserRegistrationForm
 
-    // ------ Getters and Setters:
+    /* --- Methods */
 
-    // custom:
+
+    public String toJSON() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
 
     public void setImageUploadKeyToNull() {
         this.imageUploadKey = null;
     }
 
-    public void setEmail(Email email) {
-        this.email = new Email(email.getEmail().toLowerCase());
-    }
-
-    // general:
-
     public String getUserId() {
         return userId;
     }
+
+    /* ---- [customized] Getters and Setters */
 
     public void setUserId(String userId) {
         this.userId = userId;
@@ -165,7 +167,7 @@ public class CryptonomicaUser {
     }
 
     public void setFirstName(String firstName) {
-        this.firstName = firstName;
+        this.firstName = firstName.toLowerCase();
     }
 
     public String getLastName() {
@@ -173,7 +175,7 @@ public class CryptonomicaUser {
     }
 
     public void setLastName(String lastName) {
-        this.lastName = lastName;
+        this.lastName = lastName.toLowerCase();
     }
 
     public Date getBirthday() {
@@ -194,6 +196,10 @@ public class CryptonomicaUser {
 
     public Email getEmail() {
         return email;
+    }
+
+    public void setEmail(Email email) {
+        this.email = new Email(email.getEmail().toLowerCase());
     }
 
     public Text getUserInfo() {

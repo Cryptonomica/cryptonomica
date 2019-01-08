@@ -49,16 +49,6 @@
                 $log.debug(controller_name, "started"); //
                 $timeout($rootScope.progressbar.complete(), 1000);
 
-                /* GAuth.checkAuth().then(
-                 function () {
-                 $rootScope.getUserData(); // async?
-                 $log.info("[controller.viewprofile.js] $rootScope.getUserData() - success");
-                 },
-                 function () {
-                 //$rootScope.getUserData();
-                 $log.error("[controller.viewprofile.js] $rootScope.getUserData() - error");
-                 }
-                 );*/
                 if (!$rootScope.currentUser) {
                     GAuth.checkAuth().then(
                         function () {
@@ -70,6 +60,51 @@
                         }
                     );
                 }
+
+                /* -----  Alerts START  */
+                $scope.alertDanger = null;  // red
+                $scope.alertWarning = null; // yellow
+                $scope.alertInfo = null;    // blue
+                $scope.alertSuccess = null; // green
+                $scope.alertMessage = {}; // grey
+
+                $scope.setAlertDanger = function (message) {
+                    $scope.alertDanger = message;
+                    $log.debug("$scope.alertDanger:", $scope.alertDanger);
+                    // $scope.$apply(); not here
+                    $rootScope.goTo("alertDanger");
+                };
+
+                $scope.setAlertWarning = function (message) {
+                    $scope.alertWarning = message;
+                    $log.debug("$scope.alertWarning:", $scope.alertWarning);
+                    // $scope.$apply();
+                    $rootScope.goTo("alertWarning");
+                };
+
+                $scope.setAlertInfo = function (message) {
+                    $scope.alertInfo = message;
+                    $log.debug("$scope.alertInfo:", $scope.alertInfo);
+                    // $scope.$apply();
+                    $rootScope.goTo("alertInfo");
+                };
+
+                $scope.setAlertSuccess = function (message) {
+                    $scope.alertSuccess = message;
+                    $log.debug("$scope.alertSuccess:", $scope.alertSuccess);
+                    // $scope.$apply();
+                    $rootScope.goTo("alertSuccess");
+                };
+
+                $scope.setAlertMessage = function (message, header) {
+                    $scope.alertMessage = {};
+                    $scope.alertMessage.header = header;
+                    $scope.alertMessage.message = message;
+                    $log.debug("$scope.alertMessage:", $scope.alertMessage);
+                    // $scope.$apply();
+                    $rootScope.goTo("alertMessage");
+                };
+                /* -----  Alerts END  */
 
                 //
                 $scope.dateOptions = {changeYear: true, changeMonth: true, yearRange: '1900:-0'};
@@ -199,8 +234,7 @@
                     } else if ($scope.AddNotaryFORM.licenceCountry.$invalid) {
                         $scope.licenceCountryInvalid = true;
                         $log.error("$scope.AddNotaryFORM.licenceCountry.$invalid: " + $scope.AddNotaryFORM.licenceCountry.$invalid)
-                    }
-                    else {
+                    } else {
                         $log.error("$scope.AddNotaryFORM.$valid: " + $scope.AddNotaryFORM.$valid);
                     }
                 };
@@ -289,8 +323,7 @@
                         storage.setItem(x, x);
                         storage.removeItem(x);
                         return true;
-                    }
-                    catch (e) {
+                    } catch (e) {
                         return e instanceof DOMException && (
                                 // everything except Firefox
                             e.code === 22 ||
@@ -363,6 +396,41 @@
 
                 }; // end of $scope.keyUpload
 
+
+                /* ----- Delete Profile (Admin) */
+                $scope.deleteUserProfileCheckbox = null;
+                $scope.reason = null;
+                $scope.deleteProfile = function () {
+                    $log.debug('$scope.deleteProfile started: '
+                        + $scope.deleteUserProfileCheckbox + ' '
+                        + $scope.reason + " for "
+                        + $scope.userProfileGeneralView.email + " " + $stateParams.userId
+                    );
+                    if ($rootScope.stringIsNullUndefinedOrEmpty($scope.reason)) {
+                        $scope.setAlertDanger("please provide reason for deleting this profile (will be sent to user)");
+                        return;
+                    }
+                    if ($scope.deleteUserProfileCheckbox !== true) {
+                        $scope.setAlertDanger("Please confirm deleting a profile in checkbox");
+                        return;
+                    }
+                    $rootScope.progressbar.start(); // <<<<<<<<<<<
+                    GApi.executeAuth('onlineVerificationAPI',
+                        'deleteProfile', {
+                            "userID": $stateParams.userId,
+                            "reason": $scope.reason
+                        })
+                        .then(function (response) { // BooleanWrapperObject.java
+                            $log.debug(response);
+                            $scope.setAlertSuccess(response.message);
+                            $timeout($rootScope.progressbar.complete(), 1000);
+                        })
+                        .catch(function (error) {
+                            $log.debug(error);
+                            $scope.setAlertDanger(error);
+                            $timeout($rootScope.progressbar.complete(), 1000);
+                        });
+                }; // end of $scope.deleteProfile () ;
 
             } // end: viewCtrl
         ]

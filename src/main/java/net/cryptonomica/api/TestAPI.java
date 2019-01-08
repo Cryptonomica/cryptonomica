@@ -14,10 +14,11 @@ import com.google.gson.GsonBuilder;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.googlecode.objectify.Key;
 import com.twilio.sdk.TwilioRestException;
-import net.cryptonomica.entities.CryptonomicaUser;
-import net.cryptonomica.entities.TestEntity;
+import net.cryptonomica.constants.Constants;
+import net.cryptonomica.entities.*;
 import net.cryptonomica.ethereum.TestContract;
 import net.cryptonomica.ethereum.Web3jFactory;
+import net.cryptonomica.returns.BooleanWrapperObject;
 import net.cryptonomica.returns.IntegerWrapperObject;
 import net.cryptonomica.returns.StringWrapperObject;
 import net.cryptonomica.returns.Web3jTransactionReceiptWrapper;
@@ -36,13 +37,9 @@ import static net.cryptonomica.service.OfyService.ofy;
 
 
 /**
- * used example from
- * https://github.com/GoogleCloudPlatform/java-docs-samples/appengine/endpoints-frameworks-v2/backend
- * see:
- * https://cloud.google.com/endpoints/docs/frameworks/java/get-started-frameworks-java
- * <p>
- * [+] - API should be registered in  web.xml (<param-name>services</param-name>)
- * [ ] - API should be loaded in app.js - app.run()
+ * explore on: {sandbox-cryptonomica || cryptonomica-server}.appspot.com/_ah/api/explorer
+ * ! - API should be registered in  web.xml (<param-name>services</param-name>)
+ * ! - on frontend API should be loaded in app.js - app.run()
  */
 // [START echo_api_annotation]
 @Api(
@@ -404,6 +401,51 @@ public class TestAPI {
 
         return result;
     }
+
+    /* Allows admin to delete user profile.
+     * For example if name in key is completely different from name in passport, or if user requested deletion of the
+     * profile before key verification is finished.
+     * */
+    @ApiMethod(
+            name = "testConvertToJSON",
+            path = "testConvertToJSON",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    @SuppressWarnings("unused")
+    public ArrayList<String> testConvertToJSON(
+            final User googleUser,
+            final @Named("userID") String userID
+            // see: https://cloud.google.com/appengine/docs/java/endpoints/exceptions
+    ) throws Exception {
+
+        /* --- Check authorization : CRYPTONOMICA OFFICER ONLY !!! */
+        CryptonomicaUser admin = UserTools.ensureCryptonomicaOfficer(googleUser);
+
+
+        ArrayList<String> result = new ArrayList<>();
+
+        /* ---- (1) Delete all OpenPGP public keys: */
+        List<PGPPublicKeyData> userKeysList = ofy().load().type(PGPPublicKeyData.class).filter("cryptonomicaUserId", userID).list();
+        if (userKeysList != null && !userKeysList.isEmpty()) {
+            result.add(userKeysList.get(0).toJSON());
+        }
+
+        /* --- (2) Delete all OnlineVerification entities */
+
+        List<OnlineVerification> onlineVerificationList = ofy().load().type(OnlineVerification.class).filter("cryptonomicaUserId", userID).list();
+        if (onlineVerificationList != null && !onlineVerificationList.isEmpty()) {
+            result.add(onlineVerificationList.get(0).toJSON());
+        }
+
+        /* --- (3) Delete profile */
+        CryptonomicaUser cryptonomicaUser = ofy().load().key(Key.create(CryptonomicaUser.class, userID)).now();
+        if (cryptonomicaUser != null) {
+            result.add(cryptonomicaUser.toJSON());
+        }
+
+        return result;
+
+    } // end of testConvertToJSON();
 
 
     @SuppressWarnings("unused")

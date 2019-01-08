@@ -137,7 +137,6 @@
         <url-pattern>/_ah/SendCustomMessageToEmailGAE</url-pattern>
     </servlet-mapping>
 
-
     <!-- Github Webhook -->
     <servlet>
         <servlet-name>GithubWebhookServlet</servlet-name>

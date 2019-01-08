@@ -73,7 +73,7 @@ app.run([
                   $location,
                   $log) {
 
-            $log.info('webapp started,  version: ', '3.5');
+            $log.info('webapp started,  version: ', '3.7');
             $log.info('[app.js] $state');
             $log.info($state);
 

@@ -59,11 +59,6 @@
 
             //
             $log.info("[onlineVerification.js] $stateParams.fingerprint : " + $stateParams.fingerprint);
-            // // --- Alerts:
-            // $scope.alertDanger = null;  // red
-            // $scope.alertWarning = null; // yellow
-            // $scope.alertInfo = null;    // blue
-            // $scope.alertSuccess = null; // green
 
             /* --- Alerts */
             $scope.alertDanger = null;  // red
@@ -110,7 +105,6 @@
             };
             /* ---- */
 
-            //
             $scope.error = {};
             $scope.getOnlineVerificationError = false;
             $scope.fingerprint = $stateParams.fingerprint;
@@ -245,6 +239,7 @@
 
             /* ---- for Cryptonomica compliance officer : */
 
+            /* --- remove video and send message to user : */
             $scope.messageToUser = null;
             $scope.removeVideoWithMessage = function () {
                 $log.debug('$scope.removeVideoWithMessage started');
@@ -267,18 +262,43 @@
                     });
             }; // end of $scope.removeVideoWithMessage() ;
 
+            /* --- add name on card : */
+            $scope.nameOnCard = null;
+            $scope.addNameOnCard = function () {
+                $log.debug('$scope.removeVideoWithMessage started,  $scope.nameOnCard: ' + $scope.nameOnCard);
+                if ($rootScope.stringIsNullUndefinedOrEmpty($scope.nameOnCard)) {
+                    $scope.setAlertDanger("please provide name on card");
+                    return
+                }
+                $rootScope.progressbar.start(); // <<<<<<<<<<<
+
+                GApi.executeAuth('onlineVerificationAPI',
+                    'addNameOnCard', {
+                        "fingerprint": $stateParams.fingerprint,
+                        "nameOnCard": $scope.nameOnCard,
+                    })
+                    .then(function (response) { // BooleanWrapperObject.java
+                        $log.debug(response);
+                        $scope.setAlertSuccess(response.message);
+                        $timeout($rootScope.progressbar.complete(), 1000);
+                    })
+                    .catch(function (error) {
+                        $log.debug(error);
+                        $scope.setAlertDanger(error);
+                        $timeout($rootScope.progressbar.complete(), 1000);
+                    });
+            }; // end of $scope.addNameOnCard() ;
+
+            /* --- Change user name (admin) */
             $scope.newFirstName = null;
             $scope.newLastName = null;
             $scope.changeName = function () {
-
                 $log.debug('$scope.changeName started: ' + $scope.newFirstName + ' ' + $scope.newLastName + " for " + $scope.onlineVerification.cryptonomicaUserId);
                 if ($rootScope.stringIsNullUndefinedOrEmpty($scope.newFirstName) || $rootScope.stringIsNullUndefinedOrEmpty($scope.newFirstName)) {
                     $scope.approveResponseError = "name and first name can not be null or empty";
                     return;
                 }
-
                 $rootScope.progressbar.start(); // <<<<<<<<<<<
-
                 GApi.executeAuth('onlineVerificationAPI',
                     'changeName', {
                         "fingerprint": $stateParams.fingerprint,
@@ -297,7 +317,6 @@
                         $timeout($rootScope.progressbar.complete(), 1000);
                     });
             }; // end of $scope.changeName() ;
-
 
             $scope.onlineVerificationApproved = null;
             $scope.approve = function () {

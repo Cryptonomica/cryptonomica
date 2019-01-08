@@ -12,6 +12,7 @@ import com.googlecode.objectify.annotation.Parent;
 import org.bouncycastle.openpgp.PGPPublicKey;
 
 import javax.xml.bind.DatatypeConverter;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -20,7 +21,7 @@ import java.util.logging.Logger;
 
 @Entity // -> net.cryptonomica.service.OfyService
 // @Cache // --- ? can be turned off to show changes faster
-public class PGPPublicKeyData {
+public class PGPPublicKeyData implements Serializable {
     /* ---- Logger */
     private static final Logger LOG = Logger.getLogger(PGPPublicKeyData.class.getName());
     /*------------ */
@@ -232,7 +233,7 @@ public class PGPPublicKeyData {
         this.verificationsWebSafeStrings.add(verificationKeyWebSafeString);
     }
 
-    /* ----- Getters and Setters:  */
+    /* ----- [customized] Getters and Setters:  */
 
     public Key<CryptonomicaUser> getCryptonomicaUserKey() {
         return cryptonomicaUserKey;
@@ -247,7 +248,7 @@ public class PGPPublicKeyData {
     }
 
     public void setFingerprint(String fingerprint) {
-        this.fingerprint = fingerprint;
+        this.fingerprint = fingerprint.toUpperCase();
     }
 
     public String getFingerprintStr() {
@@ -255,7 +256,7 @@ public class PGPPublicKeyData {
     }
 
     public void setFingerprintStr(String fingerprintStr) {
-        this.fingerprintStr = fingerprintStr;
+        this.fingerprintStr = fingerprintStr.toUpperCase();
     }
 
     public String getWebSafeString() {
@@ -295,7 +296,7 @@ public class PGPPublicKeyData {
     }
 
     public void setFirstName(String firstName) {
-        this.firstName = firstName;
+        this.firstName = firstName.toLowerCase();
     }
 
     public String getLastName() {
@@ -303,7 +304,7 @@ public class PGPPublicKeyData {
     }
 
     public void setLastName(String lastName) {
-        this.lastName = lastName;
+        this.lastName = lastName.toLowerCase();
     }
 
     public Email getUserEmail() {
@@ -423,7 +424,7 @@ public class PGPPublicKeyData {
     }
 
     public void setNationality(String nationality) {
-        this.nationality = nationality;
+        this.nationality = nationality.toUpperCase();
     }
 
     public Boolean getVerifiedOffline() {
@@ -474,5 +475,5 @@ public class PGPPublicKeyData {
         this.revocationNotes = revocationNotes;
     }
 
-    // end getters and setters
+    // end [customized] getters and setters
 }

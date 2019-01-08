@@ -36,9 +36,9 @@ import static net.cryptonomica.service.OfyService.ofy;
 
 
 /**
- * explore on: cryptonomica-{test || server}.appspot.com/_ah/api/explorer
+ * explore on: {sandbox-cryptonomica || cryptonomica-server}.appspot.com/_ah/api/explorer
  * ! - API should be registered in  web.xml (<param-name>services</param-name>)
- * ! - API should be loaded in app.js - app.run()
+ * ! - on frontend API should be loaded in app.js - app.run()
  */
 @Api(name = "stripePaymentsAPI", // The api name must match '[a-z]+[A-Za-z0-9]*'
         version = "v1",
@@ -95,14 +95,10 @@ public class StripePaymentsAPI {
     ) throws Exception {
 
         /* basic prices: */
-
-        Integer priceForOneYearInEUR = 60;
-        Integer priceForOneYerInCents = priceForOneYearInEUR * 100;
-        Integer discountInPercentForTwoYears = 20;
+        Integer priceForOneYerInCents = Constants.priceForOneYerInEuroCents;
+        Integer discountInPercentForTwoYears = Constants.discountInPercentForTwoYears;
         Integer priceForTwoYearsInCents =
                 (priceForOneYerInCents * 2) / 100 * (100 - discountInPercentForTwoYears);
-        // basic price for 1 y: EUR 60
-        // basic price for 2 y: EUR 96
 
         /* promo code */
         final String promoCodeStr = onlineVerification.getPromoCode();
@@ -233,7 +229,6 @@ public class StripePaymentsAPI {
         }
 
         // calculate price for key verification
-        // TODO: implement promo code
         Integer priceInCents = calculatePriceForKeyVerification(
                 pgpPublicKeyData,
                 onlineVerification,
@@ -241,13 +236,6 @@ public class StripePaymentsAPI {
         );
 
         result.setNumber(priceInCents);
-
-        /*
-        StripePaymentForKeyVerification stripePaymentForKeyVerification = ofy()
-                .load()
-                .key(Key.create(StripePaymentForKeyVerification.class, fingerprint))
-                .now();
-        */
 
         LOG.warning("result: " + GSON.toJson(result));
 
@@ -324,14 +312,18 @@ public class StripePaymentsAPI {
         if (pgpPublicKeyData.getNameOnCard() != null) {
             nameOnCard = pgpPublicKeyData.getNameOnCard();
         } else if (
-                !stripePaymentForm.getCardHolderFirstName().equalsIgnoreCase(pgpPublicKeyData.getFirstName())
-                        || !stripePaymentForm.getCardHolderLastName().equalsIgnoreCase(pgpPublicKeyData.getLastName())
+                !stripePaymentForm.getCardHolderFirstName().equalsIgnoreCase(
+                        pgpPublicKeyData.getFirstName()
+                )
+                        || !stripePaymentForm.getCardHolderLastName().equalsIgnoreCase(
+                        pgpPublicKeyData.getLastName()
+                )
         ) {
             throw new Exception(
                     "You have to pay with credit card with the same first and last name as in your OpenPGP key."
                             + " If your card has different spelling of your name than passport,"
-                            + " please write to support@cryptonomica.net "
-                            + "(include spelling of your name in passport and on the card,"
+                            + " please write to " + Constants.supportEmailAddress
+                            + " (include spelling of your name in passport and on the card,"
                             + " but do not send card number or CVC via email)"
             );
         } else {
@@ -390,7 +382,7 @@ public class StripePaymentsAPI {
         //  --- chargeMap
         Map<String, Object> chargeMap = new HashMap<>();
         chargeMap.put("card", cardMap);
-        chargeMap.put("metadata", metadataMap); // TODO: check (new)
+        chargeMap.put("metadata", metadataMap);
 
         //  amount - a positive integer in the smallest currency unit (e.g., 100 cents to charge $1.00
         chargeMap.put("amount", priceInCents); //
@@ -539,8 +531,11 @@ public class StripePaymentsAPI {
         if (paymentForKeyVerificationList == null || paymentForKeyVerificationList.size() < 1) {
             throw new Exception("No payments for verification of the key " + fingerprint + "found");
         } else if (paymentForKeyVerificationList.size() > 1) {
-            throw new Exception("Multiple payments exist for the key: " + fingerprint
-                    + ", please write to support@cryptonomica.net");
+            throw new Exception(
+                    "Multiple payments exist for the key: "
+                            + fingerprint
+                            + ", please write to "
+                            + Constants.supportEmailAddress);
         } else {
             stripePaymentForKeyVerification = paymentForKeyVerificationList.get(0);
         }
@@ -632,8 +627,7 @@ public class StripePaymentsAPI {
                         .param("messageText",
                                 "New request for online verification received: \n\n"
                                         + "see entered data on:\n"
-                                        + "https://cryptonomica.net/#!/onlineVerificationView/"
-//                                        + "https://cryptonomica.net/#/onlineVerificationView/"
+                                        + "https://" + Constants.host + "/#!/onlineVerificationView/"
                                         + fingerprint + "\n\n"
                                         + "verification request data in JSON format: \n\n"
                                         + prettyGson.toJson(onlineVerificationView)

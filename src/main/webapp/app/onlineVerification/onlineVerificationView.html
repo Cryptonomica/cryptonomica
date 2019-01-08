@@ -176,6 +176,9 @@
                                 </div>
                                 <hr>
 
+                                <!-- Alerts (Duplicate) -->
+                                <alerts></alerts>
+
                                 <!-- for Compliance Officer: START  -->
 
                                 <div id="approve" ng-show="currentUser.cryptonomicaOfficer">
@@ -183,29 +186,12 @@
                                     <h1>Compliance Actions:</h1>
                                     <p>(you see this because you are Cryptonomica compliance officer)</p>
 
-                                    <!-- Approve Alerts: -->
-
-                                    <!--<div id="approveResponse" ng-show="approveResponse"-->
-                                    <!--class="alert alert-success alert-dismissible" role="alert">-->
-                                    <!--<button type="button" class="close" data-dismiss="alert">-->
-                                    <!--<span ng-click="approveResponse=null">&times;</span></button>-->
-                                    <!--{{approveResponse}}-->
-                                    <!--</div>-->
-
                                     <div id="approveResponse" ng-show="approveResponse"
                                          class="ui positive message">
                                         <i class="close icon" ng-click="approveResponse=null"></i>
                                         <div class="header">Success:</div>
                                         <p>{{approveResponse}}</p>
                                     </div>
-
-                                    <!--<div ng-show="approveResponseError" class="alert alert-danger alert-dismissible"-->
-                                    <!--role="alert">-->
-                                    <!--<button type="button" class="close" data-dismiss="alert">-->
-                                    <!--<span ng-click="approveResponseError=null">&times;</span>-->
-                                    <!--</button>-->
-                                    <!--{{approveResponseError}}-->
-                                    <!--</div>-->
 
                                     <div id="approveResponseError" ng-show="approveResponseError"
                                          class="ui negative message">
@@ -220,7 +206,9 @@
 
                                             <div class="field">
                                                 <h2>Change user name </h2>
-
+                                                <div>
+                                                    input will be converted to lower case when storing in data base
+                                                </div>
                                                 <label for="newFirstName">New first name: </label>
                                                 <input id="newFirstName" type="text" class="form-control"
                                                        ng-model="newFirstName">
@@ -234,6 +222,25 @@
                                                 <button ng-click="changeName()"
                                                         class="ui button" type="submit">
                                                     Change Name
+                                                </button>
+
+                                            </div>
+                                            <hr>
+
+                                            <div class="field">
+                                                <h2>Add name on card </h2>
+                                                <div>
+                                                    Add name that can be used to make payment with credit/debit card
+                                                </div>
+
+                                                <label for="nameOnCard">Name on card (case insensitive): </label>
+                                                <input id="nameOnCard" type="text" class="form-control"
+                                                       ng-model="nameOnCard">
+                                                <br>
+
+                                                <button ng-click="addNameOnCard()"
+                                                        class="ui button" type="submit">
+                                                    Add name on card: {{nameOnCard}}
                                                 </button>
 
                                             </div>
@@ -260,7 +267,6 @@
 
                                                 <div class="ui checkbox">
                                                     <input type="checkbox" ng-model="onlineVerificationApproved">
-
                                                     <label><b>Approve data entered for online verification</b></label>
                                                 </div>
 
@@ -271,10 +277,10 @@
                                                        ng-model="verificationNotes">
                                                 <br>
 
-                                                <button ng-click="approve()"
-                                                        class="ui button" type="submit">
+                                                <button ng-click="approve()" class="ui green button" type="submit">
                                                     Approve
                                                 </button>
+
                                             </div>
 
                                         </fieldset>

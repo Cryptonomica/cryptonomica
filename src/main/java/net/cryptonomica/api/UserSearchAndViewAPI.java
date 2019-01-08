@@ -28,10 +28,9 @@ import static net.cryptonomica.service.OfyService.ofy;
 // https://github.com/objectify/objectify/wiki/Queries#executing-queries
 
 /**
- * explore on: cryptonomica-{test || server}.appspot.com/_ah/api/explorer
+ * explore on: {sandbox-cryptonomica || cryptonomica-server}.appspot.com/_ah/api/explorer
  * ! - API should be registered in  web.xml (<param-name>services</param-name>)
- * ! - API should be loaded in app.js - app.run()
- * * in this API:
+ * ! - on frontend API should be loaded in app.js - app.run()
  */
 
 @Api(name = "userSearchAndViewAPI", // The api name must match

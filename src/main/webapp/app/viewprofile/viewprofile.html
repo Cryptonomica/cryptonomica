@@ -157,7 +157,7 @@
 
                             </div>
 
-                            <div class="ui segment"
+                            <div id="uploadNewKey" class="ui segment"
                                  ng-show="currentUser&&userProfileGeneralView&&currentUser.userId&&userProfileGeneralView.userId&&(currentUser.userId==userProfileGeneralView.userId)">
                                 <h2>Update Profile</h2>
 
@@ -172,8 +172,8 @@
                                             first name (fist) and last name (after first name) - in English, exactly as
                                             in your passport;<br>
                                             e-mail - the same as you used to log in;<br><br>
-                                            Key strength (key size) have to be min 2,048 bits;<br>
-                                            Key can be valid not longer than for 2 years;<br>
+                                            Key strength (key size) has to be min 2,048 bits;<br>
+                                            Key can be valid for not longer than 2 years;<br>
                                         </p>
 
                                         <p>You can generate your keys using our
@@ -240,6 +240,49 @@
                                             ng-click="keyUploadFn()">
                                         Upload new key
                                     </button>
+
+                                </form>
+
+                            </div>
+
+                            <!-- Alerts (Duplicate)-->
+                            <alerts></alerts>
+
+                            <div id="admin" class="ui segment" ng-show="currentUser.cryptonomicaOfficer">
+
+                                <h1>Compliance Actions:</h1>
+                                <p>(you see this because you are Cryptonomica compliance officer)</p>
+                                <form class="ui form">
+
+                                    <fieldset>
+
+                                        <div class="field">
+
+                                            <h2>Delete User Profile</h2>
+
+                                            <label for="deleteUserProfileCheckbox">
+                                                Confirm deleting this user profile (select the checkbox):
+                                            </label>
+                                            <input id="deleteUserProfileCheckbox" type="checkbox"
+                                                   class="form-control"
+                                                   ng-model="deleteUserProfileCheckbox">
+                                            <br>
+
+                                            <label for="reason">
+                                                Reason for deletion (this will be reported to user):
+                                            </label>
+                                            <input id="reason" type="text" class="form-control"
+                                                   ng-model="reason">
+                                            <br>
+
+                                            <button ng-click="deleteProfile()"
+                                                    class="ui red button" type="submit">
+                                                Delete User Profile {{userProfileGeneralView.email}}
+                                            </button>
+
+                                        </div>
+
+                                    </fieldset>
 
                                 </form>
 

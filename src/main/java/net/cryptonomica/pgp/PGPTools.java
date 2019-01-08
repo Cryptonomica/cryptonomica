@@ -207,7 +207,9 @@ public class PGPTools {
         }
         // get key from the list
         PGPPublicKeyData pgpPublicKeyData = pgpPublicKeyDataList.get(0);
+
         return pgpPublicKeyData;
+
     } // end of getPGPPublicKeyDataFromDataBaseByFingerprint()
 
     public static Boolean verifySignedString(

@@ -7,6 +7,7 @@ import java.util.Date;
  *
  */
 public class NewUserRegistrationForm implements Serializable {
+
     String armoredPublicPGPkeyBlock;
     Date birthday;
     String userInfo;
