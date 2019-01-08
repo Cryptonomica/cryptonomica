@@ -1,40 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!--<appengine-web-app xmlns="http://appengine.google.com/ns/1.0">-->
-
-<!--&lt;!&ndash; docs: &ndash;&gt;-->
-<!--&lt;!&ndash; https://cloud.google.com/appengine/docs/java/endpoints/required_files#appengine-webxml &ndash;&gt;-->
-<!--&lt;!&ndash; https://cloud.google.com/appengine/docs/java/config/appconfig#Java_appengine_web_xml_About_appengine_web_xml-->
-<!--&ndash;&gt;-->
-
-<!--<application>cryptonomica-server</application>-->
-<!--<version>v-1-0</version>-->
-<!--<threadsafe>true</threadsafe>-->
-
-<!--&lt;!&ndash; see: https://cloud.google.com/appengine/docs/standard/java/runtime-java8 &ndash;&gt;-->
-<!--<runtime>java8</runtime>-->
-
-<!--&lt;!&ndash;<warmup-requests-enabled>false</warmup-requests-enabled>&ndash;&gt;-->
-<!--<warmup-requests-enabled>true</warmup-requests-enabled>-->
-
-<!--&lt;!&ndash; logging: &ndash;&gt;-->
-<!--<system-properties>-->
-<!--<property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>-->
-<!--</system-properties>-->
-<!--&lt;!&ndash; it seems, that it does not work, to have log messages to be shown in GAE logs,-->
-<!--we have to set their level to WARNING manually&ndash;&gt;-->
-
-<!--<env-variables>-->
-<!--&lt;!&ndash; see: https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/appengine/endpoints-frameworks-v2/backend/src/main/webapp/WEB-INF/appengine-web.xml#L31&ndash;&gt;-->
-<!--&lt;!&ndash;<env-var name="ENDPOINTS_SERVICE_NAME" value="${endpoints.project.id}.appspot.com" />&ndash;&gt;-->
-<!--<env-var name="ENDPOINTS_SERVICE_NAME" value="cryptonomica-server.appspot.com"/>-->
-<!--</env-variables>-->
-
-<!--</appengine-web-app>-->
-
-<!-- NEW: for Google Endpoints ver.2 -->
-
-<!-- see example:
+<!-- NEW: for Google Endpoints ver.2 see example:
 https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/appengine-java8/endpoints-v2-backend/src/main/webapp/WEB-INF/appengine-web.xml
 -->
 
@@ -43,10 +9,6 @@ https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/appengine-j
     <!-- see: https://cloud.google.com/appengine/docs/standard/java/runtime-java8 -->
     <runtime>java8</runtime>
     <threadsafe>true</threadsafe>
-
-    <!--<basic-scaling>-->
-        <!--<max-instances>2</max-instances>-->
-    <!--</basic-scaling>-->
 
     <system-properties>
         <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>

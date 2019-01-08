@@ -9,8 +9,9 @@
 # https://console.cloud.google.com/datastore/indexes?project=cryptonomica-server
 # ("Below are the composite indexes for this application. These indexes are managed in your app's index configuration file")
 
-# >>>>>>>>>>>>>>>> to update indexes <<<<<<<<<<<<<<<<<<<
+# >>>>>>>>>>>>>>>> to update indexes RUN: <<<<<<<<<<<<<<<<<<<
 # gcloud app deploy ./src/main/webapp/WEB-INF/index.yaml
+
 # to see indexes on GAE: https://console.cloud.google.com/datastore/indexes?project=cryptonomica-server
 
 indexes:

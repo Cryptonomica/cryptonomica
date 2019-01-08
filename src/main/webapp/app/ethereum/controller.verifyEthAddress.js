@@ -112,7 +112,9 @@
                 // $scope.$apply();
                 $rootScope.goTo("alertMessage");
             };
+
             /* ---- */
+
             // example from:
             // https://github.com/trufflesuite/truffle-artifactor#artifactorgenerateoptions-networks
             var networks = {

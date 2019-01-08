@@ -5,6 +5,8 @@
 
 gcloud config set project cryptonomica-server
 
+./sed.production.sh # < make changes in code
+
 gcloud app versions list
 # (max. 15 versions)
 # gcloud app versions delete ... (list separated by empty spaces, not commas)

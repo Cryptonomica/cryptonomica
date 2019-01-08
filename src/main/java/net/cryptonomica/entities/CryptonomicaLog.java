@@ -1,8 +1,10 @@
 package net.cryptonomica.entities;
 
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.users.User;
-import com.googlecode.objectify.annotation.*;
+import com.googlecode.objectify.annotation.Cache;
+import com.googlecode.objectify.annotation.Entity;
+import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -17,7 +19,6 @@ import java.util.List;
 public class CryptonomicaLog implements Serializable {
 
     /* ---- Properties */
-
     @Id
     private Long id;
 
@@ -42,21 +43,28 @@ public class CryptonomicaLog implements Serializable {
 
     // @Index
     private List<Key> changedEntities;
+    //    private List<Object> changedEntitiesObjects;
+    private List<String> changedEntitiesStringRepresentation;
 
     /* ---- Constructor */
 
     public CryptonomicaLog() {
         this.date = new Date();
         this.changedEntities = new ArrayList<>();
+//        this.changedEntitiesObjects = new ArrayList<>();
+        this.changedEntitiesStringRepresentation = new ArrayList<>();
     }
 
-    public CryptonomicaLog(String userWhoseDataIsChanged, String userWhoseDataIsChangedEmail, String changedBy, String changedByEmail) {
+    public CryptonomicaLog(String action, String userWhoseDataIsChanged, String userWhoseDataIsChangedEmail, String changedBy, String changedByEmail) {
         this.date = new Date();
         this.changedEntities = new ArrayList<>();
+//        this.changedEntitiesObjects = new ArrayList<>();
+        this.changedEntitiesStringRepresentation = new ArrayList<>();
+        this.action = action.toLowerCase();
         this.userWhoseDataIsChanged = userWhoseDataIsChanged;
-        this.userWhoseDataIsChangedEmail = userWhoseDataIsChangedEmail;
+        this.userWhoseDataIsChangedEmail = userWhoseDataIsChangedEmail.toLowerCase();
         this.changedBy = changedBy;
-        this.changedByEmail = changedByEmail;
+        this.changedByEmail = changedByEmail.toLowerCase();
     }
 
     /* ---- Methods */
@@ -65,8 +73,16 @@ public class CryptonomicaLog implements Serializable {
         return this.changedEntities.add(key);
     }
 
+//    public Boolean addChangedEntityObject(Object entityObject) {
+//        return this.changedEntitiesObjects.add(entityObject);
+//    }
 
-    /* ---- Getters and Setters */
+    public Boolean addChangedEntityStringRepresentation(String jsonSting) {
+        return this.changedEntitiesStringRepresentation.add(jsonSting);
+    }
+
+
+    /* ---- [customized] Getters and Setters */
 
     public Long getId() {
         return id;
@@ -93,11 +109,11 @@ public class CryptonomicaLog implements Serializable {
     }
 
     public String getUserWhoseDataIsChangedEmail() {
-        return userWhoseDataIsChangedEmail;
+        return userWhoseDataIsChangedEmail.toLowerCase();
     }
 
     public void setUserWhoseDataIsChangedEmail(String userWhoseDataIsChangedEmail) {
-        this.userWhoseDataIsChangedEmail = userWhoseDataIsChangedEmail;
+        this.userWhoseDataIsChangedEmail = userWhoseDataIsChangedEmail.toLowerCase();
     }
 
     public String getChangedBy() {
@@ -109,11 +125,11 @@ public class CryptonomicaLog implements Serializable {
     }
 
     public String getChangedByEmail() {
-        return changedByEmail;
+        return changedByEmail.toLowerCase();
     }
 
     public void setChangedByEmail(String changedByEmail) {
-        this.changedByEmail = changedByEmail;
+        this.changedByEmail = changedByEmail.toLowerCase();
     }
 
     public String getAction() {
@@ -121,7 +137,7 @@ public class CryptonomicaLog implements Serializable {
     }
 
     public void setAction(String action) {
-        this.action = action;
+        this.action = action.toLowerCase();
     }
 
     public List<Key> getChangedEntities() {
@@ -130,6 +146,23 @@ public class CryptonomicaLog implements Serializable {
 
     public void setChangedEntities(List<Key> changedEntities) {
         this.changedEntities = changedEntities;
+    }
+
+//    public List<Object> getChangedEntitiesObjects() {
+//        return changedEntitiesObjects;
+//    }
+//
+//    public void setChangedEntitiesObjects(List<Object> changedEntitiesObjects) {
+//        this.changedEntitiesObjects = changedEntitiesObjects;
+//    }
+
+
+    public List<String> getChangedEntitiesStringRepresentation() {
+        return changedEntitiesStringRepresentation;
+    }
+
+    public void setChangedEntitiesStringRepresentation(List<String> changedEntitiesStringRepresentation) {
+        this.changedEntitiesStringRepresentation = changedEntitiesStringRepresentation;
     }
 
 }

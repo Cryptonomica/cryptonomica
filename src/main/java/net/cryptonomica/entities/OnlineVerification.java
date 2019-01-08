@@ -1,6 +1,7 @@
 package net.cryptonomica.entities;
 
 import com.google.appengine.api.datastore.Email;
+import com.google.gson.Gson;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
@@ -127,6 +128,12 @@ public class OnlineVerification implements Serializable { // -- can be returned 
 
     /* ---- Methods */
 
+
+    public String toJSON() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
+
     public boolean addAllowedUser(String cryptonomicaUserId) {
         return this.allowedUsers.add(cryptonomicaUserId);
     }
@@ -147,7 +154,7 @@ public class OnlineVerification implements Serializable { // -- can be returned 
         this.userEmail = new Email(userEmail.getEmail().toLowerCase());
     }
 
-    // --- generated:
+    // --- [customized] generated:
 
     public String getId() {
         return Id;
@@ -174,7 +181,7 @@ public class OnlineVerification implements Serializable { // -- can be returned 
     }
 
     public void setLastName(String lastName) {
-        this.lastName = lastName;
+        this.lastName = lastName.toLowerCase();
     }
 
     public String getFirstName() {
@@ -182,7 +189,7 @@ public class OnlineVerification implements Serializable { // -- can be returned 
     }
 
     public void setFirstName(String firstName) {
-        this.firstName = firstName;
+        this.firstName = firstName.toLowerCase();
     }
 
     public String getKeyID() {
@@ -198,7 +205,7 @@ public class OnlineVerification implements Serializable { // -- can be returned 
     }
 
     public void setFingerprintStr(String fingerprintStr) {
-        this.fingerprintStr = fingerprintStr;
+        this.fingerprintStr = fingerprintStr.toUpperCase();
     }
 
     public Date getEntityCreated() {
@@ -230,7 +237,7 @@ public class OnlineVerification implements Serializable { // -- can be returned 
     }
 
     public void setVerifiedByFirstNameLastName(String verifiedByFirstNameLastName) {
-        this.verifiedByFirstNameLastName = verifiedByFirstNameLastName;
+        this.verifiedByFirstNameLastName = verifiedByFirstNameLastName.toLowerCase();
     }
 
     public String getVerificationNotes() {
@@ -350,7 +357,7 @@ public class OnlineVerification implements Serializable { // -- can be returned 
     }
 
     public void setNationality(String nationality) {
-        this.nationality = nationality;
+        this.nationality = nationality.toUpperCase();
     }
 
     public String getPromoCode() {
@@ -368,4 +375,5 @@ public class OnlineVerification implements Serializable { // -- can be returned 
     public void setPromoCodeUsed(String promoCodeUsed) {
         this.promoCodeUsed = promoCodeUsed;
     }
+
 }
