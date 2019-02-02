@@ -1,5 +1,7 @@
 package net.cryptonomica.testing;
 
+import net.cryptonomica.service.DateAndTimeService;
+
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.TextStyle;
@@ -11,7 +13,9 @@ public class TestDate {
 
     public static void main(String[] args) {
 
-        lastDayOfMonth(2018, 8);
+        // lastDayOfMonth(2018, 8);
+
+        DateAndTimeService.utcUnixTimeFromYearMonthDay(0,14,44);
 
     }
 

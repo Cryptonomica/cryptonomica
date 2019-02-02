@@ -92,9 +92,11 @@ public class PGPPublicKeyData implements Serializable {
     // OnlineVerification entity ID -> fingerprint
     @Index
     private Boolean onlineVerificationFinished; //............22
+
     // TODO > transform to Integer year, Integer month, Integer day
-    private Date userBirthday; //.............................23
-    //
+    // TODO > store this in Cryptonomica User
+    // private Date userBirthday; //.............................23
+
     // Nationality - from user passport or id document:
     // 2-letter country codes defined in ISO 3166
     // like returned by Locale.getISOCountries() in Java
@@ -410,14 +412,14 @@ public class PGPPublicKeyData implements Serializable {
     public void setOnlineVerificationFinished(Boolean onlineVerificationFinished) {
         this.onlineVerificationFinished = onlineVerificationFinished;
     }
-
-    public Date getUserBirthday() {
-        return userBirthday;
-    }
-
-    public void setUserBirthday(Date userBirthday) {
-        this.userBirthday = userBirthday;
-    }
+//
+//    public Date getUserBirthday() {
+//        return userBirthday;
+//    }
+//
+//    public void setUserBirthday(Date userBirthday) {
+//        this.userBirthday = userBirthday;
+//    }
 
     public String getNationality() {
         return nationality;

@@ -27,6 +27,7 @@ import net.cryptonomica.service.UserTools;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -64,7 +65,7 @@ public class OnlineVerificationAPI {
                 .now();
 
         if (onlineVerification == null) {
-            throw new NotFoundException("OnlineVeriication entity for fingerprint "
+            throw new NotFoundException("OnlineVerification entity for fingerprint "
                     + fingerprint
                     + " does not exist in data base"
             );
@@ -93,6 +94,7 @@ public class OnlineVerificationAPI {
         }
 
         PGPPublicKeyData pgpPublicKeyData = PGPTools.getPGPPublicKeyDataFromDataBaseByFingerprint(fingerprint);
+        CryptonomicaUser cryptonomicaUser = UserTools.loadCryptonomicaUser(pgpPublicKeyData.getCryptonomicaUserId());
 
         /* --- Check authorization: */
         // only allowed users can get verification data:
@@ -140,7 +142,7 @@ public class OnlineVerificationAPI {
                 .load()
                 .type(VerificationDocument.class)
                 .filter("fingerprint", fingerprint)
-                .filter("hidden", false)
+                .filter("hidden !=", true)
                 .list()
                 .size();
         LOG.warning("verificationDocumentsListSize: " + verificationDocumentsListSize);
@@ -150,7 +152,7 @@ public class OnlineVerificationAPI {
                     .load()
                     .type(VerificationDocument.class)
                     .filter("fingerprint", fingerprint)
-                    .filter("hidden", false)
+                    .filter("hidden !=", true)
                     .list();
             verificationDocumentArrayList.addAll(verificationDocumentList);
             LOG.warning(GSON.toJson(verificationDocumentArrayList));
@@ -158,6 +160,7 @@ public class OnlineVerificationAPI {
 
         OnlineVerificationView onlineVerificationView = new OnlineVerificationView(
                 onlineVerification,
+                cryptonomicaUser,
                 verificationDocumentArrayList,
                 pgpPublicKeyData.getUserID()
         );
@@ -395,7 +398,7 @@ public class OnlineVerificationAPI {
 
         LOG.warning("phoneVerification.getSmsMessage(): " + phoneVerification.getSmsMessage());
         LOG.warning("smsMessage: " + smsMessage);
-        Boolean verificationResult = phoneVerification.getSmsMessage().toString().equalsIgnoreCase(smsMessage);
+        Boolean verificationResult = phoneVerification.getSmsMessage().equalsIgnoreCase(smsMessage);
         phoneVerification.setVerified(verificationResult);
         StringWrapperObject result = new StringWrapperObject();
         if (verificationResult) {
@@ -541,11 +544,12 @@ public class OnlineVerificationAPI {
             pgpPublicKeyData.setNationality(onlineVerification.getNationality().toUpperCase());
         }
 
-        if (onlineVerification.getBirthday() == null) {
-            throw new IllegalArgumentException("User birthday not provided");
-        } else {
-            pgpPublicKeyData.setUserBirthday(onlineVerification.getBirthday());
-        }
+        // 2019-01-18 removed
+//        if (onlineVerification.getBirthday() == null) {
+//            throw new IllegalArgumentException("User birthday not provided");
+//        } else {
+//            pgpPublicKeyData.setUserBirthday(onlineVerification.getBirthday());
+//        }
 
         pgpPublicKeyData.setVerifiedOnline(Boolean.TRUE); // <<< NEW
 
@@ -563,18 +567,11 @@ public class OnlineVerificationAPI {
         final Queue queue = QueueFactory.getDefaultQueue();
         queue.add(
                 TaskOptions.Builder
-                        .withUrl(
-                                "/_ah/SendGridServlet")
-                        .param("email",
-                                onlineVerification.getUserEmail().getEmail()
-                        )
-                        .param("emailCC",
-                                "verification@cryptonomica.net"
-                        )
-                        .param("messageSubject",
-                                "[cryptonomica] Online verification for key: "
-                                        + onlineVerification.getKeyID()
-                                        + " approved")
+                        .withUrl("/_ah/SendGridServlet")
+                        .param("email", onlineVerification.getUserEmail().getEmail())
+                        .param("emailCC", "verification@cryptonomica.net")
+                        .param("messageSubject", Constants.emailSubjectPrefix + "Online verification for key: "
+                                + onlineVerification.getKeyID() + " approved")
                         .param("messageText",
                                 "Congratulation! \n\n"
                                         + onlineVerification.getFirstName().toUpperCase() + " "
@@ -583,12 +580,12 @@ public class OnlineVerificationAPI {
                                         + fingerprint + " approved! \n\n"
                                         + "See verification information on:\n"
                                         // + "https://cryptonomica.net/#/onlineVerificationView/" + fingerprint + "\n"
-                                        + "https://cryptonomica.net/#!/onlineVerificationView/" + fingerprint + "\n"
+                                        + "https://" + Constants.host + "/#!/onlineVerificationView/" + fingerprint + "\n"
                                         + "(information is not public, you have to login with your google account "
                                         + onlineVerification.getUserEmail().getEmail()
                                         + ")\n"
-                                        + "Should you have any questions, please, do not hesitate to contact us"
-                                        + " via support@cryptonomica.net or telegram https://t.me/cryptonomicanet \n\n"
+                                        + "Should you have any questions, please, do not hesitate to contact us via "
+                                        + Constants.supportEmailAddress + "\n\n"
                                         + "Best regards, \n\n"
                                         + "Cryptonomica team\n\n"
                                         + new Date().toString()
@@ -646,6 +643,49 @@ https://stackoverflow.com/questions/21001371/why-gae-datastore-not-support-multi
     } // end of:  public StatsView getStatsByDate(
 
 
+    @ApiMethod(
+            name = "getPaidButNotVerified",
+            path = "getPaidButNotVerified",
+            httpMethod = ApiMethod.HttpMethod.GET
+    )
+    @SuppressWarnings("unused")
+    public OnlineVerificationsList getPaidButNotVerified(final User googleUser) throws UnauthorizedException {
+
+        /* >>>>> (!!!!!!) Check authorization: */
+        CryptonomicaUser complienceOfficer = UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        OnlineVerificationsList result = new OnlineVerificationsList();
+
+/*
+To avoid having to scan the entire index table, the query mechanism relies on
+all of a query's potential results being adjacent to one another in the index.
+To satisfy this constraint, a single query may not use inequality comparisons
+(LESS_THAN, LESS_THAN_OR_EQUAL, GREATER_THAN, GREATER_THAN_OR_EQUAL, NOT_EQUAL)
+on more than one property across all of its filters
+[Source : https://cloud.google.com/appengine/docs/standard/java/datastore/query-restrictions ]
+https://stackoverflow.com/questions/21001371/why-gae-datastore-not-support-multiple-inequality-filter-on-different-properties
+*/
+        List<OnlineVerification> onlineVerifications = ofy().load().type(OnlineVerification.class)
+                .filter("paymentVerified", true)
+                // .filter("onlineVerificationDataVerified", false) // < can be null
+                .filter("onlineVerificationDataVerified !=", true)
+                .list();
+
+        ArrayList<OnlineVerification> resultList = new ArrayList<>();
+        for (OnlineVerification onlineVerification : onlineVerifications) {
+            if (onlineVerification.getVerificationVideoId() != null) {
+                resultList.add(onlineVerification);
+            }
+        }
+
+        result.setOnlineVerifications(resultList);
+        result.setCounter(resultList.size());
+
+        return result;
+
+    } // end of:  getPaidButNotVerified()
+
+
     /* allows admin to change user name */
     @ApiMethod(
             name = "changeName",
@@ -684,7 +724,13 @@ https://stackoverflow.com/questions/21001371/why-gae-datastore-not-support-multi
         // 2
         PGPPublicKeyData pgpPublicKeyData = PGPTools.getPGPPublicKeyDataFromDataBaseByFingerprint(fingerprint);
         // 3
-        OnlineVerification onlineVerification = loadOnlineVerification(fingerprint);
+        // OnlineVerification onlineVerification = loadOnlineVerification(fingerprint); // we dont want an Exception
+        OnlineVerification onlineVerification = ofy()
+                .load()
+                .key(
+                        Key.create(OnlineVerification.class, fingerprint)
+                )
+                .now();
 
         /* --- change entities*/
         // 1
@@ -696,8 +742,11 @@ https://stackoverflow.com/questions/21001371/why-gae-datastore-not-support-multi
         pgpPublicKeyData.setFirstName(firstName);
         pgpPublicKeyData.setLastName(lastName);
         // 3
-        onlineVerification.setFirstName(firstName);
-        onlineVerification.setLastName(lastName);
+        if (onlineVerification != null) {
+            onlineVerification.setFirstName(firstName);
+            onlineVerification.setLastName(lastName);
+            ofy().save().entity(onlineVerification); // async
+        }
 
         /* --- record changes */
         CryptonomicaLog cryptonomicaLog = new CryptonomicaLog();
@@ -706,19 +755,13 @@ https://stackoverflow.com/questions/21001371/why-gae-datastore-not-support-multi
         cryptonomicaLog.setUserWhoseDataIsChanged(cryptonomicaUser.getUserId());
         cryptonomicaLog.setUserWhoseDataIsChangedEmail(userEmail);
         String action =
-                "name in profile changed from " + oldFirstName + " " + oldFirstName + " to " + firstName + " " + lastName;
+                "name in profile changed from " + oldFirstName + " " + oldLastName + " to " + firstName + " " + lastName;
         cryptonomicaLog.setAction(action);
 
         /* --- save entities */
-        try {
-            ofy().save().entity(cryptonomicaUser).now();
-            ofy().save().entity(pgpPublicKeyData).now();
-            ofy().save().entity(onlineVerification).now();
-            ofy().save().entity(cryptonomicaLog).now();
-        } catch (Exception e) {
-            LOG.severe(e.getMessage());
-            throw new Exception("Error saving data to DB: " + e.getMessage());
-        }
+        ofy().save().entity(cryptonomicaUser).now();
+        ofy().save().entity(pgpPublicKeyData).now();
+        ofy().save().entity(cryptonomicaLog).now();
 
         /* --- send message to user */
         final Queue queue = QueueFactory.getDefaultQueue();
@@ -728,12 +771,11 @@ https://stackoverflow.com/questions/21001371/why-gae-datastore-not-support-multi
                 .param("emailCC", Constants.adminEmailAddress)
                 .param("messageSubject", Constants.emailSubjectPrefix + "profile changes: name changed")
                 .param("messageText",
-                        "Dear " + pgpPublicKeyData.getFirstName() + " ,\n\n"
+                        "Dear " + pgpPublicKeyData.getFirstName().toUpperCase() + " ,\n\n"
                                 + "Following changes were made in your profile: \n"
                                 + action + "\n\n"
                                 + "Should you have any questions, please, do not hesitate to contact us via "
-                                + Constants.supportEmailAddress
-                                + " or telegram https://t.me/cryptonomicanet \n\n"
+                                + Constants.supportEmailAddress + "\n\n"
                                 + "Best regards, \n\n"
                                 + "Cryptonomica team\n\n"
                                 + new Date().toString()
@@ -748,6 +790,108 @@ https://stackoverflow.com/questions/21001371/why-gae-datastore-not-support-multi
         return result;
 
     } // end of changeName() ;
+
+    /* allows admin to change user birth date */
+    @ApiMethod(
+            name = "changeBirthdate",
+            path = "changeNameBirthdate",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    @SuppressWarnings("unused")
+    public BooleanWrapperObject changeBirthdate(
+            final User googleUser,
+            final @Named("day") Integer day,
+            final @Named("month") Integer month,
+            final @Named("year") Integer year,
+            final @Named("userID") String userID
+            // final @Named("fingerprint") String fingerprint
+            // see: https://cloud.google.com/appengine/docs/java/endpoints/exceptions
+    ) throws Exception {
+
+        /* --- Check authorization : CRYPTONOMICA OFFICER ONLY !!! */
+        CryptonomicaUser admin = UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        /* --- Check input */
+        if (day <= 0 || day > 31) {
+            throw new Exception("day of the month: " + day.toString() + " is invalid");
+        }
+
+        if (month <= 0 || month > 12) {
+            throw new Exception("month " + month.toString() + " is invalid");
+        }
+
+        // TODO: add more checks
+        if (year < 1900) {
+            throw new Exception("Year " + year.toString() + " is invalid");
+        }
+
+        // create LocalDate object to validate arguments:
+        // @throws DateTimeException if the day-of-month is invalid for the month-year
+        LocalDate localDate = LocalDate.of(year, month, day);
+
+        /* --- load entities */
+        CryptonomicaUser cryptonomicaUser = ofy()
+                .load()
+                .key(
+                        Key.create(CryptonomicaUser.class, userID)
+                )
+                .now();
+        String userEmail = cryptonomicaUser.getEmail().getEmail().toLowerCase();
+
+        // we don't need this (birthdate stored in CryptonomicaUser entity only):
+//        OnlineVerification onlineVerification = ofy()
+//                .load()
+//                .key(
+//                        Key.create(OnlineVerification.class, fingerprint)
+//                )
+//                .now();
+
+        /* --- change entities*/
+        cryptonomicaUser.setBirthdayDay(day);
+        cryptonomicaUser.setBirthdayMonth(month);
+        cryptonomicaUser.setBirthdayYear(year);
+
+        /* --- record changes */
+        CryptonomicaLog cryptonomicaLog = new CryptonomicaLog();
+        cryptonomicaLog.setChangedBy(admin.getUserId());
+        cryptonomicaLog.setChangedByEmail(admin.getEmail().getEmail());
+        cryptonomicaLog.setUserWhoseDataIsChanged(cryptonomicaUser.getUserId());
+        cryptonomicaLog.setUserWhoseDataIsChangedEmail(userEmail);
+        String action =
+                "Birthdate in the profile changed to: " + localDate.toString();
+        cryptonomicaLog.setAction(action);
+
+        /* --- save entities */
+        ofy().save().entity(cryptonomicaUser).now();
+        ofy().save().entity(cryptonomicaLog); // async
+
+        /* --- send message to user */
+        final Queue queue = QueueFactory.getDefaultQueue();
+        queue.add(TaskOptions.Builder
+                .withUrl("/_ah/SendGridServlet")
+                .param("email", userEmail)
+                .param("emailCC", Constants.adminEmailAddress)
+                .param("messageSubject", Constants.emailSubjectPrefix + "profile changes: birthdate changed")
+                .param("messageText",
+                        "Dear " + cryptonomicaUser.getFirstName() + " ,\n\n"
+                                + "Following changes were made in your profile: \n"
+                                + action + "\n\n"
+                                + "Should you have any questions, please, do not hesitate to contact us via "
+                                + Constants.supportEmailAddress + "\n\n"
+                                + "Best regards, \n\n"
+                                + "Cryptonomica team\n\n"
+                                + new Date().toString()
+                                + "\n\n"
+                                + "if you think it's wrong or it is an error, "
+                                + "please write to" + Constants.supportEmailAddress + "\n\n"
+                )
+        );
+
+        // create and return result object:
+        BooleanWrapperObject result = new BooleanWrapperObject(true, action);
+        return result;
+
+    } // end of changeBirthdate() ;
 
     /* allows admin to add name on credit/debit card */
     @ApiMethod(
@@ -799,15 +943,14 @@ https://stackoverflow.com/questions/21001371/why-gae-datastore-not-support-multi
                 .param("emailCC", Constants.adminEmailAddress)
                 .param("messageSubject", Constants.emailSubjectPrefix + "profile changes: payment method")
                 .param("messageText",
-                        "Dear " + pgpPublicKeyData.getFirstName() + ",\n\n"
+                        "Dear " + pgpPublicKeyData.getFirstName().toUpperCase() + ",\n\n"
                                 + "Now you can pay for verification of your public key certificate " + pgpPublicKeyData.getKeyID()
                                 + " with credit/debit card with the name '" + nameOnCard.toLowerCase() + "'\n\n"
                                 + "Please go to \n"
-                                + "https://cryptonomica.net/#!/onlineVerification/" + pgpPublicKeyData.getFingerprint() + "\n"
+                                + "https://" + Constants.host + "/#!/onlineVerification/" + pgpPublicKeyData.getFingerprint() + "\n"
                                 + "and continue verification\n\n"
                                 + "Should you have any questions, please, do not hesitate to contact us via "
-                                + Constants.supportEmailAddress
-                                + " or telegram https://t.me/cryptonomicanet \n\n"
+                                + Constants.supportEmailAddress + "\n\n"
                                 + "Best regards, \n\n"
                                 + "Cryptonomica team\n\n"
                                 + new Date().toString()
@@ -929,7 +1072,7 @@ https://stackoverflow.com/questions/21001371/why-gae-datastore-not-support-multi
                                 + "Reason: \n"
                                 + reason + "\n\n"
                                 + "Should you have any questions, please, do not hesitate to contact us via "
-                                + Constants.supportEmailAddress + " or telegram https://t.me/cryptonomicanet \n\n"
+                                + Constants.supportEmailAddress + "\n\n"
                                 + "Best regards, \n\n"
                                 + "Cryptonomica team\n\n"
                                 + new Date().toString() + "\n\n"
@@ -945,6 +1088,89 @@ https://stackoverflow.com/questions/21001371/why-gae-datastore-not-support-multi
         );
         return result;
     } // end of deleteProfile();
+
+
+    @ApiMethod(
+            name = "deleteOnlineVerificationEntity",
+            path = "deleteOnlineVerificationEntity",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    @SuppressWarnings("unused")
+    public BooleanWrapperObject deleteOnlineVerificationEntity(
+            final User googleUser,
+            final @Named("fingerprint") String fingerprint,
+            final @Named("reason") String reason
+            // see: https://cloud.google.com/appengine/docs/java/endpoints/exceptions
+    ) throws Exception {
+
+        /* --- Check authorization : CRYPTONOMICA OFFICER ONLY !!! */
+        CryptonomicaUser complianceOfficer = UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        LOG.warning("Delete OnlineVerification entity request request. Fingerprint: " + fingerprint);
+
+        /* --- Delete OnlineVerification entity */
+
+        OnlineVerification onlineVerification = ofy()
+                .load()
+                .key(
+                        Key.create(OnlineVerification.class, fingerprint)
+                )
+                .now();
+
+        if (onlineVerification == null) {
+            throw new Exception(
+                    "Online verification entity for fingerprint  " + fingerprint + " not found in database"
+            );
+        }
+
+        CryptonomicaLog cryptonomicaLogDeleteOnlineVerifications = new CryptonomicaLog(
+                "all OnlineVerificationObjects for fingerprint: " + fingerprint + " were deleted",
+                onlineVerification.getCryptonomicaUserId(),
+                onlineVerification.getUserEmail().getEmail(),
+                complianceOfficer.getUserId(),
+                complianceOfficer.getEmail().getEmail()
+        );
+        cryptonomicaLogDeleteOnlineVerifications.addChangedEntityStringRepresentation(
+                onlineVerification.toJSON()
+        );
+        ofy().save().entity(cryptonomicaLogDeleteOnlineVerifications); // async
+
+        ofy().delete().entity(onlineVerification); // async
+
+        /* ---- send message to user: */
+        String userEmail = onlineVerification.getUserEmail().getEmail();
+        final Queue queue = QueueFactory.getDefaultQueue();
+        if (userEmail == null || userEmail.equalsIgnoreCase("<email not found>")) {
+            userEmail = Constants.adminEmailAddress;
+        }
+        queue.add(TaskOptions.Builder
+                .withUrl("/_ah/SendGridServlet")
+                .param("email", userEmail)
+                .param("emailCC", Constants.adminEmailAddress)
+                .param("messageSubject", Constants.emailSubjectPrefix + "Online verification data of " + onlineVerification.getKeyID() + "were deleted")
+                .param("messageText",
+                        "Dear user, \n"
+                                + "Online verification request for key with ID " + onlineVerification.getKeyID()
+                                + " was rejected and entered data were deleted from " + Constants.host + "\n\n"
+                                + "Reason: \n"
+                                + reason + "\n\n"
+                                + "Should you have any questions, please, do not hesitate to contact us via "
+                                + Constants.supportEmailAddress + "\n\n"
+                                + "Best regards, \n\n"
+                                + "Cryptonomica team\n\n"
+                                + new Date().toString() + "\n\n"
+                                + "if you think it's wrong or it is an error, please write to "
+                                + Constants.supportEmailAddress + "\n\n"
+                )
+        );
+
+        // create result object:
+        BooleanWrapperObject result = new BooleanWrapperObject(
+                true,
+                "Online verification entity for " + onlineVerification.getKeyID() + " were deleted from " + Constants.host
+        );
+        return result;
+    } // end of deleteOnlineVerificationEntity;
 
     @ApiMethod(
             name = "removeVideoWithMessage",
@@ -997,18 +1223,10 @@ https://stackoverflow.com/questions/21001371/why-gae-datastore-not-support-multi
         final Queue queue = QueueFactory.getDefaultQueue();
         queue.add(
                 TaskOptions.Builder
-                        .withUrl(
-                                "/_ah/SendGridServlet")
-                        .param("email",
-                                onlineVerification.getUserEmail().getEmail()
-                        )
-                        .param("emailCC",
-                                "verification@cryptonomica.net"
-                        )
-                        .param("messageSubject",
-                                Constants.emailSubjectPrefix + onlineVerification.getKeyID() + " your video cannot be accepted "
-
-                        )
+                        .withUrl("/_ah/SendGridServlet")
+                        .param("email", onlineVerification.getUserEmail().getEmail())
+                        .param("emailCC", Constants.verificationServiceEmailAddress)
+                        .param("messageSubject", Constants.emailSubjectPrefix + onlineVerification.getKeyID() + " your video cannot be accepted ")
                         .param("messageText",
                                 "Dear "
                                         + onlineVerification.getFirstName().toUpperCase() + " ,\n\n"
@@ -1019,7 +1237,7 @@ https://stackoverflow.com/questions/21001371/why-gae-datastore-not-support-multi
                                         + messageToUser
                                         + "\n\n"
                                         + "Please go to \n"
-                                        + Constants.host + "/#!/onlineVerification/" + fingerprint + "\n"
+                                        + "https://" + Constants.host + "/#!/onlineVerification/" + fingerprint + "\n"
                                         + "and upload new video.\n\n"
                                         + "Should you have any questions, please, do not hesitate to contact us via "
                                         + Constants.supportEmailAddress + " or telegram https://t.me/cryptonomicanet \n\n"
@@ -1040,5 +1258,128 @@ https://stackoverflow.com/questions/21001371/why-gae-datastore-not-support-multi
         return result;
 
     } // end of removeVideoWithMessage ;
+
+    @ApiMethod(
+            name = "removeDocumentsWithMessage",
+            path = "removeDocumentsWithMessage",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    @SuppressWarnings("unused")
+    public BooleanWrapperObject removeDocumentsWithMessage(
+            final User googleUser,
+            final @Named("messageToUser") String messageToUser,
+            final @Named("fingerprint") String fingerprint
+            // see: https://cloud.google.com/appengine/docs/java/endpoints/exceptions
+    ) throws Exception {
+
+        /* --- Check authorization : CRYPTONOMICA OFFICER ONLY !!! */
+        CryptonomicaUser admin = UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        /* --- Check input: */
+        PGPTools.checkFingerprint(fingerprint);
+
+        // Check if OnlineVerification entity exists:
+        OnlineVerification onlineVerification = ofy()
+                .load()
+                .key(
+                        Key.create(OnlineVerification.class, fingerprint)
+                ).now();
+
+        if (onlineVerification == null) {
+            throw new NotFoundException("OnlineVerification entity for fingerprint "
+                    + fingerprint
+                    + " was not found in DB"
+            );
+        } else if (onlineVerification.getOnlineVerificationDataVerified() != null
+                && onlineVerification.getOnlineVerificationDataVerified()) {
+            throw new BadRequestException("OnlineVerification is already approved");
+        }
+
+        onlineVerification.setOnlineVerificationFinished(Boolean.FALSE);
+        onlineVerification.setVerificationDocumentsArray(new ArrayList<>());
+        ofy().save().entity(onlineVerification); // async
+
+
+        List<VerificationDocument> verificationDocumentList = ofy()
+                .load()
+                .type(VerificationDocument.class)
+                .filter("fingerprint", fingerprint)
+                .filter("hidden !=", true)
+                .list();
+
+        if (verificationDocumentList == null || verificationDocumentList.size() == 0) {
+            throw new Exception(
+                    "ID documents for verification of " + onlineVerification.getKeyID() + " were not found in DB"
+            );
+        }
+
+        ArrayList<VerificationDocument> verificationDocumentArrayList = new ArrayList<>(verificationDocumentList);
+
+        Integer documentsCounter = 0;
+        for (VerificationDocument verificationDocument : verificationDocumentArrayList) {
+            verificationDocument.setHidden(Boolean.TRUE);
+            ofy().save().entity(verificationDocument);
+            documentsCounter = documentsCounter + 1;
+        }
+
+        String action = "ID documents were removed from online verification of "
+                + onlineVerification.getKeyID()
+                + "; reason: "
+                + messageToUser;
+
+        LOG.warning(documentsCounter.toString() + " " + action);
+
+        CryptonomicaLog cryptonomicaLog = new CryptonomicaLog(
+                action,
+                onlineVerification.getCryptonomicaUserId(),
+                onlineVerification.getUserEmail().getEmail(),
+                admin.getUserId(),
+                admin.getEmail().getEmail()
+        );
+        cryptonomicaLog.addChangedEntityStringRepresentation(
+                verificationDocumentArrayList.toString()
+        );
+
+        ofy().save().entity(cryptonomicaLog); // async
+
+        // Send email to user:
+        final Queue queue = QueueFactory.getDefaultQueue();
+        queue.add(
+                TaskOptions.Builder
+                        .withUrl("/_ah/SendGridServlet")
+                        .param("email", onlineVerification.getUserEmail().getEmail())
+                        .param("emailCC", Constants.verificationServiceEmailAddress)
+                        .param("messageSubject", Constants.emailSubjectPrefix + onlineVerification.getKeyID() + " your ID documents set cannot be accepted")
+                        .param("messageText",
+                                "Dear "
+                                        + onlineVerification.getFirstName().toUpperCase() + " ,\n\n"
+                                        + "ID documents uploaded for verification of the key with fingerprint : \n"
+                                        + fingerprint + "\n"
+                                        + "cannot be accepted and were deleted.\n\n"
+                                        + "Reason: \n"
+                                        + messageToUser
+                                        + "\n\n"
+                                        + "Please go to \n"
+                                        + "https://" + Constants.host + "/#!/onlineVerification/" + fingerprint + "\n"
+                                        + "and upload new documents set.\n\n"
+                                        + "Should you have any questions, please, do not hesitate to contact us via "
+                                        + Constants.supportEmailAddress + "\n\n"
+                                        + "Best regards, \n\n"
+                                        + "Cryptonomica team\n\n"
+                                        + new Date().toString()
+                                        + "\n\n"
+                                        + "if you think it's wrong or it is an error, "
+                                        + "please write to" + Constants.supportEmailAddress + "\n\n"
+                        )
+        );
+
+        // create result object:
+        BooleanWrapperObject result = new BooleanWrapperObject(true,
+                action
+        );
+
+        return result;
+
+    } // end of removeDocumentsWithMessage() ;
 
 }

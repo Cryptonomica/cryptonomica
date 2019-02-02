@@ -72,10 +72,6 @@ public class NewUserRegistrationAPI {
             throw new Exception("Birthdate can not be empty");
         }
 
-        /* --- user BirthDate */
-        Date userBirthDate = newUserRegistrationForm.getBirthday();
-        // TODO: add check
-
         /* --- create PGPPublicKey from armored PGP key block: */
         String userId = googleUser.getUserId();
         String armoredPublicPGPkeyBlock = newUserRegistrationForm.getArmoredPublicPGPkeyBlock();
@@ -90,7 +86,8 @@ public class NewUserRegistrationAPI {
                 pgpPublicKey,
                 armoredPublicPGPkeyBlock,
                 userId);
-        pgpPublicKeyData.setUserBirthday(userBirthDate);
+
+        // pgpPublicKeyData.setUserBirthday(userBirthDate);
 
         /* --- Check PGPPublic Key: */
 
@@ -109,7 +106,7 @@ public class NewUserRegistrationAPI {
         if (!pgpPublicKeyData.getUserEmail().getEmail().toLowerCase().equals(
                 googleUser.getEmail().toLowerCase()
         )
-                ) {
+        ) {
             throw new Exception("Email in the key's user ID should be the same as in account");
         }
 
@@ -137,6 +134,7 @@ public class NewUserRegistrationAPI {
                 googleUser,
                 pgpPublicKeyData,
                 newUserRegistrationForm);
+
         // save new user and his key
         Key<CryptonomicaUser> cryptonomicaUserKey = ofy()
                 .save()
@@ -186,29 +184,26 @@ public class NewUserRegistrationAPI {
         Gson prettyGson = new GsonBuilder().setPrettyPrinting().create();
         queue.add(
                 TaskOptions.Builder
-                        .withUrl(
-                                "/_ah/SendGridServlet")
-                        .param("email",
-                                googleUser.getEmail()
-                        )
-                        .param("messageSubject",
-                                "You are registered on Cryptonomica server")
+                        .withUrl("/_ah/SendGridServlet")
+                        .param("email", googleUser.getEmail())
+                        .param("messageSubject", Constants.emailSubjectPrefix + "You are registered on Cryptonomica server")
                         .param("messageText",
                                 "Congratulation! \n\n"
                                         + userProfileGeneralView.getFirstName().toUpperCase() + " "
                                         + userProfileGeneralView.getLastName().toUpperCase() + ",\n\n"
                                         + "You are registered on Cryptonomica server" + "\n\n"
-                                        + "To verify your key online:" + "\n"
+                                        + "To verify your key online: " + "\n"
                                         + "1) go to 'My profile', 2) click on key ID and go to page with key data , "
-                                        + "3) click green button 'Verify online' and follow instructions provided by web application"
+                                        + "3) click green button 'Verify online' and follow instructions provided by web application \n"
+                                        + "Or just click on: \n"
+                                        + "https://" + Constants.host + "/#!/onlineVerification/" + pgpPublicKeyData.getFingerprint()
                                         + "\n\n"
-                                        + "Should you have any questions, please, do not hesitate to contact us"
-                                        + " via support@cryptonomica.net or telegram https://t.me/cryptonomicanet \n\n"
+                                        + "Should you have any questions, please, do not hesitate to contact us via "
+                                        + Constants.supportEmailAddress + "\n\n"
                                         + "Best regards, \n\n"
                                         + "Cryptonomica team\n\n"
-                                        + new Date().toString()
-                                        + "\n\n"
-                                        + "if you think it's wrong or it is an error, please write to admin@cryptonomica.net \n"
+                                        + new Date().toString() + "\n\n"
+                                        + "if you think it's wrong or it is an error, please write to " + Constants.supportEmailAddress + "\n"
                         )
         );
         //

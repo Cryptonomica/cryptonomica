@@ -80,7 +80,10 @@
                                     </tr>
                                     <tr>
                                         <td>Birthday:</td>
-                                        <td>{{userProfileGeneralView.birthday | date}}</td>
+                                        <td>
+                                            {{userProfileGeneralView.birthdayYear}}-{{userProfileGeneralView.birthdayMonth}}-{{userProfileGeneralView.birthdayDay}}
+                                        </td>
+
                                     </tr>
                                     <tr>
                                         <td>email:</td>
@@ -136,9 +139,11 @@
                                         <td>
                                             <a href=""
                                                title="Show key info"
-                                               ui-sref="key({fingerprint:key.fingerprint})">
+                                               ui-sref="key({fingerprint:key.fingerprint})"
+                                               ng-style="key.verifiedOnline && {'color':' #006600'}">
                                                 {{key.fingerprint}}
                                             </a>
+
                                         </td>
                                     </tr>
                                     <tr>
@@ -252,6 +257,7 @@
 
                                 <h1>Compliance Actions:</h1>
                                 <p>(you see this because you are Cryptonomica compliance officer)</p>
+
                                 <form class="ui form">
 
                                     <fieldset>
@@ -279,10 +285,11 @@
                                                     class="ui red button" type="submit">
                                                 Delete User Profile {{userProfileGeneralView.email}}
                                             </button>
-
                                         </div>
+                                        <hr>
 
                                     </fieldset>
+
 
                                 </form>
 

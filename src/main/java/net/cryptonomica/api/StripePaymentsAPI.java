@@ -182,7 +182,7 @@ public class StripePaymentsAPI {
     public IntegerWrapperObject getPriceForKeyVerification(
             final HttpServletRequest httpServletRequest,
             final User googleUser,
-            final @Named("fingerprint") String fingerprint,
+            @Named("fingerprint") String fingerprint,
             // @Nullable - see:
             // https://cloud.google.com/endpoints/docs/frameworks/about-cloud-endpoints-frameworks
             // https://github.com/GoogleCloudPlatform/java-docs-samples/blob/master/appengine-java8/endpoints-v2-backend/src/main/java/com/example/echo/Echo.java
@@ -190,6 +190,8 @@ public class StripePaymentsAPI {
 
         /* --- Ensure cryptonomica registered user */
         final CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaRegisteredUser(googleUser);
+
+        fingerprint = fingerprint.toUpperCase();
 
         /* --- record login: */
         String userAction = "net.cryptonomica.api.StripePaymentsAPI.getPriceForKeyVerification";
@@ -575,6 +577,7 @@ public class StripePaymentsAPI {
                 throw new Exception("The number of attempts is exhausted."
                         + " Please, write to support@cryptonomica.net");
             } else {
+                LOG.severe("Code from user: " + paymentVerificationCode + " but should be: " + stripePaymentForKeyVerification.getPaymentVerificationCode());
                 throw new Exception("Code does not much. It was attempt # "
                         + stripePaymentForKeyVerification.getFailedVerificationAttemps());
             }
@@ -604,6 +607,7 @@ public class StripePaymentsAPI {
 
         OnlineVerificationView onlineVerificationView = new OnlineVerificationView(
                 onlineVerification,
+                cryptonomicaUser,
                 verificationDocumentArrayList,
                 pgpPublicKeyData.getUserID()
         );
@@ -613,50 +617,40 @@ public class StripePaymentsAPI {
         final Queue queue = QueueFactory.getDefaultQueue();
 
         Gson prettyGson = new GsonBuilder().setPrettyPrinting().create();
-        queue.add(
-                TaskOptions.Builder
-                        .withUrl(
-                                "/_ah/SendGridServlet")
-                        .param("email",
-                                "verification@cryptonomica.net"
-                        )
-                        .param("messageSubject",
-                                "[verification] Request for online verification: "
-                                        + onlineVerificationView.getUserEmail()
-                        )
-                        .param("messageText",
-                                "New request for online verification received: \n\n"
-                                        + "see entered data on:\n"
-                                        + "https://" + Constants.host + "/#!/onlineVerificationView/"
-                                        + fingerprint + "\n\n"
-                                        + "verification request data in JSON format: \n\n"
-                                        + prettyGson.toJson(onlineVerificationView)
-                        )
+        queue.add(TaskOptions.Builder
+                .withUrl("/_ah/SendGridServlet")
+                .param("email", Constants.verificationServiceEmailAddress)
+                .param("messageSubject", Constants.emailSubjectPrefix +
+                        "[verification] Request for online verification: "
+                        + onlineVerificationView.getUserEmail()
+                )
+                .param("messageText",
+                        "New request for online verification received: \n\n"
+                                + "see entered data on:\n"
+                                + "https://" + Constants.host + "/#!/onlineVerificationView/"
+                                + fingerprint + "\n\n"
+                                + "verification request data in JSON format: \n\n"
+                                + prettyGson.toJson(onlineVerificationView)
+                )
         );
 
-        queue.add(
-                TaskOptions.Builder
-                        .withUrl(
-                                "/_ah/SendGridServlet")
-                        .param("email", onlineVerificationView.getUserEmail())
-                        .param("messageSubject",
-                                "[cryptonomica] Your request for online verification")
-                        .param("messageText",
-
-                                "Your request for online verification received: \n\n"
-                                        + "see entered data on:\n"
-                                        + "https://cryptonomica.net/#!/onlineVerificationView/"
-//                                        + "https://cryptonomica.net/#/onlineVerificationView/"
-                                        + fingerprint + "\n\n"
-
-                                        + "You entered all required data. Please wait for data verification by our compliance officer.\n\n"
-                                        + "\n\n"
-                                        + "Best regards, \n\n"
-                                        + "Cryptonomica team\n\n"
-                                        + new Date().toString()
-                                        + "\n\n"
-                                        + "if you think it's wrong or it is an error, please write to admin@cryptonomica.net \n"
-                        )
+        queue.add(TaskOptions.Builder
+                .withUrl("/_ah/SendGridServlet")
+                .param("email", onlineVerificationView.getUserEmail())
+                .param("messageSubject", Constants.emailSubjectPrefix +
+                        "Your request for online verification")
+                .param("messageText",
+                        "Your request for online verification received: \n\n"
+                                + "see entered data on:\n"
+                                + "https://" + Constants.host + "/#!/onlineVerificationView/" + fingerprint + "\n"
+                                + "this page is not public and visible only to you (login needed) and to our compliance officers\n\n"
+                                + "You entered all required data. Please wait for data verification by our compliance officer (it may take up to 24 hours).\n\n"
+                                + "\n\n"
+                                + "Best regards, \n\n"
+                                + "Cryptonomica team\n\n"
+                                + new Date().toString() + "\n\n"
+                                + "if you think it's wrong or it is an error, please write to " + Constants.supportEmailAddress + "\n"
+                )
         );
 
         return result;

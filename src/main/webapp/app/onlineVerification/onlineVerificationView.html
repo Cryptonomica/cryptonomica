@@ -76,7 +76,9 @@
                                     </tr>
                                     <tr>
                                         <td>Birthday:</td>
-                                        <td>{{onlineVerification.birthday | date}}</td>
+                                        <td>
+                                            {{onlineVerification.birthdayYear}}-{{onlineVerification.birthdayMonth}}-{{onlineVerification.birthdayDay}}
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Nationality:</td>
@@ -223,6 +225,35 @@
                                                         class="ui button" type="submit">
                                                     Change Name
                                                 </button>
+                                            </div>
+                                            <hr>
+
+                                            <div class="field">
+
+                                                <h2>Change user bithdate </h2>
+                                                <div>
+                                                    Year should be four digits, like 19xx
+                                                </div>
+
+                                                <label for="newYear">New year: </label>
+                                                <input id="newYear" type="number" class="form-control"
+                                                       ng-model="newYear">
+                                                <br>
+
+                                                <label for="newMonth">New month: </label>
+                                                <input id="newMonth" type="number" class="form-control"
+                                                       ng-model="newMonth">
+                                                <br>
+
+                                                <label for="newDay">New day: </label>
+                                                <input id="newDay" type="number" class="form-control"
+                                                       ng-model="newDay">
+                                                <br>
+
+                                                <button ng-click="changeBirthdate()"
+                                                        class="ui button" type="submit">
+                                                    Change Birthdate
+                                                </button>
 
                                             </div>
                                             <hr>
@@ -247,6 +278,7 @@
                                             <hr>
 
                                             <div class="field">
+
                                                 <h2>Remove video</h2>
                                                 <label for="messageToUser">Message to user: </label>
 
@@ -257,6 +289,23 @@
                                                 <button ng-click="removeVideoWithMessage()"
                                                         class="ui button" type="submit">
                                                     Remove video and send message to user
+                                                </button>
+                                            </div>
+                                            <hr>
+
+                                            <div class="field">
+
+                                                <h2>Remove documents</h2>
+                                                <label for="removeDocumentsMessageToUser">Message to user: </label>
+
+                                                <input id="removeDocumentsMessageToUser" type="text"
+                                                       class="form-control"
+                                                       ng-model="removeDocumentsMessageToUser">
+                                                <br>
+
+                                                <button ng-click="removeDocumentsWithMessage()"
+                                                        class="ui button" type="submit">
+                                                    Remove documents and send message to user
                                                 </button>
                                             </div>
                                             <hr>
@@ -283,7 +332,37 @@
 
                                             </div>
 
+                                            <div class="field">
+
+                                                <h2 style="background-color: lightcoral">Reject/Delete Online
+                                                    Verification
+                                                    Entity</h2>
+
+                                                <div class="ui checkbox">
+                                                    <input type="checkbox"
+                                                           ng-model="confirmDeleteOnlineVerificationEntity">
+                                                    <label>
+                                                        <b>Confirm deleting this online verification entity</b>
+                                                    </label>
+                                                </div>
+
+
+                                                <label for="verificationNotes">Reason for deletion: </label>
+
+                                                <input id="reasonForDeletingOnlineVerificationEntity" type="text"
+                                                       class="form-control"
+                                                       ng-model="reasonForDeletingOnlineVerificationEntity">
+                                                <br>
+
+                                                <button ng-click="deleteOnlineVerificationEntity()"
+                                                        class="ui red button" type="submit">
+                                                    Reject/Delete OnlineVerification Entity
+                                                </button>
+
+                                            </div>
+
                                         </fieldset>
+
                                     </form>
 
                                 </div>

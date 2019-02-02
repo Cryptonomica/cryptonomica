@@ -1,6 +1,7 @@
 package net.cryptonomica.returns;
 
 import com.google.gson.Gson;
+import net.cryptonomica.entities.CryptonomicaUser;
 import net.cryptonomica.entities.OnlineVerification;
 import net.cryptonomica.entities.VerificationDocument;
 
@@ -40,16 +41,22 @@ public class OnlineVerificationView implements Serializable {
     private Boolean onlineVerificationDataVerified; // ..................18
     private Boolean termsAccepted;//.....................................19
     private String cryptonomicaUserId; //................................20
-    private Date birthday; //............................................21
-    private String nationality; // ......................................22
-    private String promoCodeUsed; //.....................................23
-    private String userIdFromKey; //.....................................24
+
+    // private Date birthday; //.........................................21
+    private Integer birthdayYear; //........... .........................21
+    private Integer birthdayMonth; //....................................22
+    private Integer birthdayDay; //......................................23
+
+    private String nationality; // ......................................24
+    private String promoCodeUsed; //.....................................25
+    private String userIdFromKey; //.....................................26
 
     /* --- Constructors: */
     public OnlineVerificationView() {
     }
 
     public OnlineVerificationView(OnlineVerification onlineVerification,
+                                  CryptonomicaUser cryptonomicaUser,
                                   ArrayList<VerificationDocument> verificationDocumentArrayList,
                                   String userIdFromKey
     ) {
@@ -74,7 +81,11 @@ public class OnlineVerificationView implements Serializable {
         this.onlineVerificationDataVerified = onlineVerification.getOnlineVerificationDataVerified();
         this.termsAccepted = onlineVerification.getTermsAccepted();
         this.cryptonomicaUserId = onlineVerification.getCryptonomicaUserId();
-        this.birthday = onlineVerification.getBirthday();
+
+        // this.birthday = onlineVerification.getBirthday();
+        this.birthdayYear = cryptonomicaUser.getBirthdayYear();
+        this.birthdayMonth = cryptonomicaUser.getBirthdayMonth();
+        this.birthdayDay = cryptonomicaUser.getBirthdayDay();
 
         this.verificationDocumentsArray = new ArrayList<>();
         if (verificationDocumentArrayList != null && verificationDocumentArrayList.size() > 0)
@@ -93,6 +104,7 @@ public class OnlineVerificationView implements Serializable {
     public String toString() {
         return new Gson().toJson(this);
     }
+
     /* --- Getters and Setters: */
 
     public String getFingerprint() {
@@ -255,12 +267,28 @@ public class OnlineVerificationView implements Serializable {
         this.cryptonomicaUserId = cryptonomicaUserId;
     }
 
-    public Date getBirthday() {
-        return birthday;
+    public Integer getBirthdayYear() {
+        return birthdayYear;
     }
 
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
+    public void setBirthdayYear(Integer birthdayYear) {
+        this.birthdayYear = birthdayYear;
+    }
+
+    public Integer getBirthdayMonth() {
+        return birthdayMonth;
+    }
+
+    public void setBirthdayMonth(Integer birthdayMonth) {
+        this.birthdayMonth = birthdayMonth;
+    }
+
+    public Integer getBirthdayDay() {
+        return birthdayDay;
+    }
+
+    public void setBirthdayDay(Integer birthdayDay) {
+        this.birthdayDay = birthdayDay;
     }
 
     public String getNationality() {

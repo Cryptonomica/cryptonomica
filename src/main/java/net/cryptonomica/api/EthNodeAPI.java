@@ -21,6 +21,7 @@ import net.cryptonomica.pgp.PGPTools;
 import net.cryptonomica.returns.BooleanWrapperObject;
 import net.cryptonomica.returns.StringWrapperObject;
 import net.cryptonomica.returns.VerificationStruct;
+import net.cryptonomica.service.DateAndTimeService;
 import net.cryptonomica.service.HttpService;
 import net.cryptonomica.service.UserTools;
 import org.bouncycastle.openpgp.PGPException;
@@ -31,6 +32,7 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -63,78 +65,6 @@ public class EthNodeAPI {
     /*------------------------------------------------------------------------*/
     /* ---------------- for https://tomcatweb3j.cryptonomica.net -------------*/
     /*------------------------------------------------------------------------*/
-
-    private class TestEntity {
-
-        String string;
-        Integer integer;
-        Boolean aBoolean;
-        Object object;
-
-        public TestEntity() {
-        }
-
-        public TestEntity(String string, Integer integer, Boolean aBoolean, Object object) {
-            this.string = string;
-            this.integer = integer;
-            this.aBoolean = aBoolean;
-            this.object = object;
-        }
-    }
-
-
-    @ApiMethod(
-            name = "requestTestingServlet",
-            path = "requestTestingServlet",
-            httpMethod = ApiMethod.HttpMethod.POST
-    )
-    @SuppressWarnings("unused")
-    public StringWrapperObject requestTestingServlet(
-            final User googleUser
-    ) throws IllegalArgumentException, UnauthorizedException {
-
-        // (!) for Cryptonomica officers only:
-        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
-
-        String urlHost = "https://tomcatweb3j.cryptonomica.net";
-        String urlPath = "/TestingServlet";
-        String urlAddress = urlHost + urlPath;
-        String postRequestBody = "testBodyParameterName=" + "testBodyParameterValue";
-        String headerName = "testHeaderName";
-        String heaserValue = "testHeaderValue";
-
-        // (!!!!) DO NOT USE API KEY IN TEST REQUEST
-        HTTPResponse httpResponse = HttpService.postRequestWithCustomHeader(
-                urlAddress,
-                postRequestBody,
-                headerName,
-                heaserValue
-        );
-
-        // LOG.warning("httpResponse: " + new Gson().toJson(httpResponse));
-
-        byte[] httpResponseContentBytes = httpResponse.getContent();
-        String httpResponseContentString = new String(httpResponseContentBytes, StandardCharsets.UTF_8);
-        LOG.warning("httpResponseContentString:");
-        LOG.warning(httpResponseContentString);
-
-        // Test:
-        // Object resObj = new Gson().fromJson(httpResponseContentString, Object.class); // --- exception
-        TestEntity testEntity = new Gson().fromJson(httpResponseContentString, TestEntity.class); // --- works
-        LOG.warning("testEntity: " + new Gson().toJson(testEntity));
-        //  testEntity: {"string":"some string","integer":33,"aBoolean":true,"object":{}} (EthNodeAPI.java:309)
-        LOG.warning("testEntity.string: " + testEntity.string);
-        LOG.warning("testEntity.integer: " + testEntity.integer);
-        LOG.warning("testEntity.aBoolean: " + testEntity.aBoolean);
-        LOG.warning("testEntity.object: " + testEntity.object);
-
-        LOG.warning("httpResponseContentString: ");
-        LOG.warning(httpResponseContentString);
-        // net.cryptonomica.api.EthNodeAPI requestTestingServlet: {"string":"some string","integer":33,"aBoolean":true,"object":{}} (EthNodeAPI.java:317)
-
-        // return resObj;
-        return new StringWrapperObject(httpResponseContentString);
-    } //
 
     @ApiMethod(
             name = "getVerificationFromSC",
@@ -256,163 +186,6 @@ public class EthNodeAPI {
         return new StringWrapperObject(httpResponseContentString);
     }
 
-
-    @ApiMethod(
-            name = "verifyEthAddress",
-            path = "verifyEthAddress",
-            httpMethod = ApiMethod.HttpMethod.POST
-    )
-    @SuppressWarnings("unused")
-    public BooleanWrapperObject verifyEthAddress(
-            // final HttpServletRequest httpServletRequest,
-            final User googleUser,
-            final @Named("ethereumAcc") String ethereumAcc
-    ) throws IllegalArgumentException, UnauthorizedException, Exception {
-
-        // ensure registered user ( - may be later only for verified):
-        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaRegisteredUser(googleUser);
-
-        // check form:
-        LOG.warning("ethereumAcc : " + ethereumAcc);
-
-        if (ethereumAcc == null || ethereumAcc.equals("")) {
-            throw new IllegalArgumentException("Provided text is to short or empty");
-        }
-
-
-        BooleanWrapperObject result = new BooleanWrapperObject();
-
-        String tomcatWeb3jAPIkey = ofy()
-                .load()
-                .key(Key.create(AppSettings.class, "tomcatweb3jAPIkey"))
-                .now()
-                .getValue();
-
-        String urlHost = "https://tomcatweb3j.cryptonomica.net";
-        String urlPath = "/GetVerificationRequestDataServlet";
-        String urlAddress = urlHost + urlPath;
-
-        // HashMap<String, String> queryMap = new HashMap<>();
-        // queryMap.put("address", ethereumAcc);
-        String postRequestBody = "address=" + ethereumAcc;
-
-        HTTPResponse httpResponse = HttpService.postRequestWithAPIkey(
-                urlAddress,
-                postRequestBody,
-                tomcatWeb3jAPIkey
-        );
-
-        byte[] httpResponseContentBytes = httpResponse.getContent();
-        String httpResponseContentString = new String(httpResponseContentBytes, StandardCharsets.UTF_8);
-
-        // Test:
-        // Object resObj = new Gson().fromJson(httpResponseContentString, Object.class); // --- exception
-        // LOG.warning("resObj: " + new Gson().toJson(resObj));
-
-        LOG.warning("httpResponseContentString: " + httpResponseContentString);
-
-        VerificationRequestDataFromSC verificationRequestDataFromSC = GSON.fromJson(
-                httpResponseContentString,
-                VerificationRequestDataFromSC.class
-        );
-
-        // GET Key from DataBase by fingerprint:
-        String unverifiedFingerprint = verificationRequestDataFromSC.getUnverifiedFingerprint();
-        String signedString = verificationRequestDataFromSC.getSignedString();
-
-        PGPPublicKeyData pgpPublicKeyData = PGPTools.getPGPPublicKeyDataFromDataBaseByFingerprint(unverifiedFingerprint);
-
-        Boolean keyVerifiedOffline = pgpPublicKeyData.getVerifiedOffline();
-        if (keyVerifiedOffline == null) {
-            keyVerifiedOffline = Boolean.FALSE;
-        }
-        // Boolean keyVerifiedOffline = pgpPublicKeyData.getVerified();
-        Boolean keyVerifiedOnline = pgpPublicKeyData.getVerifiedOnline();
-        if (keyVerifiedOnline == null) {
-            keyVerifiedOnline = Boolean.FALSE;
-        }
-        //  Boolean keyVerifiedOnline = pgpPublicKeyData.getOnlineVerificationFinished();
-
-        if (!keyVerifiedOffline && !keyVerifiedOnline) {
-            throw new Exception("Owner of the OpenPGP key "
-                    + pgpPublicKeyData.getFingerprint()
-                    + " not verified. Can not process with ETH address verification for "
-                    + ethereumAcc
-            );
-        }
-
-        PGPPublicKey publicKey = PGPTools.readPublicKeyFromString(pgpPublicKeyData.getAsciiArmored().getValue());
-
-        result.setResult(
-                PGPTools.verifyText(signedString, publicKey)
-        );
-
-        if (result.getResult()) {
-
-            Map<String, String> parameterMap = new HashMap<>();
-            parameterMap.put("acc", ethereumAcc);
-            parameterMap.put("fingerprint", unverifiedFingerprint);
-            // https://stackoverflow.com/questions/7784421/getting-unix-timestamp-from-date
-            Long keyCertificateValidUntilUnixTimeLong = pgpPublicKeyData.getExp().getTime() / 1000;
-            Integer keyCertificateValidUntilUnixTime = keyCertificateValidUntilUnixTimeLong.intValue();
-            parameterMap.put("keyCertificateValidUntil", keyCertificateValidUntilUnixTime.toString());
-            parameterMap.put("firstName", pgpPublicKeyData.getFirstName());
-            parameterMap.put("lastName", pgpPublicKeyData.getLastName());
-
-            if (pgpPublicKeyData.getUserBirthday() != null) { // for testing with old keys only
-                Long birthDateUnixTimeLong = pgpPublicKeyData.getUserBirthday().getTime() / 1000;
-                Integer birthDateUnixTime = birthDateUnixTimeLong.intValue();
-                parameterMap.put("birthDate", birthDateUnixTime.toString());
-            } else {
-                parameterMap.put("birthDate", "null");
-            }
-
-            if (pgpPublicKeyData.getNationality() != null) { // for testing with old keys only
-                parameterMap.put("nationality", pgpPublicKeyData.getNationality());
-            } else {
-                parameterMap.put("nationality", "null");
-            }
-
-            LOG.warning("parameterMap: ");
-            LOG.warning(GSON.toJson(parameterMap));
-
-            HTTPResponse httpResponseFromAddVerificationDataServlet = HttpService.makePostRequestWithParametersMapAndApiKey(
-                    "https://tomcatweb3j.cryptonomica.net/addVerificationData",
-                    tomcatWeb3jAPIkey,
-                    parameterMap
-            );
-
-            try {
-
-                byte[] httpResponseContentBytesFromAddVerificationDataServlet = httpResponseFromAddVerificationDataServlet.getContent();
-
-                String httpResponseContentStringAddVerificationDataServlet = new String(
-                        httpResponseContentBytesFromAddVerificationDataServlet,
-                        StandardCharsets.UTF_8
-                );
-
-                LOG.warning("httpResponseContentStringAddVerificationDataServlet:");
-                LOG.warning(httpResponseContentStringAddVerificationDataServlet);
-
-                result.setMessage(
-                        httpResponseContentStringAddVerificationDataServlet // tx receipt
-                );
-
-            } catch (Exception e) {
-                LOG.severe(e.getMessage());
-                result.setMessage(
-                        "Can not check transaction. Please check smart contract data manually"
-                );
-            } // end of: catch
-
-        } // end of: if (result.getResult()) {..
-
-        LOG.warning("result:");
-        LOG.warning(GSON.toJson(result));
-
-        return result;
-    }
-
     /*------------------------------------------------------------------------*/
     /* ---------------- for INFURA  ----------=============================---*/
     /*------------------------------------------------------------------------*/
@@ -456,7 +229,7 @@ public class EthNodeAPI {
         if (!signedString.toLowerCase().contains("I hereby confirm that the address".toLowerCase())
                 || !signedString.toLowerCase().contains(ethereumAcc.toLowerCase())
                 || !signedString.toLowerCase().contains("is my Ethereum address".toLowerCase())
-                ) {
+        ) {
             throw new IllegalArgumentException("Uploaded string does not contain required text");
         }
 
@@ -521,6 +294,7 @@ public class EthNodeAPI {
 
         String txHash = null;
         TransactionReceipt txReceipt = null; // < result
+        CryptonomicaUser cryptonomicaUserData = UserTools.loadCryptonomicaUser(pgpPublicKeyData.getCryptonomicaUserId());
         try {
 /* Solidity:
 function addVerificationData(
@@ -540,7 +314,17 @@ function addVerificationData(
                     BigInteger.valueOf(pgpPublicKeyData.getExp().getTime() / 1000),
                     pgpPublicKeyData.getFirstName(),
                     pgpPublicKeyData.getLastName(),
-                    BigInteger.valueOf(pgpPublicKeyData.getUserBirthday().getTime() / 1000),
+
+                    // BigInteger.valueOf(pgpPublicKeyData.getUserBirthday().getTime() / 1000),
+                    /* */                               // 2019-01-
+                    BigInteger.valueOf(
+                            DateAndTimeService.utcUnixTimeFromYearMonthDay(
+                                    cryptonomicaUserData.getBirthdayYear(),
+                                    cryptonomicaUserData.getBirthdayMonth(),
+                                    cryptonomicaUserData.getBirthdayDay()
+                            )
+                    ),
+
                     pgpPublicKeyData.getNationality()
             ).send().getTransactionHash();
 

@@ -16,9 +16,9 @@ import java.util.Date;
 @Entity // -> net.cryptonomica.service.OfyService
 // @Cache // << DO NOT CASH: we need fresh info from DB on every verification step
 public class OnlineVerification implements Serializable { // -- can be returned to frontend
-    /*---------*/
+
     // private static final Logger LOG = Logger.getLogger(OnlineVerification.class.getName());
-    /*-------------*/
+
     /* Data Fields */
     @Id
     private String Id; // fingerprint ...................................1
@@ -59,15 +59,15 @@ public class OnlineVerification implements Serializable { // -- can be returned 
     /* verification data: */
     // Online Verification Video:
     @Index
-    private String verificationVideoId; // random string 33 char.........14
+    private String verificationVideoId; // random string 33 char.........14 +
     // Online Verification Documents:
     // @Index
     private ArrayList<String> verificationDocumentsArray; // ............15
     @Index
-    private Boolean verificationDocumentsUploaded; //....................16
+    private Boolean verificationDocumentsUploaded; //....................16 +
     // Phone
     @Index
-    private String phoneNumber; // +972523333333 ........................17
+    private String phoneNumber; // +972523333333 ........................17 +
     //
     // StripePaymentForKeyVerification @Id private Long id
     @Index
@@ -75,7 +75,7 @@ public class OnlineVerification implements Serializable { // -- can be returned 
     @Index
     private Boolean paymentMade; //......................................19
     @Index
-    private Boolean paymentVerified; //..................................20
+    private Boolean paymentVerified; //..................................20 +
     // All:
     @Index
     private Boolean onlineVerificationFinished;// .......................21
@@ -85,8 +85,8 @@ public class OnlineVerification implements Serializable { // -- can be returned 
     private Boolean termsAccepted; // user accepted terms ...............23
     @Index
     private String cryptonomicaUserId;//.................................24
-    @Index
-    private Date birthday; //............................................25
+    // @Index
+    // private Date birthday; //.........................................25 // removed 2019-01-18
     @Index
     private String nationality; //.......................................26
     // PromoCode
@@ -115,9 +115,10 @@ public class OnlineVerification implements Serializable { // -- can be returned 
         this.firstName = pgpPublicKeyData.getFirstName();
         this.keyID = pgpPublicKeyData.getKeyID();
         this.cryptonomicaUserId = pgpPublicKeyData.getCryptonomicaUserId();
+
         // old PGPPublicKeyData entities (created before 22.05.17) do not have this property
         // Birthday was stored in CryptonomicaUser entity only
-        this.birthday = pgpPublicKeyData.getUserBirthday();
+        /// this.birthday = pgpPublicKeyData.getUserBirthday(); // 2019-01-18 > removed again
         //
         this.entityCreated = new Date(); // <<< ---
         this.allowedUsers = new ArrayList<>();
@@ -343,14 +344,14 @@ public class OnlineVerification implements Serializable { // -- can be returned 
     public void setCryptonomicaUserId(String cryptonomicaUserId) {
         this.cryptonomicaUserId = cryptonomicaUserId;
     }
-
-    public Date getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
-    }
+//
+//    public Date getBirthday() {
+//        return birthday;
+//    }
+//
+//    public void setBirthday(Date birthday) {
+//        this.birthday = birthday;
+//    }
 
     public String getNationality() {
         return nationality;

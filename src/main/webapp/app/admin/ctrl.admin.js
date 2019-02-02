@@ -107,9 +107,30 @@
                     });
             }; // end of $scope.getWaitingForVerification() ;
 
+            $scope.paidButNotVerified = null;
+            $scope.getPaidButNotVerified = function () {
+                $log.debug('$scope.getPaidButNotVerified started');
+                $rootScope.progressbar.start(); // <<<<<<<<<<<
+
+                GApi.executeAuth('onlineVerificationAPI', 'getPaidButNotVerified')
+                    .then(function (result) { // OnlineVerificationsList.java
+                        $scope.paidButNotVerified = result;
+                        $log.debug("$scope.paidButNotVerified:");
+                        $log.debug($scope.paidButNotVerified);
+                        // $scope.$apply(); // <<< not needed here
+                        $timeout($rootScope.progressbar.complete(), 1000);
+                    })
+                    .catch(function (error) {
+                        $log.error(error);
+                        $scope.setAlertMessage("Error", error.message);
+                        // $scope.$apply(); // <<< not needed here
+                        $timeout($rootScope.progressbar.complete(), 1000);
+                    });
+            }; // end of $scope.getWaitingForVerification() ;
+
             // RUN:
             $scope.getWaitingForVerification();
-
+            $scope.getPaidButNotVerified();
 
         }]);
 
