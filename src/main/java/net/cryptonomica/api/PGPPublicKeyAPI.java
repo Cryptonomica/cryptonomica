@@ -13,7 +13,6 @@ import com.googlecode.objectify.Key;
 import net.cryptonomica.constants.Constants;
 import net.cryptonomica.entities.ApiKey;
 import net.cryptonomica.entities.CryptonomicaUser;
-import net.cryptonomica.entities.OnlineVerification;
 import net.cryptonomica.entities.PGPPublicKeyData;
 import net.cryptonomica.forms.GetUsersKeysByUserIdForm;
 import net.cryptonomica.forms.PGPPublicKeyUploadForm;
@@ -165,20 +164,13 @@ public class PGPPublicKeyAPI {
     public PGPPublicKeyAPIView getPGPPublicKeyByFingerprintWithApiKey(
             // final User googleUser,
             final HttpServletRequest httpServletRequest,
-            // final @Named("serviceName") String serviceName,
             final @Named("fingerprint") String fingerprint,
             @Named("serviceName") String serviceName,
             @Named("apiKeyString") String apiKeyString
     ) throws Exception { // UnauthorizedException or Exception
 
         /* --- check argument */
-        if (fingerprint == null || fingerprint.isEmpty()) {
-            throw new IllegalArgumentException("fingerprint not provided");
-        }
-
-        if (fingerprint.length() != 40) {
-            throw new IllegalArgumentException("fingerprint length not valid (should be 40)");
-        }
+        PGPTools.checkFingerprint(fingerprint);
 
         ApiKey apiKey = ApiKeysService.checkApiKey(httpServletRequest, serviceName, apiKeyString);
         if (!apiKey.getGetPGPPublicKeyByFingerprintWithApiKey()) {
@@ -193,14 +185,12 @@ public class PGPPublicKeyAPI {
 
         // GET Key from DataBase by fingerprint:
         PGPPublicKeyData pgpPublicKeyData = PGPTools.getPGPPublicKeyDataFromDataBaseByFingerprint(fingerprint);
-        OnlineVerification onlineVerification = ofy()
-                .load()
-                .key(
-                        Key.create(OnlineVerification.class, fingerprint)
-                )
-                .now();
+        CryptonomicaUser cryptonomicaUser = UserTools.loadCryptonomicaUser(pgpPublicKeyData.getCryptonomicaUserId());
 
-        PGPPublicKeyAPIView pgpPublicKeyAPIView = new PGPPublicKeyAPIView(pgpPublicKeyData, onlineVerification);
+        PGPPublicKeyAPIView pgpPublicKeyAPIView = new PGPPublicKeyAPIView(
+                cryptonomicaUser,
+                pgpPublicKeyData
+        );
 
         LOG.warning("Result: " + GSON.toJson(pgpPublicKeyAPIView));
 
@@ -238,7 +228,8 @@ public class PGPPublicKeyAPI {
         LOG.warning(GSON.toJson(pgpPublicKey));
 
         PGPPublicKeyData pgpPublicKeyData = PGPTools.checkPublicKey(pgpPublicKey, asciiArmored, cryptonomicaUser);
-        pgpPublicKeyData.setUserBirthday(cryptonomicaUser.getBirthday());
+
+        // pgpPublicKeyData.setUserBirthday(cryptonomicaUser.getBirthday()); // < removed 2019-01-19
 
         // -- add @Parent value: ---
         pgpPublicKeyData.setCryptonomicaUserKey(Key.create(CryptonomicaUser.class, googleUser.getUserId()));
@@ -484,39 +475,33 @@ public class PGPPublicKeyAPI {
     public RevokeKeyByAdminReturn revokeKeyByAdmin(
             final User googleUser,
             final @Named("fingerprint") String fingerprint,
-            final @Named("email") String email,
+            // final @Named("email") String email,
             final @Named("revocationNotes") String revocationNotes
     ) throws Exception {
 
         /* Check authorization: */
-        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
+        CryptonomicaUser admin = UserTools.ensureCryptonomicaOfficer(googleUser);
 
         // GET Key from DataBase by fingerprint:
+        PGPTools.checkFingerprint(fingerprint);
         PGPPublicKeyData pgpPublicKeyData = PGPTools.getPGPPublicKeyDataFromDataBaseByFingerprint(fingerprint);
-
-        if (fingerprint.length() != 40) {
-            throw new IllegalArgumentException("fingerprint length is not valid (should be 40)");
-        }
-
-        if (pgpPublicKeyData == null) {
-            throw new IllegalArgumentException("key with fingerprint " + fingerprint + " not found in database");
-        }
-
-        if (!pgpPublicKeyData.getUserEmail().getEmail().equalsIgnoreCase(email)) {
-            throw new IllegalArgumentException(email + " does not mach fingerprint " + fingerprint);
-        }
 
         // make changes:
         pgpPublicKeyData.setRevoked(Boolean.TRUE);
         pgpPublicKeyData.setRevokedOn(new Date());
-        pgpPublicKeyData.setRevokedBy(cryptonomicaUser.getEmail().getEmail());
+        pgpPublicKeyData.setRevokedBy(admin.getEmail().getEmail());
         pgpPublicKeyData.setRevocationNotes(revocationNotes);
 
         // store to DB:
         ofy().save().entity(pgpPublicKeyData).now();
 
-        OnlineVerification onlineVerification = ofy().load().key(Key.create(OnlineVerification.class, fingerprint)).now();
-        PGPPublicKeyAPIView pgpPublicKeyAPIView = new PGPPublicKeyAPIView(pgpPublicKeyData, onlineVerification);
+        // OnlineVerification onlineVerification = ofy().load().key(Key.create(OnlineVerification.class, fingerprint)).now();
+        CryptonomicaUser cryptonomicaUser = UserTools.loadCryptonomicaUser(pgpPublicKeyData.getCryptonomicaUserId());
+
+        PGPPublicKeyAPIView pgpPublicKeyAPIView = new PGPPublicKeyAPIView(
+                cryptonomicaUser,
+                pgpPublicKeyData
+        );
 
         String pgpPublicKeyAPIViewJsonString = GSON.toJson(pgpPublicKeyAPIView);
         if (pgpPublicKeyAPIViewJsonString == null || pgpPublicKeyAPIViewJsonString.length() == 0) {

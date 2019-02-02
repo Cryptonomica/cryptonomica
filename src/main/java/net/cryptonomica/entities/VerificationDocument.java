@@ -19,7 +19,7 @@ public class VerificationDocument implements Serializable { // <-- this allows b
     // private static final Logger LOG = Logger.getLogger(VerificationDocument.class.getName());
 
     @Id
-    private String Id; // ramdom string 33 char ..................................................1
+    private String Id; // random string 33 char ..................................................1
     @Index
     private User googleUser; //...................................................................2
     @Index
@@ -128,4 +128,5 @@ public class VerificationDocument implements Serializable { // <-- this allows b
     public void setHidden(Boolean hidden) {
         this.hidden = hidden;
     }
+
 }

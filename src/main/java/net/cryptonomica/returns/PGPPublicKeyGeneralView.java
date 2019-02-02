@@ -40,6 +40,8 @@ public class PGPPublicKeyGeneralView implements Serializable {
     private Boolean revoked; //...........................22
     private Date revokedOn; //............................23
     private String revokedBy; //..........................24
+    private Boolean expired; //...........................25
+
 
     // PGPPublicKeyData has also: @Parent private Key<CryptonomicaUser> cryptonomicaUserKey;
     // we have cryptonomicaUserId + webSafeString and not need it
@@ -95,7 +97,8 @@ public class PGPPublicKeyGeneralView implements Serializable {
 
         this.nationality = pgpPublicKeyData.getNationality();
 
-        this.birthdate = pgpPublicKeyData.getUserBirthday();
+        // this.birthdate = pgpPublicKeyData.getUserBirthday(); // removed 2019-01-18
+
         // 20
         this.verifiedOffline = pgpPublicKeyData.getVerifiedOffline();
         // 21
@@ -106,6 +109,8 @@ public class PGPPublicKeyGeneralView implements Serializable {
         this.revokedOn = pgpPublicKeyData.getRevokedOn();
         // 24
         this.revokedBy = pgpPublicKeyData.getRevokedBy();
+        //
+        this.expired = pgpPublicKeyData.getExp().before(new Date());
 
         // LOG
         // LOG.warning(new Gson().toJson(this));
@@ -304,6 +309,14 @@ public class PGPPublicKeyGeneralView implements Serializable {
 
     public void setRevokedBy(String revokedBy) {
         this.revokedBy = revokedBy;
+    }
+
+    public Boolean getExpired() {
+        return expired;
+    }
+
+    public void setExpired(Boolean expired) {
+        this.expired = expired;
     }
 
 }

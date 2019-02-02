@@ -19,6 +19,7 @@ public class Constants {
     public static final String host = "cryptonomica.net";
     public static final String supportEmailAddress = "support@cryptonomica.zendesk.com";
     public static final String adminEmailAddress = "admin@cryptonomica.net";
+    public static final String verificationServiceEmailAddress = "verification@cryptonomica.net";
     public static final String emailSubjectPrefix = "[cryptonomica] ";
     static Boolean SED_END;
 

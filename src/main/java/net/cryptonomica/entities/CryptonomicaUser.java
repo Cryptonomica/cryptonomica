@@ -46,7 +46,7 @@ public class CryptonomicaUser implements Serializable {
     // TODO: if user changes last name?
     private String lastName; //...................................................................4
     // non indexed:
-    private Date birthday; //.....................................................................5
+    // private Date birthday; //..................................................................5
     // https://cloud.google.com/appengine/docs/java/javadoc/com/google/appengine/api/users/User
     private User googleUser; //...................................................................6
     @Index
@@ -97,6 +97,12 @@ public class CryptonomicaUser implements Serializable {
     private String stripeCustomerId;//............................................................29
     @Index
     private Date entityCreatedOn; // .............................................................30
+    @Index
+    private Integer birthdayYear; //..............................................................31
+    @Index
+    private Integer birthdayMonth; //.............................................................32
+    @Index
+    private Integer birthdayDay; //...............................................................33
 
     /* --- Constructors: */
 
@@ -114,7 +120,14 @@ public class CryptonomicaUser implements Serializable {
         ).toWebSafeString();
         this.firstName = pgpPublicKeyData.getFirstName().toLowerCase();
         this.lastName = pgpPublicKeyData.getLastName().toLowerCase();
-        this.birthday = newUserRegistrationForm.getBirthday();
+
+        //
+        this.birthdayDay = newUserRegistrationForm.getBirthdayDay();
+        this.birthdayMonth = newUserRegistrationForm.getBirthdayMonth();
+        this.birthdayYear = newUserRegistrationForm.getBirthdayYear();
+
+        // this.birthday = newUserRegistrationForm.getBirthday(); // UTC
+
         this.googleUser = googleUser;
         if (googleUser.getEmail() != null) {
             this.email = new Email(googleUser.getEmail().toLowerCase()); // or email = pgpPublicKeyData.getUserEmail()
@@ -133,7 +146,6 @@ public class CryptonomicaUser implements Serializable {
     } // end of constructor from newUserRegistrationForm
 
     /* --- Methods */
-
 
     public String toJSON() {
         Gson gson = new Gson();
@@ -178,13 +190,13 @@ public class CryptonomicaUser implements Serializable {
         this.lastName = lastName.toLowerCase();
     }
 
-    public Date getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
-    }
+//    public Date getBirthday() {
+//        return birthday;
+//    }
+//
+//    public void setBirthday(Date birthday) {
+//        this.birthday = birthday;
+//    }
 
     public User getGoogleUser() {
         return googleUser;
@@ -384,6 +396,30 @@ public class CryptonomicaUser implements Serializable {
 
     public void setEntityCreatedOn(Date entityCreatedOn) {
         this.entityCreatedOn = entityCreatedOn;
+    }
+
+    public Integer getBirthdayYear() {
+        return birthdayYear;
+    }
+
+    public void setBirthdayYear(Integer birthdayYear) {
+        this.birthdayYear = birthdayYear;
+    }
+
+    public Integer getBirthdayMonth() {
+        return birthdayMonth;
+    }
+
+    public void setBirthdayMonth(Integer birthdayMonth) {
+        this.birthdayMonth = birthdayMonth;
+    }
+
+    public Integer getBirthdayDay() {
+        return birthdayDay;
+    }
+
+    public void setBirthdayDay(Integer birthdayDay) {
+        this.birthdayDay = birthdayDay;
     }
 
 }

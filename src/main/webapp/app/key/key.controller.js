@@ -95,6 +95,51 @@
                     yearRange: '1900:-0'
                 };
 
+                /* -----  Alerts START  */
+                $scope.alertDanger = null;  // red
+                $scope.alertWarning = null; // yellow
+                $scope.alertInfo = null;    // blue
+                $scope.alertSuccess = null; // green
+                $scope.alertMessage = {}; // grey
+
+                $scope.setAlertDanger = function (message) {
+                    $scope.alertDanger = message;
+                    $log.debug("$scope.alertDanger:", $scope.alertDanger);
+                    // $scope.$apply(); not here
+                    $rootScope.goTo("alertDanger");
+                };
+
+                $scope.setAlertWarning = function (message) {
+                    $scope.alertWarning = message;
+                    $log.debug("$scope.alertWarning:", $scope.alertWarning);
+                    // $scope.$apply();
+                    $rootScope.goTo("alertWarning");
+                };
+
+                $scope.setAlertInfo = function (message) {
+                    $scope.alertInfo = message;
+                    $log.debug("$scope.alertInfo:", $scope.alertInfo);
+                    // $scope.$apply();
+                    $rootScope.goTo("alertInfo");
+                };
+
+                $scope.setAlertSuccess = function (message) {
+                    $scope.alertSuccess = message;
+                    $log.debug("$scope.alertSuccess:", $scope.alertSuccess);
+                    // $scope.$apply();
+                    $rootScope.goTo("alertSuccess");
+                };
+
+                $scope.setAlertMessage = function (message, header) {
+                    $scope.alertMessage = {};
+                    $scope.alertMessage.header = header;
+                    $scope.alertMessage.message = message;
+                    $log.debug("$scope.alertMessage:", $scope.alertMessage);
+                    // $scope.$apply();
+                    $rootScope.goTo("alertMessage");
+                };
+                /* -----  Alerts END  */
+
                 // =============== Bookmarks :
                 $scope.addKeyToMyBookmarks = function () {
                     $rootScope.progressbar.start();
@@ -268,8 +313,38 @@
                             $timeout($rootScope.progressbar.complete(), 1000);
                         }
                     );
-                }
-            }
+                };
+
+                /* --- Change user name (admin) */
+                $scope.newFirstName = null;
+                $scope.newLastName = null;
+                $scope.changeName = function () {
+                    $log.debug('$scope.changeName started: ' + $scope.newFirstName + ' ' + $scope.newLastName);
+                    if ($rootScope.stringIsNullUndefinedOrEmpty($scope.newFirstName) || $rootScope.stringIsNullUndefinedOrEmpty($scope.newFirstName)) {
+                        $scope.setAlertDanger("name and first name can not be null or empty");
+                        return;
+                    }
+                    $rootScope.progressbar.start(); // <<<<<<<<<<<
+                    GApi.executeAuth('onlineVerificationAPI',
+                        'changeName', {
+                            "fingerprint": $stateParams.fingerprint, // < different from online verification view
+                            "userID": $scope.key.cryptonomicaUserId, // < different from online verification view
+                            "firstName": $scope.newFirstName,
+                            "lastName": $scope.newLastName
+                        })
+                        .then(function (response) { // BooleanWrapperObject.java
+                            $log.debug(response);
+                            $scope.setAlertSuccess(response.message);
+                            $timeout($rootScope.progressbar.complete(), 1000);
+                        })
+                        .catch(function (error) {
+                            $log.debug(error);
+                            $scope.setAlertDanger(error);
+                            $timeout($rootScope.progressbar.complete(), 1000);
+                        });
+                }; // end of $scope.changeName() ;
+
+            } // end of function showkeyCtrl()
         ]
     );
 

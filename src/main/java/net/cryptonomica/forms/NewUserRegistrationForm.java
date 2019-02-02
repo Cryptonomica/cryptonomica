@@ -9,7 +9,10 @@ import java.util.Date;
 public class NewUserRegistrationForm implements Serializable {
 
     String armoredPublicPGPkeyBlock;
-    Date birthday;
+    Date birthday; // legacy
+    Integer birthdayYear;
+    Integer birthdayMonth;
+    Integer birthdayDay;
     String userInfo;
 
     public NewUserRegistrationForm() {
@@ -33,6 +36,30 @@ public class NewUserRegistrationForm implements Serializable {
         this.birthday = birthday;
     }
 
+    public Integer getBirthdayYear() {
+        return birthdayYear;
+    }
+
+    public void setBirthdayYear(Integer birthdayYear) {
+        this.birthdayYear = birthdayYear;
+    }
+
+    public Integer getBirthdayMonth() {
+        return birthdayMonth;
+    }
+
+    public void setBirthdayMonth(Integer birthdayMonth) {
+        this.birthdayMonth = birthdayMonth;
+    }
+
+    public Integer getBirthdayDay() {
+        return birthdayDay;
+    }
+
+    public void setBirthdayDay(Integer birthdayDay) {
+        this.birthdayDay = birthdayDay;
+    }
+
     public String getUserInfo() {
         return userInfo;
     }
@@ -40,4 +67,5 @@ public class NewUserRegistrationForm implements Serializable {
     public void setUserInfo(String userInfo) {
         this.userInfo = userInfo;
     }
+
 }

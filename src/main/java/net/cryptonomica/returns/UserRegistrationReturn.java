@@ -1,5 +1,6 @@
 package net.cryptonomica.returns;
 
+import com.googlecode.objectify.annotation.Index;
 import net.cryptonomica.entities.CryptonomicaUser;
 
 import java.io.Serializable;
@@ -9,14 +10,20 @@ import java.util.Date;
  * The object server returns in response to user registration form
  */
 public class UserRegistrationReturn implements Serializable {
-    String userId;
-    String webSafeStringKey; // see: savedCryptonomicaUserKey.toWebSafeString();
-    String firstName;
-    String lastName;
-    Date birthday;
-    String email;
-    String userInfo;
-    String messageToUser;
+
+    private String userId;
+    private String webSafeStringKey; // see: savedCryptonomicaUserKey.toWebSafeString();
+    private String firstName;
+    private String lastName;
+
+    // private Date birthday;
+    private Integer birthdayYear;
+    private Integer birthdayMonth;
+    private Integer birthdayDay;
+
+    private String email;
+    private String userInfo;
+    private String messageToUser;
 
     public UserRegistrationReturn() {
     }
@@ -25,7 +32,12 @@ public class UserRegistrationReturn implements Serializable {
         this.userId = cryptonomicaUser.getUserId();
         this.firstName = cryptonomicaUser.getFirstName();
         this.lastName = cryptonomicaUser.getLastName();
-        this.birthday = cryptonomicaUser.getBirthday();
+
+        // this.birthday = cryptonomicaUser.getBirthday();
+        this.birthdayYear = cryptonomicaUser.getBirthdayYear();
+        this.birthdayMonth = cryptonomicaUser.getBirthdayMonth();
+        this.birthdayDay = cryptonomicaUser.getBirthdayDay();
+
         if (cryptonomicaUser.getEmail() != null) {
             this.email = cryptonomicaUser.getEmail().getEmail(); // email -> string
         }
@@ -67,12 +79,37 @@ public class UserRegistrationReturn implements Serializable {
         this.lastName = lastName;
     }
 
-    public Date getBirthday() {
-        return birthday;
+//    public Date getBirthday() {
+//        return birthday;
+//    }
+//
+//    public void setBirthday(Date birthday) {
+//        this.birthday = birthday;
+//    }
+
+
+    public Integer getBirthdayYear() {
+        return birthdayYear;
     }
 
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
+    public void setBirthdayYear(Integer birthdayYear) {
+        this.birthdayYear = birthdayYear;
+    }
+
+    public Integer getBirthdayMonth() {
+        return birthdayMonth;
+    }
+
+    public void setBirthdayMonth(Integer birthdayMonth) {
+        this.birthdayMonth = birthdayMonth;
+    }
+
+    public Integer getBirthdayDay() {
+        return birthdayDay;
+    }
+
+    public void setBirthdayDay(Integer birthdayDay) {
+        this.birthdayDay = birthdayDay;
     }
 
     public String getEmail() {
@@ -98,4 +135,5 @@ public class UserRegistrationReturn implements Serializable {
     public void setMessageToUser(String messageToUser) {
         this.messageToUser = messageToUser;
     }
+
 }

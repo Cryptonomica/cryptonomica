@@ -123,6 +123,17 @@ public class UserTools {
         }
     }
 
+    public static CryptonomicaUser loadCryptonomicaUser(final String cryptonomicaUserId) throws Exception {
+        CryptonomicaUser cryptonomicaUser = ofy()
+                .load()
+                .key(Key.create(CryptonomicaUser.class, cryptonomicaUserId))
+                .now();
+        if (cryptonomicaUser == null) {
+            throw new Exception("Cryptonomica user with ID " + cryptonomicaUserId + " not found in DB");
+        }
+        return cryptonomicaUser;
+    }
+
     /* --- Check if user is registered user: */
     public static CryptonomicaUser ensureCryptonomicaRegisteredUser(final User googleUser)
             throws UnauthorizedException {

@@ -143,6 +143,10 @@
             /* ========= KEY upload start: */
 
             $scope.regForm = {};
+            $scope.regForm.birthdayYear = null;
+            $scope.regForm.birthdayMonth = null;
+            $scope.regForm.birthdayDay = null;
+
             $scope.privateKeyPasted = false;
 
             $scope.verifyPublicKeyData = function () {
@@ -202,8 +206,7 @@
                     storage.setItem(x, x);
                     storage.removeItem(x);
                     return true;
-                }
-                catch (e) {
+                } catch (e) {
                     return e instanceof DOMException && (
                             // everything except Firefox
                         e.code === 22 ||
@@ -272,6 +275,27 @@
                     if ($rootScope.alertWarning) {
                         $rootScope.alertWarning = null;
                     }
+
+                    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getFullYear
+                    // A number corresponding to the year of the given date, according to local time
+                    $scope.regForm.birthdayYear = $scope.regForm.birthday.getFullYear();
+
+                    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getMonth
+                    // An integer number, between 0 and 11, representing the month in the given date according to local time.
+                    // 0 corresponds to January, 1 to February, and so on.
+                    $scope.regForm.birthdayMonth = $scope.regForm.birthday.getMonth() + 1;
+
+                    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getDate
+                    // An integer number, between 1 and 31, representing the day of the month for the given date according to local time.
+                    $scope.regForm.birthdayDay = $scope.regForm.birthday.getDate();
+
+                    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/UTC
+                    $scope.regForm.birthday = new Date(Date.UTC(
+                        $scope.regForm.birthdayYear,
+                        $scope.regForm.birthdayMonth - 1,
+                        $scope.regForm.birthdayDay
+                    ));
+                    //
 
                     GApi.executeAuth('newUserRegistrationAPI', 'registerNewUser', $scope.regForm)
                         .then(

@@ -1,19 +1,16 @@
 package net.cryptonomica.returns;
 
-import net.cryptonomica.entities.OnlineVerification;
+import net.cryptonomica.entities.CryptonomicaUser;
 import net.cryptonomica.entities.PGPPublicKeyData;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 
 /**
  * Key representation that can be sent when requested using API for partner services
  */
 public class PGPPublicKeyAPIView implements Serializable {
-
-    /* ----- Logger: */
-    // private static final Logger LOG = Logger.getLogger(PGPPublicKeyAPIView.class.getName());
-    /* ----- */
 
     private String fingerprint; //.........................1
     private String cryptonomicaUserId; //..................2
@@ -22,19 +19,20 @@ public class PGPPublicKeyAPIView implements Serializable {
     private String firstName; //...........................5
     private String lastName; //............................6
     private String userEmail; //...........................7
-    private String userPhoneNumber; //.....................8
+    // private String userPhoneNumber; //..................8 // removed: 2019.01.29
     private Date created; //...............................9
     private Date exp; //..................................10
     private Integer bitStrength; //.......................11
     private String asciiArmored; //.......................12
     private String nationality; //........................13
-    private Date birthdate; // ...........................14
+    // private Date birthdate; // ........................14
     private Boolean verifiedOffline; //...................15
     private Boolean verifiedOnline; //....................16
     private Boolean revoked; //...........................17
     private Date revokedOn; //............................18
     private String revokedBy; //..........................19
     private String revocationNotes; //....................20
+    private String birthdate; //..........................21
 
     // PGPPublicKeyData has also: @Parent private Key<CryptonomicaUser> cryptonomicaUserKey;
     // we have cryptonomicaUserId + webSafeString and not need it
@@ -43,7 +41,9 @@ public class PGPPublicKeyAPIView implements Serializable {
     public PGPPublicKeyAPIView() {
     }
 
-    public PGPPublicKeyAPIView(PGPPublicKeyData pgpPublicKeyData, OnlineVerification onlineVerification) {
+    public PGPPublicKeyAPIView(CryptonomicaUser cryptonomicaUser,
+                               PGPPublicKeyData pgpPublicKeyData
+    ) {
         // 1
         this.fingerprint = pgpPublicKeyData.getFingerprint();
         // 2
@@ -61,139 +61,54 @@ public class PGPPublicKeyAPIView implements Serializable {
             this.userEmail = pgpPublicKeyData.getUserEmail().getEmail().toLowerCase();
         }
         // 8
-        if (onlineVerification == null) {
-            this.userPhoneNumber = null;
+//        if (onlineVerification == null) {
+//            this.userPhoneNumber = null;
+//        } else {
+//            this.userPhoneNumber = onlineVerification.getPhoneNumber();
+//        }
+        // 9
+        this.created = pgpPublicKeyData.getCreated();
+        // 10
+        this.exp = pgpPublicKeyData.getExp();
+        // 11
+        this.bitStrength = pgpPublicKeyData.getBitStrength();
+        // 12
+        if (pgpPublicKeyData.getAsciiArmored() != null) {
+            this.asciiArmored = pgpPublicKeyData.getAsciiArmored().getValue();
+        }
+        // 13
+        this.nationality = pgpPublicKeyData.getNationality();
+        // 14
+        // this.birthdate = pgpPublicKeyData.getUserBirthday();
+        // 15
+        this.verifiedOffline = pgpPublicKeyData.getVerifiedOffline();
+        // 16
+        this.verifiedOnline = pgpPublicKeyData.getVerifiedOnline();
+        // 17
+        this.revoked = pgpPublicKeyData.getRevoked();
+        // 18
+        this.revokedOn = pgpPublicKeyData.getRevokedOn();
+        // 19
+        this.revokedBy = pgpPublicKeyData.getRevokedBy();
+        // 20
+        this.revocationNotes = pgpPublicKeyData.getRevocationNotes();
+        // 21
+        LocalDate localDate = null;
+        if (cryptonomicaUser.getBirthdayYear() != null &&
+                cryptonomicaUser.getBirthdayMonth() != null &&
+                cryptonomicaUser.getBirthdayDay() != null
+        ) {
+            localDate = LocalDate.of(
+                    cryptonomicaUser.getBirthdayYear(),
+                    cryptonomicaUser.getBirthdayMonth(),
+                    cryptonomicaUser.getBirthdayDay()
+            );
+            this.birthdate = localDate.toString();
         } else {
-            this.userPhoneNumber = onlineVerification.getPhoneNumber();
+            this.birthdate = "---";
         }
-        // 9
-        this.created = pgpPublicKeyData.getCreated();
-        // 10
-        this.exp = pgpPublicKeyData.getExp();
-        // 11
-        this.bitStrength = pgpPublicKeyData.getBitStrength();
-        // 12
-        if (pgpPublicKeyData.getAsciiArmored() != null) {
-            this.asciiArmored = pgpPublicKeyData.getAsciiArmored().getValue();
-        }
-        // 13
-        this.nationality = pgpPublicKeyData.getNationality();
-        // 14
-        this.birthdate = pgpPublicKeyData.getUserBirthday();
-        // 15
-        this.verifiedOffline = pgpPublicKeyData.getVerifiedOffline();
-        // 16
-        this.verifiedOnline = pgpPublicKeyData.getVerifiedOnline();
-        // 17
-        this.revoked = pgpPublicKeyData.getRevoked();
-        // 18
-        this.revokedOn = pgpPublicKeyData.getRevokedOn();
-        // 19
-        this.revokedBy = pgpPublicKeyData.getRevokedBy();
-
-        // LOG
-        // LOG.warning(new Gson().toJson(this));
 
     } // end: constructor
-
-    public PGPPublicKeyAPIView(PGPPublicKeyData pgpPublicKeyData, String userPhoneNumber) {
-        // 1
-        this.fingerprint = pgpPublicKeyData.getFingerprint();
-        // 2
-        this.cryptonomicaUserId = pgpPublicKeyData.getCryptonomicaUserId();
-        // 3
-        this.keyID = pgpPublicKeyData.getKeyID();
-        // 4
-        this.userID = pgpPublicKeyData.getUserID();
-        // 5
-        this.firstName = pgpPublicKeyData.getFirstName();
-        // 6
-        this.lastName = pgpPublicKeyData.getLastName();
-        // 7
-        if (pgpPublicKeyData.getUserEmail() != null) {
-            this.userEmail = pgpPublicKeyData.getUserEmail().getEmail().toLowerCase();
-        }
-        // 8
-        this.userPhoneNumber = userPhoneNumber;
-        // 9
-        this.created = pgpPublicKeyData.getCreated();
-        // 10
-        this.exp = pgpPublicKeyData.getExp();
-        // 11
-        this.bitStrength = pgpPublicKeyData.getBitStrength();
-        // 12
-        if (pgpPublicKeyData.getAsciiArmored() != null) {
-            this.asciiArmored = pgpPublicKeyData.getAsciiArmored().getValue();
-        }
-        // 13
-        this.nationality = pgpPublicKeyData.getNationality();
-        // 14
-        this.birthdate = pgpPublicKeyData.getUserBirthday();
-        // 15
-        this.verifiedOffline = pgpPublicKeyData.getVerifiedOffline();
-        // 16
-        this.verifiedOnline = pgpPublicKeyData.getVerifiedOnline();
-        // 17
-        this.revoked = pgpPublicKeyData.getRevoked();
-        // 18
-        this.revokedOn = pgpPublicKeyData.getRevokedOn();
-        // 19
-        this.revokedBy = pgpPublicKeyData.getRevokedBy();
-
-        // LOG
-        // LOG.warning(new Gson().toJson(this));
-
-    } // end: constructor
-
-    public PGPPublicKeyAPIView(PGPPublicKeyData pgpPublicKeyData) {
-        // 1
-        this.fingerprint = pgpPublicKeyData.getFingerprint();
-        // 2
-        this.cryptonomicaUserId = pgpPublicKeyData.getCryptonomicaUserId();
-        // 3
-        this.keyID = pgpPublicKeyData.getKeyID();
-        // 4
-        this.userID = pgpPublicKeyData.getUserID();
-        // 5
-        this.firstName = pgpPublicKeyData.getFirstName();
-        // 6
-        this.lastName = pgpPublicKeyData.getLastName();
-        // 7
-        if (pgpPublicKeyData.getUserEmail() != null) {
-            this.userEmail = pgpPublicKeyData.getUserEmail().getEmail().toLowerCase();
-        }
-        // 8
-        this.userPhoneNumber = null; // < ! , to be assigned with setter method
-        // 9
-        this.created = pgpPublicKeyData.getCreated();
-        // 10
-        this.exp = pgpPublicKeyData.getExp();
-        // 11
-        this.bitStrength = pgpPublicKeyData.getBitStrength();
-        // 12
-        if (pgpPublicKeyData.getAsciiArmored() != null) {
-            this.asciiArmored = pgpPublicKeyData.getAsciiArmored().getValue();
-        }
-        // 13
-        this.nationality = pgpPublicKeyData.getNationality();
-        // 14
-        this.birthdate = pgpPublicKeyData.getUserBirthday();
-        // 15
-        this.verifiedOffline = pgpPublicKeyData.getVerifiedOffline();
-        // 16
-        this.verifiedOnline = pgpPublicKeyData.getVerifiedOnline();
-        // 17
-        this.revoked = pgpPublicKeyData.getRevoked();
-        // 18
-        this.revokedOn = pgpPublicKeyData.getRevokedOn();
-        // 19
-        this.revokedBy = pgpPublicKeyData.getRevokedBy();
-
-        // LOG
-        // LOG.warning(new Gson().toJson(this));
-
-    } // end: constructor
-
 
     /* ----- Getters and Setters: */
 
@@ -252,14 +167,14 @@ public class PGPPublicKeyAPIView implements Serializable {
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
     }
-
-    public String getUserPhoneNumber() {
-        return userPhoneNumber;
-    }
-
-    public void setUserPhoneNumber(String userPhoneNumber) {
-        this.userPhoneNumber = userPhoneNumber;
-    }
+//
+//    public String getUserPhoneNumber() {
+//        return userPhoneNumber;
+//    }
+//
+//    public void setUserPhoneNumber(String userPhoneNumber) {
+//        this.userPhoneNumber = userPhoneNumber;
+//    }
 
     public Date getCreated() {
         return created;
@@ -300,12 +215,21 @@ public class PGPPublicKeyAPIView implements Serializable {
     public void setNationality(String nationality) {
         this.nationality = nationality;
     }
+//
+//    public Date getBirthdate() {
+//        return birthdate;
+//    }
+//
+//    public void setBirthdate(Date birthdate) {
+//        this.birthdate = birthdate;
+//    }
 
-    public Date getBirthdate() {
+
+    public String getBirthdate() {
         return birthdate;
     }
 
-    public void setBirthdate(Date birthdate) {
+    public void setBirthdate(String birthdate) {
         this.birthdate = birthdate;
     }
 

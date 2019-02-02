@@ -278,11 +278,13 @@ public class UserSearchAndViewAPI {
                 ofy().save().entity(k); // async !
             }
         }
+
         // create obj to return:
         UserProfileGeneralView userProfileGeneralView = new UserProfileGeneralView(
                 profile,
                 pgpPublicKeyDataList
         );
+
         LOG.warning("userProfileGeneralView: "
                 + userProfileGeneralView.toJson());
 

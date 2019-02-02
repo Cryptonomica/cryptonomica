@@ -262,6 +262,29 @@
                     });
             }; // end of $scope.removeVideoWithMessage() ;
 
+            /* --- remove documents send message to user : */
+            $scope.removeDocumentsMessageToUser = null;
+            $scope.removeDocumentsWithMessage = function () {
+                $log.debug('$scope.removeDocumentsWithMessage started');
+                $rootScope.progressbar.start(); // <<<<<<<<<<<removeVideoWithMes
+
+                GApi.executeAuth('onlineVerificationAPI',
+                    'removeDocumentsWithMessage', {
+                        "fingerprint": $stateParams.fingerprint,
+                        "messageToUser": $scope.removeDocumentsMessageToUser,
+                    })
+                    .then(function (response) { // BooleanWrapperObject.java
+                        $log.debug(response);
+                        $scope.approveResponse = response.message;
+                        $timeout($rootScope.progressbar.complete(), 1000);
+                    })
+                    .catch(function (error) {
+                        $log.debug(error);
+                        $scope.approveResponseError = error;
+                        $timeout($rootScope.progressbar.complete(), 1000);
+                    });
+            }; // end of $scope.removeDocumentsMessageToUser() ;
+
             /* --- add name on card : */
             $scope.nameOnCard = null;
             $scope.addNameOnCard = function () {
@@ -318,6 +341,40 @@
                     });
             }; // end of $scope.changeName() ;
 
+            /* --- Change user Birthdate (admin) */
+            $scope.newDay = null;
+            $scope.newMonth = null;
+            $scope.newYear = null;
+            $scope.changeBirthdate = function () {
+                $log.debug('$scope.changeBirthdate started: ' + $scope.newYear + '-' + $scope.newMonth + "-" + $scope.newDay);
+                if (!$scope.newDay || !$scope.newMonth || !$scope.newYear
+                    || $scope.newDay <= 0 || $scope.newDay > 31
+                    || $scope.newMonth <= 0 || $scope.newMonth > 12
+                    || $scope.newYear < 1900) {
+                    $scope.approveResponseError = "Entered birthdate " + $scope.newYear + '-' + $scope.newMonth + "-" + $scope.newDay + " is invalid";
+                    return;
+                }
+                $rootScope.progressbar.start(); // <<<<<<<<<<<
+                GApi.executeAuth('onlineVerificationAPI',
+                    'changeBirthdate', {
+                        "userID": $scope.onlineVerification.cryptonomicaUserId,
+                        // "fingerprint": $stateParams.fingerprint,
+                        "day": $scope.newDay,
+                        "month": $scope.newMonth,
+                        "year": $scope.newYear
+                    })
+                    .then(function (response) { // BooleanWrapperObject.java
+                        $log.debug(response);
+                        $scope.approveResponse = response.message; // <<< TODO: change name
+                        $timeout($rootScope.progressbar.complete(), 1000);
+                    })
+                    .catch(function (error) {
+                        $log.debug(error);
+                        $scope.approveResponseError = error;
+                        $timeout($rootScope.progressbar.complete(), 1000);
+                    });
+            }; // end of $scope.changeBirthdate ;
+
             $scope.onlineVerificationApproved = null;
             $scope.approve = function () {
                 $log.debug('$scope.approve started');
@@ -346,6 +403,33 @@
                         }
                     );
             }; // end of $scope.approve();
+
+            $scope.confirmDeleteOnlineVerificationEntity = null;
+            $scope.reasonForDeletingOnlineVerificationEntity = null;
+            $scope.deleteOnlineVerificationEntity = function () {
+                $log.debug('$scope.deleteOnlineVerificationEntity started');
+                $rootScope.progressbar.start(); // <<<<<<<<<<<
+                $scope.approveSuccess = null;
+                $scope.approveError = null;
+                $scope.approveResponse = null;
+                /// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+                GApi.executeAuth('onlineVerificationAPI',
+                    'deleteOnlineVerificationEntity', {
+                        "fingerprint": $stateParams.fingerprint,
+                        "reason": $scope.reasonForDeletingOnlineVerificationEntity
+                    })
+                    .then(
+                        function (result) { // BooleanWrapperObject.java
+                            $log.debug(result);
+                            $scope.setAlertSuccess(result.message);
+                            $timeout($rootScope.progressbar.complete(), 1000);
+                        }, function (error) {
+                            $log.debug(error);
+                            $scope.setAlertDanger(error);
+                            $timeout($rootScope.progressbar.complete(), 1000);
+                        }
+                    );
+            }; // end of  $scope.deleteOnlineVerificationEntity();
 
         } // end of onlineVerCtrl
     ]);

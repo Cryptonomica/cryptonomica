@@ -226,6 +226,47 @@
                                 </table>
                                 <br>
 
+                                <!-- duplicate alerts: -->
+                                <alerts></alerts>
+
+                                <!-- COMPLIANCE OFFICER  -->
+
+                                <div id="admin" class="ui segment" ng-show="currentUser.cryptonomicaOfficer">
+
+                                    <h1>Compliance Actions:</h1>
+                                    <p>(you see this because you are Cryptonomica compliance officer)</p>
+
+                                    <form class="ui form">
+
+                                        <fieldset>
+
+                                            <div class="field">
+                                                <h2>Change user name </h2>
+                                                <div>
+                                                    input will be converted to lower case when storing in data base
+                                                </div>
+                                                <label for="newFirstName">New first name: </label>
+                                                <input id="newFirstName" type="text" class="form-control"
+                                                       ng-model="newFirstName">
+                                                <br>
+
+                                                <label for="newLastName">New last name: </label>
+                                                <input id="newLastName" type="text" class="form-control"
+                                                       ng-model="newLastName">
+                                                <br>
+
+                                                <button ng-click="changeName()"
+                                                        class="ui button" type="submit">
+                                                    Change Name
+                                                </button>
+                                            </div>
+
+                                        </fieldset>
+
+                                    </form>
+
+                                </div>
+
                                 <!-- NOTARY KEY VERIFICATION START -->
 
                                 <div ng-show="(currentUser && currentUser.cryptonomicaOfficer)||(currentUser && currentUser.notary)">

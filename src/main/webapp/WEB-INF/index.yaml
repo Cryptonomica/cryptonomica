@@ -53,6 +53,12 @@ indexes:
 - kind: OnlineVerification
   ancestor: no
   properties:
+    - name: paymentVerified
+    - name: onlineVerificationDataVerified
+
+- kind: OnlineVerification
+  ancestor: no
+  properties:
   - name: entityCreated
   - name: termsAccepted
 
@@ -81,6 +87,13 @@ indexes:
   properties:
   - name: promoCodeIssuedBy
   - name: entityCreated
+
+# --- VerificationDocument
+- kind: VerificationDocument
+  ancestor: no
+  properties:
+    - name: fingerprint
+    - name: hidden
 
 # --- TestEntity
 

@@ -1,6 +1,7 @@
 package net.cryptonomica.returns;
 
 import com.google.gson.Gson;
+import com.googlecode.objectify.annotation.Index;
 import net.cryptonomica.entities.CryptonomicaUser;
 import net.cryptonomica.entities.PGPPublicKeyData;
 
@@ -21,7 +22,7 @@ public class UserProfileGeneralView implements Serializable {
     private String webSafeStringKey; //......................................2
     private String firstName; //.............................................3
     private String lastName; //..............................................4
-    private Date birthday; //................................................5
+    // private Date birthday; //................................................5
     private String email; //.................................................6
     private String userInfo; //..............................................7
     private String userCurrentImageLink; //..................................8
@@ -32,6 +33,10 @@ public class UserProfileGeneralView implements Serializable {
     private Boolean arbitrator; //..........................................13
     private Boolean cryptonomicaOfficer; //.................................14
     private ArrayList<PGPPublicKeyGeneralView> pgpPublicKeyGeneralViews; //.15
+    private Integer birthdayYear; //........... ............................31
+    private Integer birthdayMonth; //.......................................32
+    private Integer birthdayDay; //.........................................32
+
 
     /* ----- Constructors */
     public UserProfileGeneralView() {
@@ -45,7 +50,12 @@ public class UserProfileGeneralView implements Serializable {
         this.webSafeStringKey = cryptonomicaUser.getWebSafeStringKey();
         this.firstName = cryptonomicaUser.getFirstName();
         this.lastName = cryptonomicaUser.getLastName();
-        this.birthday = cryptonomicaUser.getBirthday();
+
+        // this.birthday = cryptonomicaUser.getBirthday();
+        this.birthdayDay = cryptonomicaUser.getBirthdayDay();
+        this.birthdayMonth = cryptonomicaUser.getBirthdayMonth();
+        this.birthdayYear = cryptonomicaUser.getBirthdayYear();
+
         if (cryptonomicaUser.getEmail() != null) {
             this.email = cryptonomicaUser.getEmail().getEmail();
         }
@@ -95,7 +105,12 @@ public class UserProfileGeneralView implements Serializable {
         this.webSafeStringKey = cryptonomicaUser.getWebSafeStringKey();
         this.firstName = cryptonomicaUser.getFirstName();
         this.lastName = cryptonomicaUser.getLastName();
-        this.birthday = cryptonomicaUser.getBirthday();
+
+        // this.birthday = cryptonomicaUser.getBirthday();
+        this.birthdayDay = cryptonomicaUser.getBirthdayDay();
+        this.birthdayMonth = cryptonomicaUser.getBirthdayMonth();
+        this.birthdayYear = cryptonomicaUser.getBirthdayYear();
+
         if (cryptonomicaUser.getEmail() != null) {
             this.email = cryptonomicaUser.getEmail().getEmail();
         }
@@ -132,7 +147,7 @@ public class UserProfileGeneralView implements Serializable {
     } // end: from CryptonomicaUser and list of keys
 
     /* ----- Methods */
-    public String toJson(){
+    public String toJson() {
         return new Gson().toJson(this);
     }
 
@@ -170,12 +185,37 @@ public class UserProfileGeneralView implements Serializable {
         this.lastName = lastName;
     }
 
-    public Date getBirthday() {
-        return birthday;
+//    public Date getBirthday() {
+//        return birthday;
+//    }
+//
+//    public void setBirthday(Date birthday) {
+//        this.birthday = birthday;
+//    }
+
+
+    public Integer getBirthdayYear() {
+        return birthdayYear;
     }
 
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
+    public void setBirthdayYear(Integer birthdayYear) {
+        this.birthdayYear = birthdayYear;
+    }
+
+    public Integer getBirthdayMonth() {
+        return birthdayMonth;
+    }
+
+    public void setBirthdayMonth(Integer birthdayMonth) {
+        this.birthdayMonth = birthdayMonth;
+    }
+
+    public Integer getBirthdayDay() {
+        return birthdayDay;
+    }
+
+    public void setBirthdayDay(Integer birthdayDay) {
+        this.birthdayDay = birthdayDay;
     }
 
     public String getEmail() {
