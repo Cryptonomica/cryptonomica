@@ -37,7 +37,20 @@
                                 </div>
                             </div>
 
-                            <div class="ui segment" ng-show="!currentNetwork.connected">
+                            <div class="ui segment"
+                                 ng-show="!currentUser||!currentUser.registeredCryptonomicaUser">
+                                <div id="alertDangerNotLoggedIn" class="ui negative message">
+                                    <!--<i class="close icon" ng-click="alertDangerNotLoggedIn=null"></i>-->
+                                    <div class="header"></div>
+                                    <p>
+                                        This service requires registration on Cryptonomica and a browser with Ethereum
+                                        blockchain connection.<br>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="ui segment"
+                                 ng-show="!currentNetwork.connected&&currentUser&&currentUser.registeredCryptonomicaUser">
                                 <div id="alertDanger" class="ui negative message">
                                     <i class="close icon" ng-click="alertDanger=null"></i>
                                     <div class="header">Error:</div>
@@ -74,9 +87,9 @@
                                             contract.
                                             <br><br>
                                             User data from this
-                                            <a
-                                                    href="https://etherscan.io/address/0x846942953c3b2A898F10DF1e32763A823bf6b27f#code"
-                                                    target="_blank">
+                                            <a href=""
+                                               ng-href="{{etherscanSmartContractData}}"
+                                               target="_blank">
                                                 smart contract
                                             </a> can be read
                                             by other smart contracts and decentralized applications. You can use
@@ -85,22 +98,24 @@
                                             blockchain.<br><br>
 
                                             Ethereum address can be connected to one OpenPGP key only, and one
-                                            time only.<br><br>
+                                            time only.
                                             If OpenPGP key expires, user have to use another Ethereum address
                                             for new OpenPGP public key.<br><br>
                                             You can also read from and write to our smart contract from
-                                            <a
-                                                    href="https://etherscan.io/address/0x846942953c3b2A898F10DF1e32763A823bf6b27f#readContract"
-                                                    target="_blank">
+                                            <a href=""
+                                               ng-href="{{etherscanSmartContractData}}#readContract"
+                                               target="_blank">
                                                 etherscan
-                                            </a><br>
+                                            </a><br><br>
                                             <b>For developers:</b> this service created to be as much smart
                                             contract developer friendly as possible.
                                             See smart contract verified code on
-                                            <a href="https://etherscan.io/address/0x846942953c3b2A898F10DF1e32763A823bf6b27f#code"
+                                            <a href=""
+                                               ng-href="{{etherscanSmartContractData}}#code"
                                                target="_blank">
                                                 etherscan
-                                            </a> Please, ask questions in our
+                                            </a> <br>
+                                            Please, ask questions in our
                                             <a href="https://t.me/cryptonomicanet"
                                                target="_blank">
                                                 telegram group

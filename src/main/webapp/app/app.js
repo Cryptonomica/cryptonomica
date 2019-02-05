@@ -24,6 +24,7 @@ app.config(function ($sceDelegateProvider) {
     $sceDelegateProvider.resourceUrlWhitelist([
         'self', // Allow same origin resource loads
         'https://cryptonomica-server.appspot.com/**',
+        'https://sandbox-cryptonomica.appspot.com/**', // < for sandbox
         'https://lh3.googleusercontent.com/**', // files (photos)  from blob storage service
         'https://raw.githubusercontent.com/Cryptonomica/arbitration-rules/**', // works!
         'https://raw.githubusercontent.com/Cryptonomica/arbitration-rules/master/README.md'
@@ -73,9 +74,7 @@ app.run([
                   $location,
                   $log) {
 
-            $log.info('webapp started,  version: ', '3.9');
-            $log.info('[app.js] $state');
-            $log.info($state);
+            $rootScope.appVersion = '3.10';
 
             /* --- UI */
             $rootScope.sidebarVisible = true;
@@ -84,13 +83,24 @@ app.run([
             /* see: https://github.com/maximepvrt/angular-google-gapi */
 
             $rootScope.gdata = GData;
-            $rootScope.gaeProjectDomain = "cryptonomica-server.appspot.com";
             $rootScope.supportEmail = "support@cryptonomica.zendesk.com";
 
-            // (WEB_CLIENT_ID)
-            var CLIENT = '762021407984-9ab8gugumsg30rrqgvma9htfkqd3uid5.apps.googleusercontent.com';
-            var BASE = 'https://cryptonomica-server.appspot.com/_ah/api';
-            //
+            var SED_START;
+            $rootScope.PRODUCTION = false;
+            var SED_END;
+
+            var CLIENT;
+            if ($rootScope.PRODUCTION) {
+                $rootScope.gaeProjectDomain = "cryptonomica-server.appspot.com";
+                CLIENT = "762021407984-9ab8gugumsg30rrqgvma9htfkqd3uid5.apps.googleusercontent.com";
+            } else {
+                $document.title = "[SANDBOX] " + $document.title;
+                $rootScope.gaeProjectDomain = "sandbox-cryptonomica.appspot.com";
+                CLIENT = "517360814873-7pn1cta2addmcvug6rb1jr2u20vv2qnt.apps.googleusercontent.com";
+            }
+
+            var BASE = "https://" + $rootScope.gaeProjectDomain + "/_ah/api";
+
             GApi.load('notaryAPI', 'v1', BASE);             // 1
             GApi.load('pgpPublicKeyAPI', 'v1', BASE);       // 2
             GApi.load('uploadAPI', 'v1', BASE);             // 3
@@ -109,6 +119,9 @@ app.run([
             GAuth.setScope(
                 'https://www.googleapis.com/auth/userinfo.email'
             );
+
+            $log.info('webapp started,  version: ', $rootScope.appVersion);
+            $log.info('production: ', $rootScope.PRODUCTION);
 
             $rootScope.checkAuth = function () {
                 GAuth.checkAuth()

@@ -64,8 +64,8 @@
             * */
 
             $log.debug(controller_name, "started"); //
-            $log.debug('$state');
-            $log.debug($state);
+            // $log.debug('$state');
+            // $log.debug($state);
             $timeout($rootScope.progressbar.complete(), 1000);
 
             /* --- Alerts */
@@ -164,9 +164,9 @@
                 },
                 "3": {        // Ropsten network
                     "networkName": "Ropsten Test Network",
-                    "address": undefined, // contract address
-                    "contractAddress": undefined,
-                    "ownerAddress": undefined,
+                    "address": "0x846942953c3b2A898F10DF1e32763A823bf6b27f", // contract address
+                    "contractAddress": "0x846942953c3b2A898F10DF1e32763A823bf6b27f",
+                    "ownerAddress": "0xDADfa63d05D01f536930F1150238283Fe917D28c", // < same as for mainnet
                     "etherscanLinkPrefix": "https://ropsten.etherscan.io/"
                 },
                 "4": {        // Rinkeby network
@@ -232,10 +232,15 @@
                         $log.error(error);
                     } else {
 
-                        // TODO: (!!!) change in production
-                        if (result !== "1") { // not Rinkeby
+                        if ($rootScope.PRODUCTION && result !== "1") { // not MainNet
                             $scope.setAlertDanger(
                                 "Service works on Ethereum MainNet, but you are connected to another Ethereum Network"
+                            );
+                        }
+
+                        if (!$rootScope.PRODUCTION && result !== "3") { // not Ropsten
+                            $scope.setAlertDanger(
+                                "This SANDBOX Service works on Ropsten TestNet, but you are connected to another Ethereum Network"
                             );
                         }
 
