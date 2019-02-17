@@ -153,6 +153,15 @@ a .socialLogo:hover {
     color: #60c8fa !important;
 }
 
+.sandboxMark {
+    background-color: darkred;
+    color: white;
+    font-weight: bold;
+    font-stretch: extra-expanded;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em
+}
+
 /* ----------------------------  */
 
 /* for video recording: */

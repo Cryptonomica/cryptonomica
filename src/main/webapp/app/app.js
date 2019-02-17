@@ -369,9 +369,12 @@ app.run([
             };
 
             $rootScope.stateGo = function (state, parameter, parameterValue) {
-                $state.go(state, {parameter: parameterValue});
+                if (parameter && parameterValue) {
+                    $state.go(state, {parameter: parameterValue});
+                } else {
+                    $state.go(state);
+                }
             };
-
 
             $rootScope.unixTimeFromDate = function (date) {
                 return Math.round(date.getTime() / 1000);
