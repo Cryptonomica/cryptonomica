@@ -9,6 +9,7 @@
 # escape '/' with '\'
 # c is the change command in sed, it means "replace entire line(s)".  You cannot simply leave the #start and #end lines untouched.  If you want to keep them, you must re-insert them
 
+gcloud config set project cryptonomica-server
 
 # ./pom.xml : 25
 sed -i '/<!-- endpoints.project.id START -->/,/<!-- endpoints.project.id END -->/c\
