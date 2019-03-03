@@ -306,13 +306,25 @@
                                 $rootScope.currentUser = resp.userProfileGeneralView;
                                 $rootScope.checkAuth();
                                 $timeout($rootScope.progressbar.complete(), 1000);
-                                $state.go('home'); // TODO: <<<<
 
-                            }, function (resp) {
-                                console.log("error (resp): ");
-                                $log.info(resp);
-                                // $scope.pgpPublicKeyDataError = resp;
-                                $scope.setAlertDanger(resp.message.replace('java.lang.Exception: ', ''));
+                                // $state.go('home');
+                                if ($rootScope.currentUser
+                                    && $rootScope.currentUser.pgpPublicKeyGeneralViews
+                                    && $rootScope.currentUser.pgpPublicKeyGeneralViews[0]
+                                    && $rootScope.currentUser.pgpPublicKeyGeneralViews[0].fingerprint
+                                ) {
+                                    //  $state.go(state, {parameter: parameterValue});
+                                    $state.go('onlineVerification', {"fingerprint": $rootScope.currentUser.pgpPublicKeyGeneralViews[0].fingerprint});
+                                } else if ($rootScope.currentUser && $rootScope.currentUser.userId) {
+                                    $state.go('viewprofile', {"userId": $rootScope.currentUser.userId});
+                                } else {
+                                    $state.go('home');
+                                }
+
+                            }, function (error) {
+                                console.log("error: ");
+                                $log.info(error);
+                                $scope.setAlertDanger(error.message.replace('java.lang.Exception: ', ''));
                                 $rootScope.checkAuth();
                                 $timeout($rootScope.progressbar.complete(), 1000);
                             }

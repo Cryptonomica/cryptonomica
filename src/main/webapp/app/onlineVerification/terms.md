@@ -34,7 +34,7 @@ Please take into account that your personal data such as your first and last nam
 Other data (such as scans of the documents, your video etc.) entered in the verification process will not be published publicly, these data will be available only to: 1) employees of our company, or persons associated with the company, or having a service contract with the company 2) accredited notaries, 3) arbitrators of the arbitration court when resolving disputes involving a person whose key is verified.
 You can, at your discretion, grant access to data entered during verification to other users of the service, or withdraw such access. 
 
-Based on the nature of the service provided, key (key certificate) data and data entered during verification can not be deleted by the user or at the user's request, however, in case of key compromising, you can mark the key in the database as 'revoked' - for this send a request with the explanation of the reason for revocation to [support@cryptonomica.net](support@cryptonomica.net).
+Based on the nature of the service provided, key (key certificate) data and data entered during verification can not be deleted by the user or at the user's request, however, in case of key compromising, you can mark the key in the database as 'revoked' - for this send a request with the explanation of the reason for revocation to [support@cryptonomica.zendesk.com](support@cryptonomica.zendesk.com).
 
 We may send you occasional emails and/or sms (but no spam) to ensure proper use of our service, user security and best user experience.
 

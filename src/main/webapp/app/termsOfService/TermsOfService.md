@@ -23,7 +23,7 @@ Terms of Service can be changed anytime by Cryptonomica Ltd. unilaterally.
 
 General rules about using Cryptonomica's arbitration service are described in [Cryptonomica Arbitration Rules](https://github.com/Cryptonomica/arbitration-rules).
 
-This web site may and in some ways will collects information about users (legal entity and/or  private entrepreneurs and/or persons) and web-site visitors as described in [’Privacy Policy’](https://cryptonomica.net/#!/privacyPolicy).
+This web site may and in some ways will collects information about users (legal entity and/or  private entrepreneurs and/or persons) and web-site visitors as described in [’Privacy Policy’](#!/privacyPolicy).
 
 # Eligibility and Acceptable Use 
 
@@ -58,7 +58,7 @@ The Company may waive a transaction or the establishment of a business relations
 
 # Privacy
 
-Please see the ['Privacy Policy'](https://cryptonomica.net/#!/privacyPolicy) for disclosures relating to the collection and use of personal information. 
+Please see the ['Privacy Policy'](#!/privacyPolicy) for disclosures relating to the collection and use of personal information. 
 
 # Security
 
@@ -94,5 +94,5 @@ When referring to document content line numbers of [plain text version](https://
 User can read this Terms and additionally instruction published on Cryptonomica’s [wiki](https://github.com/Cryptonomica/cryptonomica/wiki). 
 For user’s convenience Cryptonomica recommends to start with [Home page](https://www.cryptonomica.net) and Cryptonomica ['White Paper'](https://github.com/Cryptonomica/cryptonomica/wiki/Cryptonomica-White-Paper).
 
-In case of any questions regarding using the Site any User can use Help/Wiki page and/or Submit an Issue page in the Site, address it’s questions to E-mail address: [support@cryptonomica.net](support@cryptonomica.net)  or join us on Telegram [channel](https://t.me/cryptonomicanet ).
+In case of any questions regarding using the Site any User can use Help/Wiki page and/or Submit an Issue page in the Site, address it’s questions to E-mail address: [support@cryptonomica.zendesk.com](support@cryptonomica.zendesk.com).
 

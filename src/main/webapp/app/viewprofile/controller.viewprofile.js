@@ -56,7 +56,7 @@
                         },
                         function () {
                             $log.debug('User not logged in');
-                            $state.go('landing');
+                            $state.go('home');
                         }
                     );
                 }

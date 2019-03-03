@@ -7,6 +7,15 @@
     https://semantic-ui.com/elements/icon.html
     -->
 
+    <div ng-show="!PRODUCTION" class="sandboxMark"
+         title="This is SANDBOX version, for production go to CRYPTONOMICA.NET">
+        <center>
+            sandbox
+        </center>
+    </div>
+    <div ng-show="!PRODUCTION" class="ui divider"
+         style="padding-top: 0em !important; margin-top: 0em !important; border-top: 0em !important;"></div>
+
     <!-- ==== LOGIN / LOGOUT ==== -->
 
     <a id="login" class="item" href="" style="margin-top: 1em" ng-click="login()"
@@ -85,10 +94,12 @@
         <span class="hiddenCollapse">Test</span>
     </a>
 
-    <a id="issues" class="item" href="https://github.com/Cryptonomica/cryptonomica/issues" target="_blank">
-        <i class="icofont icofont-support-faq titleIcon"></i>
-        <span class="hiddenCollapse">Submit an Issue</span>
-    </a>
+    <!--
+        <a id="issues" class="item" href="https://github.com/Cryptonomica/cryptonomica/issues" target="_blank">
+            <i class="icofont icofont-support-faq titleIcon"></i>
+            <span class="hiddenCollapse">Submit an Issue</span>
+        </a>
+    -->
 
     <a id="stats" class="item" href="" ui-sref-active="active" ui-sref="stats">
         <!--<i class="chart line icon titleIcon"></i>-->
@@ -102,6 +113,12 @@
     <a id="help" class="item" href="https://github.com/Cryptonomica/cryptonomica/wiki" target="_blank">
         <i class="fa fa-life-ring titleIcon"></i>
         <span class="hiddenCollapse">Help/Wiki</span>
+    </a>
+
+    <!-- Blog -->
+    <a id="issues" class="item" href="https://cryptonomica-blog.github.io" target="_blank">
+        <i class="icofont icofont-newspaper titleIcon"></i>
+        <span class="hiddenCollapse">Blog</span>
     </a>
 
     <!-- for compliance officer  : -->

@@ -24,12 +24,13 @@
 
                     <p>
                         Please read an accept
-                        <a href="" ui-sref="privacyPolicy" title="Click to open in new window" target="_blank">Cryptonomica
-                            Privacy Policy</a> and
-                        <a href="" ui-sref="termsOfService" title="Click to open in new window" target="_blank">Terms of
-                            Service</a>
+                        <a href="" ui-sref="privacyPolicy" title="Click to open in new window" target="_blank">
+                            Cryptonomica Privacy Policy
+                        </a> and
+                        <a href="" ui-sref="termsOfService" title="Click to open in new window" target="_blank">
+                            Terms of Service
+                        </a>
                     </p>
-                    <!--<div class="ui header">Important:</div>-->
                     <p><b>Important: </b>
                         as it required by the meaning of our service,
                         verified keys/public keys certificates and user personal data provided for key verification
@@ -57,7 +58,6 @@
 
         <!-- ==== MAIN SECTION ====  -->
 
-
         <div class="mainWrap navslide">
 
             <div class="ui equal width left aligned padded grid stackable">
@@ -83,7 +83,6 @@
                                 </div>
                             </div>
 
-
                             <div class="ui segment">
 
                                 <h2><i class="fa fa-user-plus"></i>&nbsp;
@@ -93,14 +92,11 @@
 
                             <div class="ui segment" ng-show="currentUser.registeredCryptonomicaUser">
                                 <div class="ui yellow message">
-                                    <!--<i class="close icon" ng-click="alertWarning=null"></i>-->
-                                    <!--<div class="header">Warning:</div>-->
                                     <p>You are already registered</p>
                                 </div>
                             </div>
 
                             <div class="ui segment" ng-show="!googleUser||currentUser.registeredCryptonomicaUser">
-                                <!--<div class="ui segment" ng-show="!googleUser||currentUser.registeredCryptonomicaUser">-->
 
                                 <div ng-show="!googleUser">
                                     <div class="ui negative message">
@@ -139,7 +135,8 @@
                                         </p>
 
                                         <p>You can generate your keys using our
-                                            <a href="" ui-sref="openPGPOnline" target="_blank" ng-click="stateGo(openPGPOnline)"
+                                            <a href="" ui-sref="openPGPOnline" target="_blank"
+                                               ng-click="stateGo(openPGPOnline)"
                                                title="Generate your keys online">
                                                 OpenPGP Online Service
                                             </a>
@@ -195,73 +192,6 @@
                                                 <input ui-date="dateOptions" ng-model="regForm.birthday">
                                             </p>
                                         </label>
-
-
-                                        <!-- user birthdate start -->
-                                        <div class="three wide field">
-                                            <label>Your Birthdate (required):</label>
-
-                                                <div class="field">
-                                                    <select class="ui fluid search dropdown" name="birthdayMonth" ng-model="regForm.birthdayDay">
-                                                        <option value="">Day</option>
-                                                        <option value="1">01</option>
-                                                        <option value="2">02</option>
-                                                        <option value="3">03</option>
-                                                        <option value="4">04</option>
-                                                        <option value="5">05</option>
-                                                        <option value="6">06</option>
-                                                        <option value="7">07</option>
-                                                        <option value="8">08</option>
-                                                        <option value="9">09</option>
-                                                        <option value="10">10</option>
-                                                        <option value="11">11</option>
-                                                        <option value="12">12</option>
-                                                    </select>
-                                                </div>
-
-                                                <div class="field">
-                                                    <select class="ui fluid search dropdown" name="birthdayMonth" ng-model="regForm.birthdayMonth">
-                                                        <option value="">Month</option>
-                                                        <option value="1">January</option>
-                                                        <option value="2">February</option>
-                                                        <option value="3">March</option>
-                                                        <option value="4">April</option>
-                                                        <option value="5">May</option>
-                                                        <option value="6">June</option>
-                                                        <option value="7">July</option>
-                                                        <option value="8">August</option>
-                                                        <option value="9">September</option>
-                                                        <option value="10">October</option>
-                                                        <option value="11">November</option>
-                                                        <option value="12">December</option>
-                                                    </select>
-                                                </div>
-
-                                                <div class="field">
-                                                    <select class="ui fluid search dropdown" name="birthdayYear" ng-model="regForm.birthdayYear">
-                                                        <option value="">Month</option>
-                                                        <option value="1">January</option>
-                                                        <option value="2">February</option>
-                                                        <option value="3">March</option>
-                                                        <option value="4">April</option>
-                                                        <option value="5">May</option>
-                                                        <option value="6">June</option>
-                                                        <option value="7">July</option>
-                                                        <option value="8">August</option>
-                                                        <option value="9">September</option>
-                                                        <option value="10">October</option>
-                                                        <option value="11">November</option>
-                                                        <option value="12">December</option>
-                                                    </select>
-                                                </div>
-
-                                                <div class="field">
-                                                    <input type="number" name="birthdayYear" ng-model="birthdayYear">
-                                                </div>
-
-                                        </div>
-                                        <!-- user birthdate end -->
-
                                         <br>
                                         <label>
                                             Info about you (optional):
@@ -273,7 +203,7 @@
 
                                     <button id="registerNewUserBtn" class="ui positive button"
                                             ng-click="registerNewUser()">
-                                        Register
+                                        Upload public key and register
                                     </button>
 
                                 </form>

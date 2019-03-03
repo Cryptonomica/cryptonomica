@@ -62,8 +62,8 @@
             * */
 
             $log.debug(controller_name, "started"); //
-            $log.debug('$state');
-            $log.debug($state);
+            // $log.debug('$state');
+            // $log.debug($state);
             $timeout($rootScope.progressbar.complete(), 1000);
 
             $scope.smartContractData = {};
@@ -134,9 +134,9 @@
                 },
                 "3": {        // Ropsten network
                     "networkName": "Ropsten Test Network",
-                    "address": undefined, // contract address
-                    "contractAddress": undefined,
-                    "ownerAddress": undefined,
+                    "address": "0x846942953c3b2A898F10DF1e32763A823bf6b27f", // contract address
+                    "contractAddress": "0x846942953c3b2A898F10DF1e32763A823bf6b27f",
+                    "ownerAddress": "0xDADfa63d05D01f536930F1150238283Fe917D28c", // < same as for mainnet
                     "etherscanLinkPrefix": "https://ropsten.etherscan.io/"
                 },
                 "4": {        // Rinkeby network
@@ -154,6 +154,12 @@
                     "etherscanLinkPrefix": undefined
                 }
             };
+
+            if ($rootScope.PRODUCTION) {
+                $scope.etherscanSmartContractData = networks[1].etherscanLinkPrefix + "address/" + networks[1].address
+            } else {
+                $scope.etherscanSmartContractData = networks[3].etherscanLinkPrefix + "address/" + networks[3].address
+            }
 
             $rootScope.currentNetwork = {
                 'network_id': '', // integer
@@ -197,8 +203,7 @@
                     storage.setItem(x, x);
                     storage.removeItem(x);
                     return true;
-                }
-                catch (e) {
+                } catch (e) {
                     return e instanceof DOMException && (
                             // everything except Firefox
                         e.code === 22 ||
@@ -370,6 +375,7 @@
                     // ---->>>>
 
                     if ($rootScope.web3.isConnected()) {
+
                         $log.debug('[ethVerificationCtrl] $rootScope.web3.isConnected() : true ');
                         $rootScope.currentNetwork.connected = true;
                         // $rootScope.$apply();
@@ -432,9 +438,16 @@
                                 $scope.$apply();
                                 $log.error(error);
                             } else {
-                                if (result !== "1") { // not MainNet
+
+                                if ($rootScope.PRODUCTION && result !== "1") { // not MainNet
                                     $scope.setAlertDanger(
                                         "Service works on Ethereum MainNet, but you are connected to another Ethereum Network"
+                                    );
+                                }
+
+                                if (!$rootScope.PRODUCTION && result !== "3") { // not Ropsten
+                                    $scope.setAlertDanger(
+                                        "This SANDBOX Service works on Ropsten TestNet, but you are connected to another Ethereum Network"
                                     );
                                 }
 

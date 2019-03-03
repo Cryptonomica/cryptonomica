@@ -26,4 +26,7 @@ v1.0, 2018-05-08
 * [ ] arbitration agreement in smart contract
 * [ ] multilateral arbitration agreement in smart contract
 
+* [ ] make a separate form for creating a key on registration page > and save to local storage 
+* [ ] after user successfully upload a key > go to verification page (not to home page)
+
 
