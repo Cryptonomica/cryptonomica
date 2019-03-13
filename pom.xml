@@ -23,7 +23,7 @@
     <properties>
 
         <!-- endpoints.project.id START -->
-        <endpoints.project.id>cryptonomica-server</endpoints.project.id>
+        <endpoints.project.id>sandbox-cryptonomica</endpoints.project.id>
         <!-- endpoints.project.id END -->
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -299,10 +299,10 @@
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
-                <version>${appengine.maven.plugin.version}</version>
+                <version>1.3.2</version>
                 <configuration>
                     <!-- deploy configuration -->
-
+                    <version>${project.version}</version>
                     <!--
                     We detected that you have a large number of .class files in WEB-INF/classes.
                     You may be able to reduce request latency by packaging your .class files into jars.

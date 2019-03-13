@@ -19,7 +19,7 @@ import static net.cryptonomica.service.OfyService.ofy;
 public class Web3jFactory {
 
     /* ---- Logger: */
-    private static final Logger LOG = Logger.getLogger(TestAPI.class.getName());
+    private static final Logger LOG = Logger.getLogger(Web3jFactory.class.getName());
     /* --- Gson: */
     private static final Gson GSON = new Gson();
 

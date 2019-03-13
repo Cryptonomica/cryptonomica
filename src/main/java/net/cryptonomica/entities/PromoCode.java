@@ -45,7 +45,7 @@ public class PromoCode
     public PromoCode() {
         this.used = false;
         this.promoCode = RandomStringUtils.randomAlphanumeric(11);
-        this.entityCreated = new Date();
+        // this.entityCreated = new Date();
         this.validOnlyForUsers = new ArrayList<>();
         this.validOnlyForCountries = new ArrayList<>();
     }
@@ -53,7 +53,7 @@ public class PromoCode
     public PromoCode(Integer discountInPercent) {
         this.used = false;
         this.promoCode = RandomStringUtils.randomAlphanumeric(11);
-        this.entityCreated = new Date();
+        // this.entityCreated = new Date();
         this.validOnlyForUsers = new ArrayList<>();
         this.validOnlyForCountries = new ArrayList<>();
         //
@@ -64,7 +64,7 @@ public class PromoCode
     public PromoCode(Integer discountInPercent, String createdBy) {
         this.used = false;
         this.promoCode = RandomStringUtils.randomAlphanumeric(11);
-        this.entityCreated = new Date();
+        // this.entityCreated = new Date();
         this.validOnlyForUsers = new ArrayList<>();
         this.validOnlyForCountries = new ArrayList<>();
         //
@@ -75,7 +75,7 @@ public class PromoCode
     public PromoCode(Integer discountInPercent, Date validUntil) {
         this.used = false;
         this.promoCode = RandomStringUtils.randomAlphanumeric(11);
-        this.entityCreated = new Date();
+        // this.entityCreated = new Date();
         this.validOnlyForUsers = new ArrayList<>();
         this.validOnlyForCountries = new ArrayList<>();
         //

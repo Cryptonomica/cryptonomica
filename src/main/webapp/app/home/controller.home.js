@@ -45,6 +45,12 @@
             $log.debug(controller_name, "started"); //
             // $log.debug('$state');
             // $log.debug($state);
+
+            // (!!!) for debug:
+            // see:
+            // https://stackoverflow.com/questions/13743058/how-do-i-access-the-scope-variable-in-browsers-console-using-angularjs
+            // window.my$scope = $scope;
+
             $timeout($rootScope.progressbar.complete(), 1000);
 
             // TODO: for test, remove
