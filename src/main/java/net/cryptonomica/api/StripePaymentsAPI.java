@@ -681,9 +681,11 @@ public class StripePaymentsAPI {
 
             PromoCode promoCode = new PromoCode();
             promoCode.setDiscountInPercent(createPromoCodesForm.getDiscountInPercent());
-            promoCode.setCreatedBy(googleUser.getEmail());
 
-            ofy().save().entity(promoCode); // async
+            promoCode.setCreatedBy(googleUser.getEmail());
+            promoCode.setEntityCreated(new Date());
+
+            ofy().save().entity(promoCode).now();
 
             createPromoCodesReturn.addPromoCode(promoCode);
 
@@ -720,7 +722,9 @@ public class StripePaymentsAPI {
         }
 
         PromoCode promoCode = new PromoCode(discount);
+
         promoCode.setCreatedBy(serviceName);
+        promoCode.setEntityCreated(new Date());
 
         ofy().save().entity(promoCode).now(); //
 

@@ -59,6 +59,8 @@ curl -i -H "Content-Type: application/json" -X POST -d '{"message":"echo"}' http
 echo # empty line
 
 echo $(date "+%FT%T%Z") : $(whoami)
+gcloud app versions list
+mvn clean
 
 ## remove old versions in dev console
 # https://console.cloud.google.com/appengine/versions?project=cryptonomica-server

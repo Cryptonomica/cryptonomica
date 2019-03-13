@@ -82,8 +82,7 @@ library SafeMath {
 
 /* --- "Interfaces" */
 
-//  this is expected from another contracts
-//  if it wants to spend tokens of behalf of the token owner in our contract
+//  this is expected from another contracts if it wants to spend tokens of behalf of the token owner in our contract
 contract allowanceRecipient {
     function receiveApproval(address _from, uint256 _value, address _inContract, bytes _extraData) public returns (bool);
 }

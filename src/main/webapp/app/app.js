@@ -76,6 +76,11 @@ app.run([
 
             $rootScope.appVersion = '3.10';
 
+            // (!!!) for debug:
+            // see:
+            // https://stackoverflow.com/questions/13743058/how-do-i-access-the-scope-variable-in-browsers-console-using-angularjs
+            // window.my$rootScope = $rootScope;
+
             /* --- UI */
             $rootScope.sidebarVisible = true;
 
@@ -86,7 +91,7 @@ app.run([
             $rootScope.supportEmail = "support@cryptonomica.zendesk.com";
 
             var SED_START;
-            $rootScope.PRODUCTION = true;
+            $rootScope.PRODUCTION = false;
             var SED_END;
 
             var CLIENT;

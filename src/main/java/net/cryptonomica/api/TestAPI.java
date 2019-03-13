@@ -9,16 +9,18 @@ import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.appengine.api.users.User;
+import com.google.appengine.api.utils.SystemProperty;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.googlecode.objectify.Key;
 import com.twilio.sdk.TwilioRestException;
-import net.cryptonomica.constants.Constants;
-import net.cryptonomica.entities.*;
+import net.cryptonomica.entities.CryptonomicaUser;
+import net.cryptonomica.entities.OnlineVerification;
+import net.cryptonomica.entities.PGPPublicKeyData;
+import net.cryptonomica.entities.TestEntity;
 import net.cryptonomica.ethereum.TestContract;
 import net.cryptonomica.ethereum.Web3jFactory;
-import net.cryptonomica.returns.BooleanWrapperObject;
 import net.cryptonomica.returns.IntegerWrapperObject;
 import net.cryptonomica.returns.StringWrapperObject;
 import net.cryptonomica.returns.Web3jTransactionReceiptWrapper;
@@ -30,6 +32,7 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -545,6 +548,47 @@ public class TestAPI {
         Web3jTransactionReceiptWrapper result = new Web3jTransactionReceiptWrapper();
         result.setIntegerValue(integerValueFromContract);
         result.setTransactionReceipt(txReceipt);
+
+        return result;
+    }
+
+
+    @SuppressWarnings("unused")
+    @ApiMethod(
+            name = "networkInfo",
+            path = "networkInfo",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    public HashMap<String, String> networkInfo(
+            // final HttpServletRequest request,
+            final User googleUser
+    ) throws UnauthorizedException, IOException, URISyntaxException {
+
+        /* --- Check authorization: */
+        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        HashMap<String, String> result = new HashMap<>();
+
+        if (SystemProperty.environment != null && SystemProperty.environment.value() != null
+                && SystemProperty.version != null
+                && SystemProperty.applicationVersion != null
+                && SystemProperty.applicationId != null) {
+            result.put("SystemProperty.version", SystemProperty.version.get());
+            result.put("SystemProperty.applicationVersion", SystemProperty.applicationVersion.get());
+            result.put("SystemProperty.applicationId", SystemProperty.applicationId.get());
+            result.put("SystemProperty.environment.value()", SystemProperty.environment.value().value());
+        }
+
+        // final String network = "kovan";
+        // final String network = "ropsten";
+        final String network = "mainnet";
+
+        Web3j web3 = Web3jFactory.getWeb3jObject(network);
+
+        result.put("web3jClientVersion", web3.web3ClientVersion().send().getWeb3ClientVersion());
+        result.put("Ethereum network ID", web3.netVersion().send().getNetVersion());
+        result.put("eth protocol version", web3.ethProtocolVersion().send().getProtocolVersion());
+        result.put("netPeerCount()", web3.netPeerCount().send().getQuantity().toString());
 
         return result;
     }
