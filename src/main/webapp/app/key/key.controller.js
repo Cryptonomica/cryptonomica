@@ -19,47 +19,167 @@
     );
 
     controller.controller(controller_name, [
-            '$scope',
-            '$rootScope',
-            '$http',
-            'GApi',
-            'GAuth',
-            'GData',
-            '$state',
-            '$log',
-            '$timeout',
-            '$stateParams',
-            '$cookies',
-            'FileSaver',
-            'Blob',
-            '$location',
-            '$anchorScroll',
-            function showkeyCtrl($scope,
-                                 $rootScope,
-                                 $http,
-                                 GApi,
-                                 GAuth,
-                                 GData,
-                                 $state,
-                                 $log,
-                                 $timeout,
-                                 $stateParams,
-                                 $cookies,
-                                 FileSaver,
-                                 Blob,
-                                 $location,
-                                 $anchorScroll) {
+        'GAuth',
+        'GApi',
+        '$scope',
+        '$rootScope',
+        // '$http',
+        'GData',
+        '$state',
+        '$log',
+        '$sce',
+        '$timeout',
+        '$stateParams',
+        '$cookies',
+        // 'Blob',
+        '$location',
+        '$anchorScroll',
+        function showkeyCtrl(
+            GAuth,
+            GApi,
+            $scope,
+            $rootScope,
+            // $http,
+            GData,
+            $state,
+            $log,
+            $sce,
+            $timeout,
+            $stateParams,
+            $cookies,
+            // Blob,
+            $location,
+            $anchorScroll) {
 
-                $log.debug(controller_name, "started"); //
+
+            $log.debug(controller_name, "started"); //
+            $timeout($rootScope.progressbar.complete(), 1000);
+
+            (function setAlerts() {
+                /* --- Alerts */
+
+                $scope.alertDanger = null;  // red
+                $scope.alertWarning = null; // yellow
+                $scope.alertInfo = null;    // blue
+                $scope.alertSuccess = null; // green
+                $scope.alertMessage = {}; // grey
+
+                $scope.setAlertDanger = function (message) {
+                    $scope.alertDanger = message;
+                    $log.debug("$scope.alertDanger:", $scope.alertDanger);
+                    // $scope.$apply(); not here
+                    $scope.goTo("alertDanger");
+                };
+
+                $scope.setAlertWarning = function (message) {
+                    $scope.alertWarning = message;
+                    $log.debug("$scope.alertWarning:", $scope.alertWarning);
+                    // $scope.$apply();
+                    $scope.goTo("alertWarning");
+                };
+
+                $scope.setAlertInfo = function (message) {
+                    $scope.alertInfo = message;
+                    $log.debug("$scope.alertInfo:", $scope.alertInfo);
+                    // $scope.$apply();
+                    $scope.goTo("alertInfo");
+                };
+
+                $scope.setAlertSuccess = function (message) {
+                    $scope.alertSuccess = message;
+                    $log.debug("$scope.alertSuccess:", $scope.alertSuccess);
+                    // $scope.$apply();
+                    $scope.goTo("alertSuccess");
+                };
+
+                $scope.setAlertMessage = function (message, header) {
+                    $scope.alertMessage = {};
+                    $scope.alertMessage.header = header;
+                    $scope.alertMessage.message = message;
+                    $log.debug("$scope.alertMessage:", $scope.alertMessage);
+                    // $scope.$apply();
+                    $scope.goTo("alertMessage");
+                };
+            })();
+
+            //
+            $log.info("$stateParams.fingerprint : " + $stateParams.fingerprint);
+            $scope.fingerprint = $stateParams.fingerprint;
+
+            if ($rootScope.stringIsNullUndefinedOrEmpty($stateParams.fingerprint)) {
+                $state.go('search'); // go to search page
+            }
+
+            //
+            if (window.gapi && window.gapi.client) {
+                $log.debug("[key.controller.js] window.gapi.client:");
+                $log.debug(window.gapi.client);
+            } else {
+                $log.error("[key.controller.js] window.gapi.client is not loaded")
+            }
+
+            GAuth.checkAuth().then(
+                function (user) {
+
+                    console.log("GAuth.checkAuth() result:");
+                    console.log(user);
+                    //
+                    // if (!user) {
+                    //     $scope.setAlertWarning("User is not logged in. Click 'Login' or reload/refresh the page. Information is available only for registered users");
+                    // }
+
+                    $rootScope.googleUser = user;
+                    // $scope.alert = null;
+                    return GApi.executeAuth('cryptonomicaUserAPI', 'getMyUserData');
+                    // $rootScope.getUserData(); // async
+                }/*,
+                    function () {
+                        //$rootScope.getUserData();
+                        $log.error("[showkey.controller.js] GAuth.checkAuth() - unsuccessful");
+                        $scope.alertDanger = "User not logged in";
+                    }*/
+            ).then(function (resp) {
+
+                // (!) we always have response
+                $rootScope.currentUser = resp;
+                $log.info("[key.controller.js] $rootScope.currentUser: ");
+                $log.info($rootScope.currentUser);
+
+                if (!$rootScope.currentUser.loggedIn) { // user not logged in
+                    $scope.setAlertDanger("User not logged in");
+                    $log.debug("[key.controller.js] user not logged in");
+
+                } else if (!$rootScope.currentUser.registeredCryptonomicaUser) { // user not registered
+                    $scope.setAlertDanger("User is not registered. Please go to 'Registration' link on left menu");
+                    $log.debug('[key.controller.js] user is not registered');
+                } else {
+
+                    $rootScope.userCurrentImageLink = $sce.trustAsResourceUrl(resp.userCurrentImageLink);
+                    setUpFuctions();
+                    $scope.showKey(); // TODO: check <<
+                }
+
+                // $rootScope.$apply(); // < not allowed here
+
+                $rootScope.getMyBookmarks(); // < in background
+
+            }).catch(function (error) {
+                $log.error("[key.controller.js] > error:");
+                $log.error(error);
+                $scope.setAlertDanger(error);
+            }).finally(function () {
                 $timeout($rootScope.progressbar.complete(), 1000);
+            });
+
+            function setUpFuctions() {
 
                 //
-                $log.info("$stateParams.fingerprint : " + $stateParams.fingerprint);
-                if ($stateParams.fingerprint == ""
-                    || $stateParams.fingerprint == null
-                    || $stateParams.fingerprint == undefined) {
-                    $state.go('search'); // go to search page
-                }
+                $scope.dateOptions = {
+                    changeYear: true,
+                    changeMonth: true,
+                    yearRange: '1900:-0'
+                };
+
                 //
                 $scope.verifyOnline = function () {
                     $state.go('onlineVerification', {'fingerprint': $stateParams.fingerprint});
@@ -74,71 +194,6 @@
                     $state.go('ethereumVerification', {'fingerprint': $stateParams.fingerprint});
                 };
 
-                //
-                GAuth.checkAuth().then(
-                    function (user) {
-                        $rootScope.googleUser = user;
-                        $scope.alert = null;
-                        $rootScope.getUserData(); // async
-                    },
-                    function () {
-                        //$rootScope.getUserData();
-                        $log.error("[showkey.controller.js] GAuth.checkAuth() - unsuccessful");
-                        $scope.alertDanger = "User not logged in";
-                    }
-                );
-
-                //
-                $scope.dateOptions = {
-                    changeYear: true,
-                    changeMonth: true,
-                    yearRange: '1900:-0'
-                };
-
-                /* -----  Alerts START  */
-                $scope.alertDanger = null;  // red
-                $scope.alertWarning = null; // yellow
-                $scope.alertInfo = null;    // blue
-                $scope.alertSuccess = null; // green
-                $scope.alertMessage = {}; // grey
-
-                $scope.setAlertDanger = function (message) {
-                    $scope.alertDanger = message;
-                    $log.debug("$scope.alertDanger:", $scope.alertDanger);
-                    // $scope.$apply(); not here
-                    $rootScope.goTo("alertDanger");
-                };
-
-                $scope.setAlertWarning = function (message) {
-                    $scope.alertWarning = message;
-                    $log.debug("$scope.alertWarning:", $scope.alertWarning);
-                    // $scope.$apply();
-                    $rootScope.goTo("alertWarning");
-                };
-
-                $scope.setAlertInfo = function (message) {
-                    $scope.alertInfo = message;
-                    $log.debug("$scope.alertInfo:", $scope.alertInfo);
-                    // $scope.$apply();
-                    $rootScope.goTo("alertInfo");
-                };
-
-                $scope.setAlertSuccess = function (message) {
-                    $scope.alertSuccess = message;
-                    $log.debug("$scope.alertSuccess:", $scope.alertSuccess);
-                    // $scope.$apply();
-                    $rootScope.goTo("alertSuccess");
-                };
-
-                $scope.setAlertMessage = function (message, header) {
-                    $scope.alertMessage = {};
-                    $scope.alertMessage.header = header;
-                    $scope.alertMessage.message = message;
-                    $log.debug("$scope.alertMessage:", $scope.alertMessage);
-                    // $scope.$apply();
-                    $rootScope.goTo("alertMessage");
-                };
-                /* -----  Alerts END  */
 
                 // =============== Bookmarks :
                 $scope.addKeyToMyBookmarks = function () {
@@ -174,28 +229,30 @@
                 };
 
                 // main function:
-                var showKey = function () {
+                $scope.showKey = function () {
                     $rootScope.progressbar.start(); // <<<<<<<
-                    $scope.key = {empty: true};
+                    $log.debug("request for key:", $stateParams.fingerprint);
+                    // $scope.key = {empty: true};
                     GApi.executeAuth(
                         'pgpPublicKeyAPI',
                         'getPGPPublicKeyByFingerprint', //
                         {"fingerprint": $stateParams.fingerprint}
                     ).then(
                         function (resp) {
+
                             $log.info("[key.controller.js] showKey() - resp: ");
                             $log.info(resp);
                             $scope.key = resp;
 
                             // use $rootScope.googleUser can be different than $rootScope.currentUser
                             // TODO: why?
-                            if ($rootScope.googleUser) {
-                                $log.debug('$rootScope.googleUser.id : ', $rootScope.googleUser.id);
-                            }
-                            if ($scope.key) {
-                                $log.debug('$scope.key.cryptonomicaUserId : ', $scope.key.cryptonomicaUserId);
-                            }
-                            $log.debug('$rootScope.currentUser : ', $rootScope.currentUser);
+                            // if ($rootScope.googleUser) {
+                            //     $log.debug('$rootScope.googleUser.id : ', $rootScope.googleUser.id);
+                            // }
+                            // if ($scope.key) {
+                            //     $log.debug('$scope.key.cryptonomicaUserId : ', $scope.key.cryptonomicaUserId);
+                            // }
+                            // $log.debug('$rootScope.currentUser : ', $rootScope.currentUser);
 
                             if ($scope.key.exp) {
                                 if (new Date($scope.key.exp) < new Date()) {
@@ -204,24 +261,23 @@
                                     $log.debug(new Date($scope.key.exp));
                                 }
                             }
-                            $scope.alert = null;
+
                             // $scope.$apply(); // not needed here
                             $timeout($rootScope.progressbar.complete(), 1000);
                         },
                         function (error) {
+
                             $log.error("[key.controller.js] showKey() - error: ");
                             $log.error(error);
-                            $scope.alert = error.message;
-                            $scope.key.error = error;
-                            $scope.$apply();
+
+                            // $scope.alert = error.message;
+                            $scope.setAlertDanger(error.message);
+                            // $scope.key.error = error;
+                            // $scope.$apply(); // not needed here
                             $timeout($rootScope.progressbar.complete(), 1000);
                         }
                     );
                 };
-                showKey();
-
-                $log.info("[key.controller.js] $scope.key: ");
-                $log.info($scope.key);
 
                 // // not used:
                 // $scope.download = function (text) {
@@ -344,8 +400,8 @@
                         });
                 }; // end of $scope.changeName() ;
 
-            } // end of function showkeyCtrl()
-        ]
-    );
+            } // end of main()
 
+        } // end of function showkeyCtrl()
+    ]);
 })();
