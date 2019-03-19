@@ -69,6 +69,7 @@
             $timeout($rootScope.progressbar.complete(), 1000);
 
             /* --- Alerts */
+
             $scope.alertDanger = null;  // red
             $scope.alertWarning = null; // yellow
             $scope.alertInfo = null;    // blue

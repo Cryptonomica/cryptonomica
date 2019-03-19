@@ -24,6 +24,16 @@
                     <div class="column">
 
                         <!-- Alerts -->
+                        <div ng-hide="currentUser.registeredCryptonomicaUser" class="center aligned"
+                             style="background-color: #ff9aa9;margin-bottom: 0.3em">
+                            <div class="ui center aligned"
+                                 style="font-weight: bold;margin-top: 1em; margin-bottom: 1em">
+                                <center>
+                                    User is not logged in or not registered. Information is provided for registered
+                                    users only.
+                                </center>
+                            </div>
+                        </div>
                         <alerts></alerts>
 
                         <div class="ui segments">
@@ -47,7 +57,7 @@
                                 </div>
                             </div>
 
-                            <div class="ui segment">
+                            <div class="ui segment" ng-show="key">
 
                                 <div id="keyFunctionsButtons">
                                     <!--<div id="keyFunctionsButtons" class="ui buttons">-->
@@ -88,7 +98,7 @@
 
                                 </div>
 
-                                <table id="keyDataTable" ng-hide="key.empty" class="ui celled table">
+                                <table id="keyDataTable" class="ui celled table">
 
                                     <tbody>
                                     <tr>
@@ -227,7 +237,7 @@
                                 <br>
 
                                 <!-- duplicate alerts: -->
-                                <alerts></alerts>
+                                <!--<alerts></alerts>-->
 
                                 <!-- COMPLIANCE OFFICER  -->
 

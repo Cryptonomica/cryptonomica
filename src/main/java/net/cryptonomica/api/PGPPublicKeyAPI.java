@@ -3,6 +3,7 @@ package net.cryptonomica.api;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.Named;
+import com.google.api.server.spi.config.Nullable;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Email;
 import com.google.appengine.api.datastore.Link;
@@ -165,8 +166,8 @@ public class PGPPublicKeyAPI {
             // final User googleUser,
             final HttpServletRequest httpServletRequest,
             final @Named("fingerprint") String fingerprint,
-            @Named("serviceName") String serviceName,
-            @Named("apiKeyString") String apiKeyString
+            @Named("serviceName") @Nullable String serviceName,
+            @Named("apiKeyString") @Nullable String apiKeyString
     ) throws Exception { // UnauthorizedException or Exception
 
         /* --- check argument */

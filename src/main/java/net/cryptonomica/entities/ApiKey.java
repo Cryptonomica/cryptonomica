@@ -48,14 +48,18 @@ public class ApiKey
 
     @Index
     private Link revocationWebhookUrl;
+
     @Index
     private Boolean revocationWebhookRegistered;
+
+    @Index
+    private Boolean canGetUserDataByUserId;
 
     /* --- Constructors */
 
     public ApiKey() {
         // this.apiKey = RandomStringUtils.randomAlphanumeric(33);
-        this.entityCreated = new Date();
+        // this.entityCreated = new Date();
         this.permissions = new ArrayList<>();
     }
 
@@ -156,6 +160,14 @@ public class ApiKey
 
     public void setRevocationWebhookRegistered(Boolean revocationWebhookRegistered) {
         this.revocationWebhookRegistered = revocationWebhookRegistered;
+    }
+
+    public Boolean getCanGetUserDataByUserId() {
+        return canGetUserDataByUserId;
+    }
+
+    public void setCanGetUserDataByUserId(Boolean canGetUserDataByUserId) {
+        this.canGetUserDataByUserId = canGetUserDataByUserId;
     }
 
 }

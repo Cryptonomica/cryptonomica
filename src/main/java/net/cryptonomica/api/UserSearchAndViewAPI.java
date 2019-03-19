@@ -4,11 +4,13 @@ import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.config.Nullable;
+import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Email;
 import com.google.appengine.api.users.User;
 import com.google.gson.Gson;
 import com.googlecode.objectify.Key;
 import net.cryptonomica.constants.Constants;
+import net.cryptonomica.entities.ApiKey;
 import net.cryptonomica.entities.CryptonomicaUser;
 import net.cryptonomica.entities.PGPPublicKeyData;
 import net.cryptonomica.forms.GeneralSearchUserProfilesForm;
@@ -16,6 +18,7 @@ import net.cryptonomica.returns.PGPPublicKeyGeneralView;
 import net.cryptonomica.returns.StringWrapperObject;
 import net.cryptonomica.returns.UserProfileGeneralView;
 import net.cryptonomica.returns.UserSearchAndViewReturn;
+import net.cryptonomica.service.ApiKeysService;
 import net.cryptonomica.service.UserTools;
 
 import javax.servlet.http.HttpServletRequest;
@@ -222,7 +225,6 @@ public class UserSearchAndViewAPI {
             httpMethod = ApiMethod.HttpMethod.GET
     )
     @SuppressWarnings("unused")
-    // returns list of user profiles
     public UserProfileGeneralView getUserProfileById(
             final User googleUser,
             final @Named("id") String id
@@ -230,65 +232,33 @@ public class UserSearchAndViewAPI {
 
         /* Check authorization: */
         UserTools.ensureCryptonomicaRegisteredUser(googleUser);
+        return UserTools.getUserProfileById(id);
+    } // end of getUserProfileById @ApiMethod
 
-        /* Validate form: */
-        LOG.warning("@Named(\"id\"): " + id);
-        if (id == null || id.length() < 1) {
-            throw new Exception("User id is empty");
+
+    @ApiMethod(
+            name = "getUserProfileByIdWithApiKey",
+            path = "getUserProfileByIdWithApiKey",
+            httpMethod = ApiMethod.HttpMethod.GET
+    )
+    @SuppressWarnings("unused")
+    public UserProfileGeneralView getUserProfileByIdWithApiKey(
+            final HttpServletRequest httpServletRequest,
+            final @Named("id") String id,
+            @Named("serviceName") @Nullable String serviceName, // can be in params or headers
+            @Named("apiKeyString") @Nullable String apiKeyString // can be in params or headers
+    ) throws Exception {
+
+        /* Check authorization: */
+        // > also checks serviceName, apiKeyString in request headers:
+        ApiKey apiKey = ApiKeysService.checkApiKey(httpServletRequest, serviceName, apiKeyString);
+
+
+        if (!apiKey.getCanGetUserDataByUserId()) {
+            throw new UnauthorizedException("API key is not valid for this API method");
         }
 
-        /* Load CryptonomicaUser from DB */
-        // create key
-        Key<CryptonomicaUser> cryptonomicaUserKey = Key.create(CryptonomicaUser.class, id);
-        // get user with given Id from DB:
-        CryptonomicaUser profile = ofy()
-                .load()
-                .key(cryptonomicaUserKey)
-                .now();
-        // check result:
-        if (profile == null) {
-            LOG.warning("User with not found");
-            throw new Exception("User not found");
-        }
-
-        /* Create UserProfileGeneralView object to return */
-        // find his public keys:
-        List<PGPPublicKeyData> pgpPublicKeyDataList = ofy()
-                .load()
-                .type(PGPPublicKeyData.class)
-// .parent(cryptonomicaUserKey). // can't do that: https://groups.google.com/forum/#!topic/objectify-appengine/DztrKogBXDw
-                .filter("cryptonomicaUserId", id)
-                .list();
-        // check keys found, if no webSafeString add and store in DB :
-        LOG.info("pgpPublicKeyDataList: " + new Gson().toJson(pgpPublicKeyDataList));
-        for (PGPPublicKeyData k : pgpPublicKeyDataList) {
-            if (k.getWebSafeString() == null) {
-
-                if (k.getCryptonomicaUserKey() != null) {
-                    k.setWebSafeString(
-                            Key.create(k.getCryptonomicaUserKey(), PGPPublicKeyData.class, k.getFingerprint())
-                                    .toWebSafeString()
-                    );
-                } else {
-                    k.setWebSafeString(   // for old keys without parent
-                            Key.create(PGPPublicKeyData.class, k.getFingerprint())
-                                    .toWebSafeString()
-                    );
-                }
-                ofy().save().entity(k); // async !
-            }
-        }
-
-        // create obj to return:
-        UserProfileGeneralView userProfileGeneralView = new UserProfileGeneralView(
-                profile,
-                pgpPublicKeyDataList
-        );
-
-        LOG.warning("userProfileGeneralView: "
-                + userProfileGeneralView.toJson());
-
-        return userProfileGeneralView;
+        return UserTools.getUserProfileById(id);
     } // end of getUserProfileById @ApiMethod
 
 
@@ -336,8 +306,8 @@ public class UserSearchAndViewAPI {
             path = "echo",
             httpMethod = ApiMethod.HttpMethod.GET)
     /* >>>>>>>>>>>>>> this is for testing only
-    * curl -H "Content-Type: application/json" -X GET -d '{"message":"hello world"}' https://cryptonomica-server.appspot.com/_ah/api/userSearchAndViewAPI/v1/echo
-    * */
+     * curl -H "Content-Type: application/json" -X GET -d '{"message":"hello world"}' https://cryptonomica-server.appspot.com/_ah/api/userSearchAndViewAPI/v1/echo
+     * */
     public StringWrapperObject echo(
             @Named("message") String message,
             @Named("n") @Nullable Integer n

@@ -1,5 +1,6 @@
 /*
-* OpenPGP.js
+* Webapp for signing/encrypting text in browser
+* OpenPGP.js is used
 * http://openpgpjs.org
 * https://github.com/openpgpjs/openpgpjs
 * API: http://openpgpjs.org/openpgpjs/doc/

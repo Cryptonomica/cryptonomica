@@ -5,8 +5,11 @@ import com.google.appengine.api.datastore.Email;
 import com.google.appengine.api.users.User;
 import com.google.gson.Gson;
 import com.googlecode.objectify.Key;
+import com.googlecode.objectify.NotFoundException;
 import net.cryptonomica.entities.CryptonomicaUser;
 import net.cryptonomica.entities.Login;
+import net.cryptonomica.entities.PGPPublicKeyData;
+import net.cryptonomica.returns.UserProfileGeneralView;
 import net.sf.uadetector.ReadableUserAgent;
 import net.sf.uadetector.UserAgentStringParser;
 import net.sf.uadetector.service.UADetectorServiceFactory;
@@ -15,6 +18,7 @@ import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 
 import static net.cryptonomica.service.OfyService.ofy;
@@ -190,4 +194,72 @@ public class UserTools {
         }
         return cryptonomicaUser;
     } // end of ensureNotaryOrCryptonomicaOfficer method
+
+    public static UserProfileGeneralView getUserProfileById(String id) {
+
+        /* Validate input : */
+
+        LOG.warning("id: " + id);
+
+        if (id == null || id.length() < 1) {
+            throw new IllegalArgumentException("User id is null or empty");
+        }
+
+        /* Load CryptonomicaUser from DB */
+
+        // create key
+        Key<CryptonomicaUser> cryptonomicaUserKey = Key.create(CryptonomicaUser.class, id);
+        // get user with given Id from DB:
+        CryptonomicaUser profile = ofy()
+                .load()
+                .key(cryptonomicaUserKey)
+                .now();
+        // check result:
+        if (profile == null) {
+            LOG.warning("User with not found");
+            throw new IllegalArgumentException("User not found");
+        }
+
+        /* Create UserProfileGeneralView object to return */
+        // find his public keys:
+        List<PGPPublicKeyData> pgpPublicKeyDataList = ofy()
+                .load()
+                .type(PGPPublicKeyData.class)
+// .parent(cryptonomicaUserKey). // can't do that: https://groups.google.com/forum/#!topic/objectify-appengine/DztrKogBXDw
+                .filter("cryptonomicaUserId", id)
+                .list();
+
+        // check keys found, if no webSafeString add and store in DB : // not needed anymore
+        /*
+        LOG.info("pgpPublicKeyDataList: " + new Gson().toJson(pgpPublicKeyDataList));
+        for (PGPPublicKeyData k : pgpPublicKeyDataList) {
+            if (k.getWebSafeString() == null) {
+
+                if (k.getCryptonomicaUserKey() != null) {
+                    k.setWebSafeString(
+                            Key.create(k.getCryptonomicaUserKey(), PGPPublicKeyData.class, k.getFingerprint())
+                                    .toWebSafeString()
+                    );
+                } else {
+                    k.setWebSafeString(   // for old keys without parent
+                            Key.create(PGPPublicKeyData.class, k.getFingerprint())
+                                    .toWebSafeString()
+                    );
+                }
+                ofy().save().entity(k); // async !
+            }
+        }
+        */
+
+
+        // create obj to return:
+        UserProfileGeneralView userProfileGeneralView = new UserProfileGeneralView(
+                profile,
+                pgpPublicKeyDataList
+        );
+
+        // LOG.warning("userProfileGeneralView: " + userProfileGeneralView.toJson());
+
+        return userProfileGeneralView;
+    }
 }
