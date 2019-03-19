@@ -279,6 +279,11 @@
                     $scope.copyToClipboard(element);
                 };
 
+                $scope.copySignatoryAddressToClipboard = function () {
+                    var element = "#signatoryAddress";
+                    $scope.copyToClipboard(element);
+                };
+
                 /* --- */
                 $scope.signedMessageForVerification = "You can verify signature of this text.\n" +
                     "I hope you enjoy this.";
@@ -311,8 +316,8 @@
                             $scope.signatory = result;
                             if ($scope.signatory.verificationAddedOn > 0) {
 
-                                $log.debug("$scope.signatory:");
-                                $log.debug($scope.signatory);
+                                // $log.debug("$scope.signatory:");
+                                // $log.debug($scope.signatory);
 
                                 $scope.signatory.birthDate = $rootScope.dateFromUnixTime($scope.signatory.birthDate);
 
