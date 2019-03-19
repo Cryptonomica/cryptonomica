@@ -3,10 +3,12 @@ body {
     background-color: #f0f0f0;
 }
 
+/*
 textarea {
     font-family: monospace;
     font-size: 70%;
 }
+*/
 
 .line {
     border-bottom: dotted 2px #eeeeee;

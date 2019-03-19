@@ -28,10 +28,12 @@
         </div>
     </center>
 
-    <div class="ui top attached tabular menu">
+    <div class="ui top attached tabular menu" style="font-size: 100%;">
+
         <a class="item active" data-tab="signTab">Sign Text</a>
         <a class="item" data-tab="verifyTab">Verify Signature</a>
         <a class="item" data-tab="helpTab">FAQ</a>
+
     </div>
 
     <div id="signTab" class="ui bottom attached tab segment active" data-tab="signTab">
@@ -43,9 +45,28 @@
         <form id="signForm" class="ui form">
 
             <div class="field">
-                <label><i class="file alternate outline icon"></i>&nbsp;Text to sign:</label>
+                <!--<label><i class="file alternate outline icon"></i>&nbsp;Text to sign:</label>-->
+                <h3><i class="file alternate outline icon"></i>&nbsp;Text to sign:</h3>
+
+                <div class="two fields">
+
+                    <div class="field">
+
+                        <!--// onReadFile directive (see app/directives/directives.js)-->
+                        <!--// readFileContent = $scope.readFileContent-->
+                        <input type="file" class="mini ui button" on-read-file="readFileContent($fileContent)"/>
+                    </div>
+
+                    <div class="field">
+
+                    </div>
+
+                </div>
+
                 <textarea id="messageToSign" rows="5" ng-model="messageToSign"></textarea>
+
             </div>
+
 
             <p ng-show="web3.eth.defaultAccount">
                 Your Ethereum account / key &nbsp;<i class="key icon"></i>&nbsp;
@@ -56,7 +77,13 @@
             </p>
 
             <button class="ui secondary button" type="submit" ng-click="signMessage()">
-                Sign
+                <!--<button class="ui inverted green button" type="submit" ng-click="signMessage()">-->
+                <i class="edit icon"></i>&nbsp;&nbsp;
+                Sign&nbsp;&nbsp;
+            </button>
+            <button class="ui inverted red button" ng-click="simplemde.value('')">
+                <!--<button class="ui button" ng-click="simplemde.value('')">-->
+                Delete editor content
             </button>
             <br><br>
 
@@ -66,7 +93,14 @@
                 <label>Signed text:</label>
                 <textarea id="signedText" rows="5" ng-model="signedMessage" disabled></textarea>
                 <br>
-                <button class="ui button" ng-click="copySignedTextToClipboard()">Copy signed text to clipboard</button>&nbsp;&nbsp;
+                <button class="ui button" ng-click="copySignedTextToClipboard()">
+                    Copy signed text to clipboard
+                </button>
+                &nbsp;&nbsp;
+                <button class="ui button" ng-click="saveSignedTextToFile()">
+                    Save as file
+                </button>
+                &nbsp;&nbsp;
             </div>
 
             <div class="field" ng-show="signature">
@@ -76,7 +110,8 @@
                 <!--</div>-->
                 <br>
                 <button class="ui button" ng-click="copySignatureToClipboard()">Copy signature to clipboard</button>&nbsp;&nbsp;
-                <button class="ui button" ng-click="signClear()">Clear</button>
+                <button class="ui button" ng-click="saveSignatureToFile()">Save signature to file</button>&nbsp;&nbsp;
+                <button class="ui button" ng-click="signClear()">Delete signed text and signature</button>
             </div>
 
         </form>
@@ -92,21 +127,23 @@
         <form id="verificationForm" class="ui form">
 
             <div class="field">
-                <label><i class="file alternate outline icon"></i>&nbsp;Signed text:</label>
+                <h3><i class="file alternate outline icon"></i>&nbsp;Signed text:</h3>
                 <textarea rows="5" ng-model="signedMessageForVerification"></textarea>
             </div>
 
             <div class="field">
+
                 <label>Signature</label>
                 <div class="ui left icon input">
                     <i class="edit icon"></i>
                     <input type="text" ng-model="signatureForVerification">
-
                 </div>
-
-                <button class="ui button" type="submit" ng-click="verifySignature()">
-                    Verify Signature
-                </button>
+                <div style="margin-top: 0.5em">
+                    <button class="ui secondary button" type="submit" ng-click="verifySignature()">
+                        <!--<button class="ui button" type="submit" ng-click="verifySignature()">-->
+                        Verify Signature
+                    </button>
+                </div>
                 <br><br>
 
                 <div class="field">
@@ -181,6 +218,7 @@
                     <a href="https://cryptonomica.net/#!/verifyEthAddress/" target="_blank">cryptonomica </a>
                     smart contract.
                 </div>
+            </div>
 
         </form>
 

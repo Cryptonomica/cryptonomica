@@ -605,10 +605,17 @@
                 // $log.debug("$scope.simplemde.value():");
                 // $log.debug($scope.simplemde.value());
 
+                $scope.readFileContent = function ($fileContent) {
+                    $scope.simplemde.value($fileContent);
+                    $log.debug("text from file imported:");
+                    $log.debug($scope.simplemde.value());
+                };
+
                 // see:
                 // https://ethereum.stackexchange.com/questions/12033/sign-message-with-metamask-and-verify-with-ethereumjs-utils
                 // $scope.messageToSign = "This is a text to sign. You can change it.";
-                $scope.simplemde.value("This is a text to sign. You can change it.");
+                $scope.simplemde
+                    .value("This is a text to sign. You can change it or upload text file.");
                 $scope.signedMessage = null;
                 $scope.signature = null;
                 $scope.$apply(); // < needed here
@@ -679,6 +686,25 @@
                 $scope.copySignedTextToClipboard = function () {
                     var element = "#signedText";
                     $scope.copyToClipboard(element);
+                };
+
+                //
+                // see: https://github.com/eligrey/FileSaver.js#saving-text-using-require
+                $scope.saveSignedTextToFile = function () {
+                    var text = $scope.signedMessage;
+                    $log.debug("$scope.signedMessage saving to file:");
+                    $log.debug(text);
+                    var blob = new Blob([text], {type: "text/plain;charset=utf-8"});
+                    // saveAs(blob, "signedMessage.txt");
+                    window.saveAs(blob, "signedMessage.txt");
+                };
+                $scope.saveSignatureToFile = function () {
+                    var text = $scope.signature;
+                    $log.debug("$scope.signature saving to file:");
+                    $log.debug(text);
+                    var blob = new Blob([text], {type: "text/plain;charset=utf-8"});
+                    // saveAs(blob, "signedMessage.txt");
+                    window.saveAs(blob, "signedMessageSignature.txt");
                 };
 
                 $scope.copySignatoryAddressToClipboard = function () {
