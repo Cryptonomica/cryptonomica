@@ -42,7 +42,7 @@
             $log.debug(controller_name, "started"); //
             // $log.debug('$state');
             // $log.debug($state);
-            $timeout($rootScope.progressbar.complete(), 1000);
+            // $timeout($rootScope.progressbar.complete(), 1000);
             //    ------------
 
             // prepaire:
@@ -210,6 +210,7 @@
             // run functions:
             $scope.getStatsAllTime();
 
+            $timeout($rootScope.progressbar.complete(), 1000);
         } // end function statsCtl
 
     ]);

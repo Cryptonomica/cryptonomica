@@ -51,7 +51,7 @@
             // https://stackoverflow.com/questions/13743058/how-do-i-access-the-scope-variable-in-browsers-console-using-angularjs
             // window.my$scope = $scope;
 
-            $timeout($rootScope.progressbar.complete(), 1000);
+            // $timeout($rootScope.progressbar.complete(), 1000);
 
             // TODO: for test, remove
             // hljs.initHighlightingOnLoad();
@@ -65,6 +65,8 @@
             // } else {
             //     // $rootScope.checkAuth();
             // }
+
+            // $timeout($rootScope.progressbar.complete(), 1000);
 
         } // end function homeCtl
 

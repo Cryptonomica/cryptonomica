@@ -132,6 +132,8 @@
             $scope.getWaitingForVerification();
             $scope.getPaidButNotVerified();
 
+            $timeout($rootScope.progressbar.complete(), 1000);
+
         }]);
 
 })();

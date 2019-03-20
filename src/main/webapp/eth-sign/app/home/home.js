@@ -479,9 +479,11 @@
             // https://github.com/MetaMask/metamask-extension/issues/5699#issuecomment-445480857
             if (window.ethereum) {
 
-                // $log.debug("$window.ethereum :");
-                // $log.debug($window.ethereum);
+                $log.debug("window.ethereum :");
+                $log.debug(window.ethereum);
                 $rootScope.web3 = new Web3(ethereum);
+                $log.debug('web3');
+                $log.debug($rootScope.web3);
 
                 if (typeof window.ethereum.selectedAddress === 'undefined') { // privacy mode on
                     (async function () {
@@ -514,12 +516,14 @@
                         }
 
                     })();
-                } else { // privacy mode of or already connected
+                } else { // privacy mode off or already connected
                     $rootScope.noConnectionToNodeError = false;
                     main();
                 }
 
             } else if (window.web3) {
+                $log.debug("old web3 browser detected");
+                $rootScope.noConnectionToNodeError = false;
                 $rootScope.web3 = new Web3(web3.currentProvider);
                 // Accounts always exposed
 
@@ -611,11 +615,17 @@
                     $log.debug($scope.simplemde.value());
                 };
 
+                $scope.readFileForVerificationContent = function ($fileContent) {
+                    $scope.signedMessageForVerification = $fileContent;
+                    $log.debug("text from file imported:");
+                    $log.debug($scope.signedMessageForVerification);
+                };
+
                 // see:
                 // https://ethereum.stackexchange.com/questions/12033/sign-message-with-metamask-and-verify-with-ethereumjs-utils
                 // $scope.messageToSign = "This is a text to sign. You can change it.";
                 $scope.simplemde
-                    .value("This is a text to sign. You can change it or upload text file.");
+                    .value("This is a text to sign. You can change it, paste new text or upload text file.");
                 $scope.signedMessage = null;
                 $scope.signature = null;
                 $scope.$apply(); // < needed here
@@ -713,9 +723,10 @@
                 };
 
                 /* --- */
-                $scope.signedMessageForVerification = "You can verify signature of this text.\n" +
+                $scope.signedMessageForVerification = "To see how it works, you can verify signature of this text.\n" +
                     "I hope you enjoy this.";
-                $scope.signatureForVerification = "0x126aa3255a68438e89ad3627db9579ae4a0d85e5864074276ba878226d0e81ec4b492d9bc2fd0d4216a24264cdfcc3508778ce253b52b5df94dd529ecee8bf0a1b";
+                $scope.signatureForVerification
+                    = "0x3d78c6d543ba740dfe019cb9dd5f78e6c26f594bf61f90d3a0fc272748812b62522074925aa0a15301511d8ff2ded665785a0c2d03d14b73f99fb58bd05841c01b";
                 $scope.signatoryAddress = null;
                 $scope.signatoryAddressUnknown = null;
 
