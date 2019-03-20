@@ -47,7 +47,82 @@
 
     <div id="signTab" class="ui bottom attached tab segment active" data-tab="signTab">
 
-        <div ng-include="'app/home/sign.html'"></div>
+        <!--<div ng-include="'app/home/sign.html'"></div>-->
+
+        <no-connection-to-node-error></no-connection-to-node-error>
+        <alerts></alerts>
+
+        <br>
+        <form id="signForm" class="ui form">
+
+            <div class="field">
+                <!--<label><i class="file alternate outline icon"></i>&nbsp;Text to sign:</label>-->
+                <h3><i class="file alternate outline icon"></i>&nbsp;Text to sign:</h3>
+
+                <div class="two fields">
+
+                    <div class="field">
+                        <!--// onReadFile directive (see app/directives/directives.js)-->
+                        <!--// readFileContent = $scope.readFileContent-->
+                        <input type="file" class="mini ui button" on-read-file="readFileContent($fileContent)"/>
+                    </div>
+
+                    <div class="field"></div>
+
+                </div>
+
+                <textarea id="messageToSign" rows="5" ng-model="messageToSign"></textarea>
+
+            </div>
+
+            <p ng-show="web3.eth.defaultAccount">
+                Your Ethereum account / key &nbsp;<i class="key icon"></i>&nbsp;
+                <a ng-href="{{currentNetwork.etherscanLinkPrefix}}address/{{web3.eth.defaultAccount}}" target="_blank"
+                   title="Click to see on etherscan">
+                    {{web3.eth.defaultAccount}}
+                </a>
+            </p>
+
+            <button class="ui secondary button" type="submit" ng-click="signMessage()">
+                <!--<button class="ui inverted green button" type="submit" ng-click="signMessage()">-->
+                <i class="edit icon"></i>&nbsp;&nbsp;
+                Sign&nbsp;&nbsp;
+            </button>
+            <button class="ui inverted red button" ng-click="simplemde.value('')">
+                <!--<button class="ui button" ng-click="simplemde.value('')">-->
+                Delete editor content
+            </button>
+            <br><br>
+
+            <div class="line" ng-show="signedMessage||signature"></div>
+
+            <div class="field" ng-show="signedMessage">
+                <label>Signed text:</label>
+                <textarea id="signedText" rows="5" ng-model="signedMessage" disabled></textarea>
+                <br>
+                <button class="ui button" ng-click="copySignedTextToClipboard()">
+                    Copy signed text to clipboard
+                </button>
+                &nbsp;&nbsp;
+                <button class="ui button" ng-click="saveSignedTextToFile()">
+                    Save as file
+                </button>
+                &nbsp;&nbsp;
+            </div>
+
+            <div class="field" ng-show="signature">
+                <label>Signature:</label>
+                <!--<div class="ui action input">-->
+                <input id="signature" type="text" ng-model="signature" disabled>
+                <!--</div>-->
+                <br>
+                <button class="ui button" ng-click="copySignatureToClipboard()">Copy signature to clipboard</button>&nbsp;&nbsp;
+                <button class="ui button" ng-click="saveSignatureToFile()">Save signature to file</button>&nbsp;&nbsp;
+                <button class="ui button" ng-click="signClear()">Delete signed text and signature</button>
+                <br><br>
+            </div>
+
+        </form>
 
     </div>
 
@@ -91,6 +166,9 @@
                 <div style="margin-top: 0.5em">
                     <button class="ui secondary button" type="submit" ng-click="verifySignature()">
                         <!--<button class="ui button" type="submit" ng-click="verifySignature()">-->
+                        <span ng-show="verifyWorking">
+                            <i class="sync loading icon"></i>&nbsp;
+                        </span>
                         Verify Signature
                     </button>
                 </div>
@@ -176,8 +254,75 @@
 
     <div id="helpTab" class="ui bottom attached tab segment" data-tab="helpTab">
 
-        <div ng-include="'app/home/faq.html'"></div>
+        <!--<div ng-include="'app/home/faq.html'"></div>-->
+        <h3># Do I have to send transactions to blockchain to sign or to verify signatures? And do I need ETH to pay for
+            gas?</h3>
 
+        <p>No. Singing and signature check is made in your browser.</p>
+
+        <p>Information about key owner is read from blockchain, without sending transactions. So you do not need ETH do
+            use
+            this application.</p>
+
+        <h3># Which Ethereum clients are supported?</h3>
+
+        <p>
+            Currently this webapp works with
+            <a href="https://metamask.io" target="_blank">
+                MetaMask
+            </a>
+            browser plugin on desktop (Chrome, Firefox, Opera, Brave) and mobile (Firefox). Signing (but not signature
+            verification) works in
+            <a href="https://trustwallet.com">
+                Trust Wallet
+            </a>.
+            It does not work on <a href="https://github.com/ethereum/mist/releases">Mist</a>, yet.
+        </p>
+
+        <h3># Where can I get support?</h3>
+
+        <p>Support email: <a href="mailto:support@cryptonomica.zendesk.com">support@cryptonomica.zendesk.com</a>
+
+        <p>You can also find us on social media:</p>
+        <p>
+
+            <a href="https://github.com/Cryptonomica" title="Cryptonomica on Github" target="_blank">
+                <i class="github icon socialLogo"></i>
+            </a>&nbsp;&nbsp;
+
+            <a href="https://t.me/cryptonomicanet" title="Cryptonomica Telegram Group" target="_blank">
+                <i class="telegram icon socialLogo"></i>
+            </a>&nbsp;&nbsp;
+
+            <a href="https://www.reddit.com/r/cryptonomica/" title="Cryptonomica on Reddit" target="_blank">
+                <i class="reddit icon socialLogo"></i>
+            </a>&nbsp;&nbsp;
+
+            <a href="https://www.facebook.com/groups/cryptonomica/" title="Cryptonomica Facebook Group"
+               target="_blank">
+                <i class="facebook icon socialLogo"></i>
+            </a>&nbsp;&nbsp;
+
+            <a href="https://angel.co/iacc-1" title="Cryptonomica on AngelList" target="_blank">
+                <i class="angellist icon socialLogo"></i>
+            </a>&nbsp;&nbsp;
+
+            <a href="https://medium.com/cryptonomica" title="Cryptonomica on Medium"
+               target="_blank">
+                <i class="medium icon socialLogo"></i>
+            </a>&nbsp;&nbsp;
+        </p>
+
+        <h3># How else can you use verified EHT accounts/keys except for digital signatures?</h3>
+
+        <p>They can be used in smart contracts and for verification on distributed application.</p>
+
+        <p>See for example how SONM uses ETH keys verified via Cryptonomica:
+            <a href="https://docs.sonm.com/how-to/how-to-pass-kyc-by-cryptonomica" target="_blank">
+                How to pass KYC with Cryptonomica
+            </a>
+            (it is also a good manual on how to pass verification on Cryptonomica)</p>
+        <br><br>
 
     </div>
 
