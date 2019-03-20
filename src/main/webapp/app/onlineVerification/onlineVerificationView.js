@@ -431,6 +431,7 @@
                     );
             }; // end of  $scope.deleteOnlineVerificationEntity();
 
+            $timeout($rootScope.progressbar.complete(), 1000);
         } // end of onlineVerCtrl
     ]);
 })();

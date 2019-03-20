@@ -22,7 +22,10 @@
                           $log,
                           $state) {
 
-            $log.debug("homeCtrl started");
+            // $log.debug("homeCtrl started");
+
+            // TODO: for test only:
+            window.myScope = $scope;
 
             // activate tabs:
             $('.menu .item').tab();
@@ -479,9 +482,13 @@
             // https://github.com/MetaMask/metamask-extension/issues/5699#issuecomment-445480857
             if (window.ethereum) {
 
-                // $log.debug("$window.ethereum :");
-                // $log.debug($window.ethereum);
+                // $log.debug("window.ethereum:");
+                // $log.debug(window.ethereum);
+
                 $rootScope.web3 = new Web3(ethereum);
+
+                // $log.debug('web3: ');
+                // $log.debug($rootScope.web3);
 
                 if (typeof window.ethereum.selectedAddress === 'undefined') { // privacy mode on
                     (async function () {
@@ -514,12 +521,14 @@
                         }
 
                     })();
-                } else { // privacy mode of or already connected
+                } else { // privacy mode off or already connected
                     $rootScope.noConnectionToNodeError = false;
                     main();
                 }
 
             } else if (window.web3) {
+                $log.debug("old web3 browser detected");
+                $rootScope.noConnectionToNodeError = false;
                 $rootScope.web3 = new Web3(web3.currentProvider);
                 // Accounts always exposed
 
@@ -558,7 +567,7 @@
                             $scope.setAlertWarning("Unknown Ethereum network. Network ID: " + result);
                         }
 
-                        $log.debug("$rootScope.currentNetwork.networkName:", $rootScope.currentNetwork.networkName);
+                        // $log.debug("$rootScope.currentNetwork.networkName:", $rootScope.currentNetwork.networkName);
                         $rootScope.$apply(); // needed here
 
                         if ($rootScope.currentNetwork.network_id === 1) {
@@ -580,7 +589,7 @@
                     if (!$rootScope.web3.eth.defaultAccount && accounts && accounts.length && accounts.length > 0) {
                         // https://web3js.readthedocs.io/en/1.0/web3-eth.html#id20
                         $rootScope.web3.eth.defaultAccount = accounts[0];
-                        $log.debug("$rootScope.web3.eth.defaultAccount:", $rootScope.web3.eth.defaultAccount);
+                        // $log.debug("$rootScope.web3.eth.defaultAccount:", $rootScope.web3.eth.defaultAccount);
                     }
                     if (!$rootScope.web3.eth.defaultAccount) {
                         $scope.setAlertDanger("Ethereum account not recognized. If you use MetaMask please login to MetaMask and connect to this site");
@@ -605,17 +614,34 @@
                 // $log.debug("$scope.simplemde.value():");
                 // $log.debug($scope.simplemde.value());
 
+                //TODO: check if this prevents errors
+                var simplemdeCheck = function () {
+                    try {
+                        $scope.simplemde.value("");
+                        $log.debug("$scope.simplemde.value(\"\");");
+                    } catch (e) {
+                        $log.error(e);
+                        setTimeout(simplemdeCheck, 100);
+                    }
+                };
+                simplemdeCheck();
+
                 $scope.readFileContent = function ($fileContent) {
                     $scope.simplemde.value($fileContent);
                     $log.debug("text from file imported:");
                     $log.debug($scope.simplemde.value());
                 };
 
+                $scope.readFileForVerificationContent = function ($fileContent) {
+                    $scope.signedMessageForVerification = $fileContent;
+                    $log.debug("text from file imported:");
+                    $log.debug($scope.signedMessageForVerification);
+                };
+
                 // see:
                 // https://ethereum.stackexchange.com/questions/12033/sign-message-with-metamask-and-verify-with-ethereumjs-utils
                 // $scope.messageToSign = "This is a text to sign. You can change it.";
-                $scope.simplemde
-                    .value("This is a text to sign. You can change it or upload text file.");
+                $scope.simplemde.value("This is a text to sign. You can change it, paste new text or upload text file.");
                 $scope.signedMessage = null;
                 $scope.signature = null;
                 $scope.$apply(); // < needed here
@@ -713,22 +739,48 @@
                 };
 
                 /* --- */
-                $scope.signedMessageForVerification = "You can verify signature of this text.\n" +
+                $scope.signedMessageForVerification = "To see how it works, you can verify signature of this text.\n" +
                     "I hope you enjoy this.";
-                $scope.signatureForVerification = "0x126aa3255a68438e89ad3627db9579ae4a0d85e5864074276ba878226d0e81ec4b492d9bc2fd0d4216a24264cdfcc3508778ce253b52b5df94dd529ecee8bf0a1b";
+                $scope.signatureForVerification
+                    = "0x3d78c6d543ba740dfe019cb9dd5f78e6c26f594bf61f90d3a0fc272748812b62522074925aa0a15301511d8ff2ded665785a0c2d03d14b73f99fb58bd05841c01b";
+                $scope.$apply(); // < needed here
+
                 $scope.signatoryAddress = null;
                 $scope.signatoryAddressUnknown = null;
+                $scope.verifyWorking = null;
+
+
+                // $log.debug("test message for signature check:");
+                // $log.debug($scope.signedMessageForVerification);
+                // $log.debug("test signature:");
+                // $log.debug($scope.signatureForVerification);
 
                 // https://web3js.readthedocs.io/en/1.0/web3-eth-personal.html#ecrecover
                 $scope.verifySignature = function () {
+
+                    $scope.verifyWorking = true;
+
                     $scope.signatory = null;
+                    $scope.signatoryAddress = null;
+                    $scope.signatoryAddressUnknown = null;
+                    // $scope.$apply(); // < not here
+
+                    // $log.debug("signature check started: ");
+                    // $log.debug("message:");
+                    // $log.debug($scope.signedMessageForVerification);
+                    // $log.debug("signature:");
+                    // $log.debug($scope.signatureForVerification);
+
                     https://web3js.readthedocs.io/en/1.0/web3-eth-personal.html#id26
                         $rootScope.web3.eth.personal.ecRecover(
                             $scope.signedMessageForVerification,
                             $scope.signatureForVerification
                         ).then(function (result) {
+
                                 $scope.signatoryAddress = result;
+
                                 $log.debug("$scope.signatoryAddress:", $scope.signatoryAddress);
+
                                 $scope.$apply();
 
                                 if ($scope.contract) {
@@ -769,7 +821,12 @@
                             $log.error("signature verification error:");
                             $log.error(error);
                             $scope.$apply();
-                        });
+                        }).finally(function () {
+                                $log.debug("finally");
+                                $scope.verifyWorking = false;
+                                $scope.$apply();
+                            }
+                        );
                 }
 
             }
@@ -803,58 +860,6 @@
                         $log.error("$rootScope.web3.eth.net.getId() error:");
                         $log.error($rootScope.web3.eth.net.getId());
                     });
-
-                // $rootScope.web3.version.getNetwork(function (error, result) {
-                //         if (!error) {
-                //             // << MetaMask trick to avoid false $rootScope.web3.isConnected() result above;
-                //             $rootScope.getNetworkError = false;
-                //             $rootScope.currentNetwork.connected = true;
-                //
-                //             $log.debug("current network id:", result);
-                //             $rootScope.currentNetwork.network_id = result; // "3" for Ropsten, "1" for MainNet etc.
-                //             if (result === "1" || result === "2" || result === "3" || result === "4" || result === "42" || result === "5777") {
-                //                 $rootScope.currentNetwork.networkName = $rootScope.networks[result].networkName;
-                //                 $rootScope.currentNetwork.etherscanLinkPrefix = $rootScope.networks[result].etherscanLinkPrefix;
-                //                 $rootScope.currentNetwork.etherscanApiLink = $rootScope.networks[result].etherscanApiLink;
-                //             } else {
-                //                 $rootScope.currentNetwork.networkName = "unknown network";
-                //                 $rootScope.currentNetwork.etherscanLinkPrefix = $rootScope.networks["1"].etherscanLinkPrefix;
-                //                 $rootScope.currentNetwork.etherscanApiLink = $rootScope.networks["1"].etherscanApiLink;
-                //             }
-                //             $log.debug("$rootScope.currentNetwork.networkName:", $rootScope.currentNetwork.networkName);
-                //             $rootScope.$apply(); // needed here
-                //         } else {
-                //             $rootScope.getNetworkError = true;
-                //             $rootScope.$apply();
-                //             $log.debug("$rootScope.getNetworkError: ", $rootScope.getNetworkError);
-                //             $log.debug(error);
-                //         }
-                //     }
-                // );
-
-                // $rootScope.web3.version.getNode(function (error, result) {
-                //         if (error) {
-                //             $log.debug(error);
-                //         } else {
-                //             $rootScope.currentNetwork.node = result;
-                //             $rootScope.$apply();
-                //             $log.debug('web3.version.node: ' + $rootScope.currentNetwork.node);
-                //             // "Geth/v1.7.2-stable-1db4ecdc/linux-amd64/go1.9"
-                //         }
-                //     }
-                // );
-
-                // $rootScope.web3.version.getEthereum(function (error, result) {
-                //         if (error) {
-                //             $log.debug(error);
-                //         } else {
-                //             $rootScope.currentNetwork.ethereumProtocolVersion = result;
-                //             $rootScope.$apply();
-                //             // $log.debug('[app.run] web3.version.ethereum: ' + $rootScope.currentNetwork.ethereumProtocolVersion);
-                //             // the Ethereum protocol version
-                //         }
-                //     }
-                // );
 
                 $rootScope.currentBlockNumber = null;
                 $rootScope.refreshCurrentBlockNumber = function () {

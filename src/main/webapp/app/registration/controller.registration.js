@@ -42,7 +42,7 @@
             $log.debug(controller_name, "started"); //
             $log.info('$state');
             $log.info($state);
-            $timeout($rootScope.progressbar.complete(), 1000);
+            // $timeout($rootScope.progressbar.complete(), 1000);
 
             /* --- Alerts */
             $scope.alertDanger = null;  // red
@@ -342,6 +342,6 @@
                 }
 
             }; // end registerNewUser
-
+            $timeout($rootScope.progressbar.complete(), 1000);
         }]);
 })();

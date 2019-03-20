@@ -66,7 +66,7 @@
             $log.debug(controller_name, "started"); //
             // $log.debug('$state');
             // $log.debug($state);
-            $timeout($rootScope.progressbar.complete(), 1000);
+            // $timeout($rootScope.progressbar.complete(), 1000);
 
             /* --- Alerts */
 
@@ -536,6 +536,8 @@
                 $log.error('[ethereumVerificationCtrl] web3 is not connected to Ethereum node');
                 return;
             }
+
+            $timeout($rootScope.progressbar.complete(), 1000);
         } // end of Ctrl
     ]);
 

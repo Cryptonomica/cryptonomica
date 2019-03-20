@@ -42,7 +42,7 @@
                                          $timeout) {
 
                 $log.debug(controller_name, "started"); //
-                $timeout($rootScope.progressbar.complete(), 1000);
+                // $timeout($rootScope.progressbar.complete(), 1000);
                 // define functions:
                 $scope.searchForNotaries = function () {
                     $rootScope.progressbar.start(); // <<<<<<<<<<<
@@ -84,6 +84,7 @@
                     $scope.searchForNotaries();
                 };
 
+                $timeout($rootScope.progressbar.complete(), 1000);
             } // end function showAllNotariesCtrl
         ]
     );

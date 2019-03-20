@@ -59,9 +59,9 @@
             // https://stackoverflow.com/questions/28470222/state-go-is-not-working-from-separate-controller
             $state.go('home');
 
+            $timeout($rootScope.progressbar.complete(), 1000);
         } // end function  promocodeCtrl
 
     ]);
-
 })();
 

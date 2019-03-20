@@ -41,7 +41,7 @@
                 $log.debug(controller_name, "started"); //
                 $log.debug('$state');
                 $log.debug($state);
-                $timeout($rootScope.progressbar.complete(), 1000);
+                // $timeout($rootScope.progressbar.complete(), 1000);
 
                 /* --- Alerts */
                 $scope.alertDanger = null;  // red
@@ -121,6 +121,8 @@
                 }; // end showAllArbitrators
 
                 $scope.showAllArbitrators(); // <<<<<< get data
+
+                $timeout($rootScope.progressbar.complete(), 1000);
 
             } // end function showallarbitratorsCtrl
         ]

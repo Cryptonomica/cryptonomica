@@ -53,7 +53,7 @@
 
 
             $log.debug(controller_name, "started"); //
-            $timeout($rootScope.progressbar.complete(), 1000);
+            // $timeout($rootScope.progressbar.complete(), 1000);
 
             (function setAlerts() {
                 /* --- Alerts */
@@ -110,13 +110,20 @@
                 $state.go('search'); // go to search page
             }
 
-            //
-            if (window.gapi && window.gapi.client) {
-                $log.debug("[key.controller.js] window.gapi.client:");
-                $log.debug(window.gapi.client);
-            } else {
-                $log.error("[key.controller.js] window.gapi.client is not loaded")
-            }
+            /*
+                        var gapiCheck = function () {
+
+                            if (window.gapi && window.gapi.client) {
+                                $log.debug("[key.controller.js] window.gapi.client:");
+                                $log.debug(window.gapi.client);
+                            } else {
+                                $log.error("[key.controller.js] window.gapi.client is not loaded");
+                                // setTimeout(gapiCheck, 1000); // check again in a second
+                                setTimeout(gapiCheck, 1000); // check again in a second
+                            }
+                        };
+                        gapiCheck();
+            */
 
             GAuth.checkAuth().then(
                 function (user) {
@@ -162,11 +169,13 @@
                 // $rootScope.$apply(); // < not allowed here
 
                 $rootScope.getMyBookmarks(); // < in background
+                $timeout($rootScope.progressbar.complete(), 1000);
 
             }).catch(function (error) {
                 $log.error("[key.controller.js] > error:");
                 $log.error(error);
                 $scope.setAlertDanger(error);
+                $timeout($rootScope.progressbar.complete(), 1000);
             }).finally(function () {
                 $timeout($rootScope.progressbar.complete(), 1000);
             });

@@ -86,15 +86,33 @@
                 /* --- UI */
                 $rootScope.sidebarVisible = true;
 
+                // =============== Function calls:
+                $rootScope.progressbar = ngProgressFactory.createInstance();
+                $rootScope.progressbar.setHeight('6px'); // any valid CSS value Eg '10px', '1em' or '1%'
+                // $rootScope.progressbar.setColor('orangered');
+                // $rootScope.progressbar.setColor('purple');
+                // $rootScope.progressbar.setColor('#C800C8');
+                $rootScope.progressbar.setColor('#60c8fa');
+
+                // >>>>
+                $rootScope.progressbar.start();
+                // $timeout($rootScope.progressbar.complete(), 1000);
+
                 /* === angular-google-gapi */
                 /* see: https://github.com/maximepvrt/angular-google-gapi */
 
-                if (window.gapi && window.gapi.client) {
-                    $log.debug("[app.js] window.gapi.client:");
-                    $log.debug(window.gapi.client);
-                } else {
-                    $log.error("[app.js] window.gapi.client is not loaded")
-                }
+                // (!!!) this prevents errors
+                var gapiCheck = function () {
+                    if (window.gapi && window.gapi.client) {
+                        $log.debug("[app.js] window.gapi.client:");
+                        $log.debug(window.gapi.client);
+                    } else {
+                        $log.error("[app.js] window.gapi.client is not loaded");
+                        // setTimeout(gapiCheck, 1000); // check again in a second
+                        setTimeout(gapiCheck, 100); //
+                    }
+                };
+                gapiCheck();
 
                 $rootScope.gdata = GData;
                 $rootScope.supportEmail = "support@cryptonomica.zendesk.com";
@@ -472,13 +490,7 @@
                 //     $scope.getPriceForKeyVerification();
                 // }
 
-                // =============== Function calls:
-                $rootScope.progressbar = ngProgressFactory.createInstance();
-                $rootScope.progressbar.setHeight('6px'); // any valid CSS value Eg '10px', '1em' or '1%'
-                // $rootScope.progressbar.setColor('orangered');
-                // $rootScope.progressbar.setColor('purple');
-                // $rootScope.progressbar.setColor('#C800C8');
-                $rootScope.progressbar.setColor('#60c8fa');
+
 
             } // end main function
         ]

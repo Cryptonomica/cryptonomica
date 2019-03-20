@@ -44,9 +44,8 @@
             $log) {
 
             // console.log("application started");
-            $rootScope.webAppVersion = "0.1.0.dev";
-            $rootScope.webAppLastChange = "2019-03-18";
-            // $log.debug("version", $rootScope.webAppVersion, "of", $rootScope.webAppLastChange, "started");
+            $rootScope.webAppVersion = "0.3.0.dev";
+            $rootScope.webAppLastChange = "2019-03-20";
             console.log("eth-sign webapp, version", $rootScope.webAppVersion, "of", $rootScope.webAppLastChange);
 
             /* === Utility functions === */

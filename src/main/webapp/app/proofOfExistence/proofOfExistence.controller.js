@@ -122,6 +122,7 @@
                     );
             }; // end ethAddDoc
 
-        }]);
+            $timeout($rootScope.progressbar.complete(), 1000);
 
+        }]);
 })();

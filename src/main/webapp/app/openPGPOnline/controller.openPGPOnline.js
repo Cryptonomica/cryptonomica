@@ -57,7 +57,7 @@
             * */
 
             $log.debug(controller_name, "started"); //
-            $timeout($rootScope.progressbar.complete(), 1000);
+            // $timeout($rootScope.progressbar.complete(), 1000);
 
             // --- Alerts:
             $scope.alertDanger = null;  // red
@@ -68,6 +68,7 @@
             $scope.error = {};
             //
 
+            $timeout($rootScope.progressbar.complete(), 1000);
         } // end of Ctrl
 
     ]);

@@ -49,7 +49,7 @@ controller.controller(controller_name, [
         ) {
 
             $log.debug(controller_name, "started"); //
-            $timeout($rootScope.progressbar.complete(), 1000);
+            // $timeout($rootScope.progressbar.complete(), 1000);
             //
             GAuth.checkAuth().then(
                 function () {
@@ -97,9 +97,12 @@ controller.controller(controller_name, [
                 );
                 // return result;
             }; //
+
             getVerification(verificationWebSafeString); // << -- call 
-            $log.info("$scope.result: ");
-            $log.info($scope.result);
+            // $log.info("$scope.result: ");
+            // $log.info($scope.result);
+
+            $timeout($rootScope.progressbar.complete(), 1000);
         }
     ]
 );

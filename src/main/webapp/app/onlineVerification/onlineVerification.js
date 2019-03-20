@@ -48,7 +48,7 @@
                                $stateParams) {
 
             $log.debug(controller_name, "started"); //
-            $timeout($rootScope.progressbar.complete(), 1000);
+            // $timeout($rootScope.progressbar.complete(), 1000);
 
             if (!$rootScope.currentUser) {
                 GAuth.checkAuth().then(
@@ -286,8 +286,7 @@
                                                         + $scope.verificationDocsUrls[numb - 1]
                                                     );
                                                 }
-                                            }
-                                            catch (error) {
+                                            } catch (error) {
                                                 $log.error(error);
                                                 $scope.alertDanger = error;
                                                 $location.hash('alertDanger');
@@ -679,7 +678,7 @@
                         }
                     );
             }; // end of $scope.approve();
-
+            $timeout($rootScope.progressbar.complete(), 1000);
         } // end of onlineVerCtrl
     ]);
 

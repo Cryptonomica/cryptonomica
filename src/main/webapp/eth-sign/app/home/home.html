@@ -6,7 +6,7 @@
 
 <style>
     .segment {
-        font-size: 120% !important;
+        font-size: 100% !important;
     }
 </style>
 
@@ -30,13 +30,24 @@
 
     <div class="ui top attached tabular menu" style="font-size: 100%;">
 
-        <a class="item active" data-tab="signTab">Sign Text</a>
-        <a class="item" data-tab="verifyTab">Verify Signature</a>
-        <a class="item" data-tab="helpTab">FAQ</a>
+        <a class="item active" data-tab="signTab">
+            <!--<i class="edit icon"></i>&nbsp;-->
+            Sign Text
+        </a>
+        <a class="item" data-tab="verifyTab">
+            <!--<i class="search icon"></i>&nbsp;-->
+            Verify Signature
+        </a>
+        <a class="item" data-tab="helpTab">
+            <!--<i class="question icon"></i>&nbsp;-->
+            FAQ
+        </a>
 
     </div>
 
     <div id="signTab" class="ui bottom attached tab segment active" data-tab="signTab">
+
+        <!--<div ng-include="'app/home/sign.html'"></div>-->
 
         <no-connection-to-node-error></no-connection-to-node-error>
         <alerts></alerts>
@@ -51,22 +62,18 @@
                 <div class="two fields">
 
                     <div class="field">
-
                         <!--// onReadFile directive (see app/directives/directives.js)-->
                         <!--// readFileContent = $scope.readFileContent-->
                         <input type="file" class="mini ui button" on-read-file="readFileContent($fileContent)"/>
                     </div>
 
-                    <div class="field">
-
-                    </div>
+                    <div class="field"></div>
 
                 </div>
 
                 <textarea id="messageToSign" rows="5" ng-model="messageToSign"></textarea>
 
             </div>
-
 
             <p ng-show="web3.eth.defaultAccount">
                 Your Ethereum account / key &nbsp;<i class="key icon"></i>&nbsp;
@@ -112,6 +119,7 @@
                 <button class="ui button" ng-click="copySignatureToClipboard()">Copy signature to clipboard</button>&nbsp;&nbsp;
                 <button class="ui button" ng-click="saveSignatureToFile()">Save signature to file</button>&nbsp;&nbsp;
                 <button class="ui button" ng-click="signClear()">Delete signed text and signature</button>
+                <br><br>
             </div>
 
         </form>
@@ -120,6 +128,9 @@
 
     <div id="verifyTab" class="ui bottom attached tab segment" data-tab="verifyTab">
 
+        <!--<div ng-include="'app/home/verify.html'"></div>-->
+        <!-- (!!!) does not work with ng-include -->
+
         <no-connection-to-node-error></no-connection-to-node-error>
         <alerts></alerts>
 
@@ -127,7 +138,21 @@
         <form id="verificationForm" class="ui form">
 
             <div class="field">
+
                 <h3><i class="file alternate outline icon"></i>&nbsp;Signed text:</h3>
+
+                <!--<div class="two fields">-->
+                <div class="field" style="margin-bottom: 0.2em">
+                    <!--// onReadFile directive (see app/directives/directives.js)-->
+                    <!--// readFileContent = $scope.readFileContent-->
+                    <input type="file" class="mini ui button"
+                           on-read-file="readFileForVerificationContent($fileContent)"/>
+                </div>
+                <!--<div class="field"></div>-->
+                <!--</div>-->
+                <div style="margin-bottom: 0.3em; margin-top: 0.1em;font-weight: bold">
+                    paste text here or import from file:
+                </div>
                 <textarea rows="5" ng-model="signedMessageForVerification"></textarea>
             </div>
 
@@ -141,6 +166,9 @@
                 <div style="margin-top: 0.5em">
                     <button class="ui secondary button" type="submit" ng-click="verifySignature()">
                         <!--<button class="ui button" type="submit" ng-click="verifySignature()">-->
+                        <span ng-show="verifyWorking">
+                            <i class="sync loading icon"></i>&nbsp;
+                        </span>
                         Verify Signature
                     </button>
                 </div>
@@ -226,20 +254,37 @@
 
     <div id="helpTab" class="ui bottom attached tab segment" data-tab="helpTab">
 
-        <!--<md ng-include="'app/home/faq.md'"></md>-->
-        <h3>Do I have to send transactions to blockchain to sign or to verify signatures? And do I need ETH to pay for
+        <!--<div ng-include="'app/home/faq.html'"></div>-->
+        <h3># Do I have to send transactions to blockchain to sign or to verify signatures? And do I need ETH to pay for
             gas?</h3>
 
         <p>No. Singing and signature check is made in your browser.</p>
 
-        <p>Information about key owner read from blockchain, without sending transactions. So you do not need ETH do use
+        <p>Information about key owner is read from blockchain, without sending transactions. So you do not need ETH do
+            use
             this application.</p>
 
-        <h3>Where can I get support?</h3>
+        <h3># Which Ethereum clients are supported?</h3>
+
+        <p>
+            Currently this webapp works with
+            <a href="https://metamask.io" target="_blank">
+                MetaMask
+            </a>
+            browser plugin on desktop (Chrome, Firefox, Opera, Brave) and mobile (Firefox). Signing (but not signature
+            verification) works in
+            <a href="https://trustwallet.com">
+                Trust Wallet
+            </a>.
+            It does not work on <a href="https://github.com/ethereum/mist/releases">Mist</a>, yet.
+        </p>
+
+        <h3># Where can I get support?</h3>
 
         <p>Support email: <a href="mailto:support@cryptonomica.zendesk.com">support@cryptonomica.zendesk.com</a>
 
-        <p>You can also find us on social media:<br>
+        <p>You can also find us on social media:</p>
+        <p>
 
             <a href="https://github.com/Cryptonomica" title="Cryptonomica on Github" target="_blank">
                 <i class="github icon socialLogo"></i>
@@ -268,7 +313,7 @@
             </a>&nbsp;&nbsp;
         </p>
 
-        <h3>How else can you use verified EHT accounts/keys except for digital signatures?</h3>
+        <h3># How else can you use verified EHT accounts/keys except for digital signatures?</h3>
 
         <p>They can be used in smart contracts and for verification on distributed application.</p>
 
@@ -282,9 +327,21 @@
     </div>
 
     <!-- ------------------ -->
-    <!--
+
     <div id="info" class="ui segment">
-        <i class="grey cog loading icon"></i>on <a href="https://cryptonomica.net">cryptonomica.net</a><br>
+         <span ng-show="web3.eth.defaultAccount">
+                User ETH account detected:&nbsp;&nbsp;
+                <a ng-href="{{currentNetwork.etherscanLinkPrefix}}address/{{web3.eth.defaultAccount}}" target="_blank">
+                    {{web3.eth.defaultAccount}}
+                </a>
+         </span>
+        <br>
+        Network ID:&nbsp{{currentNetwork.network_id}}&nbsp(
+        <a ng-href="{{currentNetwork.etherscanLinkPrefix}}" target="_blank">{{currentNetwork.networkName}}</a>)
+        <br>
+        <!--Web3.js ver.: {{web3.version}}-->
+
+        <!--<i class="grey cog loading icon"></i>on <a href="https://cryptonomica.net">cryptonomica.net</a><br>-->
     </div>
-    -->
+
 </div>
