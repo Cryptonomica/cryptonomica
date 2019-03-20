@@ -22,7 +22,10 @@
                           $log,
                           $state) {
 
-            $log.debug("homeCtrl started");
+            // $log.debug("homeCtrl started");
+
+            // TODO: for test only:
+            window.myScope = $scope;
 
             // activate tabs:
             $('.menu .item').tab();
@@ -562,7 +565,7 @@
                             $scope.setAlertWarning("Unknown Ethereum network. Network ID: " + result);
                         }
 
-                        $log.debug("$rootScope.currentNetwork.networkName:", $rootScope.currentNetwork.networkName);
+                        // $log.debug("$rootScope.currentNetwork.networkName:", $rootScope.currentNetwork.networkName);
                         $rootScope.$apply(); // needed here
 
                         if ($rootScope.currentNetwork.network_id === 1) {
@@ -584,7 +587,7 @@
                     if (!$rootScope.web3.eth.defaultAccount && accounts && accounts.length && accounts.length > 0) {
                         // https://web3js.readthedocs.io/en/1.0/web3-eth.html#id20
                         $rootScope.web3.eth.defaultAccount = accounts[0];
-                        $log.debug("$rootScope.web3.eth.defaultAccount:", $rootScope.web3.eth.defaultAccount);
+                        // $log.debug("$rootScope.web3.eth.defaultAccount:", $rootScope.web3.eth.defaultAccount);
                     }
                     if (!$rootScope.web3.eth.defaultAccount) {
                         $scope.setAlertDanger("Ethereum account not recognized. If you use MetaMask please login to MetaMask and connect to this site");
@@ -624,8 +627,7 @@
                 // see:
                 // https://ethereum.stackexchange.com/questions/12033/sign-message-with-metamask-and-verify-with-ethereumjs-utils
                 // $scope.messageToSign = "This is a text to sign. You can change it.";
-                $scope.simplemde
-                    .value("This is a text to sign. You can change it, paste new text or upload text file.");
+                $scope.simplemde.value("This is a text to sign. You can change it, paste new text or upload text file.");
                 $scope.signedMessage = null;
                 $scope.signature = null;
                 $scope.$apply(); // < needed here
@@ -727,19 +729,41 @@
                     "I hope you enjoy this.";
                 $scope.signatureForVerification
                     = "0x3d78c6d543ba740dfe019cb9dd5f78e6c26f594bf61f90d3a0fc272748812b62522074925aa0a15301511d8ff2ded665785a0c2d03d14b73f99fb58bd05841c01b";
+                $scope.$apply(); // < needed here
+
                 $scope.signatoryAddress = null;
                 $scope.signatoryAddressUnknown = null;
 
+
+                // $log.debug("test message for signature check:");
+                // $log.debug($scope.signedMessageForVerification);
+                // $log.debug("test signature:");
+                // $log.debug($scope.signatureForVerification);
+
                 // https://web3js.readthedocs.io/en/1.0/web3-eth-personal.html#ecrecover
                 $scope.verifySignature = function () {
+
                     $scope.signatory = null;
+                    $scope.signatoryAddress = null;
+                    $scope.signatoryAddressUnknown = null;
+                    // $scope.$apply(); // < not here
+
+                    // $log.debug("signature check started: ");
+                    // $log.debug("message:");
+                    // $log.debug($scope.signedMessageForVerification);
+                    // $log.debug("signature:");
+                    // $log.debug($scope.signatureForVerification);
+
                     https://web3js.readthedocs.io/en/1.0/web3-eth-personal.html#id26
                         $rootScope.web3.eth.personal.ecRecover(
                             $scope.signedMessageForVerification,
                             $scope.signatureForVerification
                         ).then(function (result) {
+
                                 $scope.signatoryAddress = result;
+
                                 $log.debug("$scope.signatoryAddress:", $scope.signatoryAddress);
+
                                 $scope.$apply();
 
                                 if ($scope.contract) {
