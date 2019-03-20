@@ -482,10 +482,10 @@
             // https://github.com/MetaMask/metamask-extension/issues/5699#issuecomment-445480857
             if (window.ethereum) {
 
-                $log.debug("window.ethereum :");
+                $log.debug("window.ethereum:");
                 $log.debug(window.ethereum);
                 $rootScope.web3 = new Web3(ethereum);
-                $log.debug('web3');
+                $log.debug('web3: ');
                 $log.debug($rootScope.web3);
 
                 if (typeof window.ethereum.selectedAddress === 'undefined') { // privacy mode on
