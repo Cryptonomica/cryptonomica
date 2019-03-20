@@ -329,6 +329,7 @@
     <!-- ------------------ -->
 
     <div id="info" class="ui segment">
+
          <span ng-show="web3.eth.defaultAccount">
                 User ETH account detected:&nbsp;&nbsp;
                 <a ng-href="{{currentNetwork.etherscanLinkPrefix}}address/{{web3.eth.defaultAccount}}" target="_blank">
@@ -339,9 +340,29 @@
         Network ID:&nbsp{{currentNetwork.network_id}}&nbsp(
         <a ng-href="{{currentNetwork.etherscanLinkPrefix}}" target="_blank">{{currentNetwork.networkName}}</a>)
         <br>
+
+        <div class="ui divider"></div>
+        <div class="ui right">
+            &nbsp;
+            <!--Find this dApp on:&nbsp;-->
+            <div class="ui tiny right floated images">
+                <a href="https://github.com/Cryptonomica/cryptonomica/tree/master/src/main/webapp/eth-sign"
+                   target="_blank"
+                   title="This dApp on Github">
+                    <img class="ui image" style="opacity: 0.45;" src="app/img/github/GitHub_Logo.png">
+                </a>&nbsp;&nbsp;
+                <a href="https://www.stateofthedapps.com/dapps/cryptonomica-eth-sign" target="_blank"
+                   title="This dApp on State of the DApps">&nbsp;
+                    <img class="ui image" style="opacity: 0.45;" src="app/img/SD/logo-superblack.svg">
+                </a>
+            </div>
+        </div>
+
+
         <!--Web3.js ver.: {{web3.version}}-->
 
         <!--<i class="grey cog loading icon"></i>on <a href="https://cryptonomica.net">cryptonomica.net</a><br>-->
     </div>
+    <br>
 
 </div>
