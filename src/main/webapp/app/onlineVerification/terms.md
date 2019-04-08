@@ -9,7 +9,7 @@ Recording verification video is supported on Google Chrome, Chromium, Mozilla Fi
 Online verification of public key certificate includes following steps:
 
 #### Step 1.
-You have to provide two personal identifications documents. First: passport, this have to be passport with information on English (the one you use to get visas). Second: another document cointaining your photo, first and last name in English and birth date, preferably your driving licence. Documents have to be in color, and in good quality. Images in formats .jpeg, .png, .gif accepted.
+You have to provide two personal identifications documents. First: passport, this have to be passport with information on English (the one you use to get visas). Second: another document containing your photo, first and last name in English and birth date, preferably your driving licence. Documents have to be in color, and in good quality. Images in formats .jpeg, .png, .gif accepted.
 
 #### Step 2.
 You have to record short video, where you read clear and loudly provided verification text. Your face have to be visible and recognizable. Video have to be in color and in good quality of sound and image, that allows any person easily recognize person on video.
@@ -18,7 +18,7 @@ You have to record short video, where you read clear and loudly provided verific
 We have to verify your phone number. You put your phone number in international format into form, and send to server. Than you will receive sms-message with code in it, you have to provide this code to proceed with verification.
 
 #### Step 4.
-You have to pay for verification with the credit/debit card with the same first and last name as in your key (key certificate) and in your passport. If spelling on your credit/debit card differs from the passport, please, write to support@cryptonomica.net - we may manually allow spelling you provide us in your email.
+You have to pay for verification with the credit/debit card with the same first and last name as in your key (key certificate) and in your passport. If spelling on your credit/debit card differs from the passport, please, write to [support@cryptonomica.zendesk.com](support@cryptonomica.zendesk.com) - we may manually allow spelling you provide us in your email.
 
 Credit/debit card data are processed by [stripe](https://stripe.com), we do not receive an do not store your card number and cvc/cvv. But we receive from  [stripe](https://stripe.com) and store last 4 numbers of your card number, card exp. date, card holder's name, type of the card, billing address, issuing bank.
 
