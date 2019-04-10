@@ -132,18 +132,17 @@
                                 <div id="mainSection"
                                      ng-show="currentUser&&currentNetwork.connected&&web3.version.network=='1'">
 
+
+                                    <div><br>
+                                        <b>
+                                            Your ETH address:&nbsp;
+                                            <a ng-href="{{etherscanLinkPrefix}}address/{{ethAccount}}">
+                                                {{ethAccount}}
+                                            </a>
+                                        </b>
+                                    </div>
+
                                     <form class="ui form">
-
-                                        <div class="field">
-                                            <label>Your ETH address:</label>
-                                            <b>
-                                                <a ng-href="{{etherscanLinkPrefix}}address/{{ethAccount}}">
-                                                    {{ethAccount}}
-                                                </a>
-                                            </b>
-                                        </div>
-
-
                                         <div class="field" ng-show="userKeys.length > 0">
 
                                             <label>
@@ -186,7 +185,6 @@
                                         </div>
 
                                     </form>
-
 
                                     <section id="dataFromSmartContractSection" ng-show="userKeys.length > 0">
 
@@ -274,6 +272,11 @@
                                                                 (if private key saved to local storage)
                                                             </button>
 
+                                                            <a class="ui tiny button" ui-sref="openPGPOnline"
+                                                               target="_blank">
+                                                                Open OpenPGP Online in new window/tab
+                                                            </a>
+
                                                         </td>
                                                     </tr>
 
@@ -285,8 +288,8 @@
                                                             <div ng-hide="smartContractData.signedString">
                                                                 Signed string not yet uploaded to smart contract
                                                             </div>
-                                                        <pre><code
-                                                                id="signedString">{{smartContractData.signedString}}</code></pre>
+                                                            <pre><code
+                                                                    id="signedString">{{smartContractData.signedString}}</code></pre>
                                                             <div ng-show="smartContractData.signedString">
                                                                 <button class="ui tiny button"
                                                                         ng-click="copyToClipboard('#signedString')">

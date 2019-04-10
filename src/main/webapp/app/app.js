@@ -102,17 +102,17 @@
                 /* see: https://github.com/maximepvrt/angular-google-gapi */
 
                 // (!!!) this prevents errors
-                var gapiCheck = function () {
+                $rootScope.gapiCheck = function () {
                     if (window.gapi && window.gapi.client) {
                         $log.debug("[app.js] window.gapi.client:");
                         $log.debug(window.gapi.client);
                     } else {
                         $log.error("[app.js] window.gapi.client is not loaded");
                         // setTimeout(gapiCheck, 1000); // check again in a second
-                        setTimeout(gapiCheck, 100); //
+                        setTimeout($rootScope.gapiCheck, 100); //
                     }
                 };
-                gapiCheck();
+                $rootScope.gapiCheck();
 
                 $rootScope.gdata = GData;
                 $rootScope.supportEmail = "support@cryptonomica.zendesk.com";
@@ -489,7 +489,6 @@
                 // if ($scope.promoCode) {
                 //     $scope.getPriceForKeyVerification();
                 // }
-
 
 
             } // end main function
