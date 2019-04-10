@@ -282,6 +282,9 @@
                                                             Signed String
                                                         </td>
                                                         <td style="font-size: smaller;">
+                                                            <div ng-hide="smartContractData.signedString">
+                                                                Signed string not yet uploaded to smart contract
+                                                            </div>
                                                         <pre><code
                                                                 id="signedString">{{smartContractData.signedString}}</code></pre>
                                                             <div ng-show="smartContractData.signedString">
@@ -366,7 +369,7 @@
                                     </section>
 
                                     <!-- ////// UPLOAD SIGNED STRING \\\\\\ -->
-                                    <section id="uploadSignedString" ng-show="">
+                                    <section id="uploadSignedString">
                                         <!--<section id="uploadSignedString" ng-show="userKeys.length > 0">-->
 
                                         <div ng-hide="smartContractData&&smartContractData.verificationAddedOnUnixTime&&smartContractData.verificationAddedOnUnixTime!=0">
