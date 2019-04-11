@@ -24,8 +24,7 @@ $(function () {
                 storage.setItem(x, x);
                 storage.removeItem(x);
                 return true;
-            }
-            catch (e) {
+            } catch (e) {
                 return e instanceof DOMException && (
                         // everything except Firefox
                     e.code === 22 ||
@@ -42,8 +41,22 @@ $(function () {
         }();
     console.log("storageAvailable: " + storageAvailable);
 
+    $("#signedMessage").val(null);
+    $("#messageText").val(null);
     var myPublicKey;
     var myPrivateKey;
+
+    function onSignedMessageChange() {
+        $("#signedMessageLength").text(
+            // signedMessageObj.data.length
+            $("#signedMessage").val().length
+        );
+        $("#signedMessageSHA256").text(
+            sha256(
+                $("#signedMessage").val()
+            )
+        );
+    }
 
     // var userEmail = Cookies.get('userEmail');
     // console.log("Cookies.get('userEmail') : ", Cookies.get('userEmail'));
@@ -205,9 +218,14 @@ $(function () {
 
     // Check Signature
     $("#checkSignatureButton").click(function (event) {
+
         $('#checkSignatureResult').text("verifying the signature...");
+
         var armoredMessage = $("#signedMessage").val();
         var armoredPubKey = $("#pubkeyShow").val();
+
+        console.log("signed message:");
+        console.log(armoredMessage);
         console.log("armoredPubKey: ");
         console.log(armoredPubKey);
 
@@ -379,6 +397,11 @@ $(function () {
     });
 
     $("#savePublicKeyAsFile").click(function () {
+        if (!myPublicKey) {
+            myPublicKey = $('#pubkeyShow').val();
+        }
+        console.log("saving as file:");
+        console.log(myPublicKey);
         var blob = new Blob([myPublicKey], {type: "application/pgp-keys;charset=utf-8"});
         var firstName = document.getElementById("firstName").value;
         var lastName = document.getElementById("lastName").value;
@@ -394,6 +417,11 @@ $(function () {
     });
 
     $("#savePrivateKeyAsFile").click(function () {
+        if (!myPrivateKey) {
+            myPrivateKey = $('#privkeyShow').val();
+        }
+        console.log("saving as file:");
+        console.log(myPrivateKey);
         var blob = new Blob([myPrivateKey], {type: "application/pgp-keys;charset=utf-8"});
         var firstName = document.getElementById("firstName").value;
         var lastName = document.getElementById("lastName").value;
@@ -603,10 +631,16 @@ $(function () {
             .then(function (res) { //
                 // @return {Promise<String|CleartextMessage>} ASCII armored message or the message of type CleartextMessage
                 signedMessageObj = res;
+
                 console.log(JSON.stringify(signedMessageObj));
+
                 console.log(signedMessageObj.data);
+
                 $("#signedMessage").val(signedMessageObj.data);
-                // document.getElementById("signedMessage").value = signedMessageObj.data;
+                console.log("signedMessageObj.data.length: ", signedMessageObj.data.length);
+
+                onSignedMessageChange();
+
             })
             .catch(function (error) {
                 console.log("sign message error:");
@@ -654,5 +688,7 @@ $(function () {
         var element = "#decryptedText";
         copyToClipboard(element);
     });
+
+    $("#signedMessageCalculateLengthAndHash").click(onSignedMessageChange);
 
 });

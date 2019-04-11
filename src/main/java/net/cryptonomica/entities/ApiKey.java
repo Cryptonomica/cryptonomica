@@ -32,7 +32,7 @@ public class ApiKey
     private Date entityCreated;
 
     @Index
-    private Email createdBy;
+    private String createdBy;
 
     /* permissions to use API methods: */
     @Index
@@ -106,11 +106,11 @@ public class ApiKey
         this.entityCreated = entityCreated;
     }
 
-    public Email getCreatedBy() {
+    public String getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(Email createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -120,14 +120,6 @@ public class ApiKey
 
     public void setGetPGPPublicKeyByFingerprintWithApiKey(Boolean getPGPPublicKeyByFingerprintWithApiKey) {
         this.getPGPPublicKeyByFingerprintWithApiKey = getPGPPublicKeyByFingerprintWithApiKey;
-    }
-
-    public List<String> getPermissions() {
-        return permissions;
-    }
-
-    public void setPermissions(List<String> permissions) {
-        this.permissions = permissions;
     }
 
     public Boolean getCreatePromoCodeWithApiKey() {
@@ -144,6 +136,14 @@ public class ApiKey
 
     public void setDiscountInPercentForPromoCodes(Integer discountInPercentForPromoCodes) {
         this.discountInPercentForPromoCodes = discountInPercentForPromoCodes;
+    }
+
+    public List<String> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(List<String> permissions) {
+        this.permissions = permissions;
     }
 
     public Link getRevocationWebhookUrl() {

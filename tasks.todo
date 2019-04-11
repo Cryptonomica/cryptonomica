@@ -1,0 +1,4 @@
+(for use with Sublime Text Plain Task package (https://github.com/aziz/PlainTasks))
+
+TODO:
+ [ ] implement  $scope.gapiCheck = function () { ... pattern like in controller.verifyEthAddress.js in all controllers

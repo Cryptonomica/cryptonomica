@@ -125,27 +125,20 @@
                         gapiCheck();
             */
 
-            GAuth.checkAuth().then(
-                function (user) {
+            GAuth.checkAuth().then(function (user) {
 
-                    console.log("GAuth.checkAuth() result:");
-                    console.log(user);
-                    //
-                    // if (!user) {
-                    //     $scope.setAlertWarning("User is not logged in. Click 'Login' or reload/refresh the page. Information is available only for registered users");
-                    // }
+                console.log("GAuth.checkAuth() result:");
+                console.log(user);
+                //
+                // if (!user) {
+                //     $scope.setAlertWarning("User is not logged in. Click 'Login' or reload/refresh the page. Information is available only for registered users");
+                // }
 
-                    $rootScope.googleUser = user;
-                    // $scope.alert = null;
-                    return GApi.executeAuth('cryptonomicaUserAPI', 'getMyUserData');
-                    // $rootScope.getUserData(); // async
-                }/*,
-                    function () {
-                        //$rootScope.getUserData();
-                        $log.error("[showkey.controller.js] GAuth.checkAuth() - unsuccessful");
-                        $scope.alertDanger = "User not logged in";
-                    }*/
-            ).then(function (resp) {
+                $rootScope.googleUser = user;
+                // $scope.alert = null;
+                return GApi.executeAuth('cryptonomicaUserAPI', 'getMyUserData');
+                // $rootScope.getUserData(); // async
+            }).then(function (resp) {
 
                 // (!) we always have response
                 $rootScope.currentUser = resp;
