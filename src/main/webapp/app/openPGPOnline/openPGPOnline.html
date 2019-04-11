@@ -169,7 +169,7 @@
                                     <h3>Private Key:</h3>
                                     <button class="ui button" id="savePrivateKeyToLocalStorageButton">
                                         Save to local browser storage
-                                        <br> (for example, to use to sign messagen on this site)
+                                        <br> (for example, to use to sign messages on this site)
                                     </button>
                                     <button class="ui button" id="removePrivateKeyFromLocalStorageButton">
                                         Remove from local browser storage
@@ -238,13 +238,24 @@
                                     <!-- Signed text -->
                                     <label style="font-weight: bold">signed text:</label>
                                     <textarea id="signedMessage" rows="10" cols="71"></textarea>
-                                    <br>
+                                    <div style="color: grey">
+                                        Signed text length: <span id="signedMessageLength"></span>
+                                        <br>
+                                        Signed text hash (SHA256): <span id="signedMessageSHA256"></span>
+                                    </div>
                                     <button class="ui button" id="checkSignatureButton">
                                         Check signature
                                     </button>
-                                    <button class="ui button" id="saveSignedMessageAsFile">Save as file</button>
-                                    <button class="ui button" id="copySignedMessageToClipboard">Copy to clipboard
+                                    <button class="ui button" id="saveSignedMessageAsFile">
+                                        Save as file
                                     </button>
+                                    <button class="ui button" id="copySignedMessageToClipboard">
+                                        Copy to clipboard
+                                    </button>
+                                    <button class="ui button" id="signedMessageCalculateLengthAndHash">
+                                        Calculate length and hash
+                                    </button>
+
                                     <div id="checkSignatureResult"></div>
 
                                     <!-- Encrypted text -->
@@ -307,8 +318,10 @@
                                 </div>
                             </div>
                         </div>
+
                         <!-- custom js : -->
                         <script src="/app/openPGPOnline/openPGPOnline.js"></script>
+                        <!--                        <script src="/vendors/geraintluff.github.io/sha256.min.js"></script>-->
                         <!-- FOOTER -->
                         <footer-main></footer-main>
 

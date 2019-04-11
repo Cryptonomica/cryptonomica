@@ -76,7 +76,7 @@
                       $location,
                       $log) {
 
-                $rootScope.appVersion = '3.10';
+                $rootScope.appVersion = '3.21';
 
                 // (!!!) for debug:
                 // see:
@@ -102,17 +102,24 @@
                 /* see: https://github.com/maximepvrt/angular-google-gapi */
 
                 // (!!!) this prevents errors
-                $rootScope.gapiCheck = function () {
-                    if (window.gapi && window.gapi.client) {
-                        $log.debug("[app.js] window.gapi.client:");
+                var gapiCheck = function () {
+                    if ($window.gapi && $window.gapi.client) {
+                        $log.debug("[app.js] $window.gapi.client:");
                         $log.debug(window.gapi.client);
                     } else {
-                        $log.error("[app.js] window.gapi.client is not loaded");
+                        $log.error("[app.js] $window.gapi.client is not loaded");
                         // setTimeout(gapiCheck, 1000); // check again in a second
-                        setTimeout($rootScope.gapiCheck, 100); //
+                        setTimeout(gapiCheck, 100); //
                     }
                 };
-                $rootScope.gapiCheck();
+                gapiCheck();
+                // while (true) {
+                //     if ($window.gapi && $window.gapi.client) {
+                //         $log.debug("[" + $scope.controllerName + "] $window.gapi.client:");
+                //         $log.debug($window.gapi.client);
+                //         break;
+                //     }
+                // }
 
                 $rootScope.gdata = GData;
                 $rootScope.supportEmail = "support@cryptonomica.zendesk.com";
@@ -475,6 +482,24 @@
 
                         return publicKey;
                     };
+
+                // returs promise
+                // see: https://stackoverflow.com/a/43383990/1697878
+                $rootScope.getHash = function (str, algo = "SHA-256") {
+                    let strBuf = new TextEncoder('utf-8').encode(str);
+                    return crypto.subtle.digest(algo, strBuf)
+                        .then(hash => {
+                            window.hash = hash;
+                            // here hash is an arrayBuffer,
+                            // so we'll connvert it to its hex version
+                            let result = '';
+                            const view = new DataView(hash);
+                            for (let i = 0; i < hash.byteLength; i += 4) {
+                                result += ('00000000' + view.getUint32(i).toString(16)).slice(-8);
+                            }
+                            return result;
+                        });
+                };
 
                 // =============== Promo code
                 // $rootScope.messagesToUser = {};

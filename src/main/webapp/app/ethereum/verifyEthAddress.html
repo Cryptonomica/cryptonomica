@@ -407,6 +407,7 @@
                                                 <textarea id="signedStringInput"
                                                           rows="13"
                                                           ng-model="signedString"
+                                                          ng-change="signedStringHash=getHash(signedString)"
                                                           placeholder='Please, sign provided string ("{{smartContractData.stringToSign}}") with OpenPGP key {{fingerprint}} and place signed text here'>
                                                 </textarea>
 
@@ -433,6 +434,10 @@
                                                     <p>{{checkSignatureResult}}</p>
                                                 </div>
 
+                                                <div ng-show="signedString" style="color: grey">
+                                                    Signed message length:&nbsp;{{signedString.length}}<br>
+                                                    Signed message hash (SHA-256):&nbsp;{{signedStringHash}}
+                                                </div>
 
                                                 <button id="checkSignatureButton"
                                                         class="ui secondary button"
