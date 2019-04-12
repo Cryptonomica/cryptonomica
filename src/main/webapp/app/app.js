@@ -76,7 +76,7 @@
                       $location,
                       $log) {
 
-                $rootScope.appVersion = '3.21';
+                $rootScope.appVersion = '3.22';
 
                 // (!!!) for debug:
                 // see:
@@ -104,8 +104,8 @@
                 // (!!!) this prevents errors
                 var gapiCheck = function () {
                     if ($window.gapi && $window.gapi.client) {
-                        $log.debug("[app.js] $window.gapi.client:");
-                        $log.debug(window.gapi.client);
+                        $log.info("[app.js] $window.gapi.client:");
+                        $log.info(window.gapi.client);
                     } else {
                         $log.error("[app.js] $window.gapi.client is not loaded");
                         // setTimeout(gapiCheck, 1000); // check again in a second

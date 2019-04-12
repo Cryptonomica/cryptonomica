@@ -249,7 +249,9 @@
                                     $log.info('uploading...');
                                     uiUploader.startUpload({
                                         //url: 'http://realtica.org/ng-uploader/demo.html',
-                                        url: $sce.trustAsResourceUrl('https://cryptonomica-server.appspot.com/docs'),
+                                        url: $sce.trustAsResourceUrl(
+                                            "https://" + $rootScope.gaeProjectDomain + "/docs"
+                                        ),
                                         // url: $sce.trustAsResourceUrl('/docs'),
                                         //concurrency: 1, //
                                         options: {
@@ -280,8 +282,7 @@
                                                 if (responseObj.uploadedDocumentId) {
                                                     var numb
                                                         = $scope.verificationDocsUrls.push(
-                                                        "https://cryptonomica.net/docs?verificationDocumentId="
-                                                        + responseObj.uploadedDocumentId);
+                                                        "https://" + $rootScope.gaeProjectDomain + "/docs?verificationDocumentId=" + responseObj.uploadedDocumentId);
                                                     $log.debug("(" + numb - 1 + ") "
                                                         + $scope.verificationDocsUrls[numb - 1]
                                                     );

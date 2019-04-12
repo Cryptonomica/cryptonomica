@@ -130,7 +130,7 @@
                                 </div>
 
                                 <div id="mainSection"
-                                     ng-show="currentUser&&currentNetwork.connected&&web3.version.network=='1'">
+                                     ng-show="currentUser&&currentNetwork.connected">
 
 
                                     <div><br>
@@ -372,8 +372,8 @@
                                     </section>
 
                                     <!-- ////// UPLOAD SIGNED STRING \\\\\\ -->
-                                    <section id="uploadSignedString">
-                                        <!--<section id="uploadSignedString" ng-show="userKeys.length > 0">-->
+                                    <!--                                    <section id="uploadSignedString">-->
+                                    <section id="uploadSignedString" ng-show="userKeys.length > 0">
 
                                         <div ng-hide="smartContractData&&smartContractData.verificationAddedOnUnixTime&&smartContractData.verificationAddedOnUnixTime!=0">
                                             <div ng-hide="smartContractData&&smartContractData.signedString">
