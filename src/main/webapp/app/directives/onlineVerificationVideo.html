@@ -75,7 +75,9 @@
                 </div>
                 <div id="buttons">
                     <!--<button id="save" name="button" class="btn btn-secondary">save recording</button>-->
-                    <button id="uploadButton" name="button" class="btn btn-secondary">upload to server</button>
+                    <button id="uploadButton" name="button" class="btn btn-secondary">
+                        upload to server
+                    </button>
                     <span id="uploading"></span>
                 </div>
                 <!--</form>-->
@@ -221,6 +223,7 @@
             var uploadButton = document.getElementById('uploadButton');
             uploadButton.addEventListener('click', function () {
                 $('#videoUploadError').empty(); // see: http://stackoverflow.com/a/5057771/1697878
+
                 var request = new XMLHttpRequest();
 
                 //request.open("POST", "https://cryptonomica.net/gcs");
