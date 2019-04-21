@@ -3,6 +3,7 @@ package net.cryptonomica.mail;
 import com.googlecode.objectify.Key;
 import com.sendgrid.SendGrid;
 import com.sendgrid.SendGridException;
+import net.cryptonomica.constants.Constants;
 import net.cryptonomica.entities.AppSettings;
 
 import javax.servlet.ServletException;
@@ -48,7 +49,7 @@ public class SendGridServlet extends HttpServlet {
         /* create mail*/
         SendGrid.Email email = new SendGrid.Email();
         email.addTo(emailTO);
-        email.setFrom("admin@cryptonomica.net");
+        email.setFrom(Constants.adminEmailAddress);
         if (emailCC != null) {
             email.addCc(emailCC);
         }
