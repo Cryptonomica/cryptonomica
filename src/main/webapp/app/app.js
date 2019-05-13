@@ -21,7 +21,6 @@
         // https://weblogs.asp.net/dwahlin/creating-custom-angularjs-directives-part-i-the-fundamentals
     ]);
 
-
     app.config(function ($sceDelegateProvider) {
         $sceDelegateProvider.resourceUrlWhitelist([
             'self', // Allow same origin resource loads

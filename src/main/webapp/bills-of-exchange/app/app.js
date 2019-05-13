@@ -6,7 +6,8 @@
 
     var app = angular.module('app', [
             'ui.router',
-            // 'yaru22.md', // https://github.com/yaru22/angular-md
+            'ui.date', // https://github.com/angular-ui/ui-date
+            'ngProgress', // https://github.com/VictorBjelkholm/ngProgress
             // ---- App :
             'app.ui.router',
             'app.controllers',
@@ -31,6 +32,8 @@
         '$rootScope',
         '$window',
         '$sce',
+        'ngProgressFactory',
+        '$timeout', // for ngProgressFactory
         '$anchorScroll',
         '$location',
         '$log',
@@ -39,14 +42,26 @@
             $rootScope,
             $window,
             $sce,
+            ngProgressFactory,
+            $timeout, // for ngProgressFactory
             $anchorScroll,
             $location,
             $log) {
 
             // console.log("application started");
-            $rootScope.webAppVersion = "1.0.0";
-            $rootScope.webAppLastChange = "2019-04-21";
-            console.log("eth-sign webapp, version", $rootScope.webAppVersion, "of", $rootScope.webAppLastChange);
+            $rootScope.webAppVersion = "0.2.0.dev";
+            $rootScope.webAppLastChange = "2019-05-13";
+            $rootScope.production = false;
+            console.log("bills of exchange webapp, version", $rootScope.webAppVersion, "of", $rootScope.webAppLastChange);
+
+            $rootScope.progressbar = ngProgressFactory.createInstance();
+            $rootScope.progressbar.setHeight('7px'); // any valid CSS value Eg '10px', '1em' or '1%'
+            // $rootScope.progressbar.setColor('#60c8fa');
+            $rootScope.progressbar.setColor('black');
+            // $rootScope.progressbar.setColor('red');
+            // >>>>
+            $rootScope.progressbar.start();
+            // $timeout($rootScope.progressbar.complete(), 1000);
 
             /* === Utility functions === */
 
@@ -57,7 +72,14 @@
             };
 
             $rootScope.unixTimeFromDate = function (date) {
-                return Math.round(date.getTime() / 1000);
+                var result = null;
+                if (date instanceof Date) {
+                    result = Math.round(date.getTime() / 1000);
+                    // $log.debug("unix time calculated:", result);
+                } else {
+                    $log.error(date, "is not a date");
+                }
+                return result;
             };
 
             $rootScope.dateFromUnixTime = function (unixTime) {

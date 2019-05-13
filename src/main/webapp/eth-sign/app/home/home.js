@@ -34,7 +34,8 @@
 
                 $scope.cryptonomicaVerificationContractAddress = {};
                 $scope.cryptonomicaVerificationContractAddress[1] = "0x846942953c3b2A898F10DF1e32763A823bf6b27f";
-                $scope.cryptonomicaVerificationContractAddressABI = [{
+                $scope.cryptonomicaVerificationContractAddressABI =
+                    [{
                     "constant": false,
                     "inputs": [{"name": "_withdrawalAddress", "type": "address"}],
                     "name": "fixWithdrawalAddress",
@@ -533,7 +534,7 @@
                 // Accounts always exposed
 
                 if (!$rootScope.web3.eth.defaultAccount && $rootScope.web3.eth.accounts && $rootScope.web3.eth.accounts[0]) {
-                    $rootScope.web3.eth.defaultAccount = rootScope.web3.eth.accounts[0];
+                    $rootScope.web3.eth.defaultAccount = $rootScope.web3.eth.accounts[0];
                     $log.debug("$rootScope.web3.eth.defaultAccount : ");
                     $log.debug($rootScope.web3.eth.defaultAccount);
                 }

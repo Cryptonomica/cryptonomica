@@ -1,0 +1,169 @@
+
+======= ./contracts/BillsOfExchangeFactory.sol:BillsOfExchange =======
+Gas estimation:
+construction:
+   42298 + 1775800 = 1818098
+external:
+   accept(string):	infinite
+   acceptedOnUnixTime():	508
+   allowance(address,address):	705
+   approve(address,uint256):	22390
+   approve(address,uint256,uint256):	22762
+   balanceOf(address):	592
+   billsOfExchangeContractNumber():	531
+   burnTokens(uint256):	infinite
+   burnTokensFrom(address,uint256):	infinite
+   creator():	484
+   currency():	infinite
+   decimals():	503
+   description():	infinite
+   disputeResolutionAgreement():	infinite
+   disputeResolutionAgreementSignatories(uint256):	infinite
+   disputeResolutionAgreementSignatures(uint256):	612
+   disputeResolutionAgreementSignaturesCounter():	443
+   drawee():	infinite
+   draweeSignerAddress():	506
+   drawerName():	infinite
+   drawerRepresentedBy():	571
+   initBillsOfExchange(uint256,string,uint256,string,address,string,string,address):	infinite
+   initToken(string,string,uint256,address):	infinite
+   issuedOnUnixTime():	532
+   linkToSignersAuthorityToRepresentTheDrawee():	infinite
+   linkToSignersAuthorityToRepresentTheDrawer():	infinite
+   name():	infinite
+   order():	infinite
+   placeWherePaymentIsToBeMade():	infinite
+   placeWhereTheBillIsIssued():	infinite
+   setLegal(string,string,string):	infinite
+   setPlacesAndTime(uint256,string,string):	infinite
+   sumToBePaidForEveryToken():	443
+   symbol():	infinite
+   timeOfPaymentUnixTime():	552
+   totalSupply():	488
+   transfer(address,uint256):	infinite
+   transfer(address,uint256,bytes):	infinite
+   transferAllAndCall(address,bytes):	infinite
+   transferAndCall(address,uint256,bytes):	infinite
+   transferFrom(address,address,uint256):	infinite
+internal:
+   signdisputeResolutionAgreement(address,string memory):	infinite
+
+======= ./contracts/BillsOfExchangeFactory.sol:BillsOfExchangeFactory =======
+Gas estimation:
+construction:
+   infinite + 3898800 = infinite
+external:
+   addAdmin(address):	infinite
+   billsOfExchangeContractsCounter():	486
+   billsOfExchangeContractsLedger(uint256):	590
+   changeCryptonomicaVerificationContractAddress(address):	infinite
+   changePrice(uint256):	infinite
+   createAndAcceptBillsOfExchange(string,string,uint256,string,uint256,string,string,uint256,string,string):	infinite
+   createBillsOfExchange(string,string,uint256,string,uint256,string,string,string,address,uint256,string,string):	infinite
+   cryptonomicaVerification():	460
+   description():	infinite
+   disputeResolutionAgreement():	infinite
+   fixWithdrawalAddress(address):	infinite
+   order():	infinite
+   price():	465
+   removeAdmin(address):	infinite
+   setWithdrawalAddress(address):	infinite
+   withdrawAllToWithdrawalAddress():	infinite
+   withdrawalAddress():	547
+   withdrawalAddressFixed():	450
+
+======= ./contracts/BillsOfExchangeFactory.sol:BurnableToken =======
+Gas estimation:
+construction:
+   41404 + 936600 = 978004
+external:
+   allowance(address,address):	727
+   approve(address,uint256):	22345
+   approve(address,uint256,uint256):	22740
+   balanceOf(address):	591
+   burnTokens(uint256):	infinite
+   burnTokensFrom(address,uint256):	infinite
+   creator():	461
+   decimals():	480
+   initToken(string,string,uint256,address):	infinite
+   name():	infinite
+   symbol():	infinite
+   totalSupply():	488
+   transfer(address,uint256):	infinite
+   transfer(address,uint256,bytes):	infinite
+   transferAllAndCall(address,bytes):	infinite
+   transferAndCall(address,uint256,bytes):	infinite
+   transferFrom(address,address,uint256):	infinite
+
+======= ./contracts/BillsOfExchangeFactory.sol:CryptonomicaVerification =======
+Gas estimation:
+
+======= ./contracts/BillsOfExchangeFactory.sol:ERC223ReceivingContract =======
+Gas estimation:
+
+======= ./contracts/BillsOfExchangeFactory.sol:ERC677Receiver =======
+Gas estimation:
+
+======= ./contracts/BillsOfExchangeFactory.sol:ManagedContract =======
+Gas estimation:
+construction:
+   20807 + 543800 = 564607
+external:
+   addAdmin(address):	infinite
+   changeCryptonomicaVerificationContractAddress(address):	infinite
+   cryptonomicaVerification():	504
+   fixWithdrawalAddress(address):	infinite
+   removeAdmin(address):	infinite
+   setWithdrawalAddress(address):	infinite
+   withdrawAllToWithdrawalAddress():	infinite
+   withdrawalAddress():	525
+   withdrawalAddressFixed():	449
+
+======= ./contracts/BillsOfExchangeFactory.sol:ManagedContractWithPaidService =======
+Gas estimation:
+construction:
+   20857 + 591600 = 612457
+external:
+   addAdmin(address):	infinite
+   changeCryptonomicaVerificationContractAddress(address):	infinite
+   changePrice(uint256):	infinite
+   cryptonomicaVerification():	504
+   fixWithdrawalAddress(address):	infinite
+   price():	442
+   removeAdmin(address):	infinite
+   setWithdrawalAddress(address):	infinite
+   withdrawAllToWithdrawalAddress():	infinite
+   withdrawalAddress():	547
+   withdrawalAddressFixed():	427
+
+======= ./contracts/BillsOfExchangeFactory.sol:SafeMath =======
+Gas estimation:
+construction:
+   94 + 15200 = 15294
+internal:
+   add(uint256,uint256):	infinite
+   div(uint256,uint256):	infinite
+   mod(uint256,uint256):	infinite
+   mul(uint256,uint256):	infinite
+   sub(uint256,uint256):	infinite
+
+======= ./contracts/BillsOfExchangeFactory.sol:Token =======
+Gas estimation:
+construction:
+   61542 + 821600 = 883142
+external:
+   allowance(address,address):	705
+   approve(address,uint256):	22345
+   approve(address,uint256,uint256):	22740
+   balanceOf(address):	569
+   creator():	461
+   decimals():	480
+   initToken(string,string,uint256,address):	infinite
+   name():	infinite
+   symbol():	infinite
+   totalSupply():	421
+   transfer(address,uint256):	infinite
+   transfer(address,uint256,bytes):	infinite
+   transferAllAndCall(address,bytes):	infinite
+   transferAndCall(address,uint256,bytes):	infinite
+   transferFrom(address,address,uint256):	infinite

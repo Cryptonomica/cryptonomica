@@ -152,7 +152,7 @@ public class StripePaymentsAPI {
                 + "; diff in days: " + diffInDays
         );
 
-        if (diffInDays > 365) {
+        if (diffInDays <= 365) {
             priceInCents = priceForOneYerInCents; // in EUR cents
         } else {
             priceInCents = priceForTwoYearsInCents; // in EUR cents
