@@ -2,11 +2,11 @@ pragma solidity >=0.5.8 <0.6.0;
 
 /*
 * @author Cryptonomica Ltd.(cryptonomica.net), 2019
-* @version 2019-05-13
+* @version 2019-05-18
 * Github: https://github.com/Cryptonomica/
-* Contract address: https://ropsten.etherscan.io/address/0x94443372325aB9EB6Dd033f8fEA5821c69a4Fd05
-* Deployed on block: 5586322 (Ropsten)
-* Gas Used for deployment: 6,359,762
+* Contract address: https://ropsten.etherscan.io/address/0x8e681aB751641745bD00fe21F31C4253645f5C50
+* Deployed on block: 5622893 (Ropsten)
+* Gas Used for deployment: 6,712,913
 *
 * @section LEGAL:
 * aim of this contract is to create a mechanism to draw, transfer and accept negotiable instruments
@@ -148,7 +148,7 @@ contract Token {
 
     string public symbol;
 
-    uint8 public decimals = 0;
+    uint8 public constant decimals = 0;
 
     uint256 public totalSupply;
 
@@ -168,10 +168,10 @@ contract Token {
     */
     constructor() public {
         creator = msg.sender;
+        // BillsOfExchangeFactory address
     }
 
-    bool private initialized = false;
-
+    bool private initialized;
     /*
     * initializes token: set initial values for erc20 variables
     * assigns all tokens ('totalSupply') to one address ('tokensOwner')
@@ -185,18 +185,20 @@ contract Token {
         string calldata _symbol,
         uint256 _totalSupply,
         address tokenOwner
-    ) external returns (bool success){
+    ) external {
 
         require(!initialized, "Token contract was already initialized");
+
+        // creator is BillsOfExchangeFactory address
         require(creator == msg.sender, "Only creator can initialize token contract");
+
+        require(_totalSupply > 0, "Can not initialize contract with zero tokens");
 
         name = _name;
         symbol = _symbol;
-        totalSupply = _totalSupply;
-        balanceOf[tokenOwner] = totalSupply;
-        initialized = true;
+        totalSupply = balanceOf[tokenOwner] = _totalSupply;
 
-        return true;
+        initialized = true;
     }
 
     /* --- ERC-20 events */
@@ -656,23 +658,7 @@ contract BillsOfExchange is BurnableToken {
     string public description;
     string public order;
     string public disputeResolutionAgreement;
-
-    /*
-    * @param _description Legal description of bills of exchange created.
-    * @param _order Order to pay (text or the order)
-    * @param _disputeResolutionAgreement Agreement about dispute resolution (text)
-    * this fuction should be called only once - when initializing smart contract
-    */
-    function setLegal(string calldata _description, string calldata _order, string calldata _disputeResolutionAgreement) external returns (bool success){
-
-        require(msg.sender == creator, "Only contract creator can call 'setLegal' function");
-
-        description = _description;
-        order = _order;
-        disputeResolutionAgreement = _disputeResolutionAgreement;
-
-        return true;
-    }
+    CryptonomicaVerification public cryptonomicaVerification;
 
     // a statement of the time of payment
     uint256 public timeOfPaymentUnixTime; // if the same time as issuedOnUnixTime - "at sight"
@@ -703,16 +689,6 @@ contract BillsOfExchange is BurnableToken {
     mapping(uint256 => Signature) public disputeResolutionAgreementSignatures;
 
     /*
-    * signature number (according to disputeResolutionAgreementSignaturesCounter) => signer address
-    */
-    // mapping(uint256 => address) public disputeResolutionAgreementSignatures;
-
-    /**
-    * names of persons who signed disputeResolution agreement
-    */
-    // mapping(uint256 => string) public disputeResolutionAgreementSignatories;
-
-    /*
     * Event to be emitted when disputeResolution agreement was signed by new person
     * @param signatureNumber Number of the signature (see 'disputeResolutionAgreementSignaturesCounter')
     * @param singedBy Name of the person who signed disputeResolution agreement
@@ -730,20 +706,22 @@ contract BillsOfExchange is BurnableToken {
     * @param _signatoryAddress The Ethereum address of the signer
     * @param _signatoryName Name of the person that signed disputeResolution agreement
     */
-    function signDisputeResolutionAgreement(
+    function signDisputeResolutionAgreementInternal(
         address _signatoryAddress,
         string memory _signatoryName
-    ) public returns (bool success){
+    ) private returns (bool success){
 
         // ! signer should have valid identity verification in cryptonomica.net smart contract:
 
-        require(cryptonomicaVerification.keyCertificateValidUntil(_newAdmin) > now, "Signer has to be verified on Cryptonomica.net");
+        require(cryptonomicaVerification.keyCertificateValidUntil(_signatoryAddress) > now, "Signer has to be verified on Cryptonomica.net");
 
         // revokedOn returns uint256 (unix time), it's 0 if verification is not revoked
-        require(cryptonomicaVerification.revokedOn(_newAdmin) == 0, "Verification for this address was revoked, can not sign");
+        require(cryptonomicaVerification.revokedOn(_signatoryAddress) == 0, "Verification for this address was revoked, can not sign");
 
         require(
-            msg.sender == drawerRepresentedBy || msg.sender == draweeSignerAddress || (balanceOf[msg.sender] > 0),
+            balanceOf[_signatoryAddress] > 0 ||
+            _signatoryAddress == drawerRepresentedBy ||
+            _signatoryAddress == draweeSignerAddress,
             "Can be signed by drawer, drawee or tokenholder only"
         );
 
@@ -754,6 +732,21 @@ contract BillsOfExchange is BurnableToken {
 
         return true;
     }
+
+    function signDisputeResolutionAgreement(string calldata _signatoryName) external returns (bool success){
+        return signDisputeResolutionAgreementInternal(msg.sender, _signatoryName);
+    }
+
+    function signDisputeResolutionAgreementFrom(
+        address _signatoryAddress,
+        string calldata _signatoryName
+    ) external returns (bool success){
+
+        require(msg.sender == creator, "signDisputeResolutionAgreementFrom can be used only by creator address");
+
+        return signDisputeResolutionAgreementInternal(_signatoryAddress, _signatoryName);
+    }
+
 
     /**
     * set up new bunch of bills of exchange and sign disputeResolution agreement
@@ -775,7 +768,7 @@ contract BillsOfExchange is BurnableToken {
         string calldata _linkToSignersAuthorityToRepresentTheDrawer,
         string calldata _drawee,
         address _draweeSignerAddress
-    ) external returns (bool success) {
+    ) external {
 
         require(msg.sender == creator, "Only contract creator can call 'initBillsOfExchange' function");
 
@@ -796,12 +789,6 @@ contract BillsOfExchange is BurnableToken {
         drawee = _drawee;
         draweeSignerAddress = _draweeSignerAddress;
 
-        signDisputeResolutionAgreement(
-            drawerRepresentedBy,
-            drawerName
-        );
-
-        return true;
     }
 
     /**
@@ -815,8 +802,9 @@ contract BillsOfExchange is BurnableToken {
         uint256 _timeOfPaymentUnixTime,
         string calldata _placeWhereTheBillIsIssued,
         string calldata _placeWherePaymentIsToBeMade
-    ) external returns (bool success) {
+    ) external {
 
+        require(issuedOnUnixTime == 0, "setPlacesAndTime can be called one time only");
         require(msg.sender == creator, "Only contract creator can call 'setPlacesAndTime' function");
 
         issuedOnUnixTime = now;
@@ -829,7 +817,29 @@ contract BillsOfExchange is BurnableToken {
         placeWhereTheBillIsIssued = _placeWhereTheBillIsIssued;
         placeWherePaymentIsToBeMade = _placeWherePaymentIsToBeMade;
 
-        return true;
+    }
+
+    /*
+    * @param _description Legal description of bills of exchange created.
+    * @param _order Order to pay (text or the order)
+    * @param _disputeResolutionAgreement Agreement about dispute resolution (text)
+    * this function should be called only once - when initializing smart contract
+    */
+    function setLegal(
+        string calldata _description,
+        string calldata _order, string calldata _disputeResolutionAgreement,
+        address _cryptonomicaVerificationAddress
+
+    ) external {
+
+        require(msg.sender == creator, "Only contract creator can call 'setLegal' function");
+        require(address(cryptonomicaVerification) == address(0), "setLegal can be called one time only");
+
+        description = _description;
+        order = _order;
+        disputeResolutionAgreement = _disputeResolutionAgreement;
+        cryptonomicaVerification = CryptonomicaVerification(_cryptonomicaVerificationAddress);
+
     }
 
     uint256 public acceptedOnUnixTime;
@@ -855,14 +865,24 @@ contract BillsOfExchange is BurnableToken {
     *
     * @param _linkToSignersAuthorityToRepresentTheDrawee Link to information about signer's authority to represent the drawee
     */
-    function accept(string memory _linkToSignersAuthorityToRepresentTheDrawee) public returns (address) {
+    function accept(string calldata _linkToSignersAuthorityToRepresentTheDrawee) external returns (address) {
 
-        // this should be only address, previously indicated by the drawer
-        require(msg.sender == draweeSignerAddress);
+        /*
+        * this should be called only by address, previously indicated as drawee's address by the drawer
+        * or by BillsOfExchangeFactory address via 'createAndAcceptBillsOfExchange' function
+        */
+        require(
+            msg.sender == draweeSignerAddress ||
+            msg.sender == creator,
+            "Not authorized to accept"
+        );
 
         linkToSignersAuthorityToRepresentTheDrawee = _linkToSignersAuthorityToRepresentTheDrawee;
-        signDisputeResolutionAgreement(msg.sender, drawee);
+
+        signDisputeResolutionAgreementInternal(draweeSignerAddress, drawee);
+
         acceptedOnUnixTime = now;
+
         emit Acceptance(acceptedOnUnixTime, drawee, msg.sender);
 
         return address(this);
@@ -967,9 +987,23 @@ contract BillsOfExchangeFactory is ManagedContractWithPaidService {
             _draweeSignerAddress
         );
 
-        billsOfExchange.setLegal(description, order, disputeResolutionAgreement);
+        billsOfExchange.setLegal(
+            description,
+            order,
+            disputeResolutionAgreement,
+            address(cryptonomicaVerification)
+        );
 
-        billsOfExchange.setPlacesAndTime(_timeOfPaymentUnixTime, _placeWhereTheBillIsIssued, _placeWherePaymentIsToBeMade);
+        billsOfExchange.setPlacesAndTime(
+            _timeOfPaymentUnixTime,
+            _placeWhereTheBillIsIssued,
+            _placeWherePaymentIsToBeMade
+        );
+
+        billsOfExchange.signDisputeResolutionAgreementFrom(
+            msg.sender,
+            _drawerName
+        );
 
         return address(billsOfExchange);
     }
@@ -1018,10 +1052,25 @@ contract BillsOfExchangeFactory is ManagedContractWithPaidService {
             msg.sender // < _draweeSignerAddress
         );
 
-        billsOfExchange.setLegal(description, order, disputeResolutionAgreement);
+        billsOfExchange.setLegal(
+            description,
+            order,
+            disputeResolutionAgreement,
+            address(cryptonomicaVerification)
+        );
 
-        billsOfExchange.setPlacesAndTime(_timeOfPaymentUnixTime, _placeWhereTheBillIsIssued, _placeWherePaymentIsToBeMade);
+        billsOfExchange.setPlacesAndTime(
+            _timeOfPaymentUnixTime,
+            _placeWhereTheBillIsIssued,
+            _placeWherePaymentIsToBeMade
+        );
 
+        // not needed because signature is required by 'accept' function
+        //        billsOfExchange.signDisputeResolutionAgreement(
+        //            drawerRepresentedBy,
+        //            drawerName
+        //        );
+        //
         billsOfExchange.accept(_linkToSignersAuthorityToRepresentTheDrawer);
 
         return address(billsOfExchange);

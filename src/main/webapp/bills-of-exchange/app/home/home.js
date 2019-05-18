@@ -54,8 +54,8 @@
                 $scope.deployedOnNetworkId = 3;
                 // TODO: check paths on web
                 $scope.contractAbiPath = "contracts/compiled/bills-of-exchange-factory/BillsOfExchangeFactory.abi";
-                $scope.contractAddress = "0xBf79eca9C2e606B817565C897F13A3827d762Ef4";
-                $scope.contractDeployedOnBlock = "5602038";
+                $scope.contractAddress = "0x8e681aB751641745bD00fe21F31C4253645f5C50";
+                $scope.contractDeployedOnBlock = "5622893";
 
                 $scope.verificationContractAbiPath = "contracts/compiled/CryptonomicaVerificationMockUp/CryptonomicaVerificationMockUp.abi";
                 $scope.verificationContractAddress = "0x7f05e9807f509281a8db8f8b5230b89a96650087";
