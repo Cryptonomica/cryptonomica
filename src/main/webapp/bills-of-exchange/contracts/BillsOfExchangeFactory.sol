@@ -695,15 +695,22 @@ contract BillsOfExchange is BurnableToken {
     */
     uint256 public disputeResolutionAgreementSignaturesCounter;
 
+    struct Signature {
+        address signatoryAddress;
+        string signatoryName;
+    }
+
+    mapping(uint256 => Signature) public disputeResolutionAgreementSignatures;
+
     /*
     * signature number (according to disputeResolutionAgreementSignaturesCounter) => signer address
     */
-    mapping(uint256 => address) public disputeResolutionAgreementSignatures;
+    // mapping(uint256 => address) public disputeResolutionAgreementSignatures;
 
     /**
     * names of persons who signed disputeResolution agreement
     */
-    mapping(uint256 => string) public disputeResolutionAgreementSignatories;
+    // mapping(uint256 => string) public disputeResolutionAgreementSignatories;
 
     /*
     * Event to be emitted when disputeResolution agreement was signed by new person
@@ -723,14 +730,28 @@ contract BillsOfExchange is BurnableToken {
     * @param _signatoryAddress The Ethereum address of the signer
     * @param _signatoryName Name of the person that signed disputeResolution agreement
     */
-    function signdisputeResolutionAgreement(
+    function signDisputeResolutionAgreement(
         address _signatoryAddress,
         string memory _signatoryName
-    ) private returns (bool success){
+    ) public returns (bool success){
+
+        // ! signer should have valid identity verification in cryptonomica.net smart contract:
+
+        require(cryptonomicaVerification.keyCertificateValidUntil(_newAdmin) > now, "Signer has to be verified on Cryptonomica.net");
+
+        // revokedOn returns uint256 (unix time), it's 0 if verification is not revoked
+        require(cryptonomicaVerification.revokedOn(_newAdmin) == 0, "Verification for this address was revoked, can not sign");
+
+        require(
+            msg.sender == drawerRepresentedBy || msg.sender == draweeSignerAddress || (balanceOf[msg.sender] > 0),
+            "Can be signed by drawer, drawee or tokenholder only"
+        );
+
         disputeResolutionAgreementSignaturesCounter++;
-        disputeResolutionAgreementSignatures[disputeResolutionAgreementSignaturesCounter] = _signatoryAddress;
-        disputeResolutionAgreementSignatories[disputeResolutionAgreementSignaturesCounter] = _signatoryName;
+        disputeResolutionAgreementSignatures[disputeResolutionAgreementSignaturesCounter].signatoryAddress = _signatoryAddress;
+        disputeResolutionAgreementSignatures[disputeResolutionAgreementSignaturesCounter].signatoryName = _signatoryName;
         emit disputeResolutionAgreementSigned(disputeResolutionAgreementSignaturesCounter, _signatoryName, _signatoryAddress, now);
+
         return true;
     }
 
@@ -775,7 +796,10 @@ contract BillsOfExchange is BurnableToken {
         drawee = _drawee;
         draweeSignerAddress = _draweeSignerAddress;
 
-        signdisputeResolutionAgreement(drawerRepresentedBy, drawerName);
+        signDisputeResolutionAgreement(
+            drawerRepresentedBy,
+            drawerName
+        );
 
         return true;
     }
@@ -837,7 +861,7 @@ contract BillsOfExchange is BurnableToken {
         require(msg.sender == draweeSignerAddress);
 
         linkToSignersAuthorityToRepresentTheDrawee = _linkToSignersAuthorityToRepresentTheDrawee;
-        signdisputeResolutionAgreement(msg.sender, drawee);
+        signDisputeResolutionAgreement(msg.sender, drawee);
         acceptedOnUnixTime = now;
         emit Acceptance(acceptedOnUnixTime, drawee, msg.sender);
 
@@ -921,10 +945,6 @@ contract BillsOfExchangeFactory is ManagedContractWithPaidService {
 
         require(msg.value >= price, "Payment sent was lower than the price for creating Bills of Exchange");
 
-        // ! signer should have valid identity verification in cryptonomica.net smart contract:
-        require(cryptonomicaVerification.keyCertificateValidUntil(msg.sender) > now);
-        require(cryptonomicaVerification.keyCertificateValidUntil(_draweeSignerAddress) > now);
-
         BillsOfExchange billsOfExchange = new BillsOfExchange();
         billsOfExchangeContractsCounter++;
         billsOfExchangeContractsLedger[billsOfExchangeContractsCounter] = address(billsOfExchange);
@@ -974,11 +994,7 @@ contract BillsOfExchangeFactory is ManagedContractWithPaidService {
 
     ) public payable returns (address newBillsOfExchangeContractAddress) {// if 'external' > "Stack to deep ..." error
 
-
         require(msg.value >= price, "Payment sent was lower than the price for creating Bills of Exchange");
-
-        // ! signer should have valid identity verification in cryptonomica.net smart contract:
-        require(cryptonomicaVerification.keyCertificateValidUntil(msg.sender) > now);
 
         BillsOfExchange billsOfExchange = new BillsOfExchange();
         billsOfExchangeContractsCounter++;

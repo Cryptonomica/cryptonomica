@@ -21,7 +21,8 @@
 
         $stateProvider
             .state('home', {
-                url: '/{billsOfExchangeAddress}', //  = $stateParams.billsOfExchangeAddress;
+                // url: '/{billsOfExchangeAddress}', //  = $stateParams.billsOfExchangeAddress;
+                url: '/{billsOfExchangeNumber}', //  = $stateParams.billsOfExchangeNumber;
                 controller: 'app.home',
                 templateUrl: 'app/home/home.html'
             })

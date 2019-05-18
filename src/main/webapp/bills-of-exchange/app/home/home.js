@@ -18,6 +18,7 @@
         '$http',
         '$timeout', // for ngProgressFactory
         '$log',
+        '$location',
         '$state',
         '$stateParams',
         function homeCtrl($scope,
@@ -25,6 +26,7 @@
                           $http,
                           $timeout, // for ngProgressFactory
                           $log,
+                          $location,
                           $state,
                           $stateParams
         ) {
@@ -33,6 +35,15 @@
 
             // TODO: for test only:
             window.myScope = $scope;
+
+            if ($location.host() === "localhost") {
+                $scope.thisUrl = $location.protocol() + "://" + $location.host() + ":" + $location.port() + "/bills-of-exchange/#!/";
+            } else {
+                $scope.thisUrl = $location.protocol() + "://" + $location.host() + "/bills-of-exchange/#!/"
+            }
+
+            $log.debug($scope.thisUrl);
+            // $log.debug($location.absUrl());
 
             // activate tabs:
             $('.menu .item').tab();
@@ -43,8 +54,8 @@
                 $scope.deployedOnNetworkId = 3;
                 // TODO: check paths on web
                 $scope.contractAbiPath = "contracts/compiled/bills-of-exchange-factory/BillsOfExchangeFactory.abi";
-                $scope.contractAddress = "0x94443372325aB9EB6Dd033f8fEA5821c69a4Fd05";
-                $scope.contractDeployedOnBlock = "5586322";
+                $scope.contractAddress = "0xBf79eca9C2e606B817565C897F13A3827d762Ef4";
+                $scope.contractDeployedOnBlock = "5602038";
 
                 $scope.verificationContractAbiPath = "contracts/compiled/CryptonomicaVerificationMockUp/CryptonomicaVerificationMockUp.abi";
                 $scope.verificationContractAddress = "0x7f05e9807f509281a8db8f8b5230b89a96650087";
@@ -359,15 +370,6 @@
                     $scope.changeTab("helpTab");
                 };
 
-                $log.debug("$stateParams :");
-                $log.debug($stateParams);
-                $log.debug("$stateParams.billsOfExchangeAddress :");
-                $log.debug($stateParams.billsOfExchangeAddress);
-
-                if ($stateParams.billsOfExchangeAddress) {
-                    $scope.changeTabToWork();
-                }
-
                 $scope.dateOptions = {changeYear: true, changeMonth: true, yearRange: '1900:-0'};
 
                 $scope.billsOfExchange = {};
@@ -475,12 +477,96 @@
                         })
                         .then((value) => {
 
-                            $scope.billsOfExchangeContract = new $rootScope.web3.eth.Contract( // <<<<<<<<<<<<<<<<<< contract
-                                value.data, // ABI
+                            $scope.instantiateBillsOfExchangeContract(
                                 $scope.newBillsOfExchangeContracCreationReceipt.events[0].address
                             );
 
-                            $scope.getBillsOfExchangeContractData();
+                            // TODO: debug
+                            // $log.debug("$scope.billsOfExchangeContract ", $scope.billsOfExchangeContract._address);
+                            // $log.debug($scope.billsOfExchangeContract);
+
+                            // see:
+                            // https://semantic-ui.com/modules/tab.html#/usage
+                            // ! > https://github.com/Semantic-Org/Semantic-UI/issues/3544
+                            $scope.changeTabToWork();
+
+                        })
+                        .catch((error) => {
+                            $log.error(error);
+                            $scope.setAlertDanger(error);
+                        })
+                        .finally(() => {
+                            $scope.createBillsOfExchangeIsWorking = false;
+                            $scope.$apply();
+                            // $rootScope.progressbar.start();
+                            $timeout($rootScope.progressbar.complete(), 1000);
+                        })
+                };
+
+                $scope.createAndAcceptBillsOfExchange = function () {
+                    $rootScope.progressbar.start();
+                    // $timeout($rootScope.progressbar.complete(), 1000);
+                    $scope.createBillsOfExchangeIsWorking = true;
+
+                    if ($scope.atSightCheckbox) {
+                        $scope.billsOfExchange.timeOfPaymentUnixTime = 0;
+                    }
+                    if ($scope.draweeIsTheSameAsDrawerCheckbox) {
+                        $scope.billsOfExchange.drawee = $scope.billsOfExchange.drawerName;
+                    }
+                    if ($scope.placesAreTheSameCheckbox) {
+                        $scope.billsOfExchange.placeWherePaymentIsToBeMade = $scope.billsOfExchange.placeWhereTheBillIsIssued;
+                    }
+                    if ($scope.billsOfExchange.timeOfPaymentDate && $scope.billsOfExchange.timeOfPaymentDate instanceof Date) {
+                        $scope.billsOfExchange.timeOfPaymentUnixTime = $rootScope.unixTimeFromDate($scope.billsOfExchange.timeOfPaymentDate)
+                    }
+
+                    $log.debug($scope.billsOfExchange);
+
+                    $scope.newBillsOfExchangeContracCreationReceipt = null;
+                    $scope.contract.methods.createAndAcceptBillsOfExchange(
+                        $scope.billsOfExchange.name,
+                        $scope.billsOfExchange.symbol,
+                        $scope.billsOfExchange.totalSupply,
+                        $scope.billsOfExchange.currency,
+                        $scope.billsOfExchange.sumToBePaidForEveryToken,
+                        $scope.billsOfExchange.drawerName,
+                        $scope.billsOfExchange.linkToSignersAuthorityToRepresentTheDrawer,
+                        // $scope.billsOfExchange.drawee, // > the same as drawer
+                        // $scope.billsOfExchange.draweeSignerAddress, // > the same as msg.sender
+                        $scope.billsOfExchange.timeOfPaymentUnixTime,
+                        $scope.billsOfExchange.placeWhereTheBillIsIssued,
+                        $scope.billsOfExchange.placeWherePaymentIsToBeMade
+                    )
+                        .send({from: $rootScope.web3.eth.defaultAccount, value: $scope.price})
+                        .then((receipt) => {
+
+                            $scope.newBillsOfExchangeContracCreationReceipt = receipt;
+                            $scope.setAlertSuccess(
+                                "New bills of exchange created at Ethereum address:  "
+                                + receipt.events[0].address
+                            );
+
+                            $log.debug("receipt.events:");
+                            $log.debug(receipt.events);
+                            $log.debug("receipt.events[0]:");
+                            $log.debug(receipt.events[0]);
+                            $log.debug(receipt.events[0].address);
+
+                            $log.debug(
+                                $rootScope.currentNetwork.etherscanLinkPrefix
+                                + "address/"
+                                + receipt.events[0].address
+                            );
+
+                            return $http.get($scope.billsOfExchangeAbiPath);
+
+                        })
+                        .then((value) => {
+
+                            $scope.instantiateBillsOfExchangeContract(
+                                $scope.newBillsOfExchangeContracCreationReceipt.events[0].address
+                            );
 
                             // TODO: debug
                             $log.debug("$scope.billsOfExchangeContract ", $scope.billsOfExchangeContract._address);
@@ -509,7 +595,6 @@
                     // $timeout($rootScope.progressbar.complete(), 1000);
                     $scope.verificationContract.methods.verification($rootScope.web3.eth.defaultAccount).call()
                         .then((result) => {
-
                             $scope.signatoryVerificationData = result;
                             $log.debug("$scope.signatoryVerificationData:");
                             $log.debug($scope.signatoryVerificationData);
@@ -535,10 +620,35 @@
                 };
                 $scope.getSignatoryData();
 
+                $scope.instantiateBillsOfExchangeContract = function (contractAddress) {
+                    $rootScope.progressbar.start();
+                    $scope.instantiateBillsOfExchangeContractIsWorking = true;
+                    $http.get($scope.billsOfExchangeAbiPath)
+                        .then((value) => {
+                            $scope.billsOfExchangeContract = new $rootScope.web3.eth.Contract( // <<<<<<<<<<<<<<<<<< contract
+                                value.data, // ABI
+                                contractAddress
+                            );
+                            $scope.getBillsOfExchangeContractData();
+                        })
+                        .catch((error) => {
+                            $log.error("$scope.instantiateBillsOfExchangeContract Error");
+                            $log.error(error);
+                            $scope.setAlertDanger(error);
+                            $scope.createBillsOfExchangeIsWorking = false;
+                            // $scope.$apply(); // < not needed here
+                            $scope.instantiateBillsOfExchangeContractIsWorking = false;
+                            $timeout($rootScope.progressbar.complete(), 1000);
+                        })
+
+                };
+
                 $scope.billsOfExchangeContractData = {};
+                $scope.getBillsOfExchangeContractDataIsWorking = false;
                 $scope.getBillsOfExchangeContractData = function () {
-                    // $rootScope.progressbar.start();
-                    $timeout($rootScope.progressbar.complete(), 1000);
+                    $rootScope.progressbar.start();
+                    // $timeout($rootScope.progressbar.complete(), 1000);
+                    $scope.getBillsOfExchangeContractDataIsWorking = true;
                     $scope.billsOfExchangeContract.methods.name().call()
                         .then((name) => {
                             $scope.billsOfExchangeContractData.name = name;
@@ -546,23 +656,152 @@
                         })
                         .then((symbol) => {
                             $scope.billsOfExchangeContractData.symbol = symbol;
+                            return $scope.billsOfExchangeContract.methods.currency().call();
+                        })
+                        .then((currency) => {
+                            $scope.billsOfExchangeContractData.currency = currency;
                             return $scope.billsOfExchangeContract.methods.totalSupply().call();
                         })
                         .then((totalSupply) => {
-                            $scope.billsOfExchangeContractData.totalSupply = totalSupply;
+                            $scope.billsOfExchangeContractData.totalSupply = parseInt(totalSupply);
                             return $scope.billsOfExchangeContract.methods.balanceOf($rootScope.web3.eth.defaultAccount).call();
                         })
                         .then((balanceOf) => {
-                            $scope.billsOfExchangeContractData.balanceOf = balanceOf;
+                            $scope.billsOfExchangeContractData.balanceOf = parseInt(balanceOf);
                             return $scope.billsOfExchangeContract.methods.billsOfExchangeContractNumber().call();
                         })
                         .then((billsOfExchangeContractNumber) => {
-                            $scope.billsOfExchangeContractData.billsOfExchangeContractNumber = billsOfExchangeContractNumber;
+                            $scope.billsOfExchangeContractData.billsOfExchangeContractNumber = parseInt(billsOfExchangeContractNumber);
                             return $scope.billsOfExchangeContract.methods.drawerName().call();
                         })
                         .then((drawerName) => {
                             $scope.billsOfExchangeContractData.drawerName = drawerName;
-                            // return $scope.billsOfExchangeContract.methods.drawerName().call(); TODO: continue
+                            return $scope.billsOfExchangeContract.methods.drawerRepresentedBy().call();
+                        })
+                        .then((drawerRepresentedBy) => {
+                            $scope.billsOfExchangeContractData.drawerRepresentedBy = drawerRepresentedBy;
+                            return $scope.verificationContract.methods.verification(drawerRepresentedBy).call()
+                        })
+                        .then((result) => {
+                            $scope.billsOfExchangeContractData.drawerSignerAddressData = result;
+                            $scope.billsOfExchangeContractData.drawerSignerAddressDataStr =
+                                result.firstName + " "
+                                + result.lastName + ", "
+                                + $rootScope.dateToDateStr(
+                                $rootScope.dateFromUnixTime(parseInt(result.birthDate))
+                                ) + ", "
+                                + result.nationality;
+
+                            return $scope.billsOfExchangeContract.methods.linkToSignersAuthorityToRepresentTheDrawer().call();
+                        })
+                        .then((linkToSignersAuthorityToRepresentTheDrawer) => {
+                            $scope.billsOfExchangeContractData.linkToSignersAuthorityToRepresentTheDrawer = linkToSignersAuthorityToRepresentTheDrawer;
+                            return $scope.billsOfExchangeContract.methods.drawee().call();
+                        })
+                        .then((drawee) => {
+                            $scope.billsOfExchangeContractData.drawee = drawee;
+                            return $scope.billsOfExchangeContract.methods.draweeSignerAddress().call();
+                        })
+                        .then((draweeSignerAddress) => {
+                            $scope.billsOfExchangeContractData.draweeSignerAddress = draweeSignerAddress;
+                            return $scope.verificationContract.methods.verification(draweeSignerAddress).call()
+                        })
+                        .then((result) => {
+                            $scope.billsOfExchangeContractData.draweeSignerAddressVerificationData = result;
+                            $scope.billsOfExchangeContractData.draweeSignerAddressVerificationDataStr =
+                                result.firstName + " "
+                                + result.lastName + ", "
+                                + $rootScope.dateToDateStr(
+                                $rootScope.dateFromUnixTime(parseInt(result.birthDate))
+                                ) + ", "
+                                + result.nationality;
+
+                            return $scope.billsOfExchangeContract.methods.linkToSignersAuthorityToRepresentTheDrawee().call();
+                        })
+                        .then((linkToSignersAuthorityToRepresentTheDrawee) => {
+                            $scope.billsOfExchangeContractData.linkToSignersAuthorityToRepresentTheDrawee = linkToSignersAuthorityToRepresentTheDrawee;
+                            return $scope.billsOfExchangeContract.methods.timeOfPaymentUnixTime().call();
+                        })
+                        .then((timeOfPaymentUnixTime) => {
+                            $scope.billsOfExchangeContractData.timeOfPaymentUnixTime = parseInt(timeOfPaymentUnixTime);
+                            $scope.billsOfExchangeContractData.timeOfPaymentDate = $rootScope.dateFromUnixTime(timeOfPaymentUnixTime);
+                            $scope.billsOfExchangeContractData.timeOfPaymentDateStr =
+                                $rootScope.dateToDateStr($scope.billsOfExchangeContractData.timeOfPaymentDate);
+
+                            return $scope.billsOfExchangeContract.methods.issuedOnUnixTime().call();
+                        })
+                        .then((issuedOnUnixTime) => {
+                            $scope.billsOfExchangeContractData.issuedOnUnixTime = parseInt(issuedOnUnixTime);
+                            $scope.billsOfExchangeContractData.issuedOnDate = $rootScope.dateFromUnixTime(issuedOnUnixTime);
+                            return $scope.billsOfExchangeContract.methods.placeWhereTheBillIsIssued().call();
+                        })
+                        .then((placeWhereTheBillIsIssued) => {
+                            $scope.billsOfExchangeContractData.placeWhereTheBillIsIssued = placeWhereTheBillIsIssued;
+                            return $scope.billsOfExchangeContract.methods.placeWherePaymentIsToBeMade().call();
+                        })
+                        .then((placeWherePaymentIsToBeMade) => {
+                            $scope.billsOfExchangeContractData.placeWherePaymentIsToBeMade = placeWherePaymentIsToBeMade;
+                            return $scope.billsOfExchangeContract.methods.sumToBePaidForEveryToken().call();
+                        })
+                        .then((sumToBePaidForEveryToken) => {
+                            $scope.billsOfExchangeContractData.sumToBePaidForEveryToken = parseInt(sumToBePaidForEveryToken);
+                            return $scope.billsOfExchangeContract.methods.disputeResolutionAgreementSignaturesCounter().call();
+                        })
+                        .then((disputeResolutionAgreementSignaturesCounter) => {
+                            $scope.billsOfExchangeContractData.disputeResolutionAgreementSignaturesCounter = parseInt(disputeResolutionAgreementSignaturesCounter);
+                            $scope.billsOfExchangeContractData.disputeResolutionAgreementSignatures = [];
+
+                            for (let i = 1; i <= disputeResolutionAgreementSignaturesCounter; i++) {
+                                $scope.billsOfExchangeContract.methods.disputeResolutionAgreementSignatures(i).call().then(
+                                    (result) => {
+                                        // Solidity code:
+                                        // struct Signature {
+                                        //     address signatoryAddress;
+                                        //     string signatoryName;
+                                        // }
+
+                                        // The push() method adds one or more elements to the end of an array and returns the new length of the array.
+                                        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push
+                                        let signaturesArrayLength = $scope.billsOfExchangeContractData.disputeResolutionAgreementSignatures.push(result);
+                                        let signatureNumber = signaturesArrayLength - 1;
+                                        let signatory = result[0];
+                                        $scope.verificationContract.methods.verification(signatory).call()
+                                            .then((result) => {
+                                                $scope.billsOfExchangeContractData.disputeResolutionAgreementSignatures[signatureNumber][2] = result;
+                                                $scope.billsOfExchangeContractData.disputeResolutionAgreementSignatures[signatureNumber][3] =
+                                                    result.firstName + " "
+                                                    + result.lastName + ", "
+                                                    + $rootScope.dateToDateStr(
+                                                    $rootScope.dateFromUnixTime(parseInt(result.birthDate))
+                                                    ) + ", "
+                                                    + result.nationality;
+                                            })
+                                            .catch((error) => {
+                                                $log.error("$scope.verificationContract.methods.verification(signatory).call() Error:");
+                                                $log.error(error);
+                                            })
+                                    }
+                                )
+                            }
+                            return $scope.billsOfExchangeContract.methods.acceptedOnUnixTime().call();
+                        })
+                        .then((acceptedOnUnixTime) => {
+                            $scope.billsOfExchangeContractData.acceptedOnUnixTime = parseInt(acceptedOnUnixTime);
+                            $scope.billsOfExchangeContractData.acceptedOnDate = $rootScope.dateFromUnixTime(acceptedOnUnixTime);
+                            $scope.billsOfExchangeContractData.acceptedOnDateStr =
+                                $rootScope.dateToDateStr($scope.billsOfExchangeContractData.acceptedOnDate);
+                            return $scope.billsOfExchangeContract.methods.order().call();
+                        })
+                        .then((order) => {
+                            $scope.billsOfExchangeContractData.order = order;
+                            return $scope.billsOfExchangeContract.methods.disputeResolutionAgreement().call();
+                        })
+                        .then((disputeResolutionAgreement) => {
+                            $scope.billsOfExchangeContractData.disputeResolutionAgreement = disputeResolutionAgreement;
+                            return $scope.billsOfExchangeContract.methods.linkToSignersAuthorityToRepresentTheDrawee().call();
+                        })
+                        .then((linkToSignersAuthorityToRepresentTheDrawee) => {
+                            $scope.billsOfExchangeContractData.linkToSignersAuthorityToRepresentTheDrawee = linkToSignersAuthorityToRepresentTheDrawee;
                         })
                         .catch((error) => {
                             $log.error("$scope.getBillsOfExchangeContractData Error:");
@@ -570,12 +809,72 @@
                             $scope.setAlertDanger(error);
                         })
                         .finally(() => {
-                            $scope.$apply();
+                            // $scope.$apply(); // < not here
                             $log.debug(" $scope.billsOfExchangeContractData :");
                             $log.debug($scope.billsOfExchangeContractData);
+
+                            $scope.createBillsOfExchangeIsWorking = false;
+                            $scope.instantiateBillsOfExchangeContractIsWorking = false;
+                            $scope.getBillsOfExchangeContractDataIsWorking = false;
+
                             // $rootScope.progressbar.start();
                             $timeout($rootScope.progressbar.complete(), 1000);
                         })
+                };
+
+                $scope.linkToSignersAuthorityToRepresentTheDrawee = "https://beta.companieshouse.gov.uk/company/12345678/officers";
+                $scope.acceptIsWorking = false;
+                $scope.accept = function () {
+                    $rootScope.progressbar.start();
+                    // $timeout($rootScope.progressbar.complete(), 1000);
+                    $scope.acceptIsWorking = false;
+                    $scope.billsOfExchangeContract.methods.accept($scope.linkToSignersAuthorityToRepresentTheDrawee)
+                        .send({from: $rootScope.web3.eth.defaultAccount})
+                        .then((receipt) => {
+                            $log.debug("accept tx receipt:");
+                            $log.debug(receipt);
+                            $scope.getBillsOfExchangeContractData();
+                            $scope.acceptSuccess = true;
+                        })
+                        .catch((error) => {
+                            $log.error("$scope.accept  Error:");
+                            $log.error(error);
+                            $scope.setAlertDanger(error);
+                        })
+                        .finally(() => {
+                            // $scope.$apply(); // < not here
+                            $log.debug(" $scope.billsOfExchangeContractData :");
+                            $log.debug($scope.billsOfExchangeContractData);
+
+                            $scope.acceptIsWorking = false;
+
+                            // $rootScope.progressbar.start();
+                            $timeout($rootScope.progressbar.complete(), 1000);
+                        })
+
+                };
+
+                $scope.billsOfExchangeContractNumber = 0;
+                $scope.switchToBillsOfExchangeContractNumber = function (number) {
+                    $rootScope.progressbar.start();
+                    $scope.contract.methods.billsOfExchangeContractsLedger(number).call()
+                        .then((contractAddress) => {
+                            $log.debug("contract address for # ", number);
+                            $log.debug(contractAddress);
+                            if (contractAddress === "0x0000000000000000000000000000000000000000") {
+                                $scope.setAlertDanger("There is no smart contract with # " + number);
+                                $scope.$apply();
+                                return;
+                            }
+                            $scope.instantiateBillsOfExchangeContract(contractAddress);
+                        })
+                };
+
+                if ($stateParams.billsOfExchangeNumber) {
+                    $rootScope.progressbar.start();
+                    $scope.billsOfExchangeContractNumber = parseInt($stateParams.billsOfExchangeNumber);
+                    $scope.switchToBillsOfExchangeContractNumber($scope.billsOfExchangeContractNumber);
+                    $scope.changeTabToWork();
                 }
 
             }

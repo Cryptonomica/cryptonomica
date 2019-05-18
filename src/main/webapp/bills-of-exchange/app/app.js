@@ -8,6 +8,7 @@
             'ui.router',
             'ui.date', // https://github.com/angular-ui/ui-date
             'ngProgress', // https://github.com/VictorBjelkholm/ngProgress
+            'ngClipboard', // https://github.com/nico-val/ngClipboard
             // ---- App :
             'app.ui.router',
             'app.controllers',
@@ -53,6 +54,8 @@
             $rootScope.webAppLastChange = "2019-05-13";
             $rootScope.production = false;
             console.log("bills of exchange webapp, version", $rootScope.webAppVersion, "of", $rootScope.webAppLastChange);
+            // $rootScope.billsOfExchangeFactoryContractAddress = "";
+            // $rootScope.billsOfExchangeFactoryContractDeployedOnBlock = "";
 
             $rootScope.progressbar = ngProgressFactory.createInstance();
             $rootScope.progressbar.setHeight('7px'); // any valid CSS value Eg '10px', '1em' or '1%'
@@ -72,7 +75,7 @@
             };
 
             $rootScope.unixTimeFromDate = function (date) {
-                var result = null;
+                let result = null;
                 if (date instanceof Date) {
                     result = Math.round(date.getTime() / 1000);
                     // $log.debug("unix time calculated:", result);
@@ -84,6 +87,19 @@
 
             $rootScope.dateFromUnixTime = function (unixTime) {
                 return new Date(unixTime * 1000);
+            };
+
+            $rootScope.dateToDateStr = function (date) {
+                let result = null;
+                if (date instanceof Date) {
+                    result =
+                        date.getFullYear() + "-"
+                        + date.getMonth() + "-"
+                        + date.getDate();
+                } else {
+                    $log.error(date, "is not a date");
+                }
+                return result;
             };
 
             /* === Ethereum  === */
