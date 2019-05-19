@@ -4,9 +4,9 @@ pragma solidity >=0.5.8 <0.6.0;
 * @author Cryptonomica Ltd.(cryptonomica.net), 2019
 * @version 2019-05-18
 * Github: https://github.com/Cryptonomica/
-* Contract address: https://ropsten.etherscan.io/address/0x8e681aB751641745bD00fe21F31C4253645f5C50
-* Deployed on block: 5622893 (Ropsten)
-* Gas Used for deployment: 6,712,913
+* Contract address: https://ropsten.etherscan.io/address/0x50ac4687899D4ee0e8040eeaCEa7Df63b87DBB2d
+* Deployed on block: 5623607 (Ropsten)
+* Gas Used for deployment: 6,700,133
 *
 * @section LEGAL:
 * aim of this contract is to create a mechanism to draw, transfer and accept negotiable instruments
@@ -167,11 +167,11 @@ contract Token {
     * (once we verify one contract all next contracts with the same code and constructor args will be verified by etherscan)
     */
     constructor() public {
-        creator = msg.sender;
         // BillsOfExchangeFactory address
+        creator = msg.sender;
     }
 
-    bool private initialized;
+    bool private initialized = false;
     /*
     * initializes token: set initial values for erc20 variables
     * assigns all tokens ('totalSupply') to one address ('tokensOwner')
@@ -190,13 +190,14 @@ contract Token {
         require(!initialized, "Token contract was already initialized");
 
         // creator is BillsOfExchangeFactory address
-        require(creator == msg.sender, "Only creator can initialize token contract");
+        require(msg.sender == creator, "Only creator can initialize token contract");
 
-        require(_totalSupply > 0, "Can not initialize contract with zero tokens");
+        // require(_totalSupply > 0, "Can not initialize contract with zero tokens");
 
         name = _name;
         symbol = _symbol;
-        totalSupply = balanceOf[tokenOwner] = _totalSupply;
+        totalSupply = _totalSupply;
+        balanceOf[tokenOwner] = totalSupply;
 
         initialized = true;
     }
@@ -323,7 +324,7 @@ contract Token {
     * @param _value The amount of tokens to be spent.
     */
     function approve(address _spender, uint256 _currentValue, uint256 _value) external returns (bool success){
-        require(allowance[msg.sender][_spender] == _currentValue);
+        require(allowance[msg.sender][_spender] == _currentValue, "Current value in contract is different than provided current value");
         return approve(_spender, _value);
     }
 
@@ -498,7 +499,7 @@ contract ManagedContract {
     /*
     * @param _withdrawalAddress address to which funds from this contract will be sent
     */
-    function setWithdrawalAddress(address payable _withdrawalAddress) external onlyAdmin returns (bool success) {
+    function setWithdrawalAddress(address payable _withdrawalAddress) public onlyAdmin returns (bool success) {
 
         require(!withdrawalAddressFixed, "Withdrawal address already fixed");
         require(_withdrawalAddress != address(0), "Wrong address: 0x0");
@@ -703,50 +704,44 @@ contract BillsOfExchange is BurnableToken {
     );
 
     /*
-    * @param _signatoryAddress The Ethereum address of the signer
     * @param _signatoryName Name of the person that signed disputeResolution agreement
     */
     function signDisputeResolutionAgreementInternal(
-        address _signatoryAddress,
-        string memory _signatoryName
-    ) private returns (bool success){
+        string calldata _signatoryName
+    ) external returns (bool success){
 
         // ! signer should have valid identity verification in cryptonomica.net smart contract:
 
-        require(cryptonomicaVerification.keyCertificateValidUntil(_signatoryAddress) > now, "Signer has to be verified on Cryptonomica.net");
+        require(cryptonomicaVerification.keyCertificateValidUntil(msg.sender) > now, "Signer has to be verified on Cryptonomica.net");
 
         // revokedOn returns uint256 (unix time), it's 0 if verification is not revoked
-        require(cryptonomicaVerification.revokedOn(_signatoryAddress) == 0, "Verification for this address was revoked, can not sign");
-
-        require(
-            balanceOf[_signatoryAddress] > 0 ||
-            _signatoryAddress == drawerRepresentedBy ||
-            _signatoryAddress == draweeSignerAddress,
-            "Can be signed by drawer, drawee or tokenholder only"
-        );
+        require(cryptonomicaVerification.revokedOn(msg.sender) == 0, "Verification for this address was revoked, can not sign");
 
         disputeResolutionAgreementSignaturesCounter++;
-        disputeResolutionAgreementSignatures[disputeResolutionAgreementSignaturesCounter].signatoryAddress = _signatoryAddress;
+        disputeResolutionAgreementSignatures[disputeResolutionAgreementSignaturesCounter].signatoryAddress = msg.sender;
         disputeResolutionAgreementSignatures[disputeResolutionAgreementSignaturesCounter].signatoryName = _signatoryName;
-        emit disputeResolutionAgreementSigned(disputeResolutionAgreementSignaturesCounter, _signatoryName, _signatoryAddress, now);
+        emit disputeResolutionAgreementSigned(disputeResolutionAgreementSignaturesCounter, _signatoryName, msg.sender, now);
 
         return true;
     }
 
-    function signDisputeResolutionAgreement(string calldata _signatoryName) external returns (bool success){
-        return signDisputeResolutionAgreementInternal(msg.sender, _signatoryName);
+    /*
+    * optimized to use from BillsOfExchangeFactory 'createBillsOfExchange' function
+    */
+    function signDisputeResolutionAgreementForDrawer(
+        address _signatoryAddress
+    ) external {
+        require(
+            msg.sender == creator,
+            "signDisputeResolutionAgreementForDrawer function can be used only by creator address"
+        );
+
+        disputeResolutionAgreementSignaturesCounter++;
+        disputeResolutionAgreementSignatures[disputeResolutionAgreementSignaturesCounter].signatoryAddress = _signatoryAddress;
+        disputeResolutionAgreementSignatures[disputeResolutionAgreementSignaturesCounter].signatoryName = drawerName;
+        emit disputeResolutionAgreementSigned(disputeResolutionAgreementSignaturesCounter, drawerName, _signatoryAddress, now);
+
     }
-
-    function signDisputeResolutionAgreementFrom(
-        address _signatoryAddress,
-        string calldata _signatoryName
-    ) external returns (bool success){
-
-        require(msg.sender == creator, "signDisputeResolutionAgreementFrom can be used only by creator address");
-
-        return signDisputeResolutionAgreementInternal(_signatoryAddress, _signatoryName);
-    }
-
 
     /**
     * set up new bunch of bills of exchange and sign disputeResolution agreement
@@ -827,13 +822,14 @@ contract BillsOfExchange is BurnableToken {
     */
     function setLegal(
         string calldata _description,
-        string calldata _order, string calldata _disputeResolutionAgreement,
+        string calldata _order,
+        string calldata _disputeResolutionAgreement,
         address _cryptonomicaVerificationAddress
 
     ) external {
 
         require(msg.sender == creator, "Only contract creator can call 'setLegal' function");
-        require(address(cryptonomicaVerification) == address(0), "setLegal can be called one time only");
+        // require(address(cryptonomicaVerification) == address(0), "setLegal can be called one time only");
 
         description = _description;
         order = _order;
@@ -879,7 +875,10 @@ contract BillsOfExchange is BurnableToken {
 
         linkToSignersAuthorityToRepresentTheDrawee = _linkToSignersAuthorityToRepresentTheDrawee;
 
-        signDisputeResolutionAgreementInternal(draweeSignerAddress, drawee);
+        disputeResolutionAgreementSignaturesCounter++;
+        disputeResolutionAgreementSignatures[disputeResolutionAgreementSignaturesCounter].signatoryAddress = draweeSignerAddress;
+        disputeResolutionAgreementSignatures[disputeResolutionAgreementSignaturesCounter].signatoryName = drawee;
+        emit disputeResolutionAgreementSigned(disputeResolutionAgreementSignaturesCounter, drawee, draweeSignerAddress, now);
 
         acceptedOnUnixTime = now;
 
@@ -912,12 +911,16 @@ contract BillsOfExchangeFactory is ManagedContractWithPaidService {
     *  Constructor
     */
     constructor() public {
+
         isAdmin[msg.sender] = true;
+
         require(changePrice(0.11 ether));
 
         // Ropsten: > verification always valid for any address
         // TODO: change in production to https://etherscan.io/address/0x846942953c3b2A898F10DF1e32763A823bf6b27f <<<<<<<<
         require(changeCryptonomicaVerificationContractAddress(0x60E4196aba63e7ecC95280B6245b937011246A09));
+
+        require(setWithdrawalAddress(msg.sender));
     }
 
     /**
@@ -945,6 +948,9 @@ contract BillsOfExchangeFactory is ManagedContractWithPaidService {
     * Usual it's the address of the drawer.
     * @param _placeWherePaymentIsToBeMadeA statement of the place where payment is to be made.
     * Usual it's the address of the drawee.
+    *
+    * arguments to test this function in remix:
+    * "Test Company Ltd. bills of exchange, Series TST01", "TST01", 100000000, "EUR",1,"Test Company Ltd, 3 Main Street, London, XY1Z  1XZ, U.K.; company # 12345678","https://beta.companieshouse.gov.uk/company/12345678/officers","Test Company Ltd, 3 Main Street, London, XY1Z  1XZ, U.K.; company # 12345678",0x07BaD6bda22A830f58fDA19eBA45552C44168600,1575205200,"London, U.K.", "London, U.K."
     */
     function createBillsOfExchange(
         string memory _name,
@@ -960,7 +966,6 @@ contract BillsOfExchangeFactory is ManagedContractWithPaidService {
         uint256 _timeOfPaymentUnixTime,
         string memory _placeWhereTheBillIsIssued,
         string memory _placeWherePaymentIsToBeMade
-
     ) public payable returns (address newBillsOfExchangeContractAddress) {
 
         require(msg.value >= price, "Payment sent was lower than the price for creating Bills of Exchange");
@@ -987,6 +992,12 @@ contract BillsOfExchangeFactory is ManagedContractWithPaidService {
             _draweeSignerAddress
         );
 
+        billsOfExchange.setPlacesAndTime(
+            _timeOfPaymentUnixTime,
+            _placeWhereTheBillIsIssued,
+            _placeWherePaymentIsToBeMade
+        );
+
         billsOfExchange.setLegal(
             description,
             order,
@@ -994,22 +1005,16 @@ contract BillsOfExchangeFactory is ManagedContractWithPaidService {
             address(cryptonomicaVerification)
         );
 
-        billsOfExchange.setPlacesAndTime(
-            _timeOfPaymentUnixTime,
-            _placeWhereTheBillIsIssued,
-            _placeWherePaymentIsToBeMade
-        );
-
-        billsOfExchange.signDisputeResolutionAgreementFrom(
-            msg.sender,
-            _drawerName
+        billsOfExchange.signDisputeResolutionAgreementForDrawer(
+            msg.sender
         );
 
         return address(billsOfExchange);
     }
 
     /*
-    *
+    * arguments to test this function in remix:
+    * "Test Company Ltd. bills of exchange, Series TST01", "TST01", 100000000, "EUR",1,"Test Company Ltd, 3 Main Street, London, XY1Z  1XZ, U.K.; company # 12345678","https://beta.companieshouse.gov.uk/company/12345678/officers",1575205200,"London, U.K.", "London, U.K."
     */
     function createAndAcceptBillsOfExchange(
         string memory _name, // name of the token
@@ -1052,6 +1057,12 @@ contract BillsOfExchangeFactory is ManagedContractWithPaidService {
             msg.sender // < _draweeSignerAddress
         );
 
+        billsOfExchange.setPlacesAndTime(
+            _timeOfPaymentUnixTime,
+            _placeWhereTheBillIsIssued,
+            _placeWherePaymentIsToBeMade
+        );
+
         billsOfExchange.setLegal(
             description,
             order,
@@ -1059,13 +1070,7 @@ contract BillsOfExchangeFactory is ManagedContractWithPaidService {
             address(cryptonomicaVerification)
         );
 
-        billsOfExchange.setPlacesAndTime(
-            _timeOfPaymentUnixTime,
-            _placeWhereTheBillIsIssued,
-            _placeWherePaymentIsToBeMade
-        );
-
-        // not needed because signature is required by 'accept' function
+        // not needed to sign here because signature is required by 'accept' function
         //        billsOfExchange.signDisputeResolutionAgreement(
         //            drawerRepresentedBy,
         //            drawerName

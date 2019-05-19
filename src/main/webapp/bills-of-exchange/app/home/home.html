@@ -53,12 +53,16 @@
     </div>
 
     <div id="homeTabContent" class="ui bottom attached tab segment active" data-tab="home">
+
         <no-connection-to-node-error></no-connection-to-node-error>
+
         <alerts></alerts>
+
+        <a class="ui red right ribbon label" ng-show="showLabel">{{labelText}}</a>
         <br>
 
         <p>
-            Bills of exchange factory smart contract address:&nbsp;&nbsp;<br>
+            <b>Bills of exchange factory smart contract address:</b>&nbsp;&nbsp;<br>
             <a class="ui image label" ng-href="{{currentNetwork.etherscanLinkPrefix}}address/{{contract._address}}"
                title="Click to see on etherscan" target="_blank">
                 <img src="app/img/etherscan/logo-ether.square.png">
@@ -67,16 +71,109 @@
         </p>
 
         <p>
-            ETH acc. verification smart contract address:&nbsp;&nbsp;
+            Ethereum accounts verification smart contract address:&nbsp;&nbsp;
             <a ng-href="{{currentNetwork.etherscanLinkPrefix}}address/{{verificationContract._address}}"
                target="_blank">
                 {{verificationContract._address}}
             </a>
-            <span ng-show="!production">(this is a mock up contract for testing)</span>
+            <span ng-show="!production">
+                <br>
+                (this is a mock up contract for testing, in production
+                <a href="https://cryptonomica.net/#!/verifyEthAddress/">
+                    Cryptonomica Ethereum verification smart contract
+                </a>
+                will be used)
+            </span>
         </p>
 
         <div class="line"></div>
-        <br>
+
+        <h3>Description</h3>
+
+        <p>
+            This
+            <a href="https://en.wikipedia.org/wiki/Decentralized_application" target="_blank">dApp</a>
+            (<a href="https://en.wikipedia.org/wiki/Decentralized_application" target="_blank">decentralized
+            application</a>) makes possible to create and to transfer electronic
+            <a href="https://en.wikipedia.org/wiki/Negotiable_instrument#Bill_of_exchange" target="_blank">
+                bills of exchange</a> using modern
+            <a href="https://en.wikipedia.org/wiki/Distributed_ledger" target="_blank">
+                distributed ledger technologies
+            </a> (<a href="https://en.wikipedia.org/wiki/Blockchain" target="_blank">blockchain</a>).
+        </p>
+        <p>
+            Electronic bills of exchange can be created as smart contracts implementing all all the requirements of an
+            <em>'instrument'</em> as defined in
+            <a href="https://www.jus.uio.no/lm/bills.of.exchange.and.promissory.notes.convention.1930/doc.html"
+               target="_blank">Geneva Convention</a> or of an <em>'order in writing'</em> as defined in
+            <a href="http://www.legislation.gov.uk/ukpga/Vict/45-46/61/contents" target="_blank">U.K. Bills of Exchange
+                Act 1882</a> or of a <em>'draft'</em> as defined in
+            <a href="https://www.law.cornell.edu/ucc/3/3-104" target="_blank">U.S. Uniform Commercial Code (§ 3-104.
+                Negotiable instrument)</a>.
+        </p>
+        <p>
+            Bills of exchange smart contracts are created by the 'Bills of Exchange Factory' smart contract on
+            'Create bills of exchange' tab. Every new created smart contract with bills of exchange get its number,
+            Ethereum address and code automatically verified on etherscan.io
+        </p>
+        <p>
+            Bills of exchange are created as tokens (
+            <a href="https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md" target="_blank">ERC20</a>) in smart
+            contract, where every tokens is a bill of exchange in blank - payable to bearer (bearer is the owner of the
+            Ethereum address witch holds the tokens, or the person he/she represents), but <em>not to order</em> - that
+            means no endorsement is possible and the token holder can only transfer the token (bill of exchange in
+            blank) itself.
+        </p>
+        <p>
+            Using electronic bills of exhange we can easily draw million bills of one dollar instead of a one bill of
+            million dollars. It makes the use of bills more convenient.
+        </p>
+        <p>
+            The fact that bills of exchange are technically realized in the form of tokens makes it possible to use them
+            in other smart contracts. For example, for using escrow for receiving payments on bills of exchange, or for
+            automatic payments on bills through smart contracts, the latter is especially interesting when using
+            <a href="https://hackernoon.com/stablecoins-are-not-the-future-of-crypto-they-are-the-present-6fd8994de8fd"
+               target="_blank">stablecoins</a> convertible to fiat such as
+            <a href="https://xeuro.online" target="_blank">xEUR</a>.
+        </p>
+        <p>
+            To create or accept bills of exchange via our 'Bills of Exchange Factory' a person has to use Ethereum
+            address
+            <a href="https://cryptonomica.net/#!/verifyEthAddress/" target="_blank">verified on Cryptonomica</a> (for
+            TestNet we use a mock-up smart contract that returns a mock-up personal data for every Ethereum address),
+            and has to sign an arbitration agreement that makes possible to make legal claims on payments on bills and
+            to resolve disputes in our <a href="https://cryptonomica.net/#!/arbitration" target="_blank">online
+            arbitration tribunal</a>. See more on our approach to private law in
+            <a href="https://medium.com/cryptonomica/cryptonomica-ex-aequo-et-bono-and-new-lex-mercatoria-72eef36a2cd5"
+               target="_blank">
+                Cryptonomica: ex aequo et bono and new lex mercatoria
+            </a>.
+        </p>
+        <p>
+            See also a
+            <a href="https://github.com/Cryptonomica/cryptonomica/wiki/electronic-bills-of-exchange" target="_blank">page</a>
+            on the Cryptonomica wiki about our
+            <a href="https://github.com/Cryptonomica/cryptonomica/wiki/electronic-bills-of-exchange" target="_blank">
+                electronic bills of exchange
+            </a>
+        </p>
+
+        <div class="line"></div>
+
+        <h3>News</h3>
+
+        <p>
+            <b>2019-05-19</b> Test version of this dApp deployed on
+            <a href="https://ropsten.etherscan.io" target="_blank">Ropsten TestNet</a>.
+        </p>
+        <p>
+            <b>2019-02-22</b> The idea was first presented on the Israel Legal Hackathon 2019 (a part of the
+            <a href="https://globallegalhackathon.com" target="_blank">Global Legal Hackathon 2019</a>).
+            See our <a href="http://bit.ly/cryptonomica-glh2019" target="_blank">hackathon pitch deck</a> and
+            <a href="https://github.com/bill-of-exchange" target="_blank">github repo</a>.
+        </p>
+
+        <div class="line"></div>
         <br>
 
     </div>
@@ -84,6 +181,7 @@
     <div id="createTabContent" class="ui bottom attached tab segment" data-tab="create">
         <no-connection-to-node-error></no-connection-to-node-error>
         <alerts></alerts>
+        <a class="ui red right ribbon label" ng-show="showLabel">{{labelText}}</a>
         <br>
 
         Bills of exchange factory smart contract:<br>
@@ -225,7 +323,8 @@
                             Time of the payment:
                         </label>
                         <div class="ui checkbox">
-                            <input ng-model="atSightCheckbox" type="checkbox">
+                            <!--                            <input type="checkbox" ng-click="toggleAtSightCheckbox()">-->
+                            <input type="checkbox" ng-model="atSightCheckbox">
                             <label>Payable at sight</label>
                         </div>
                         <input ng-show="!atSightCheckbox" ui-date="dateOptions"
@@ -292,7 +391,7 @@
                     <i class="edit icon"></i>&nbsp;&nbsp;
                 </span>
                 <span ng-show="createBillsOfExchangeIsWorking">
-                    <i class="spinner loading icon"></i>&nbsp;&nbsp;
+                    <i class="notched circle loading icon"></i>&nbsp;&nbsp;
                 </span>
                 Sign and create bills of exchange&nbsp;&nbsp;
             </button>
@@ -305,7 +404,7 @@
                     <i class="edit icon"></i>&nbsp;&nbsp;
                 </span>
                 <span ng-show="createBillsOfExchangeIsWorking">
-                    <i class="spinner loading icon"></i>&nbsp;&nbsp;
+                    <i class="notched circle loading icon"></i>&nbsp;&nbsp;
                 </span>
                 Sign, create and accept bills of exchange&nbsp;&nbsp;
             </button>
@@ -325,6 +424,8 @@
         <!-- (!!!) does not work with ng-include -->
         <no-connection-to-node-error></no-connection-to-node-error>
         <alerts></alerts>
+        <a class="ui red right ribbon label" ng-show="showLabel">{{labelText}}</a>
+        <br>
 
         <p ng-show="billsOfExchangeContract&&billsOfExchangeContract._address">
 
@@ -365,6 +466,12 @@
                 </div>
             </div>
 
+            <div ng-show="getBillsOfExchangeContractDataIsWorking" class="ui yellow message">
+                <b><i class="notched circle loading icon"></i></b>
+                Fetching data for smart contract # {{billsOfExchangeContractNumber}} from
+                {{billsOfExchangeContract._address}}
+            </div>
+
         </form>
 
         <div class="ui raised segment"
@@ -395,7 +502,7 @@
                 <div class="field">
                     <div class="three fields">
                         <div class="field">
-                            <label>Number of bills of exchange issued:</label>
+                            <label>Number of bills of exchange in circulation:</label>
                             <input type="number" ng-model="billsOfExchangeContractData.totalSupply" disabled>
                         </div>
                         <div class="field">
@@ -522,12 +629,18 @@
                 </div>
 
                 <div>
-                    <div ng-show="billsOfExchangeContractData.acceptedOnUnixTime>0" class="ui success message">
+
+                    <div ng-show="billsOfExchangeContractData.acceptedOnUnixTime>0" class="ui positive message">
+
                         Accepted by drawee on: {{billsOfExchangeContractData.acceptedOnDateStr}}
+                        <br>
+                        (Unix time: {{billsOfExchangeContractData.acceptedOnUnixTime}})
                     </div>
+
                     <div ng-show="billsOfExchangeContractData.acceptedOnUnixTime==0" class="ui negative message">
                         Bills of exchange are not yet accepted by drawee
                     </div>
+
                 </div>
 
                 <div ng-show="billsOfExchangeContractData.acceptedOnUnixTime==0&&billsOfExchangeContractData.draweeSignerAddress.toString().toLowerCase()==web3.eth.defaultAccount.toString().toLowerCase()">
@@ -538,9 +651,9 @@
                     <input type="text" ng-model="linkToSignersAuthorityToRepresentTheDrawee">
                     <button class="ui primary button" ng-click="accept()" ng-disabled="acceptIsWorking">
                         <span ng-show="acceptIsWorking">
-                            <i class="spinner loading icon"></i>&nbsp;&nbsp;
+                            <i class="notched circle loading icon"></i>&nbsp;&nbsp;
                         </span>
-                        Accept and sign dispute resolution agreement
+                        Accept bills of exchange and sign dispute resolution agreement
                     </button>
                 </div>
 
@@ -562,7 +675,7 @@
                         {{$index+1}})&nbsp;
                         Signatory name: {{signature[1]}}<br>
                         Signed with Ethereum address key:
-                        <a href="">
+                        <a href="" ng-copyable title="Click to copy">
                             {{signature[0]}}
                         </a><br>
                         Signed by: {{signature[3]}}
@@ -578,22 +691,143 @@
         <div id="billsOfExchangeFunctionsSegment"
              ng-show="!getBillsOfExchangeContractDataIsWorking&&billsOfExchangeContractData&&billsOfExchangeContractData.sumToBePaidForEveryToken"
              class="ui raised segment">
-            Bills of exchange (tokens) on your account: {{billsOfExchangeContractData.balanceOf}}
+
+            <center>
+                <h3>Work with {{billsOfExchangeContractData.symbol}} tokens</h3>
+            </center>
+
+            <div id="tokensBalance">
+                Bills of exchange (tokens) on your account:
+
+                <a href="" ng-hide="refreshAccountBalanceIsWorking" ng-click="refreshAccountBalance()"
+                   title="Click to refresh">
+                    {{billsOfExchangeContractData.balanceOf}}
+                </a>
+                <span ng-show="refreshAccountBalanceIsWorking">
+                    <i class="notched circle loading icon"></i>
+                </span>
+                &nbsp;{{billsOfExchangeContractData.symbol}}
+            </div>
+
+            <div class="line"></div>
+
+            <form id="transferForm" class="ui form">
+
+                <center>
+                    <h4>
+                        Transfer&nbsp;<i class="angle double right icon"></i>
+                    </h4>
+                </center>
+
+                <div class="field">
+
+                    <label>Transfer:</label>
+
+                    <div class="ui left labeled input">
+                        <label for="transferValue" class="ui label">{{billsOfExchangeContractData.symbol}}</label>
+                        <input type="number" min="0" id="transferValue"
+                               ng-model="billsOfExchangeContractData.transferValue">
+                    </div>
+
+                </div>
+
+                <div class="field">
+                    <label>To:</label>
+                    <input type="text" id="transferTo" ng-model="billsOfExchangeContractData.transferTo">
+                </div>
+
+                <div class="ui negative message" ng-show="billsOfExchangeContractData.transferError">
+                    <i class="close icon" ng-click="billsOfExchangeContractData.transferError=null"></i>
+                    {{billsOfExchangeContractData.transferError}}
+                </div>
+
+                <div id="transferTxHash" ng-show="billsOfExchangeContractData.transferTxHash"
+                     class="ui positive message">
+                    <i class="close icon" ng-click="billsOfExchangeContractData.transferTxHash=null"></i>
+                    Transaction:&nbsp;
+                    <a ng-href="{{currentNetwork.etherscanLinkPrefix}}tx/{{billsOfExchangeContractData.transferTxHash}}"
+                       title="click to see on etherscan.io" target="_blank">
+                        {{billsOfExchangeContractData.transferTxHash}}
+                    </a>
+                </div>
+
+                <button class="ui secondary button" type="submit" ng-click="transfer()"
+                        ng-disabled="billsOfExchangeContractData.transferIsWorking">
+                    <span ng-show="billsOfExchangeContractData.transferIsWorking">
+                         <i class="notched circle loading icon"></i>&nbsp;
+                    </span>
+                    Transfer {{billsOfExchangeContractData.transferValue}} tokens
+                    ({{billsOfExchangeContractData.symbol}})
+                </button>
+            </form>
+
+            <div class="line"></div>
+
+            <form id="burnTokensForm" class="ui form">
+                <center>
+                    <h4>
+                        <i class="fire icon"></i>&nbsp;Burn
+                    </h4>
+                </center>
+
+                <div class="field">
+
+                    <label>Burn tokens:</label>
+
+                    <div class="ui left labeled input">
+                        <label for="burnValue" class="ui label">{{billsOfExchangeContractData.symbol}}</label>
+                        <input type="number" min="0" id="burnValue"
+                               ng-model="billsOfExchangeContractData.burnValue">
+                    </div>
+
+                </div>
+
+                <div class="ui negative message" ng-show="billsOfExchangeContractData.burnError">
+                    <i class="close icon" ng-click="billsOfExchangeContractData.transferError=null"></i>
+                    {{billsOfExchangeContractData.transferError}}
+                </div>
+
+                <div id="burnTxHash" ng-show="billsOfExchangeContractData.burnTxHash"
+                     class="ui positive message">
+                    <i class="close icon" ng-click="billsOfExchangeContractData.burnTxHash=null"></i>
+                    Transaction:&nbsp;
+                    <a ng-href="{{currentNetwork.etherscanLinkPrefix}}tx/{{billsOfExchangeContractData.burnTxHash}}"
+                       title="click to see on etherscan.io" target="_blank">
+                        {{billsOfExchangeContractData.burnTxHash}}
+                    </a>
+                </div>
+
+                <button class="ui secondary button" type="submit" ng-click="burnTokens()"
+                        ng-disabled="billsOfExchangeContractData.burnTokensIsWorking">
+                    <span ng-show="billsOfExchangeContractData.burnTokensIsWorking">
+                         <i class="notched circle loading icon"></i>&nbsp;
+                    </span>
+                    Burn {{billsOfExchangeContractData.burnValue}} tokens
+                    ({{billsOfExchangeContractData.symbol}})
+                </button>
+            </form>
+
         </div>
 
     </div>
 
     <div id="helpTabContent" class="ui bottom attached tab segment" data-tab="helpTab">
 
-        <h3>Description and legal part</h3>
+        <a class="ui red right ribbon label" ng-show="showLabel">{{labelText}}</a>
+        <br>
+
+        <h3>Description and legal part:</h3>
         <p>
-            See page on the Cryptonomica wiki:
-            <a href="https://github.com/Cryptonomica/cryptonomica/wiki/electronic-bills-of-exchange" target="_blank">
-                electronic bills of exchange
-            </a>
+            See page on the Cryptonomica wiki:&nbsp;&nbsp;
+            <b>
+                <a href="https://github.com/Cryptonomica/cryptonomica/wiki/electronic-bills-of-exchange"
+                   target="_blank">
+                    electronic bills of exchange
+                </a>
+            </b>
         </p>
 
-        <h3>Software</h3>
+        <h3>Software:</h3>
         <p>
             This webapp works with
             <a href="https://metamask.io" target="_blank">
@@ -602,13 +836,13 @@
             browser plugin on desktop (Chrome, Firefox, Opera, Brave) and mobile (Firefox)
         </p>
 
-        <h3>Support</h3>
+        <h3>Support:</h3>
 
         <p>Support email: <a href="mailto:support@cryptonomica.zendesk.com">support@cryptonomica.zendesk.com</a>
 
-        <p>You can also find us on social media:</p>
-        <p>
+        <h3>You can also find us on social media:</h3>
 
+        <p>
             <a href="https://github.com/Cryptonomica" title="Cryptonomica on Github" target="_blank">
                 <i class="github icon socialLogo"></i>
             </a>&nbsp;&nbsp;
@@ -654,31 +888,39 @@
         Network ID:&nbsp{{currentNetwork.network_id}}&nbsp(
         <a ng-href="{{currentNetwork.etherscanLinkPrefix}}" target="_blank">{{currentNetwork.networkName}}</a>)
         <br>
+        <!--
 
-        <div class="ui divider"></div>
-        <div class="ui right">
-            &nbsp;
-            <!--Find this dApp on:&nbsp;-->
-            <div class="ui tiny right floated images">
-                <a href="https://github.com/Cryptonomica/cryptonomica/tree/master/src/main/webapp/bills-of-exchange"
-                   target="_blank"
-                   title="This dApp on Github">
-                    <img class="ui image" style="opacity: 0.45;" src="app/img/github/GitHub_Logo.png">
-                </a>&nbsp;&nbsp;
-                <!--
-                <a href="https://www.stateofthedapps.com" target="_blank"
-                   title="This dApp on State of the DApps">&nbsp;
-                    <img class="ui image" style="opacity: 0.45;" src="app/img/SD/logo-superblack.svg">
-                </a>
-                -->
-            </div>
-        </div>
+                <div class="ui divider"></div>
+                <div class="ui right">
+                    &nbsp;
+                    &lt;!&ndash;Find this dApp on:&nbsp;&ndash;&gt;
+                    <div class="ui tiny right floated images">
+                        <a href="https://github.com/Cryptonomica/cryptonomica/tree/master/src/main/webapp/bills-of-exchange"
+                           target="_blank"
+                           title="This dApp on Github">
+                            <img class="ui image" style="opacity: 0.45;" src="app/img/github/GitHub_Logo.png">
+                        </a>&nbsp;&nbsp;
+                        &lt;!&ndash;
+                        <a href="https://www.stateofthedapps.com" target="_blank"
+                           title="This dApp on State of the DApps">&nbsp;
+                            <img class="ui image" style="opacity: 0.45;" src="app/img/SD/logo-superblack.svg">
+                        </a>
+                        &ndash;&gt;
+                    </div>
+                </div>
 
+        -->
 
-        <!--Web3.js ver.: {{web3.version}}-->
+        <a href="https://github.com/ethereum/web3.js" target="_blank">web3.js</a> ver.: {{web3.version}}
 
-        <!--<i class="grey cog loading icon"></i>on <a href="https://cryptonomica.net">cryptonomica.net</a><br>-->
+        <div class="line"></div>
+        <i class="large cog loading icon"></i>
+        <!--        <i class="small grey cog loading icon"></i>-->
+        on <b><a href="https://cryptonomica.net">cryptonomica.net</a></b>
+        <br>
     </div>
+    <!--
+        <footer-main></footer-main>
+    -->
     <br>
-
 </div>

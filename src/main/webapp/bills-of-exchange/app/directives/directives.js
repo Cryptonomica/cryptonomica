@@ -22,6 +22,15 @@
         };
     });
     // ------------------------------------------------------------------------------
+    d.directive('footerMain', function () {
+        return {
+            restrict: 'EA', //E = element, A = attribute, C = class, M = comment
+            // <footer-main></footer-main>
+            // replace: 'true', // >> error
+            templateUrl: 'app/directives/footerMain.html'
+        };
+    });
+
     // ------------------------------------------------------------------------------
     /* see:
      https://veamospues.wordpress.com/2014/01/27/reading-files-with-angularjs/

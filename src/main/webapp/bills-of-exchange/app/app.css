@@ -3,6 +3,11 @@ body {
     background-color: #f0f0f0;
 }
 
+#footer {
+    /*background-color: rgba(222, 222, 222, 1.0);*/
+    background-color: rgba(219, 219, 219, 1.0);
+}
+
 /*
 textarea {
     font-family: monospace;

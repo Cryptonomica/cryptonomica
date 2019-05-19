@@ -464,7 +464,7 @@ contract ManagedContract {
     /*
     * @param _withdrawalAddress address to which funds from this contract will be sent
     */
-    function setWithdrawalAddress(address payable _withdrawalAddress) external onlyAdmin returns (bool success) {
+    function setWithdrawalAddress(address payable _withdrawalAddress) public onlyAdmin returns (bool success) {
 
         require(!withdrawalAddressFixed, "Withdrawal address already fixed");
         require(_withdrawalAddress != address(0), "Wrong address: 0");

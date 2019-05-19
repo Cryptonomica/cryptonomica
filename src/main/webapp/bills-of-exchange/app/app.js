@@ -50,12 +50,15 @@
             $log) {
 
             // console.log("application started");
-            $rootScope.webAppVersion = "0.2.0.dev";
-            $rootScope.webAppLastChange = "2019-05-13";
+            $rootScope.webAppVersion = "0.3.0.dev";
+            $rootScope.webAppLastChange = "2019-05-19";
             $rootScope.production = false;
             console.log("bills of exchange webapp, version", $rootScope.webAppVersion, "of", $rootScope.webAppLastChange);
             // $rootScope.billsOfExchangeFactoryContractAddress = "";
             // $rootScope.billsOfExchangeFactoryContractDeployedOnBlock = "";
+
+            $rootScope.labelText = "Ropsten only,  ver. " + $rootScope.webAppVersion + "  "; //  + $rootScope.webAppLastChange;
+            $rootScope.showLabel = true;
 
             $rootScope.progressbar = ngProgressFactory.createInstance();
             $rootScope.progressbar.setHeight('7px'); // any valid CSS value Eg '10px', '1em' or '1%'
