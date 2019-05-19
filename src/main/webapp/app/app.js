@@ -124,7 +124,7 @@
                 $rootScope.supportEmail = "support@cryptonomica.zendesk.com";
 
             var SED_START;
-            $rootScope.PRODUCTION = false;
+            $rootScope.PRODUCTION = true;
             var SED_END;
 
                 var CLIENT;
