@@ -1,0 +1,42 @@
+
+body {
+    background-color: #f0f0f0;
+}
+
+#footer {
+    /*background-color: rgba(222, 222, 222, 1.0);*/
+    background-color: rgba(219, 219, 219, 1.0);
+}
+
+/*
+textarea {
+    font-family: monospace;
+    font-size: 70%;
+}
+*/
+
+.line {
+    border-bottom: dotted 2px #eeeeee;
+    padding-bottom: 0.5em;
+    margin-bottom: 1em;
+}
+
+fieldset {
+    border: 0.1em solid #cccccc;
+}
+
+.redFont {
+    color: red;
+}
+
+a .socialLogo {
+    font-size: 1.4em;
+    color: #777777 !important;
+    /*color: #9c9c9c !important;*/
+    /*color: black !important;*/
+}
+
+a .socialLogo:hover {
+    /*color: white !important;*/
+    color: #60c8fa !important;
+}

@@ -12,15 +12,15 @@ public class Constants {
      *  are only to mark start and and point for sed (https://www.gnu.org/software/sed/manual/sed.html)
      * */
     static Boolean SED_START;
-    public static final Boolean PRODUCTION = Boolean.TRUE;
-    public static final String WEB_CLIENT_ID = "762021407984-9ab8gugumsg30rrqgvma9htfkqd3uid5.apps.googleusercontent.com";
-    public static final Integer priceForOneYerInEuroCents = 60 * 100;
-    public static final Integer discountInPercentForTwoYears = 20;
-    public static final String host = "cryptonomica.net";
+    public static final Boolean PRODUCTION = Boolean.FALSE;
+    public static final String WEB_CLIENT_ID = "517360814873-7pn1cta2addmcvug6rb1jr2u20vv2qnt.apps.googleusercontent.com";
+    public static final Integer priceForOneYerInEuroCents = 1 * 100;
+    public static final Integer discountInPercentForTwoYears = 60;
+    public static final String host = "sandbox-cryptonomica.appspot.com";
     public static final String supportEmailAddress = "support@cryptonomica.zendesk.com";
     public static final String adminEmailAddress = "admin@cryptonomica.net";
     public static final String verificationServiceEmailAddress = "verification@cryptonomica.net";
-    public static final String emailSubjectPrefix = "[cryptonomica] ";
+    public static final String emailSubjectPrefix = "[sandbox-cryptonomica] ";
     static Boolean SED_END;
 
     public static final String ANDROID_CLIENT_ID = "replace this with your Android client ID";

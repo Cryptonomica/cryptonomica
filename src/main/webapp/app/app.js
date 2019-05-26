@@ -21,7 +21,6 @@
         // https://weblogs.asp.net/dwahlin/creating-custom-angularjs-directives-part-i-the-fundamentals
     ]);
 
-
     app.config(function ($sceDelegateProvider) {
         $sceDelegateProvider.resourceUrlWhitelist([
             'self', // Allow same origin resource loads
@@ -125,7 +124,7 @@
                 $rootScope.supportEmail = "support@cryptonomica.zendesk.com";
 
             var SED_START;
-            $rootScope.PRODUCTION = true;
+            $rootScope.PRODUCTION = false;
             var SED_END;
 
                 var CLIENT;

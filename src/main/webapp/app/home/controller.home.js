@@ -66,7 +66,7 @@
             //     // $rootScope.checkAuth();
             // }
 
-            // $timeout($rootScope.progressbar.complete(), 1000);
+            $timeout($rootScope.progressbar.complete(), 1000);
 
         } // end function homeCtl
 
