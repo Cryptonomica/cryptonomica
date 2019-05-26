@@ -331,13 +331,7 @@
                         <label>
                             Time of the payment:
                         </label>
-                        <div class="ui checkbox">
-                            <!--                            <input type="checkbox" ng-click="toggleAtSightCheckbox()">-->
-                            <input type="checkbox" ng-model="atSightCheckbox">
-                            <label>Payable at sight</label>
-                        </div>
-                        <input ng-show="!atSightCheckbox" ui-date="dateOptions"
-                               ng-model="billsOfExchange.timeOfPaymentDate">
+                        <input type="text" ng-model="billsOfExchange.timeOfPayment">
                     </div>
 
                     <div class="field">
@@ -392,10 +386,9 @@
                 Price for bills of exchange smart contract creation:&nbsp;&nbsp;{{priceETH}} ETH
             </p>
 
-            <button class="ui secondary button" type="submit" ng-hide="draweeIsTheSameAsDrawerCheckbox"
+            <button class="ui secondary button" ng-hide="draweeIsTheSameAsDrawerCheckbox"
                     ng-click="createBillsOfExchange()"
                     ng-disabled="createBillsOfExchangeIsWorking">
-                <!--<button class="ui inverted green button" type="submit" ng-click="signMessage()">-->
                 <span ng-show="!createBillsOfExchangeIsWorking">
                     <i class="edit icon"></i>&nbsp;&nbsp;
                 </span>
@@ -405,10 +398,9 @@
                 Sign and create bills of exchange&nbsp;&nbsp;
             </button>
 
-            <button class="ui secondary button" type="submit" ng-show="draweeIsTheSameAsDrawerCheckbox"
+            <button class="ui secondary button" ng-show="draweeIsTheSameAsDrawerCheckbox"
                     ng-click="createAndAcceptBillsOfExchange()"
                     ng-disabled="createBillsOfExchangeIsWorking">
-                <!--<button class="ui inverted green button" type="submit" ng-click="signMessage()">-->
                 <span ng-show="!createBillsOfExchangeIsWorking">
                     <i class="edit icon"></i>&nbsp;&nbsp;
                 </span>
@@ -435,8 +427,23 @@
         <alerts></alerts>
         <a class="ui red right ribbon label" ng-show="showLabel">{{labelText}}</a>
         <br>
+        <div>
+            Bills of exchange smart contracts deployed:&nbsp;&nbsp;
+            <a href="" ng-click="getBillsOfExchangeContractsCounter()" title="Click to refresh">
+                <span ng-hide="getBillsOfExchangeContractsCounterIsWorking">
+                    <b>{{contractData.billsOfExchangeContractsCounter}}</b>
+                </span>
+                <span ng-show="getBillsOfExchangeContractsCounterIsWorking">
+                    <i class="notched circle loading icon"></i>
+                </span>
+            </a>
+            <div class="line"></div>
+        </div>
 
         <p ng-show="billsOfExchangeContract&&billsOfExchangeContract._address">
+            You are working with bills of exchange smart contract #
+            {{billsOfExchangeContractNumber}}
+            with Ethereum address:<br>
 
             <a class="ui image label"
                ng-href="{{currentNetwork.etherscanLinkPrefix}}address/{{billsOfExchangeContract._address}}"
@@ -444,15 +451,14 @@
                 <img src="app/img/etherscan/logo-ether.square.png">
                 {{billsOfExchangeContract._address}}
             </a>
-            <br>
-            You are working with bills of exchange smart contract #
-            {{billsOfExchangeContractNumber}}
-            with Ethereum address:<br>
-            <a href="" ng-copyable title="Click to copy">
-                {{billsOfExchangeContract._address}}
-            </a>
+
+            <!-- <a href="" ng-copyable title="Click to copy">
+                            {{billsOfExchangeContract._address}}
+                        </a>
+                        -->
             <br><br>
-            direct link:
+
+            direct link to this page:
             <a href="" ng-copyable title="Click to copy">
                 {{thisUrl}}{{billsOfExchangeContractNumber}}
             </a>
@@ -487,7 +493,10 @@
              ng-show="billsOfExchangeContractData&&billsOfExchangeContractData.sumToBePaidForEveryToken">
 
             <center>
-                <h2>Bills of Exchange smart contract # {{billsOfExchangeContractNumber}}</h2>
+                <h2>
+                    <i class="money bill alternate outline icon"></i>&nbsp;
+                    Bills of Exchange smart contract # {{billsOfExchangeContractNumber}}
+                </h2>
             </center>
 
             <form id="billsOfExchangeData" class="ui form">
@@ -599,9 +608,9 @@
 
                         <div class="field">
                             <label>
-                                Time of the payment (yyyy-mm-dd):
+                                Time of the payment:
                             </label>
-                            <input ng-model="billsOfExchangeContractData.timeOfPaymentDateStr" disabled>
+                            <input ng-model="billsOfExchangeContractData.timeOfPayment" disabled>
                         </div>
 
                         <div class="field">
@@ -691,6 +700,53 @@
                     </div>
 
                 </div>
+            </form>
+
+            <form id="signDisputeResolutionAgreementForm" class="ui form">
+                <br>
+                <b>Sign dispute resolution agreement:</b>
+                <div>(your Ethereum address must be verified by cryptonomica.net)</div>
+
+                <div class="field">
+                    <label>
+                        Signatory name:
+                    </label>
+                    <input type="text" ng-model="signatoryName">
+                </div>
+                <button class="ui primary button"
+                        ng-click="signDisputeResolutionAgreement()"
+                        ng-disabled="signDisputeResolutionAgreementIsWorking">
+                    <span ng-show="!signDisputeResolutionAgreementIsWorking">
+                    <i class="edit icon"></i>&nbsp;&nbsp;
+                </span>
+                    <span ng-show="signDisputeResolutionAgreementIsWorking">
+                    <i class="notched circle loading icon"></i>&nbsp;&nbsp;
+                </span>
+                    Sign dispute resolution agreement
+                </button>
+
+                <div id="signDisputeResolutionAgreementSuccess" ng-show="signDisputeResolutionAgreementSuccess"
+                     class="ui info message">
+                    <i class="close icon" ng-click="signDisputeResolutionAgreementSuccess=null"></i>
+                    <div class="header">Dispute resolution agreement signed:</div>
+                    <p>
+                        Tx:
+                        <a ng-href="{{currentNetwork.etherscanLinkPrefix}}tx/{{signDisputeResolutionAgreementTxHash}}"
+                           title="click to see on etherscan.io" target="_blank">
+                            {{signDisputeResolutionAgreementTxHash}}
+                        </a>
+                    </p>
+                </div>
+
+                <div id="signDisputeResolutionAgreementError" ng-show="signDisputeResolutionAgreementError"
+                     class="ui negative message">
+                    <i class="close icon" ng-click="signDisputeResolutionAgreementError=null"></i>
+                    <div class="header">Error:</div>
+                    <p>
+                        {{signDisputeResolutionAgreementError.message}}
+                    </p>
+                </div>
+
 
                 <div class="line"></div>
 
@@ -760,7 +816,7 @@
                     </a>
                 </div>
 
-                <button class="ui secondary button" type="submit" ng-click="transfer()"
+                <button id="transferBtn" class="ui secondary button" ng-click="transfer()"
                         ng-disabled="billsOfExchangeContractData.transferIsWorking">
                     <span ng-show="billsOfExchangeContractData.transferIsWorking">
                          <i class="notched circle loading icon"></i>&nbsp;
@@ -768,6 +824,7 @@
                     Transfer {{billsOfExchangeContractData.transferValue}} tokens
                     ({{billsOfExchangeContractData.symbol}})
                 </button>
+
             </form>
 
             <div class="line"></div>
@@ -806,7 +863,7 @@
                     </a>
                 </div>
 
-                <button class="ui secondary button" type="submit" ng-click="burnTokens()"
+                <button class="ui secondary button" ng-click="burnTokens()"
                         ng-disabled="billsOfExchangeContractData.burnTokensIsWorking">
                     <span ng-show="billsOfExchangeContractData.burnTokensIsWorking">
                          <i class="notched circle loading icon"></i>&nbsp;

@@ -1,12 +1,12 @@
-pragma solidity 0.5.8;
+pragma solidity >=0.5.8 <0.6.0;
 
 /*
 * @author Cryptonomica Ltd.(cryptonomica.net), 2019
-* @version 2019-05-26
+* @version 2019-05-20
 * Github: https://github.com/Cryptonomica/
-* Contract address: https://ropsten.etherscan.io/address/0x74eB4DBD3124D41B6775701FD1821571EAd5cf9A
-* Deployed on block: 5674792 (Ropsten)
-* Gas Used for deployment: 6,799,155
+* Contract address: https://ropsten.etherscan.io/address/
+* Deployed on block:  (Ropsten)
+* Gas Used for deployment: 
 *
 * @section LEGAL:
 * aim of this contract is to create a mechanism to draw, transfer and accept negotiable instruments
@@ -29,6 +29,8 @@ pragma solidity 0.5.8;
 * and can be transferred using Ethereum blockchain (from one blockchain address to another)
 *
 */
+
+/* --- LIBRARIES */
 
 /**
  * @title SafeMath
@@ -116,7 +118,7 @@ contract ERC677Receiver {
 }
 
 /**
-* @title Contract that will work with overloaded 'transfer' function
+* @title Contract that will work with ERC-223 tokens
 * see: https://github.com/ethereum/EIPs/issues/223
 */
 contract ERC223ReceivingContract {
@@ -132,7 +134,7 @@ contract ERC223ReceivingContract {
 /**
  * @title Contract that implements:
  * ERC-20  (https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md)
- * overloaded 'transfer' function (like in ERC-223 (https://github.com/ethereum/EIPs/issues/223 )
+ * ERC-223 (https://github.com/ethereum/EIPs/issues/223
  * ERC-677 (https://github.com/ethereum/EIPs/issues/677)
  * overloaded 'approve' function (https://docs.google.com/document/d/1YLPtQxZu1UAvO9cZ1O2RPXBbT0mooh4DYKjA_jp-RLM/)
 */
@@ -156,29 +158,27 @@ contract Token {
 
     /*
     * stored address that deployed this smart contract to blockchain
-    * for bills of exchange smart contracts this will be 'BillsOfExchangeFactory' contract address
     */
     address public creator;
 
     /**
     * Constructor
     * no args constructor make possible to create contracts with code pre-verified on etherscan.io
-    * (once we verify one contract, all next contracts with the same code and constructor args will be verified by etherscan)
+    * (once we verify one contract all next contracts with the same code and constructor args will be verified by etherscan)
     */
     constructor() public {
-        /*
-        * this will be 'BillsOfExchangeFactory' contract address
-        */
+        // BillsOfExchangeFactory address
         creator = msg.sender;
     }
 
+    bool private initialized = false;
     /*
     * initializes token: set initial values for erc20 variables
-    * assigns all tokens ('totalSupply') to one address ('tokenOwner')
-    * @param _name Name of the token
-    * @param _symbol Symbol of the token
-    * @param _totalSupply Amount of tokens to create
-    * @param _tokenOwner Address that will initially hold all created tokens
+    * assigns all tokens ('totalSupply') to one address ('tokensOwner')
+    * @param _name name of the token
+    * @param _symbol symbol of the token
+    * @param _totalSupply amount of tokens to create
+    * @param _tokenOwner address that will initially hold all created tokens
     */
     function initToken(
         string calldata _name,
@@ -187,14 +187,19 @@ contract Token {
         address tokenOwner
     ) external {
 
+        require(!initialized, "Token contract was already initialized");
+
         // creator is BillsOfExchangeFactory address
         require(msg.sender == creator, "Only creator can initialize token contract");
+
+        // require(_totalSupply > 0, "Can not initialize contract with zero tokens");
 
         name = _name;
         symbol = _symbol;
         totalSupply = _totalSupply;
         balanceOf[tokenOwner] = totalSupply;
 
+        initialized = true;
     }
 
     /* --- ERC-20 events */
@@ -206,9 +211,9 @@ contract Token {
     /* --- Events for interaction with other smart contracts */
 
     /**
-    * @param _from Address that sent transaction
-    * @param _toContract Receiver (smart contract)
-    * @param _extraData Data sent
+    * @param _from address that sent transaction
+    * @param _toContract receiver
+    * @param _extraData data sent
     */
     event DataSentToAnotherContract(address indexed _from, address indexed _toContract, bytes indexed _extraData);
 
@@ -234,7 +239,7 @@ contract Token {
         balanceOf[_to] = balanceOf[_to].add(_value);
 
         // If allowance used, change allowances correspondingly
-        if (_from != msg.sender) {
+        if (_from != msg.sender && _from != address(this)) {
             allowance[_from][msg.sender] = allowance[_from][msg.sender].sub(_value);
         }
 
@@ -248,7 +253,7 @@ contract Token {
     }
 
     /**
-    * overloaded transfer (like in ERC-223)
+    * overloaded transfer (ERC-223)
     * see: https://github.com/ethereum/EIPs/issues/223
     * https://github.com/Dexaran/ERC223-token-standard/blob/Recommended/ERC223_Token.sol
     */
@@ -266,11 +271,10 @@ contract Token {
     * ERC-677
     * https://github.com/ethereum/EIPs/issues/677
     * transfer tokens with additional info to another smart contract, and calls its correspondent function
-    * @param _to Another smart contract address (receiver)
-    * @param _value Number of tokens to transfer
-    * @param _extraData Data to send to another contract
-    *
-    * This function is a recommended method to send tokens to smart contracts.
+    * @param _to - another smart contract address
+    * @param _value - number of tokens
+    * @param _extraData - data to send to another contract
+    * this is a recommended method to send tokens to smart contracts
     */
     function transferAndCall(address _to, uint256 _value, bytes memory _extraData) public returns (bool success){
         if (transferFrom(msg.sender, _to, _value)) {
@@ -285,15 +289,15 @@ contract Token {
 
     /**
     * the same as above ('transferAndCall'), but for all tokens on user account
-    * for example for converting ALL tokens on user account to another tokens
+    * for example for converting ALL tokens of user account to another tokens
     */
     function transferAllAndCall(address _to, bytes calldata _extraData) external returns (bool){
         return transferAndCall(_to, balanceOf[msg.sender], _extraData);
     }
 
     /*
-    * https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md#approve
-    * there is an attack:
+    *  https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md#approve
+    * there is and attack:
     * https://github.com/CORIONplatform/solidity/issues/6,
     * https://drive.google.com/file/d/0ByMtMw2hul0EN3NCaVFHSFdxRzA/view
     * but this function is required by ERC-20:
@@ -320,10 +324,7 @@ contract Token {
     * @param _value The amount of tokens to be spent.
     */
     function approve(address _spender, uint256 _currentValue, uint256 _value) external returns (bool success){
-        require(
-            allowance[msg.sender][_spender] == _currentValue,
-            "Current value in contract is different than provided current value"
-        );
+        require(allowance[msg.sender][_spender] == _currentValue, "Current value in contract is different than provided current value");
         return approve(_spender, _value);
     }
 
@@ -355,11 +356,6 @@ contract BurnableToken is Token {
         balanceOf[_from] = balanceOf[_from].sub(_value);
         totalSupply = totalSupply.sub(_value);
 
-        // If allowance used, change allowances correspondingly
-        if (_from != msg.sender) {
-            allowance[_from][msg.sender] = allowance[_from][msg.sender].sub(_value);
-        }
-
         emit Transfer(_from, address(0), _value);
         emit TokensBurned(_from, _value, msg.sender);
 
@@ -374,9 +370,9 @@ contract BurnableToken is Token {
 
 /**
 * see: https://www.cryptonomica.net/#!/verifyEthAddress/
-* in our bills of exchange smart contracts:
+* in our smart contract:
 * 1) every new admin should have a verified identity on cryptonomica.net
-* 2) every person that signs (draw or accept) a bill should be verified
+* 2) every person tha signs (draw or accept) a bill should be verified
 */
 contract CryptonomicaVerification {
 
@@ -394,7 +390,7 @@ contract CryptonomicaVerification {
 }
 
 /*
-* Universal functions for smart contract management
+* universal functions for smart contract managements
 */
 contract ManagedContract {
 
@@ -414,9 +410,9 @@ contract ManagedContract {
     }
 
     /**
-    * @param from Old address
-    * @param to New address
-    * @param by Who made a change
+    * @param from old address
+    * @param to new address
+    * @param by who made a change
     */
     event CryptonomicaVerificationContractAddressChanged(address from, address to, address indexed by);
 
@@ -433,8 +429,8 @@ contract ManagedContract {
     }
 
     /**
-    * @param added New admin address
-    * @param addedBy Who added new admin
+    * @param added new admin address
+    * @param addedBy who added new admin
     */
     event AdminAdded(
         address indexed added,
@@ -442,20 +438,14 @@ contract ManagedContract {
     );
 
     /**
-    * @param _newAdmin Address of new admin
+    * @param _newAdmin address of new admin
     */
     function addAdmin(address _newAdmin) public onlyAdmin returns (bool success){
 
-        require(
-            cryptonomicaVerification.keyCertificateValidUntil(_newAdmin) > now,
-            "New admin has to be verified on Cryptonomica.net"
-        );
+        require(cryptonomicaVerification.keyCertificateValidUntil(_newAdmin) > now, "New admin has to be verified on Cryptonomica.net");
 
         // revokedOn returns uint256 (unix time), it's 0 if verification is not revoked
-        require(
-            cryptonomicaVerification.revokedOn(_newAdmin) == 0,
-            "Verification for this address was revoked, can not add"
-        );
+        require(cryptonomicaVerification.revokedOn(_newAdmin) == 0, "Verification for this address was revoked, can not add");
 
         isAdmin[_newAdmin] = true;
 
@@ -465,8 +455,8 @@ contract ManagedContract {
     }
 
     /**
-    * @param removed Removed admin address
-    * @param removedBy Who removed admin
+    * @param removed removed admin
+    * @param removedBy who removed admin
     */
     event AdminRemoved(
         address indexed removed,
@@ -474,7 +464,7 @@ contract ManagedContract {
     );
 
     /**
-    * @param _oldAdmin Address to remove from admins
+    * @param _oldAdmin address to remove from admins
     */
     function removeAdmin(address _oldAdmin) external onlyAdmin returns (bool){
 
@@ -500,9 +490,9 @@ contract ManagedContract {
     bool public withdrawalAddressFixed = false;
 
     /*
-    * @param from Old address
-    * @param to New address
-    * @param changedBy Who made this change
+    * @param from old address
+    * @param to new address
+    * @param changedBy who made this change
     */
     event WithdrawalAddressChanged(address indexed from, address indexed to, address indexed changedBy);
 
@@ -523,16 +513,15 @@ contract ManagedContract {
     }
 
     /*
-    * @param withdrawalAddressFixedAs Address for withdrawal
-    * @param fixedBy Address who made this change (msg.sender)
-    *
-    * This event can be fired one time only
+    * this event can be fired one time only
+    * @param withdrawalAddressFixedAs address for withdrawal
+    * @param who made this (msg.sender)
     */
     event WithdrawalAddressFixed(address indexed withdrawalAddressFixedAs, address indexed fixedBy);
 
     /**
-    * @param _withdrawalAddress Address to which funds from this contract will be sent
-    * This function can be called one time only.
+    * @param _withdrawalAddress address to which funds from this contract will be sent
+    * This function can be called one time only
     */
     function fixWithdrawalAddress(address _withdrawalAddress) external onlyAdmin returns (bool success) {
 
@@ -591,8 +580,8 @@ contract ManagedContract {
 }
 
 /*
-* This is a model contract where some paid service provided and there is a price
-* (in main function we can check if msg.value >= price)
+* this is a model contract where some paid service provided and there is a price
+* in main function we can check if msg.value >= price
 */
 contract ManagedContractWithPaidService is ManagedContract {
 
@@ -613,7 +602,6 @@ contract ManagedContractWithPaidService is ManagedContract {
         price = _newPrice;
         return true;
     }
-
 }
 
 /**
@@ -624,26 +612,26 @@ contract BillsOfExchange is BurnableToken {
     /* ---- Bill of Exchange requisites: */
 
     /**
-    * Number of this contract in the ledger maintained by factory contract
+    * number of this contract in the ledger maintained by factory contract
     */
     uint256 public billsOfExchangeContractNumber;
 
     /**
-    * Legal name of a person who issues the bill (drawer)
-    * This can be a name of a company/organization or of a physical person
+    * legal name of a person who issues the bill (drawer)
+    * this can be a name of a company/organisation or of a physical person
     */
     string public drawerName;
 
     /**
     * Ethereum address of the signer
-    * His/her identity has to be verified via Cryptonomica.net smart contract
+    * His/her identity have to be verified via Cryptonomica.net smart contract
     */
     address public drawerRepresentedBy;
 
     /**
     * Link to information about signer's authority to represent the drawer
     * This should be a proof that signer can represent drawer
-    * It can be link to public register like Companies House in U.K., or other proof.
+    * It can be link to public register like Companies House, or other proof.
     * Whosoever puts his signature on a bill of exchange as representing a person for whom he had no power to act is
     * bound himself as a party to the bill. The same rule applies to a representative who has exceeded his powers.
     */
@@ -661,7 +649,7 @@ contract BillsOfExchange is BurnableToken {
     address public draweeSignerAddress;
 
     /**
-    * This should be a proof that signer can represent drawee.
+    * This should be a proof that signer can represent drawee
     */
     string  public linkToSignersAuthorityToRepresentTheDrawee;
 
@@ -673,13 +661,8 @@ contract BillsOfExchange is BurnableToken {
     string public disputeResolutionAgreement;
     CryptonomicaVerification public cryptonomicaVerification;
 
-    /*
-    *  a statement of the time of payment
-    *  we use string to make possible variants like: '01 Jan 2021', 'at sight', 'at sight but not before 2019-12-31'
-    *  '10 days after sight' etc.,
-    * see https://www.jus.uio.no/lm/bills.of.exchange.and.promissory.notes.convention.1930/doc.html#109
-    */
-    string public timeOfPayment;
+    // a statement of the time of payment
+    uint256 public timeOfPaymentUnixTime; // if the same time as issuedOnUnixTime - "at sight"
 
     // A statement of the date and of the place where the bill is issued
     uint256 public issuedOnUnixTime;
@@ -690,7 +673,6 @@ contract BillsOfExchange is BurnableToken {
     string public placeWherePaymentIsToBeMade;
 
     // https://en.wikipedia.org/wiki/ISO_4217
-    // or crypto currency
     string public currency; // for example: "EUR", "USD"
 
     uint256 public sumToBePaidForEveryToken; //
@@ -700,11 +682,6 @@ contract BillsOfExchange is BurnableToken {
     */
     uint256 public disputeResolutionAgreementSignaturesCounter;
 
-    /*
-    * @param signatoryAddress Ethereum address of the person, that signed the agreement
-    * @param signatoryName Legal name of the person that signed agreement. This can be a name of a legal or physical
-    * person
-    */
     struct Signature {
         address signatoryAddress;
         string signatoryName;
@@ -727,49 +704,47 @@ contract BillsOfExchange is BurnableToken {
     );
 
     /*
-       * @param _signatoryAddress Ethereum address of the person who signs agreement
-       * @param _signatoryName Name of the person that signs dispute resolution agreement
-       */
-    function signDisputeResolutionAgreementFor(
-        address _signatoryAddress,
-        string memory _signatoryName
-    ) public returns (bool success){
-
-        require(
-            msg.sender == _signatoryAddress ||
-            msg.sender == creator,
-            "Not authorized to sign dispute resolution agreement"
-        );
+    * @param _signatoryName Name of the person that signs dispute resolution agreement
+    */
+    function signDisputeResolutionAgreement(
+        string calldata _signatoryName
+    ) external returns (bool success){
 
         // ! signer should have valid identity verification in cryptonomica.net smart contract:
 
-        require(
-            cryptonomicaVerification.keyCertificateValidUntil(_signatoryAddress) > now,
-            "Signer has to be verified on Cryptonomica.net"
-        );
+        require(cryptonomicaVerification.keyCertificateValidUntil(msg.sender) > now, "Signer has to be verified on Cryptonomica.net");
 
         // revokedOn returns uint256 (unix time), it's 0 if verification is not revoked
-        require(
-            cryptonomicaVerification.revokedOn(_signatoryAddress) == 0,
-            "Verification for this address was revoked, can not sign"
-        );
+        require(cryptonomicaVerification.revokedOn(msg.sender) == 0, "Verification for this address was revoked, can not sign");
 
         disputeResolutionAgreementSignaturesCounter++;
-
-        disputeResolutionAgreementSignatures[disputeResolutionAgreementSignaturesCounter].signatoryAddress = _signatoryAddress;
+        disputeResolutionAgreementSignatures[disputeResolutionAgreementSignaturesCounter].signatoryAddress = msg.sender;
         disputeResolutionAgreementSignatures[disputeResolutionAgreementSignaturesCounter].signatoryName = _signatoryName;
-
         emit disputeResolutionAgreementSigned(disputeResolutionAgreementSignaturesCounter, _signatoryName, msg.sender, now);
 
         return true;
     }
 
-    function signDisputeResolutionAgreement(string calldata _signatoryName) external returns (bool success){
-        return signDisputeResolutionAgreementFor(msg.sender, _signatoryName);
+    /*
+    * optimized to use from BillsOfExchangeFactory 'createBillsOfExchange' function
+    */
+    function signDisputeResolutionAgreementForDrawer(
+        address _signatoryAddress
+    ) external {
+        require(
+            msg.sender == creator,
+            "signDisputeResolutionAgreementForDrawer function can be used only by creator address"
+        );
+
+        disputeResolutionAgreementSignaturesCounter++;
+        disputeResolutionAgreementSignatures[disputeResolutionAgreementSignaturesCounter].signatoryAddress = _signatoryAddress;
+        disputeResolutionAgreementSignatures[disputeResolutionAgreementSignaturesCounter].signatoryName = drawerName;
+        emit disputeResolutionAgreementSigned(disputeResolutionAgreementSignaturesCounter, drawerName, _signatoryAddress, now);
+
     }
 
     /**
-    * set up new bunch of bills of exchange and sign dispute resolution agreement
+    * set up new bunch of bills of exchange and sign disputeResolution agreement
     *
     * @param _billsOfExchangeContractNumber A number of this contract in the ledger ('billsOfExchangeContractsCounter' from BillsOfExchangeFactory)
     * @param _currency Currency of the payment, for example: "EUR", "USD"
@@ -795,7 +770,6 @@ contract BillsOfExchange is BurnableToken {
         billsOfExchangeContractNumber = _billsOfExchangeContractNumber;
 
         // https://en.wikipedia.org/wiki/ISO_4217
-        // or crypto currency
         currency = _currency;
 
         sumToBePaidForEveryToken = _sumToBePaidForEveryToken;
@@ -815,23 +789,25 @@ contract BillsOfExchange is BurnableToken {
     /**
     * Set places and time
     * not included in 'init' because of exception: 'Stack too deep, try using fewer variables.'
-    * @param _timeOfPayment The time when payment has to be made
+    * @param _timeOfPaymentUnixTime The time when payment has to be made, if now - 'at sight'
     * @param  _placeWhereTheBillIsIssued Place where the bills were issued. Usually it's the address of the drawer.
     * @param _placeWherePaymentIsToBeMade Place where the payment has to be made. Usually it's the address of the drawee.
     */
     function setPlacesAndTime(
-        string calldata _timeOfPayment,
+        uint256 _timeOfPaymentUnixTime,
         string calldata _placeWhereTheBillIsIssued,
         string calldata _placeWherePaymentIsToBeMade
     ) external {
 
+        require(issuedOnUnixTime == 0, "setPlacesAndTime can be called one time only");
         require(msg.sender == creator, "Only contract creator can call 'setPlacesAndTime' function");
 
-        // require(issuedOnUnixTime == 0, "setPlacesAndTime can be called one time only");
-        // (this can be ensured in factory contract)
-
         issuedOnUnixTime = now;
-        timeOfPayment = _timeOfPayment;
+        if (_timeOfPaymentUnixTime == 0) {
+            timeOfPaymentUnixTime = now;
+        } else {
+            timeOfPaymentUnixTime = _timeOfPaymentUnixTime;
+        }
 
         placeWhereTheBillIsIssued = _placeWhereTheBillIsIssued;
         placeWherePaymentIsToBeMade = _placeWherePaymentIsToBeMade;
@@ -853,9 +829,7 @@ contract BillsOfExchange is BurnableToken {
     ) external {
 
         require(msg.sender == creator, "Only contract creator can call 'setLegal' function");
-
         // require(address(cryptonomicaVerification) == address(0), "setLegal can be called one time only");
-        // (this can be ensured in factory contract)
 
         description = _description;
         order = _order;
@@ -887,7 +861,7 @@ contract BillsOfExchange is BurnableToken {
     *
     * @param _linkToSignersAuthorityToRepresentTheDrawee Link to information about signer's authority to represent the drawee
     */
-    function accept(string calldata _linkToSignersAuthorityToRepresentTheDrawee) external returns (bool success) {
+    function accept(string calldata _linkToSignersAuthorityToRepresentTheDrawee) external returns (address) {
 
         /*
         * this should be called only by address, previously indicated as drawee's address by the drawer
@@ -899,15 +873,18 @@ contract BillsOfExchange is BurnableToken {
             "Not authorized to accept"
         );
 
-        signDisputeResolutionAgreementFor(draweeSignerAddress, drawee);
-
         linkToSignersAuthorityToRepresentTheDrawee = _linkToSignersAuthorityToRepresentTheDrawee;
+
+        disputeResolutionAgreementSignaturesCounter++;
+        disputeResolutionAgreementSignatures[disputeResolutionAgreementSignaturesCounter].signatoryAddress = draweeSignerAddress;
+        disputeResolutionAgreementSignatures[disputeResolutionAgreementSignaturesCounter].signatoryName = drawee;
+        emit disputeResolutionAgreementSigned(disputeResolutionAgreementSignaturesCounter, drawee, draweeSignerAddress, now);
 
         acceptedOnUnixTime = now;
 
         emit Acceptance(acceptedOnUnixTime, drawee, msg.sender);
 
-        return true;
+        return address(this);
     }
 
 }
@@ -919,7 +896,7 @@ https://ropsten.etherscan.io/address/0xa535386ffa1019a3816730960eef0f5a88ede4a2
 //contract BillsOfExchangeFactory is ManagedContractWithPaidService, ManagedContractUsingCryptonomicaServices {
 contract BillsOfExchangeFactory is ManagedContractWithPaidService {
 
-    // using SafeMath for uint256;
+    using SafeMath for uint256;
 
     /*
     * Legal conditions to be included
@@ -937,11 +914,11 @@ contract BillsOfExchangeFactory is ManagedContractWithPaidService {
 
         isAdmin[msg.sender] = true;
 
-        changePrice(0.11 ether);
+        require(changePrice(0.11 ether));
 
         // Ropsten: > verification always valid for any address
         // TODO: change in production to https://etherscan.io/address/0x846942953c3b2A898F10DF1e32763A823bf6b27f <<<<<<<<
-        require(changeCryptonomicaVerificationContractAddress(0xE48BC3dB5b512d4A3e3Cd388bE541Be7202285B5));
+        require(changeCryptonomicaVerificationContractAddress(0xe48bc3db5b512d4a3e3cd388be541be7202285b5));
 
         require(setWithdrawalAddress(msg.sender));
     }
@@ -965,14 +942,15 @@ contract BillsOfExchangeFactory is ManagedContractWithPaidService {
     * @param _drawee The name of the person (legal or physical) who is to pay (drawee)
     * @param __draweeSignerAddress Ethereum address of the person who has to accept bills of exchange in the name of
     * the drawee. Drawer has to agree this address with the drawee (acceptor) in advance.
-    * @param _timeOfPayment Time when bill payment has to be made
+    * @param _timeOfPaymentUnixTime Time when bill payment has to be made, if provided 0, will be the same as time
+    * of issue, and bill will be payable 'at sight'
     * @param _placeWhereTheBillIsIssued A statement of the place where the bill is issued.
     * Usual it's the address of the drawer.
     * @param _placeWherePaymentIsToBeMadeA statement of the place where payment is to be made.
     * Usual it's the address of the drawee.
     *
     * arguments to test this function in remix:
-    * "Test Company Ltd. bills of exchange, Series TST01", "TST01", 100000000, "EUR",1,"Test Company Ltd, 3 Main Street, London, XY1Z  1XZ, U.K.; company # 12345678","https://beta.companieshouse.gov.uk/company/12345678/officers","Test Company Ltd, 3 Main Street, London, XY1Z  1XZ, U.K.; company # 12345678",0x07BaD6bda22A830f58fDA19eBA45552C44168600,"at sight but not before 01 Sep 2021","London, U.K.", "London, U.K."
+    * "Test Company Ltd. bills of exchange, Series TST01", "TST01", 100000000, "EUR",1,"Test Company Ltd, 3 Main Street, London, XY1Z  1XZ, U.K.; company # 12345678","https://beta.companieshouse.gov.uk/company/12345678/officers","Test Company Ltd, 3 Main Street, London, XY1Z  1XZ, U.K.; company # 12345678",0x07BaD6bda22A830f58fDA19eBA45552C44168600,1575205200,"London, U.K.", "London, U.K."
     */
     function createBillsOfExchange(
         string memory _name,
@@ -985,7 +963,7 @@ contract BillsOfExchangeFactory is ManagedContractWithPaidService {
         string memory _linkToSignersAuthorityToRepresentTheDrawer,
         string memory _drawee,
         address _draweeSignerAddress,
-        string memory _timeOfPayment,
+        uint256 _timeOfPaymentUnixTime,
         string memory _placeWhereTheBillIsIssued,
         string memory _placeWherePaymentIsToBeMade
     ) public payable returns (address newBillsOfExchangeContractAddress) {
@@ -1015,7 +993,7 @@ contract BillsOfExchangeFactory is ManagedContractWithPaidService {
         );
 
         billsOfExchange.setPlacesAndTime(
-            _timeOfPayment,
+            _timeOfPaymentUnixTime,
             _placeWhereTheBillIsIssued,
             _placeWherePaymentIsToBeMade
         );
@@ -1027,19 +1005,16 @@ contract BillsOfExchangeFactory is ManagedContractWithPaidService {
             address(cryptonomicaVerification)
         );
 
-        /*
-        * (!) Here we check if msg.sender has valid verification from 'cryptonomicaVerification' contract
-        */
-        billsOfExchange.signDisputeResolutionAgreementFor(msg.sender, _drawerName);
+        billsOfExchange.signDisputeResolutionAgreementForDrawer(
+            msg.sender
+        );
 
         return address(billsOfExchange);
     }
 
     /*
-    * As above, but the drawer and the drawee are the same person, and bills will be accepted instantly
-    *
     * arguments to test this function in remix:
-    * "Test Company Ltd. bills of exchange, Series TST01", "TST01", 100000000, "EUR",1,"Test Company Ltd, 3 Main Street, London, XY1Z  1XZ, U.K.; company # 12345678","https://beta.companieshouse.gov.uk/company/12345678/officers","at sight but not before 01 Sep 2021","London, U.K.", "London, U.K."
+    * "Test Company Ltd. bills of exchange, Series TST01", "TST01", 100000000, "EUR",1,"Test Company Ltd, 3 Main Street, London, XY1Z  1XZ, U.K.; company # 12345678","https://beta.companieshouse.gov.uk/company/12345678/officers",1575205200,"London, U.K.", "London, U.K."
     */
     function createAndAcceptBillsOfExchange(
         string memory _name, // name of the token
@@ -1050,9 +1025,9 @@ contract BillsOfExchangeFactory is ManagedContractWithPaidService {
         string memory _drawerName,
     // address _drawerRepresentedBy, // <<< msg.sender
         string memory _linkToSignersAuthorityToRepresentTheDrawer,
-    // string  _drawee, > the same as drawer
+    // string calldata _drawee, > the same as drawer
     // address _draweeSignerAddress, > the same as msg.sender
-        string memory _timeOfPayment,
+        uint256 _timeOfPaymentUnixTime,
         string memory _placeWhereTheBillIsIssued,
         string memory _placeWherePaymentIsToBeMade
 
@@ -1083,7 +1058,7 @@ contract BillsOfExchangeFactory is ManagedContractWithPaidService {
         );
 
         billsOfExchange.setPlacesAndTime(
-            _timeOfPayment,
+            _timeOfPaymentUnixTime,
             _placeWhereTheBillIsIssued,
             _placeWherePaymentIsToBeMade
         );
@@ -1095,8 +1070,12 @@ contract BillsOfExchangeFactory is ManagedContractWithPaidService {
             address(cryptonomicaVerification)
         );
 
-        // not needed to sign dispute resolution agreement here because signature is required by 'accept' function
-
+        // not needed to sign here because signature is required by 'accept' function
+        //        billsOfExchange.signDisputeResolutionAgreement(
+        //            drawerRepresentedBy,
+        //            drawerName
+        //        );
+        //
         billsOfExchange.accept(_linkToSignersAuthorityToRepresentTheDrawer);
 
         return address(billsOfExchange);

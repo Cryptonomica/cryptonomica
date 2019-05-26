@@ -50,8 +50,8 @@
             $log) {
 
             // console.log("application started");
-            $rootScope.webAppVersion = "0.3.0.dev";
-            $rootScope.webAppLastChange = "2019-05-19";
+            $rootScope.webAppVersion = "0.3.4.dev";
+            $rootScope.webAppLastChange = "2019-05-26";
             $rootScope.production = false;
             console.log("bills of exchange webapp, version", $rootScope.webAppVersion, "of", $rootScope.webAppLastChange);
             // $rootScope.billsOfExchangeFactoryContractAddress = "";

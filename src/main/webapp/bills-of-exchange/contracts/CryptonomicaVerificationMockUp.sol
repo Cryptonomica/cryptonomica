@@ -1,17 +1,16 @@
-pragma solidity >=0.5.7 <0.6.0;
+/**
+ * Source Code first verified at https://etherscan.io on Thursday, May 23, 2019
+ (UTC) */
+
+pragma solidity >=0.5.8 <0.6.0;
 
 /*
-https://ropsten.etherscan.io/address/0x7f05e9807f509281a8db8f8b5230b89a96650087
-deployed on block: 5452681
+* 0xE48BC3dB5b512d4A3e3Cd388bE541Be7202285B5
+* https://ropsten.etherscan.io/address/0xe48bc3db5b512d4a3e3cd388be541be7202285b5
+*
 */
 
 contract CryptonomicaVerificationMockUp {
-
-    constructor() public {}
-
-    function keyCertificateValidUntil(address) public view returns (uint){
-        return now + 1 days;
-    }
 
     struct Verification {
         // all string have to be <= 32 chars
@@ -52,4 +51,23 @@ contract CryptonomicaVerificationMockUp {
         "signed string"
         );
     }
+
+    /**
+    * @param _address The address to check
+    * @return Unix time
+    * > here returns always now + 1 days
+    */
+    function keyCertificateValidUntil(address _address) external view returns (uint unixTime){
+        return now + 1 days;
+    }
+
+    /**
+    * @param _address The address to check
+    * @return 0 if key certificate is not revoked, or Unix time of revocation
+    * > here returns 0 always
+    */
+    function revokedOn(address _address) external view returns (uint unixTime){
+        return 0;
+    }
+
 }

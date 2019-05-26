@@ -54,11 +54,11 @@
                 $scope.deployedOnNetworkId = 3; // ROPSTEN
                 // TODO: check paths on web
                 $scope.contractAbiPath = "contracts/compiled/bills-of-exchange-factory/BillsOfExchangeFactory.abi";
-                $scope.contractAddress = "0x50ac4687899D4ee0e8040eeaCEa7Df63b87DBB2d"; // ROPSTEN
-                $scope.contractDeployedOnBlock = "5623607"; // ROPSTEN
+                $scope.contractAddress = "0x74eB4DBD3124D41B6775701FD1821571EAd5cf9A"; // ROPSTEN
+                $scope.contractDeployedOnBlock = "5674792"; // ROPSTEN
 
                 $scope.verificationContractAbiPath = "contracts/compiled/CryptonomicaVerificationMockUp/CryptonomicaVerificationMockUp.abi";
-                $scope.verificationContractAddress = "0x7f05e9807f509281a8db8f8b5230b89a96650087";
+                $scope.verificationContractAddress = "0xE48BC3dB5b512d4A3e3Cd388bE541Be7202285B5";
 
                 $scope.billsOfExchangeAbiPath = "contracts/compiled/bills-of-exchange-factory/BillsOfExchange.abi"
             })();
@@ -318,6 +318,26 @@
                 $log.debug($scope.contract);
 
                 $scope.contractData = {};
+                // $scope.contractData.billsOfExchangeContractsCounter = 0;
+
+                $scope.getBillsOfExchangeContractsCounterIsWorking = false;
+                $scope.getBillsOfExchangeContractsCounter = function () {
+                    $scope.getBillsOfExchangeContractsCounterIsWorking = true;
+                    $scope.contract.methods.billsOfExchangeContractsCounter().call()
+                        .then((billsOfExchangeContractsCounter) => {
+                            $scope.contractData.billsOfExchangeContractsCounter = billsOfExchangeContractsCounter;
+                            $log.debug("$scope.contractData.billsOfExchangeContractsCounter:", $scope.contractData.billsOfExchangeContractsCounter);
+                        })
+                        .catch((error) => {
+                            $log.error("$scope.getContractData Error:");
+                            $log.error(error);
+                        })
+                        .finally(() => {
+                            $scope.getBillsOfExchangeContractsCounterIsWorking = false;
+                            $scope.$apply();
+                        })
+                };
+
                 $scope.getContractData = function () {
                     $rootScope.progressbar.start();
                     // $timeout($rootScope.progressbar.complete(), 1000);
@@ -339,6 +359,11 @@
                             $log.debug("$scope.price: ", $scope.price);
                             $scope.priceETH = $rootScope.web3.utils.fromWei(price);
                             $log.debug("$scope.priceETH : ", $scope.priceETH);
+                            return $scope.contract.methods.billsOfExchangeContractsCounter().call();
+                        })
+                        .then((billsOfExchangeContractsCounter) => {
+                            $scope.contractData.billsOfExchangeContractsCounter = billsOfExchangeContractsCounter;
+                            $log.debug("$scope.contractData.billsOfExchangeContractsCounter:", $scope.contractData.billsOfExchangeContractsCounter);
                         })
                         .catch((error) => {
                             $log.error("$scope.getContractData Error:");
@@ -388,12 +413,7 @@
                 $scope.billsOfExchange.draweeSignerAddress = $rootScope.web3.eth.defaultAccount; // who has to sign in the name of the drawee
                 $scope.billsOfExchange.linkToSignersAuthorityToRepresentTheDrawee = "https://beta.companieshouse.gov.uk/company/12345678/officers";
 
-                $scope.billsOfExchange.timeOfPaymentDate = new Date();
-                if (!$scope.billsOfExchange.atSight) {
-                    $scope.billsOfExchange.timeOfPaymentUnixTime = $rootScope.unixTimeFromDate($scope.billsOfExchange.timeOfPaymentDate);
-                } else {
-                    $scope.billsOfExchange.timeOfPaymentUnixTime = 0;
-                }
+                $scope.billsOfExchange.timeOfPayment = "at sight but not before 01 Sep 2021";
 
                 $scope.billsOfExchange.placeWhereTheBillIsIssued = "London, U.K.";
                 $scope.billsOfExchange.placeWherePaymentIsToBeMade = $scope.billsOfExchange.placeWhereTheBillIsIssued;
@@ -402,21 +422,8 @@
                     $scope.billsOfExchange = {};
                 };
 
-                $scope.atSightCheckbox = false;
                 $scope.draweeIsTheSameAsDrawerCheckbox = false;
                 $scope.placesAreTheSameCheckbox = false;
-
-                // $scope.atSightCheckbox = false;
-                // $scope.toggleAtSightCheckbox = function () {
-                //     $scope.atSightCheckbox = !$scope.atSightCheckbox;
-                //     if ($scope.atSightCheckbox) {
-                //         $scope.billsOfExchange.timeOfPaymentUnixTime = 0;
-                //         $scope.billsOfExchange.atSight = true;
-                //         // $scope.$apply();
-                //     }
-                //     $log.debug("$scope.atSightCheckbox value:", $scope.atSightCheckbox);
-                //     $log.debug("$scope.billsOfExchange.timeOfPaymentUnixTime:", $scope.billsOfExchange.timeOfPaymentUnixTime);
-                // };
 
                 $scope.createBillsOfExchangeIsWorking = false;
                 $scope.createBillsOfExchange = function () {
@@ -430,26 +437,6 @@
                     if ($scope.placesAreTheSameCheckbox) {
                         $scope.billsOfExchange.placeWherePaymentIsToBeMade = $scope.billsOfExchange.placeWhereTheBillIsIssued;
                     }
-                    if ($scope.billsOfExchange.timeOfPaymentDate && $scope.billsOfExchange.timeOfPaymentDate instanceof Date) {
-                        $scope.billsOfExchange.timeOfPaymentUnixTime = $rootScope.unixTimeFromDate($scope.billsOfExchange.timeOfPaymentDate)
-                    }
-                    if ($scope.atSightCheckbox) {
-                        $scope.billsOfExchange.timeOfPaymentUnixTime = 0;
-                    }
-
-                    /*
-                    $log.debug(
-                        "$scope.billsOfExchange.totalSupply :", $scope.billsOfExchange.totalSupply, "\n",
-                        "$scope.billsOfExchange.currency :", $scope.billsOfExchange.currency, "\n",
-                        "$scope.billsOfExchange.sumToBePaidForEveryToken :", $scope.billsOfExchange.sumToBePaidForEveryToken, "\n",
-                        "$scope.billsOfExchange.drawerName :", $scope.billsOfExchange.drawerName, "\n",
-                        "$scope.billsOfExchange.linkToSignersAuthorityToRepresentTheDrawer, :", $scope.billsOfExchange.linkToSignersAuthorityToRepresentTheDrawer, "\n",
-                        "$scope.billsOfExchange.drawee :", $scope.billsOfExchange.drawee, "\n",
-                        "$scope.billsOfExchange.draweeSignerAddress :", $scope.billsOfExchange.draweeSignerAddress, "\n",
-                        "$scope.billsOfExchange.timeOfPaymentUnixTime :", $scope.billsOfExchange.timeOfPaymentUnixTime, "\n",
-                        "$scope.billsOfExchange.placeWhereTheBillIsIssued :", $scope.billsOfExchange.placeWhereTheBillIsIssued, "\n",
-                        "$scope.billsOfExchange.placeWherePaymentIsToBeMade :", $scope.billsOfExchange.placeWherePaymentIsToBeMade, "\n",
-                    );*/
 
                     $log.debug($scope.billsOfExchange);
 
@@ -464,7 +451,7 @@
                         $scope.billsOfExchange.linkToSignersAuthorityToRepresentTheDrawer,
                         $scope.billsOfExchange.drawee,
                         $scope.billsOfExchange.draweeSignerAddress,
-                        $scope.billsOfExchange.timeOfPaymentUnixTime,
+                        $scope.billsOfExchange.timeOfPayment,
                         $scope.billsOfExchange.placeWhereTheBillIsIssued,
                         $scope.billsOfExchange.placeWherePaymentIsToBeMade
                     )
@@ -498,10 +485,6 @@
                                 $scope.newBillsOfExchangeContracCreationReceipt.events[0].address
                             );
 
-                            // TODO: debug
-                            // $log.debug("$scope.billsOfExchangeContract ", $scope.billsOfExchangeContract._address);
-                            // $log.debug($scope.billsOfExchangeContract);
-
                             // see:
                             // https://semantic-ui.com/modules/tab.html#/usage
                             // ! > https://github.com/Semantic-Org/Semantic-UI/issues/3544
@@ -531,12 +514,6 @@
                     if ($scope.placesAreTheSameCheckbox) {
                         $scope.billsOfExchange.placeWherePaymentIsToBeMade = $scope.billsOfExchange.placeWhereTheBillIsIssued;
                     }
-                    if ($scope.billsOfExchange.timeOfPaymentDate && $scope.billsOfExchange.timeOfPaymentDate instanceof Date) {
-                        $scope.billsOfExchange.timeOfPaymentUnixTime = $rootScope.unixTimeFromDate($scope.billsOfExchange.timeOfPaymentDate)
-                    }
-                    if ($scope.atSightCheckbox) {
-                        $scope.billsOfExchange.timeOfPaymentUnixTime = 0;
-                    }
 
                     // $log.debug("$scope.atSightCheckbox :", $scope.atSightCheckbox);
                     $log.debug($scope.billsOfExchange);
@@ -552,7 +529,7 @@
                         $scope.billsOfExchange.linkToSignersAuthorityToRepresentTheDrawer,
                         // $scope.billsOfExchange.drawee, // > the same as drawer
                         // $scope.billsOfExchange.draweeSignerAddress, // > the same as msg.sender
-                        $scope.billsOfExchange.timeOfPaymentUnixTime, // if 0 > "at sight"
+                        $scope.billsOfExchange.timeOfPayment,
                         $scope.billsOfExchange.placeWhereTheBillIsIssued,
                         $scope.billsOfExchange.placeWherePaymentIsToBeMade
                     )
@@ -645,6 +622,7 @@
                                 contractAddress
                             );
                             $scope.getBillsOfExchangeContractData();
+                            $scope.getBillsOfExchangeContractsCounter();
                         })
                         .catch((error) => {
                             $log.error("$scope.instantiateBillsOfExchangeContract Error");
@@ -737,14 +715,10 @@
                         })
                         .then((linkToSignersAuthorityToRepresentTheDrawee) => {
                             $scope.billsOfExchangeContractData.linkToSignersAuthorityToRepresentTheDrawee = linkToSignersAuthorityToRepresentTheDrawee;
-                            return $scope.billsOfExchangeContract.methods.timeOfPaymentUnixTime().call();
+                            return $scope.billsOfExchangeContract.methods.timeOfPayment().call();
                         })
-                        .then((timeOfPaymentUnixTime) => {
-                            $scope.billsOfExchangeContractData.timeOfPaymentUnixTime = parseInt(timeOfPaymentUnixTime);
-                            $scope.billsOfExchangeContractData.timeOfPaymentDate = $rootScope.dateFromUnixTime(timeOfPaymentUnixTime);
-                            $scope.billsOfExchangeContractData.timeOfPaymentDateStr =
-                                $rootScope.dateToDateStr($scope.billsOfExchangeContractData.timeOfPaymentDate);
-
+                        .then((timeOfPayment) => {
+                            $scope.billsOfExchangeContractData.timeOfPayment = timeOfPayment;
                             return $scope.billsOfExchangeContract.methods.issuedOnUnixTime().call();
                         })
                         .then((issuedOnUnixTime) => {
@@ -965,6 +939,39 @@
                             $timeout($rootScope.progressbar.complete(), 1000);
                             $scope.setAlertDanger(error);
 
+                        })
+                };
+
+                $scope.signatoryName = "Test Company Ltd, 3 Main Street, London, XY1Z  1XZ, U.K.; company # 12345678";
+                $scope.signDisputeResolutionAgreementIsWorking = false;
+                $scope.signDisputeResolutionAgreementSuccess = null;
+                $scope.signDisputeResolutionAgreementError = null;
+                $scope.signDisputeResolutionAgreement = function () {
+                    $rootScope.progressbar.start();
+                    // $timeout($rootScope.progressbar.complete(), 1000);
+                    $scope.signDisputeResolutionAgreementIsWorking = true;
+                    $scope.billsOfExchangeContract.methods.signDisputeResolutionAgreement($scope.signatoryName)
+                        .send({from: $rootScope.web3.eth.defaultAccount})
+                        // .send()
+                        .then((receipt) => {
+                            $log.debug("signDisputeResolutionAgreement tx receipt:");
+                            $log.debug(receipt);
+                            $scope.signDisputeResolutionAgreementTxHash = receipt.transactionHash;
+                            $scope.signDisputeResolutionAgreementSuccess = true;
+                            $scope.signDisputeResolutionAgreementError = null;
+                            $scope.$apply(); // < needed here
+                            $scope.getBillsOfExchangeContractData();
+                        })
+                        .catch((error) => {
+                            $log.error("$scope.signDisputeResolutionAgreement Error:");
+                            $log.error(error);
+                            $scope.signDisputeResolutionAgreementSuccess = null;
+                            $scope.signDisputeResolutionAgreementError = error;
+                        })
+                        .finally(() => {
+                            $scope.signDisputeResolutionAgreementIsWorking = false;
+                            // $rootScope.progressbar.start();
+                            $timeout($rootScope.progressbar.complete(), 1000);
                         })
                 };
 
