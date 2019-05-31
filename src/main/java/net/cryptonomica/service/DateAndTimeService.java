@@ -45,5 +45,20 @@ public class DateAndTimeService {
         return utcUnixTimeFromLocalDate(localDate);
     }
 
+    public static Date addDaysToDate(Date from, Integer numberOfDays) {
+
+        /*
+        // see: https://stackoverflow.com/a/36041712
+        Date today=new Date();
+        long ltime=today.getTime()+8*24*60*60*1000;
+        Date today8=new Date(ltime);
+        */
+
+        Long millisecondsInDay = Long.valueOf(24 * 60 * 60 * 1000);
+        Long newTime = from.getTime() + numberOfDays * millisecondsInDay;
+        return new Date(newTime);
+
+    }
+
 
 }

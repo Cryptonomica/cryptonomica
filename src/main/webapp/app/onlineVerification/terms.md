@@ -18,9 +18,9 @@ You have to record short video, where you read clear and loudly provided verific
 We have to verify your phone number. You put your phone number in international format into form, and send to server. Than you will receive sms-message with code in it, you have to provide this code to proceed with verification.
 
 #### Step 4.
-You have to pay for verification with the credit/debit card with the same first and last name as in your key (key certificate) and in your passport. If spelling on your credit/debit card differs from the passport, please, write to [support@cryptonomica.zendesk.com](support@cryptonomica.zendesk.com) - we may manually allow spelling you provide us in your email.
+You have to pay for verification with the credit/debit card with the same first and last name as in your key (key certificate) and in your passport. If spelling on your credit/debit card differs from the passport, please, write to [support@cryptonomica.net](support@cryptonomica.net) - we may manually allow spelling you provide us in your email.
 
-Credit/debit card data are processed by [stripe](https://stripe.com), we do not receive an do not store your card number and cvc/cvv. But we receive from  [stripe](https://stripe.com) and store last 4 numbers of your card number, card exp. date, card holder's name, type of the card, billing address, issuing bank.
+Credit/debit card data are processed by [Stripe](https://stripe.com), we do not receive an do not store your card number and cvc/cvv. But we receive from  [Stripe](https://stripe.com) and store last 4 numbers of your card number, card exp. date, card holder's name, type of the card, billing address, issuing bank.
 
 #### Step 5.
 Please check your credit card bank statement and find description for charge for key verification, it looks like: 'CRYPTONOMICA 6691170', you may also receive this information by sms or request via phone call from your bank or credit card company. The last 7 digits is your unique code, and you have to enter this code on our web-site to prove that you are a legitimate owner of the credit card. 
@@ -34,7 +34,7 @@ Please take into account that your personal data such as your first and last nam
 Other data (such as scans of the documents, your video etc.) entered in the verification process will not be published publicly, these data will be available only to: 1) employees of our company, or persons associated with the company, or having a service contract with the company 2) accredited notaries, 3) arbitrators of the arbitration court when resolving disputes involving a person whose key is verified.
 You can, at your discretion, grant access to data entered during verification to other users of the service, or withdraw such access. 
 
-Based on the nature of the service provided, key (key certificate) data and data entered during verification can not be deleted by the user or at the user's request, however, in case of key compromising, you can mark the key in the database as 'revoked' - for this send a request with the explanation of the reason for revocation to [support@cryptonomica.zendesk.com](support@cryptonomica.zendesk.com).
+Based on the nature of the service provided, key (key certificate) data and data entered during verification can not be deleted by the user or at the user's request, however, in case of key compromising, you can mark the key in the database as 'revoked' - for this send a request with the explanation of the reason for revocation to [support@cryptonomica.net](support@cryptonomica.net).
 
 We may send you occasional emails and/or sms (but no spam) to ensure proper use of our service, user security and best user experience.
 

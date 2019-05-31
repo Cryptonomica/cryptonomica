@@ -109,6 +109,8 @@ public class PGPPublicKeyData implements Serializable {
     private Boolean verifiedOffline; //.......................25 // <TODO: new
     @Index
     private Boolean verifiedOnline; //........................26 // <TODO: new
+    // TODO:
+    // create verified - for both online and offline
     @Index
     private Boolean revoked; //...............................27
     @Index

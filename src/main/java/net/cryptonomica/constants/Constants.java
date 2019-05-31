@@ -17,7 +17,7 @@ public class Constants {
     public static final Integer priceForOneYerInEuroCents = 1 * 100;
     public static final Integer discountInPercentForTwoYears = 60;
     public static final String host = "sandbox-cryptonomica.appspot.com";
-    public static final String supportEmailAddress = "support@cryptonomica.zendesk.com";
+    public static final String supportEmailAddress = "support@cryptonomica.net";
     public static final String adminEmailAddress = "admin@cryptonomica.net";
     public static final String verificationServiceEmailAddress = "verification@cryptonomica.net";
     public static final String emailSubjectPrefix = "[sandbox-cryptonomica] ";

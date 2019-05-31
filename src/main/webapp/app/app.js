@@ -121,7 +121,8 @@
                 // }
 
                 $rootScope.gdata = GData;
-                $rootScope.supportEmail = "support@cryptonomica.zendesk.com";
+                $rootScope.supportEmail = "support@cryptonomica.net";
+                // $rootScope.supportEmail = "support@cryptonomica.zendesk.com";
 
             var SED_START;
             $rootScope.PRODUCTION = false;

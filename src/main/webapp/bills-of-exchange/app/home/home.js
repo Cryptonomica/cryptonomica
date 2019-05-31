@@ -227,6 +227,7 @@
                 $log.error('Non-Ethereum browser detected. You should consider trying MetaMask!');
                 // $scope.setAlertDanger("This web application requires Ethereum connection. Please install MetaMask.io browser plugin");
                 // > or use <no-connection-to-node-error></no-connection-to-node-error> directive
+                $rootScope.noConnectionToNodeError = true;
             }
 
             function main() {

@@ -20,10 +20,9 @@ import net.cryptonomica.constants.Constants;
 import net.cryptonomica.entities.*;
 import net.cryptonomica.forms.CreatePromoCodesForm;
 import net.cryptonomica.forms.StripePaymentForm;
+import net.cryptonomica.mail.SendMailService;
 import net.cryptonomica.returns.*;
-import net.cryptonomica.service.ApiKeysService;
-import net.cryptonomica.service.ApiKeysUtils;
-import net.cryptonomica.service.UserTools;
+import net.cryptonomica.service.*;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -679,8 +678,8 @@ public class StripePaymentsAPI {
         }
         for (int i = 1; i < numberOfPromoCodesToCreate; i++) {
 
-            PromoCode promoCode = new PromoCode();
-            promoCode.setDiscountInPercent(createPromoCodesForm.getDiscountInPercent());
+            PromoCode promoCode = new PromoCode(createPromoCodesForm.getDiscountInPercent());
+            // promoCode.setDiscountInPercent(createPromoCodesForm.getDiscountInPercent());
 
             promoCode.setCreatedBy(googleUser.getEmail());
             promoCode.setEntityCreated(new Date());
@@ -800,5 +799,162 @@ public class StripePaymentsAPI {
         return result;
 
     } // end of: public IntegerWrapperObject getPaymentsWithMyPromocodesByDate(
+
+    @ApiMethod(
+            name = "unverifiedKeysListSize",
+            path = "unverifiedKeysListSize",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    @SuppressWarnings("unused")
+    public IntegerWrapperObject unverifiedKeysListSize(
+            final User googleUser
+    ) throws UnauthorizedException
+    // throws Exception
+    {
+        /* Check authorization: */
+        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        List<PGPPublicKeyData> list = ofy().load().type(PGPPublicKeyData.class)
+                .filter("onlineVerificationFinished", false)
+                .list();
+
+        ListWrapperObject listWrapperObject = new ListWrapperObject(list);
+        IntegerWrapperObject result = new IntegerWrapperObject(listWrapperObject.getListSize());
+
+        return result;
+    }
+
+    /*
+    @ApiMethod(
+            name = "unverifiedKeysList",
+            path = "unverifiedKeysList",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    @SuppressWarnings("unused")
+    public ArrayList<PGPPublicKeyData> unverifiedKeysList(
+            final User googleUser
+    ) throws UnauthorizedException // throws Exception
+    {
+
+        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        List<PGPPublicKeyData> list = ofy().load().type(PGPPublicKeyData.class)
+                .filter("onlineVerificationFinished", false)
+                .list();
+
+        ArrayList<PGPPublicKeyData> arrayList = new ArrayList<>(list);
+
+        // ListWrapperObject result = new ListWrapperObject(arrayList);
+
+        return arrayList; // < error
+        // com.google.api.server.spi.handlers.EndpointsMethodHandler$RestHandler handle: exception occurred while
+        // invoking backend method (EndpointsMethodHandler.java:124)
+        // java.io.IOException: com.fasterxml.jackson.databind.JsonMappingException: Direct self-reference leading
+        // to cycle (through reference chain: java.util.HashMap["items"]->java.util.ArrayList[0]->net.cryptonomica.entities.PGPPublicKeyData["cryptonomicaUserKey"]->com.googlecode.objectify.Key["root"])
+    }
+    */
+
+    @ApiMethod(
+            name = "sendPromotionMail",
+            path = "sendPromotionMail",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    @SuppressWarnings("unused")
+    public IntegerWrapperObject sendPromotionMail(
+            final User googleUser
+    ) throws UnauthorizedException
+    // throws Exception
+    {
+
+        /* Check authorization: */
+        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        final Integer discountInPercents = 91;
+        final Integer promoCodeValidForDays = 5;
+
+        IntegerWrapperObject result = new IntegerWrapperObject();
+
+        List<PGPPublicKeyData> list = ofy().load().type(PGPPublicKeyData.class)
+                .filter("onlineVerificationFinished", false)
+                .list();
+
+        String messageSubject = "your promocode";
+
+        // String messageText = "test message body";
+
+        Integer messageCounter = 0;
+
+        for (PGPPublicKeyData pgpPublicKeyData : list) {
+
+            try {
+
+                final PromoCode promoCode = new PromoCode(discountInPercents, "SERVER");
+
+                final Date validUntil = DateAndTimeService.addDaysToDate(new Date(), promoCodeValidForDays);
+                promoCode.setValidUntil(validUntil);
+
+                final String promoCodeValidUntil = validUntil.toGMTString();
+
+                ofy().save().entity(promoCode); // async // <<< !!!!
+
+                /* basic prices: */
+                Integer priceForOneYerInCents = Constants.priceForOneYerInEuroCents;
+                Integer discountInPercentForTwoYears = Constants.discountInPercentForTwoYears;
+                Integer priceForTwoYearsInCents =
+                        (priceForOneYerInCents * 2) / 100 * (100 - discountInPercentForTwoYears);
+                Integer priceInCents = null;
+                Date today = new Date();
+                // Calculating the difference between two Java date instances:
+                // http://stackoverflow.com/a/3491723/1697878
+                int diffInDays = (int) ((pgpPublicKeyData.getExp().getTime() - today.getTime())
+                        / (1000 * 60 * 60 * 24));
+                if (diffInDays <= 365) {
+                    priceInCents = priceForOneYerInCents; // in EUR cents
+                } else {
+                    priceInCents = priceForTwoYearsInCents; // in EUR cents
+                }
+
+                final Integer priceForKeyVerificationInCents = applyDiscount(priceInCents, discountInPercents);
+
+                final String priceInEUR = NumbersAndCurrencyService.centsToEuroString(priceForKeyVerificationInCents);
+
+
+                String messageText =
+                        "Dear " + pgpPublicKeyData.getFirstName() + ",\n\n"
+                                + "On " + pgpPublicKeyData.getEntityCreated().toGMTString()
+                                + " you started verification for your public key certificate with fingerprint "
+                                + pgpPublicKeyData.getFingerprint() + " on https://" + Constants.host + "\n\n"
+                                + "Now, for " + promoCodeValidForDays + " days only, you can verify your key for EUR "
+                                + priceInEUR + " only (that's a " + discountInPercents + "% discount from regular price!) \n\n"
+                                + "To finish you verification go to https://" + Constants.host + "/#!/onlineVerification/"
+                                + pgpPublicKeyData.getFingerprint() + "\n\n"
+                                + "For payment, please, use promo code: \n"
+                                + promoCode.getPromoCode() + "\n"
+                                + "(case sensitive) \n\n"
+                                + "Cryptonomica Ltd is registered as a data controller with the U.K. Information Commissioner's Office under the number ZA464289.\n"
+                                + "Cryptonomica project is supported by: The Hague Institute for Innovation of Law,  Google Cloud Startup Program,  Amazon Activate for Startups,  Startup with IBM Program.\n"
+                                + "Cryptonomica is a member of the  Oracle Scaleup Ecosystem.\n\n"
+                                + "You can use Cryptonomica verified key for signing electronic documents and/or for user identification on:\n"
+                                + "https://xeuro.online , https://stex.com ,  https://sonm.com , https://verisafe.io , https://zeusfundme.com and others.\n\n"
+                                + "Should you have any questions, please, do not hesitate to contact us at "
+                                + Constants.supportEmailAddress + "\n\n"
+                                + "We hope you enjoy our service\n"
+                                + "Cryptonomica team";
+
+                SendMailService.sendEmailToAddress(
+                        pgpPublicKeyData.getUserEmail().getEmail(),
+                        messageSubject,
+                        messageText
+                );
+
+                messageCounter++;
+
+            } catch (Exception e) {
+                LOG.severe(e.getMessage());
+            }
+        }
+
+        return new IntegerWrapperObject(messageCounter);
+    }
 
 }
