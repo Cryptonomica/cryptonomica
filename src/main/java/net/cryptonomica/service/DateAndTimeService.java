@@ -55,10 +55,9 @@ public class DateAndTimeService {
         */
 
         Long millisecondsInDay = Long.valueOf(24 * 60 * 60 * 1000);
-        Long newTime = from.getTime() + numberOfDays * millisecondsInDay;
+        Long newTime = from.getTime() + (numberOfDays * millisecondsInDay);
         return new Date(newTime);
 
     }
-
 
 }

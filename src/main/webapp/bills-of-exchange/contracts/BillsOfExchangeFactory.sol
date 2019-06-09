@@ -1,12 +1,11 @@
-pragma solidity 0.5.8;
+pragma solidity 0.5.9;
 
 /*
 * @author Cryptonomica Ltd.(cryptonomica.net), 2019
-* @version 2019-05-26
+* @version 2019-06-07
 * Github: https://github.com/Cryptonomica/
-* Contract address: https://ropsten.etherscan.io/address/0x74eB4DBD3124D41B6775701FD1821571EAd5cf9A
-* Deployed on block: 5674792 (Ropsten)
-* Gas Used for deployment: 6,799,155
+* Contract address: https://ropsten.etherscan.io/address/....
+* Deployed on block: ... (Ropsten)
 *
 * @section LEGAL:
 * aim of this contract is to create a mechanism to draw, transfer and accept negotiable instruments
@@ -194,6 +193,8 @@ contract Token {
         symbol = _symbol;
         totalSupply = _totalSupply;
         balanceOf[tokenOwner] = totalSupply;
+
+        emit Transfer(address(0), tokenOwner, totalSupply);
 
     }
 

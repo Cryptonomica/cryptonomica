@@ -501,20 +501,10 @@
                         });
                 };
 
-                // =============== Promo code
-                // $rootScope.messagesToUser = {};
-                // $rootScope.messagesToUser.color = null;
-                // $rootScope.messagesToUser.messagesArray = []; // not implemented yet
-                // $rootScope.promoCode = null;
-                // $rootScope.messagesToUser.oldMessagesArray = [];
                 if (!$rootScope.stringIsNullUndefinedOrEmpty($cookies.get('promocode'))) {
                     // https://docs.angularjs.org/api/ngCookies/service/$cookies
                     $rootScope.promoCodeMessage = $cookies.get('promocode');
                 }
-                // if ($scope.promoCode) {
-                //     $scope.getPriceForKeyVerification();
-                // }
-
 
             } // end main function
         ]
