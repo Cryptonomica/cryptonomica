@@ -2,7 +2,7 @@
 ======= ./contracts/BillsOfExchangeFactory.sol:BillsOfExchange =======
 Gas estimation:
 construction:
-   22382 + 2045000 = 2067382
+   22374 + 2041200 = 2063574
 external:
    accept(string):	infinite
    acceptedOnUnixTime():	530
@@ -51,7 +51,7 @@ external:
 ======= ./contracts/BillsOfExchangeFactory.sol:BillsOfExchangeFactory =======
 Gas estimation:
 construction:
-   infinite + 4186200 = infinite
+   infinite + 4165400 = infinite
 external:
    addAdmin(address):	infinite
    billsOfExchangeContractsCounter():	486
@@ -75,7 +75,7 @@ external:
 ======= ./contracts/BillsOfExchangeFactory.sol:BurnableToken =======
 Gas estimation:
 construction:
-   21192 + 944800 = 965992
+   21192 + 946400 = 967592
 external:
    allowance(address,address):	727
    approve(address,uint256):	22345
@@ -107,14 +107,14 @@ Gas estimation:
 ======= ./contracts/BillsOfExchangeFactory.sol:ManagedContract =======
 Gas estimation:
 construction:
-   20807 + 543800 = 564607
+   20792 + 535600 = 556392
 external:
    addAdmin(address):	infinite
-   changeCryptonomicaVerificationContractAddress(address):	infinite
+   changeCryptonomicaVerificationContractAddress(address):	22804
    cryptonomicaVerification():	504
-   fixWithdrawalAddress(address):	infinite
-   removeAdmin(address):	infinite
-   setWithdrawalAddress(address):	infinite
+   fixWithdrawalAddress(address):	22842
+   removeAdmin(address):	22453
+   setWithdrawalAddress(address):	23325
    withdrawAllToWithdrawalAddress():	infinite
    withdrawalAddress():	525
    withdrawalAddressFixed():	449
@@ -122,7 +122,7 @@ external:
 ======= ./contracts/BillsOfExchangeFactory.sol:ManagedContractWithPaidService =======
 Gas estimation:
 construction:
-   20857 + 591600 = 612457
+   20837 + 578200 = 599037
 external:
    addAdmin(address):	infinite
    changeCryptonomicaVerificationContractAddress(address):	infinite
@@ -139,7 +139,7 @@ external:
 ======= ./contracts/BillsOfExchangeFactory.sol:SafeMath =======
 Gas estimation:
 construction:
-   94 + 15200 = 15294
+   94 + 17000 = 17094
 internal:
    add(uint256,uint256):	infinite
    div(uint256,uint256):	infinite
@@ -150,7 +150,7 @@ internal:
 ======= ./contracts/BillsOfExchangeFactory.sol:Token =======
 Gas estimation:
 construction:
-   21079 + 808800 = 829879
+   21086 + 813200 = 834286
 external:
    allowance(address,address):	705
    approve(address,uint256):	22345

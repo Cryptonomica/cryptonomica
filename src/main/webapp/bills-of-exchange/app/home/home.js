@@ -51,14 +51,15 @@
             (function setUpContractData() {
 
                 // TODO: after deployment compile smart contract and change data >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-                $scope.deployedOnNetworkId = 3; // ROPSTEN
+                // $scope.deployedOnNetworkId = 3; // ROPSTEN
+                $scope.deployedOnNetworkId = 1;
                 // TODO: check paths on web
                 $scope.contractAbiPath = "contracts/compiled/bills-of-exchange-factory/BillsOfExchangeFactory.abi";
-                $scope.contractAddress = "0x74eB4DBD3124D41B6775701FD1821571EAd5cf9A"; // ROPSTEN
-                $scope.contractDeployedOnBlock = "5674792"; // ROPSTEN
+                $scope.contractAddress = "0xAA2CB1a1b014b92EDb93B1f163C7CA40a07EEcAa"; // MainNet
+                $scope.contractDeployedOnBlock = "7930560"; // MainNet
 
-                $scope.verificationContractAbiPath = "contracts/compiled/CryptonomicaVerificationMockUp/CryptonomicaVerificationMockUp.abi";
-                $scope.verificationContractAddress = "0xE48BC3dB5b512d4A3e3Cd388bE541Be7202285B5";
+                $scope.verificationContractAbiPath = "contracts/compiled/CryptonomicaVerification/CryptonomicaVerification.abi";
+                $scope.verificationContractAddress = "0x846942953c3b2A898F10DF1e32763A823bf6b27f";
 
                 $scope.billsOfExchangeAbiPath = "contracts/compiled/bills-of-exchange-factory/BillsOfExchange.abi"
             })();
@@ -330,7 +331,7 @@
                             $log.debug("$scope.contractData.billsOfExchangeContractsCounter:", $scope.contractData.billsOfExchangeContractsCounter);
                         })
                         .catch((error) => {
-                            $log.error("$scope.getContractData Error:");
+                            $log.error("$scope.getBillsOfExchangeContractsCounter :");
                             $log.error(error);
                         })
                         .finally(() => {
@@ -344,18 +345,22 @@
                     // $timeout($rootScope.progressbar.complete(), 1000);
                     $scope.contract.methods.description().call()
                         .then((description) => {
+                            // $log.debug(description);
                             $scope.contractData.description = description;
                             return $scope.contract.methods.order().call();
                         })
                         .then((order) => {
+                            // $log.debug(order);
                             $scope.contractData.order = order;
                             return $scope.contract.methods.disputeResolutionAgreement().call();
                         })
                         .then((disputeResolutionAgreement) => {
+                            // $log.debug(disputeResolutionAgreement);
                             $scope.contractData.disputeResolutionAgreement = disputeResolutionAgreement;
                             return $scope.contract.methods.price().call();
                         })
                         .then((price) => {
+                            // $log.debug(price);
                             $scope.price = price;
                             $log.debug("$scope.price: ", $scope.price);
                             $scope.priceETH = $rootScope.web3.utils.fromWei(price);
@@ -363,6 +368,7 @@
                             return $scope.contract.methods.billsOfExchangeContractsCounter().call();
                         })
                         .then((billsOfExchangeContractsCounter) => {
+                            // $log.debug(billsOfExchangeContractsCounter);
                             $scope.contractData.billsOfExchangeContractsCounter = billsOfExchangeContractsCounter;
                             $log.debug("$scope.contractData.billsOfExchangeContractsCounter:", $scope.contractData.billsOfExchangeContractsCounter);
                         })
@@ -595,7 +601,8 @@
 
                                 $scope.signatoryVerificationDataStr =
                                     result.firstName + " " + result.lastName + ", "
-                                    + "birthdate: " + birthDate.toLocaleDateString()
+                                    // + "birthdate: " + birthDate.toLocaleDateString()
+                                    + "birthdate: " + result.birthDate
                                     // + birthDate.getFullYear() + "-" + birthDate.getMonth() + "-" + birthDate.getDay()
                                     + ", nationality: " + result.nationality;
                             }
@@ -682,10 +689,10 @@
                             $scope.billsOfExchangeContractData.drawerSignerAddressData = result;
                             $scope.billsOfExchangeContractData.drawerSignerAddressDataStr =
                                 result.firstName + " "
-                                + result.lastName + ", date of birth "
-                                + $rootScope.dateToDateStr(
-                                $rootScope.dateFromUnixTime(parseInt(result.birthDate))
-                                ) + ", "
+                                + result.lastName + ", birthdate: "
+                                + result.birthDate
+                                // + $rootScope.dateFromUnixTime(result.birthDate).toUTCString()
+                                + ", nationality: "
                                 + result.nationality;
 
                             return $scope.billsOfExchangeContract.methods.linkToSignersAuthorityToRepresentTheDrawer().call();
@@ -705,11 +712,10 @@
                         .then((result) => {
                             $scope.billsOfExchangeContractData.draweeSignerAddressVerificationData = result;
                             $scope.billsOfExchangeContractData.draweeSignerAddressVerificationDataStr =
-                                result.firstName + " "
-                                + result.lastName + ", date of birth "
-                                + $rootScope.dateToDateStr(
-                                $rootScope.dateFromUnixTime(parseInt(result.birthDate))
-                                ) + ", "
+                                result.firstName + " " + result.lastName + " "
+                                + ", birthdate Unix time: " + result.birthDate
+                                // + $rootScope.dateFromUnixTime(result.birthDate).toUTCString()
+                                + ", nationality: "
                                 + result.nationality;
 
                             return $scope.billsOfExchangeContract.methods.linkToSignersAuthorityToRepresentTheDrawee().call();
@@ -762,10 +768,10 @@
                                                 $scope.billsOfExchangeContractData.disputeResolutionAgreementSignatures[signatureNumber][2] = result;
                                                 $scope.billsOfExchangeContractData.disputeResolutionAgreementSignatures[signatureNumber][3] =
                                                     result.firstName + " "
-                                                    + result.lastName + ", date of birth "
-                                                    + $rootScope.dateToDateStr(
-                                                    $rootScope.dateFromUnixTime(parseInt(result.birthDate))
-                                                    ) + ", "
+                                                    + result.lastName + ", birthdate Unix time: "
+                                                    + result.birthDate
+                                                    // + $rootScope.dateFromUnixTime(result.birthDate).toUTCString()
+                                                    + ", nationality: "
                                                     + result.nationality;
                                             })
                                             .catch((error) => {
@@ -781,7 +787,7 @@
                             $scope.billsOfExchangeContractData.acceptedOnUnixTime = parseInt(acceptedOnUnixTime);
                             $scope.billsOfExchangeContractData.acceptedOnDate = $rootScope.dateFromUnixTime(acceptedOnUnixTime);
                             $scope.billsOfExchangeContractData.acceptedOnDateStr =
-                                $rootScope.dateToDateStr($scope.billsOfExchangeContractData.acceptedOnDate);
+                                $scope.billsOfExchangeContractData.acceptedOnDate.toUTCString();
                             return $scope.billsOfExchangeContract.methods.order().call();
                         })
                         .then((order) => {

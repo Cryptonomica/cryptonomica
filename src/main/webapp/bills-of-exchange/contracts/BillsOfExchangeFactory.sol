@@ -2,10 +2,10 @@ pragma solidity 0.5.9;
 
 /*
 * @author Cryptonomica Ltd.(cryptonomica.net), 2019
-* @version 2019-06-07
+* @version 2019-06-10
 * Github: https://github.com/Cryptonomica/
-* Contract address: https://ropsten.etherscan.io/address/....
-* Deployed on block: ... (Ropsten)
+* Contract address: https://etherscan.io/address/0x2ddd25a959ca2b11d1d9ea81069e50b271d56ae3
+* Deployed on block: 7930206
 *
 * @section LEGAL:
 * aim of this contract is to create a mechanism to draw, transfer and accept negotiable instruments
@@ -938,11 +938,12 @@ contract BillsOfExchangeFactory is ManagedContractWithPaidService {
 
         isAdmin[msg.sender] = true;
 
-        changePrice(0.11 ether);
+        changePrice(0.15 ether);
 
         // Ropsten: > verification always valid for any address
         // TODO: change in production to https://etherscan.io/address/0x846942953c3b2A898F10DF1e32763A823bf6b27f <<<<<<<<
-        require(changeCryptonomicaVerificationContractAddress(0xE48BC3dB5b512d4A3e3Cd388bE541Be7202285B5));
+        // require(changeCryptonomicaVerificationContractAddress(0xE48BC3dB5b512d4A3e3Cd388bE541Be7202285B5)); // Ropsten
+        require(changeCryptonomicaVerificationContractAddress(0x846942953c3b2A898F10DF1e32763A823bf6b27f));
 
         require(setWithdrawalAddress(msg.sender));
     }

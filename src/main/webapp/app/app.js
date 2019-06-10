@@ -75,7 +75,7 @@
                       $location,
                       $log) {
 
-                $rootScope.appVersion = '3.22';
+                $rootScope.appVersion = '3.33';
 
                 // (!!!) for debug:
                 // see:
