@@ -279,8 +279,10 @@ $(function () {
     function makeGenerateKeysOptions() {
         var opts = {};
         opts.passphrase = document.getElementById("passphrase").value;
+
         opts.firstName = document.getElementById("firstName").value;
         opts.lastName = document.getElementById("lastName").value;
+
         opts.name = opts.firstName + " " + opts.lastName;
         opts.userEmail = document.getElementById("userEmail").value;
         opts.userId = opts.name + " <" + opts.userEmail + ">";
@@ -586,6 +588,10 @@ $(function () {
         $("#signOrEncryptMessageError").text("");
 
         var messageToSign = $("#messageText").val();
+
+        // TODO: check:
+        messageToSign = messageToSign.trim();
+
         if (messageToSign.toString().length === 0) {
             $("#signOrEncryptMessageError").text("Message to sign is empty").css('color', 'red');
             return;

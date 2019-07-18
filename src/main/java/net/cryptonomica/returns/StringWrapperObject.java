@@ -1,5 +1,7 @@
 package net.cryptonomica.returns;
 
+import com.google.gson.Gson;
+
 import java.io.Serializable;
 
 /**
@@ -9,6 +11,13 @@ public class StringWrapperObject implements Serializable {
 
     private String message;
     private String error;
+
+    /* ---- to String */
+
+    @Override
+    public String toString() {
+        return new Gson().toJson(this);
+    }
 
     /* --- Constructors: */
 

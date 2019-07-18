@@ -405,6 +405,28 @@ public class TestAPI {
         return result;
     }
 
+    @SuppressWarnings("unused")
+    @ApiMethod(
+            name = "testReturnList",
+            path = "testReturnList",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    // HashMap<String, Integer> as response works!!! (endpoints.framework.version: 2.0.9)
+    public ArrayList<Integer> testReturnList(
+            final com.google.appengine.api.users.User googleUser
+    ) throws UnauthorizedException {
+
+        /* --- Check authorization: */
+        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        ArrayList<Integer> arrayList = new ArrayList<>();
+        for (int i = 0; i < 12; i++) {
+            arrayList.add(i);
+        }
+
+        return arrayList;
+    }
+
     /* Allows admin to delete user profile.
      * For example if name in key is completely different from name in passport, or if user requested deletion of the
      * profile before key verification is finished.

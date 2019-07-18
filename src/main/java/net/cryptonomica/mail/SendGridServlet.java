@@ -49,7 +49,8 @@ public class SendGridServlet extends HttpServlet {
         /* create mail*/
         SendGrid.Email email = new SendGrid.Email();
         email.addTo(emailTO);
-        email.setFrom(Constants.adminEmailAddress);
+        email.setFrom(Constants.supportEmailAddress);
+        // email.setFrom(Constants.adminEmailAddress);
         if (emailCC != null) {
             email.addCc(emailCC);
         }

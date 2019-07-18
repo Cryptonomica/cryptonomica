@@ -20,10 +20,9 @@ import net.cryptonomica.constants.Constants;
 import net.cryptonomica.entities.*;
 import net.cryptonomica.forms.CreatePromoCodesForm;
 import net.cryptonomica.forms.StripePaymentForm;
+import net.cryptonomica.mail.SendMailService;
 import net.cryptonomica.returns.*;
-import net.cryptonomica.service.ApiKeysService;
-import net.cryptonomica.service.ApiKeysUtils;
-import net.cryptonomica.service.UserTools;
+import net.cryptonomica.service.*;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -114,9 +113,13 @@ public class StripePaymentsAPI {
             if (promoCode.getUsed()) {
                 throw new Exception("promo code is already used");
             }
-            if (promoCode.getValidUntil() != null && promoCode.getValidUntil().after(new Date())) {
+
+            // if (promoCode.getValidUntil() != null && promoCode.getValidUntil().after(new Date())) {
+            if (promoCode.getValidUntil() != null && promoCode.getValidUntil().before(new Date())) {
+
                 throw new Exception("promo code expired");
             }
+
             if (promoCode.getValidOnlyForUsers() != null && !promoCode.getValidOnlyForUsers().isEmpty()) {
                 if (googleUser == null || googleUser.getEmail() == null || googleUser.getEmail().isEmpty()) {
                     throw new Exception("server was unable to identify the user");
@@ -679,8 +682,8 @@ public class StripePaymentsAPI {
         }
         for (int i = 1; i < numberOfPromoCodesToCreate; i++) {
 
-            PromoCode promoCode = new PromoCode();
-            promoCode.setDiscountInPercent(createPromoCodesForm.getDiscountInPercent());
+            PromoCode promoCode = new PromoCode(createPromoCodesForm.getDiscountInPercent());
+            // promoCode.setDiscountInPercent(createPromoCodesForm.getDiscountInPercent());
 
             promoCode.setCreatedBy(googleUser.getEmail());
             promoCode.setEntityCreated(new Date());
@@ -800,5 +803,29 @@ public class StripePaymentsAPI {
         return result;
 
     } // end of: public IntegerWrapperObject getPaymentsWithMyPromocodesByDate(
+
+    @ApiMethod(
+            name = "unverifiedKeysListSize",
+            path = "unverifiedKeysListSize",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    @SuppressWarnings("unused")
+    public IntegerWrapperObject unverifiedKeysListSize(
+            final User googleUser
+    ) throws UnauthorizedException
+    // throws Exception
+    {
+        /* Check authorization: */
+        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        List<PGPPublicKeyData> list = ofy().load().type(PGPPublicKeyData.class)
+                .filter("onlineVerificationFinished", false)
+                .list();
+
+        ListWrapperObject listWrapperObject = new ListWrapperObject(list);
+        IntegerWrapperObject result = new IntegerWrapperObject(listWrapperObject.getListSize());
+
+        return result;
+    }
 
 }

@@ -75,7 +75,7 @@
                       $location,
                       $log) {
 
-                $rootScope.appVersion = '3.22';
+                $rootScope.appVersion = '3.33';
 
                 // (!!!) for debug:
                 // see:
@@ -121,10 +121,11 @@
                 // }
 
                 $rootScope.gdata = GData;
-                $rootScope.supportEmail = "support@cryptonomica.zendesk.com";
+                $rootScope.supportEmail = "support@cryptonomica.net";
+                // $rootScope.supportEmail = "support@cryptonomica.zendesk.com";
 
             var SED_START;
-            $rootScope.PRODUCTION = false;
+            $rootScope.PRODUCTION = true;
             var SED_END;
 
                 var CLIENT;
@@ -500,20 +501,10 @@
                         });
                 };
 
-                // =============== Promo code
-                // $rootScope.messagesToUser = {};
-                // $rootScope.messagesToUser.color = null;
-                // $rootScope.messagesToUser.messagesArray = []; // not implemented yet
-                // $rootScope.promoCode = null;
-                // $rootScope.messagesToUser.oldMessagesArray = [];
                 if (!$rootScope.stringIsNullUndefinedOrEmpty($cookies.get('promocode'))) {
                     // https://docs.angularjs.org/api/ngCookies/service/$cookies
                     $rootScope.promoCodeMessage = $cookies.get('promocode');
                 }
-                // if ($scope.promoCode) {
-                //     $scope.getPriceForKeyVerification();
-                // }
-
 
             } // end main function
         ]

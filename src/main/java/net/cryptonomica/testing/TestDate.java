@@ -15,7 +15,9 @@ public class TestDate {
 
         // lastDayOfMonth(2018, 8);
 
-        DateAndTimeService.utcUnixTimeFromYearMonthDay(0,14,44);
+        // DateAndTimeService.utcUnixTimeFromYearMonthDay(0,14,44);
+
+        // printDateExample();
 
     }
 
@@ -39,6 +41,11 @@ public class TestDate {
     }
 
     public static void printDateExample() {
+
+        System.out.println(
+                new Date().toGMTString()
+        );
+
         Date dateExample = new Date(2018, 9, 13);
 
         // this will be: year 2018+1900, month: 9 started from 0 (10), day: 13

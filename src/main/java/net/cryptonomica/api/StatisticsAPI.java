@@ -3,11 +3,14 @@ package net.cryptonomica.api;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.Named;
+import com.google.api.server.spi.response.UnauthorizedException;
+import com.google.appengine.api.users.User;
 import net.cryptonomica.constants.Constants;
 import net.cryptonomica.entities.CryptonomicaUser;
 import net.cryptonomica.entities.OnlineVerification;
 import net.cryptonomica.entities.PGPPublicKeyData;
 import net.cryptonomica.returns.StatsView;
+import net.cryptonomica.service.UserTools;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -39,6 +42,39 @@ public class StatisticsAPI {
 
 
     /* ---------------- Statistics */
+
+    @ApiMethod(
+            name = "getTotals",
+            path = "getTotals",
+            httpMethod = ApiMethod.HttpMethod.GET
+    )
+    @SuppressWarnings("unused")
+    public HashMap<String, Integer> getTotals(
+            final User googleUser
+    ) throws UnauthorizedException {
+
+        /* Check authorization: */
+        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        HashMap<String, Integer> result = new HashMap<>();
+
+        Integer keysUploaded = ofy()
+                .load()
+                .type(PGPPublicKeyData.class)
+                // .filter("onlineVerificationFinished", false)
+                .count();
+
+        Integer verificationsStarted = ofy()
+                .load()
+                .type(OnlineVerification.class)
+                .count();
+
+        result.put("keysUploaded", keysUploaded);
+        result.put("verificationsStarted", verificationsStarted);
+
+        return result;
+
+    }
 
     @ApiMethod(
             name = "getStatsAllTime",

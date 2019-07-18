@@ -47,7 +47,7 @@
             <i class="life ring icon"></i>&nbsp;
             <!--            <i class="question icon"></i>&nbsp;-->
             <!-- <i class="info icon"></i>&nbsp;-->
-            Support
+            Help and support
         </a>
 
     </div>
@@ -76,6 +76,7 @@
                target="_blank">
                 {{verificationContract._address}}
             </a>
+            <!--
             <span ng-show="!production">
                 <br>
                 (this is a mock up contract for testing, in production
@@ -84,6 +85,8 @@
                 </a>
                 will be used)
             </span>
+            -->
+
         </p>
 
         <div class="line"></div>
@@ -103,9 +106,13 @@
         </p>
         <p>
             Electronic bills of exchange can be created as smart contracts implementing all all the requirements of an
+            <!--
             <em>'instrument'</em> as defined in
             <a href="https://www.jus.uio.no/lm/bills.of.exchange.and.promissory.notes.convention.1930/doc.html"
-               target="_blank">Geneva Convention</a> or of an <em>'order in writing'</em> as defined in
+               target="_blank">Geneva Convention</a> or of an
+            -->
+            <!--            <em>'order in writing'</em> -->
+            <em>'bill of exchange'</em> ('order in writing') as defined in
             <a href="http://www.legislation.gov.uk/ukpga/Vict/45-46/61/contents" target="_blank">U.K. Bills of Exchange
                 Act 1882</a> or of a <em>'draft'</em> as defined in
             <a href="https://www.law.cornell.edu/ucc/3/3-104" target="_blank">U.S. Uniform Commercial Code (§ 3-104.
@@ -172,6 +179,10 @@
         <h3>News</h3>
 
         <p>
+            <b>2019-06-10</b> 'Bills of Exchange Factory' dApp deployed on the Ethereum MainNet.
+        </p>
+
+        <p>
             <b>2019-05-19</b> Test version of this dApp deployed on
             <a href="https://ropsten.etherscan.io" target="_blank">Ropsten TestNet</a>.
         </p>
@@ -201,6 +212,15 @@
         </a>
         <br><br>
 
+        <div class="line"></div>
+        <!--        <div class="ui message">-->
+        <div class="ui yellow message">
+            You can issue or accept bills of exchange, and sign arbitration agreements
+            only from Ethereum address verified on
+            <a href="https://cryptonomica.net/#!/verifyEthAddress/">
+                cryptonomica.net
+            </a>
+        </div>
         <div class="line"></div>
         {{contractData.description}}
         <div class="line"></div>
@@ -884,13 +904,41 @@
 
         <h3>Description and legal part:</h3>
         <p>
-            See page on the Cryptonomica wiki:&nbsp;&nbsp;
+            <a href="https://www.investopedia.com/video/play/bill-exchange/" target="_blank">A bill of exchange</a>
+            (also known as a
+            <a href="https://www.law.cornell.edu/ucc/3/3-104" target="_blank">'draft'</a>)
+            is a written order by the <i>drawer</i> to the <i>drawee</i> to pay money to the <i>payee</i>.
+        </p>
+        <p>
+            A common type of bill of exchange is the
+            <i><a href="https://en.wikipedia.org/wiki/Cheque" target="_blank">
+                cheque</a></i>
+            (<i>check</i> in American English),
+            defined as a bill of exchange drawn on a banker and payable on demand.
+        </p>
+        <p>
+            If the drawer and drawee is the same person, bill of exhange can be can be considered the same as
+            <a href="https://en.wikipedia.org/wiki/Promissory_note" target="_blank">promissory note</a>.
+        </p>
+        <p>
+            Bill of exhange is an ancient financial instrument which is already legal and regulated in most countries.
+            The concept of a bill of exchange is about the same in all countries, what causes their frequent use in
+            international
+            trade and finance.
+        </p>
+        <p>
+            Bill of exchange has long been considered as de-facto form of legal private money, and blockchain based bill
+            of exchange can be a perfect instrument for creation of
+            <a href="https://en.wikipedia.org/wiki/Stablecoin" target="_blank">stablecoins</a>.
+        </p>
+        <p>
+            See more on the Cryptonomica wiki:&nbsp;&nbsp;
             <b>
                 <a href="https://github.com/Cryptonomica/cryptonomica/wiki/electronic-bills-of-exchange"
                    target="_blank">
                     electronic bills of exchange
                 </a>
-            </b>
+            </b> (under development)
         </p>
 
         <h3>Software:</h3>
@@ -904,7 +952,7 @@
 
         <h3>Support:</h3>
 
-        <p>Support email: <a href="mailto:support@cryptonomica.zendesk.com">support@cryptonomica.zendesk.com</a>
+        <p>Support email: <a href="mailto:support@cryptonomica.net">support@cryptonomica.net</a>
 
         <h3>You can also find us on social media:</h3>
 
@@ -980,7 +1028,7 @@
         <a href="https://github.com/ethereum/web3.js" target="_blank">web3.js</a> ver.: {{web3.version}}
 
         <div class="line"></div>
-        <i class="large cog loading icon"></i>
+        <i class="grey cog loading icon"></i>
         <!--        <i class="small grey cog loading icon"></i>-->
         on <b><a href="https://cryptonomica.net">cryptonomica.net</a></b>
         <br>

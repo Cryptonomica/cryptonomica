@@ -76,17 +76,19 @@
 
                                     <h3>First name:</h3>
                                     <div class="ui fluid input">
-                                        <input type="text" id="firstName" placeholder="John" autocomplete='given-name'>
+                                        <input type="text" id="firstName" placeholder="John" autocomplete='given-name'
+                                               ng-model="createKeyForm.firstName">
                                     </div>
 
                                     <h3>Last name:</h3>
                                     <div class="ui fluid input">
-                                        <input type="text" id="lastName" placeholder="Doe" autocomplete='family-name'>
+                                        <input type="text" id="lastName" placeholder="Doe" autocomplete='family-name'
+                                               ng-model="createKeyForm.lastName">
                                     </div>
 
                                     <h3>User email:</h3>
                                     <input type="email" id="userEmail" placeholder="john.doe@gmail.com"
-                                           autocomplete='email'>
+                                           autocomplete='email' ng-model="createKeyForm.userEmail">
 
                                     <h3>Valid for (years):</h3>
                                     <div class="ui fluid input">
@@ -129,12 +131,32 @@
                                         browser storage
                                     </button>
                                     <div id="publicKeyLocalStorageMessage" style="font-weight: bold"></div>
-                                    <textarea id="pubkeyShow" rows="15" cols="71"></textarea>
+                                    <textarea id="pubkeyShow" rows="15" cols="71" ng-model="publicKey"></textarea>
                                     <br>
                                     <button class="ui button" id="readPublicKeyDataOpenPGPjs">Read Public Key Data
                                     </button>
                                     <button class="ui button" id="savePublicKeyAsFile">Save as file</button>
                                     <button class="ui button" id="copyPublicKeyToClipboard">Copy to clipboard</button>
+                                    <button ng-show="currentUser&&currentUser.registeredCryptonomicaUser"
+                                            class="ui button" id="addPublicKeyToProfile"
+                                            ng-click="addPublicKeyToProfile()">
+                                        Add to profile
+                                    </button>
+
+                                    <div id="keyUploadSuccessMessage" ng-show="keyUploadSuccessMessage"
+                                         class="ui positive message">
+                                        <i class="close icon" ng-click="keyUploadSuccessMessage=null"></i>
+                                        <div class="header">Success:</div>
+                                        <p>{{keyUploadSuccessMessage}}</p>
+                                    </div>
+
+                                    <div id="keyUploadErrorMessage" ng-show="keyUploadErrorMessage"
+                                         class="ui negative message">
+                                        <i class="close icon" ng-click="keyUploadErrorMessage=null"></i>
+                                        <div class="header">Error:</div>
+                                        <p>{{keyUploadErrorMessage}}</p>
+                                    </div>
+
                                     <table>
                                         <tr>
                                             <td>Key ID: &nbsp;</td>

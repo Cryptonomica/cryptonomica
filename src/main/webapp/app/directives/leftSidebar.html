@@ -38,49 +38,64 @@
 
     <div class="ui divider"></div>
 
-    <a id="home" class="item" href="" ui-sref-active="active" ui-sref="home">
+    <a id="home" class="item" href="" ui-sref-active="active" ui-sref="home" title="Home">
         <i class="fa fa-home titleIcon"></i>
         <!--<i class="icofont icofont-home titleIcon"></i>-->
         <span class="hiddenCollapse">Home</span>
     </a>
 
     <a id="registration" class="item" href="" ui-sref-active="active" ui-sref="registration"
-       ng-hide="(currentUser&&currentUser.registeredCryptonomicaUser)&&(currentUser.userInfo !=='Neo')">
+       ng-hide="(currentUser&&currentUser.registeredCryptonomicaUser)&&(currentUser.userInfo !=='Neo')"
+       title="New user registrations">
         <!--ng-show="(currentUser&&currentUser.registeredCryptonomicaUser)&&(currentUser.webmaster||currentUser.tester)">-->
         <i class="fa fa-user-plus titleIcon"></i>
         <span class="hiddenCollapse">Registration</span>
     </a>
 
     <a id="viewprofile" class="item" href="" ui-sref-active="active" ui-sref="viewprofile({userId:currentUser.userId})"
-       ng-show="currentUser&&currentUser.registeredCryptonomicaUser">
+       ng-show="currentUser&&currentUser.registeredCryptonomicaUser" title="View your profile">
         <i class="icofont icofont-data titleIcon"></i>
         <span class="hiddenCollapse">My Profile</span>
     </a>
 
     <a id="search" class="item" href="" ui-sref-active="active" ui-sref="search"
-       ng-show="currentUser&&currentUser.registeredCryptonomicaUser">
+       ng-show="currentUser&&currentUser.registeredCryptonomicaUser" title="Search for users">
         <!--<i class="icofont icofont-document-search titleIcon"></i>-->
         <i class="icofont icofont-job-search titleIcon"></i>
         <!--<i class="search icon titleIcon"></i>-->
         <span class="hiddenCollapse">Search</span>
     </a>
 
-    <a id="openPGPOnline" class="item" href="" ui-sref-active="active" ui-sref="openPGPOnline">
+    <a id="openPGPOnline" class="item" href="" ui-sref-active="active" ui-sref="openPGPOnline"
+       title="Digital signatures and encryption">
         <i class="fa fa-key titleIcon"></i>
         <span class="hiddenCollapse">OpenPGP Online</span>
     </a>
 
-    <a id="verifyEthAddress" class="item" href="" ui-sref-active="active" ui-sref="verifyEthAddress">
+    <a id="verifyEthAddress" class="item" href="" ui-sref-active="active" ui-sref="verifyEthAddress"
+       title="Identity verification on Ethereum">
         <i class="ethereum icon titleIcon"></i>
-        <span class="hiddenCollapse">For Ethereum</span>
+        <span class="hiddenCollapse">ETH ID</span>
     </a>
 
-    <a id="arbitration" class="item" href="" ui-sref-active="active" ui-sref="arbitration">
+    <a id="ethSign" class="item" href="eth-sign" title="Digital signatures with Ethereum keys">
+        <i class="edit outline icon titleIcon"></i>
+        <span class="hiddenCollapse">ETH Sign</span>
+    </a>
+
+    <a id="billsOfExchange" class="item" href="bills-of-exchange" title="Bills of exhange on blockchain">
+        <i class="money bill alternate outline icon titleIcon"></i>
+        <span class="hiddenCollapse">Bills of exchange</span>
+    </a>
+
+    <a id="arbitration" class="item" href="" ui-sref-active="active" ui-sref="arbitration"
+       title="Online arbitration tribunal">
         <i class="icofont icofont-law titleIcon"></i>
         <span class="hiddenCollapse">Arbitration</span>
     </a>
 
-    <a id="notaries" class="item" href="" ui-sref-active="active" ui-sref="notaries">
+    <a id="notaries" class="item" href="" ui-sref-active="active" ui-sref="notaries"
+       title="Search for notaries connected to Cryptonomica">
         <i class="icofont icofont-stamp titleIcon"></i>
         <span class="hiddenCollapse">Notaries</span>
     </a>
@@ -101,7 +116,7 @@
         </a>
     -->
 
-    <a id="stats" class="item" href="" ui-sref-active="active" ui-sref="stats">
+    <a id="stats" class="item" href="" ui-sref-active="active" ui-sref="stats" title="Live stats">
         <!--<i class="chart line icon titleIcon"></i>-->
         <!--<i class="chart bar outline icon titleIcon"></i>-->
         <i class="chart bar icon titleIcon"></i>
@@ -110,15 +125,23 @@
         <span class="hiddenCollapse">Stats</span>
     </a>
 
-    <a id="help" class="item" href="https://github.com/Cryptonomica/cryptonomica/wiki" target="_blank">
+    <a id="help" class="item" href="https://github.com/Cryptonomica/cryptonomica/wiki" target="_blank"
+       title="Cryptonomica Wiki">
         <i class="fa fa-life-ring titleIcon"></i>
         <span class="hiddenCollapse">Help/Wiki</span>
     </a>
 
     <!-- Blog -->
-    <a id="issues" class="item" href="https://cryptonomica-blog.github.io" target="_blank">
+    <a id="blog" class="item" href="https://cryptonomica-blog.github.io" target="_blank" title="Cryptonomica Blog">
         <i class="icofont icofont-newspaper titleIcon"></i>
         <span class="hiddenCollapse">Blog</span>
+    </a>
+
+    <!-- About -->
+    <a id="about" class="item"
+       href="http://bit.ly/cryptonomimca-executive-summary " target="_blank" title="About Cryptonomica">
+        <i class="info circle icon titleIcon"></i>
+        <span class="hiddenCollapse">About</span>
     </a>
 
     <!-- for compliance officer  : -->

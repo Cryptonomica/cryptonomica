@@ -1,11 +1,13 @@
 Ethereum Identity (EthID) tokens by Cryptonomica 
 ================================================
 
-Last revision: 2018-12-26 
+Last revision: 2019-06-18
+
 Published on: https://github.com/Cryptonomica/cryptonomica.github.io/blob/master/app/ethidtokens/EthID.tokens.description.md 
-Google Doc (draft): https://docs.google.com/document/d/15dr27enz30M0qjsWms5BMMiOZ-S84aQ_Zwm8NfqEGZM/ 
+
 
 ## Identity verification by Cryptonomica.
+
 [Cryptonomica](https://cryptonomica.net) made and is developing online and offline digital identity system. A detailed description of the Cryptonomica’s activities is set out in its ['White Paper'](http://bit.ly/Cryptonomica-White-Paper)
 
 Basically, user identity is connected to cryptographic key in [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy) standard. 
@@ -55,18 +57,18 @@ EthID token is already listed on [stex.com](https://stex.com) , a licensed Eston
 EthID token derivative ([Asset CRYPTONOMICA](https://wallet.bitshares.org/#/asset/CRYPTONOMICA)) is listed and traded on [bitshares](https://wallet.bitshares.org/#/asset/CRYPTONOMICA) via [deex.exchange](https://deex.exchange/asset/CRYPTONOMICA/) 
 Thus instead of burning a token a token holder can sell it on stex.com, deex.exchange or other cryptocurrency exchanges. 
 
-
 In such way, we solve the fundamental problem faced by investors buying tokens on the Ethereum: the price growth of these tokens often is is less than the growth of the ETH. In our case, the tokens acquire a minimum value equal to the amount of ether on which they can be immediately exchanged, and this amount cannot become smaller over time. 
 
-## Team.
+## Team
+
 ### Cryptonomica core team: 
+
 * Viktor Ageyev, software engineer and lawyer, CEO of Cryptonomica, https://github.com/ageyev  
 * Max Baryshnikov, lawyer, CFO of Cryptonomica, https://github.com/MaxBaryshnikov  
-
-### Advisers:
 * Vadym Kurylovych, founder of [stex.com](https://www.stex.com), a licenced Estonian cryptocurrency exchange
 
 ## Differences from other projects and approaches.
+
 ### Is it a 'self-sovereign identity'? 
 It depends how do you define self-sovereign identity. In our system only user controls his/her private keys 
 and no other person can make a signature or transaction in the name of this user or get his/her private key. 
