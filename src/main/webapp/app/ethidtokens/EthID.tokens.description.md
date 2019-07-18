@@ -1,11 +1,10 @@
 Ethereum Identity (EthID) tokens by Cryptonomica 
 ================================================
 
-Last revision: 2019-06-16
+Last revision: 2019-06-18
 
 Published on: https://github.com/Cryptonomica/cryptonomica.github.io/blob/master/app/ethidtokens/EthID.tokens.description.md 
 
-Google Doc (draft): https://docs.google.com/document/d/15dr27enz30M0qjsWms5BMMiOZ-S84aQ_Zwm8NfqEGZM/ 
 
 ## Identity verification by Cryptonomica.
 

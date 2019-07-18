@@ -8,9 +8,9 @@ pragma solidity 0.5.9;
  * deployed on Ropsten: https://ropsten.etherscan.io/address/0xd9fbcb890aeafbd37852f614689b0c6d9ff05024
  * github: https://github.com/Cryptonomica/
  *
- * This smart contract implements share revenue (share income) mechanism as follows:
+ * This smart contract implements revenue/income sharing mechanism as follows:
  *
- * This contract collects ETH from other contract(s).That is, he receives periodic transfers of funds from other contract(s).
+ * This contract collects ETH from other contract(s).That is, it receives periodic transfers of funds from other contract(s).
  * When a contract is deployed the finite amount of tokens (ERC20/223/677) is created.
  * Every token owner at any moment can burn his/her tokens and receive a share/part of ETH contained in
  * this smart contract on the moment tokens were burned that corresponds to share of the burned tokens in the total number
@@ -413,7 +413,6 @@ contract EthIdTokens {
     function transferAllAndCall(address _to, bytes calldata _extraData) external returns (bool success){
         return transferAndCall(_to, balanceOf[msg.sender], _extraData);
     }
-
 
     /*
     * https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md#approve

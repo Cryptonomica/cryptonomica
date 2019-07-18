@@ -591,7 +591,7 @@ public class OnlineVerificationAPI {
                                         + new Date().toString()
                                         + "\n\n"
                                         + "if you think it's wrong or it is an error, "
-                                        + "please write to support@cryptonomica.net\n\n"
+                                        + "please write to " + Constants.supportEmailAddress + "\n\n"
                         )
         );
 
@@ -781,7 +781,7 @@ https://stackoverflow.com/questions/21001371/why-gae-datastore-not-support-multi
                                 + new Date().toString()
                                 + "\n\n"
                                 + "if you think it's wrong or it is an error, "
-                                + "please write to" + Constants.supportEmailAddress + "\n\n"
+                                + "please write to " + Constants.supportEmailAddress + "\n\n"
                 )
         );
 
@@ -883,7 +883,7 @@ https://stackoverflow.com/questions/21001371/why-gae-datastore-not-support-multi
                                 + new Date().toString()
                                 + "\n\n"
                                 + "if you think it's wrong or it is an error, "
-                                + "please write to" + Constants.supportEmailAddress + "\n\n"
+                                + "please write to " + Constants.supportEmailAddress + "\n\n"
                 )
         );
 
@@ -956,7 +956,7 @@ https://stackoverflow.com/questions/21001371/why-gae-datastore-not-support-multi
                                 + new Date().toString()
                                 + "\n\n"
                                 + "if you think it's wrong or it is an error, "
-                                + "please write to" + Constants.supportEmailAddress + "\n\n"
+                                + "please write to " + Constants.supportEmailAddress + "\n\n"
                 )
         );
 
@@ -1246,7 +1246,7 @@ https://stackoverflow.com/questions/21001371/why-gae-datastore-not-support-multi
                                         + new Date().toString()
                                         + "\n\n"
                                         + "if you think it's wrong or it is an error, "
-                                        + "please write to" + Constants.supportEmailAddress + "\n\n"
+                                        + "please write to " + Constants.supportEmailAddress + "\n\n"
                         )
         );
 
@@ -1369,7 +1369,7 @@ https://stackoverflow.com/questions/21001371/why-gae-datastore-not-support-multi
                                         + new Date().toString()
                                         + "\n\n"
                                         + "if you think it's wrong or it is an error, "
-                                        + "please write to" + Constants.supportEmailAddress + "\n\n"
+                                        + "please write to " + Constants.supportEmailAddress + "\n\n"
                         )
         );
 

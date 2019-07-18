@@ -1,0 +1,450 @@
+<!--<style xmlns="http://www.w3.org/1999/html">
+    .segment {
+        font-size: 100% !important;
+    }
+
+    input, select, textarea {
+        background-color: #f7f7f7 !important;
+    }
+</style>-->
+
+
+<div class="ui container">
+    <br>
+
+    <div id="header" class="ui segment">
+
+        <a class="ui blue right ribbon label" ng-show="showLabel">
+            <i class="ethereum icon"></i>&nbsp;
+            {{labelText}}
+        </a>
+
+        <h1 class="ui centered header">[cryptonomica] eth-vote</h1>
+        <center>voting module for every erc20 smart contract</center>
+
+        <button class="ui mini button" ng-show="!showDescription"
+                ng-click="showDescription=!showDescription">
+            Click to show description
+        </button>
+
+        <button class="ui mini button" ng-show="showDescription"
+                ng-click="showDescription=!showDescription">
+            Click to hide description
+        </button>
+
+        <div id="description" class="ui segment" ng-show="showDescription">
+            <p>
+                This smart contract implements voting for tokenholders of ERC20 tokens based on the principle
+                "one token - one vote"
+            </p>
+            <p>
+                It requires external <a href="app.js" target="_blank">script</a> to count votes.
+            </p>
+
+            <p>
+                Voting can be started for any contract with ERC20 tokens, to start a voting an address have to own at
+                lest one token.
+            </p>
+            <p>To start a voting, voting creator must provide:<br>
+                1) address of a contract with tokens (ERC20),<br>
+                2) text of the proposal,<br>
+                3) number of block on witch voting will be finished and results have to be calculated.<br>
+            </p>
+            <p>
+                Every proposal for a contract receives a sequence number that serves as a proposal ID for this contract.
+            </p>
+            <p>
+                Each smart contract with tokens has its own numbering.<br>
+                So proposal can be identified by contract address with tokens + number (ID) of the proposal.
+            </p>
+            <p>
+                To vote 'for' or 'against' voter has to provide an address of a contract with tokens + proposal ID.<br>
+                It's also possible to load form for voting directly providing contract address and proposal ID in the
+                URL: <br>
+                <span>
+                    ../?contract={contract address}&proposal={proposal ID}
+                </span>
+                <br>
+                for example:<br>
+                <span>
+                    ../?contract=0x9fd1983776E2317FC4901E21daeD00225E4A998C&proposal=1
+                </span>
+            </p>
+            <p>
+                In most scenarios only votes 'for' can be used, who did not voted 'for' can be considered as voted
+                'against'.
+                But our dApp also supports votes 'against'</p>
+            <p>
+                To calculate results we collect all voted addresses by an external script, which is also open sourced.
+                Than we check their balances in tokens on resulting block, and and sum up the voices.
+                Thus, for the results, the number of tokens of the voter at the moment of voting does not matter
+                (it should just has at least one).
+                What matters is the number of tokens on the voter's address on the block where the results should
+                calculated.
+            </p>
+        </div>
+
+    </div>
+
+    <div class="ui bottom attached segment">
+
+        <!--        <a class="ui red right ribbon label" ng-show="showLabel">{{labelText}}</a>-->
+
+        <div id="noConnectionToNodeError" ng-show="noConnectionToNodeError">
+
+            <div class="ui negative message">
+                <!--<i class="close icon"></i>-->
+                <div class="header">ERROR: No connection to Ethereum network</div>
+                <p>
+                    This web application requires <a href="https://metamask.io" target="_blank">MetaMask</a> plugin for
+                    your
+                    browser.<br>
+                    It also may work on <a href="https://github.com/ethereum/mist/releases" target="_blank">Mist</a>
+                    or other software providing connection to Ethereum node<br>
+                    If your MetaMask plugin is already activated you may need to reload this page.
+                </p>
+            </div>
+            <br>
+        </div>
+
+        <div id="getNetworkError" ng-show="getNetworkError">
+            <div class="ui negative message">
+                <!--<i class="close icon"></i>-->
+                <p class="header">
+                    ERROR: can not get Ethereum network information.
+                </p>
+                <p>
+                    Your <a href="https://metamask.io" target="_blank">MetaMask</a>
+                    or other software providing connection to Ethereum node,
+                    not really has such connection to node.
+                    Check Ethereum network in <a href="https://metamask.io" target="_blank">MetaMask</a>,
+                    <a href="https://github.com/ethereum/mist/releases" target="_blank">Mist browser</a>
+                    or whatever you use, and/or try to refresh your browser.
+                </p>
+            </div>
+            <br>
+        </div>
+
+        <div id="alerts">
+
+            <!--<br>-->
+            <div id="alertDanger" ng-show="alertDanger" class="ui negative message" style="margin-top: 0.5em">
+                <i class="close icon" ng-click="alertDanger=null"></i>
+                <div class="header">Error:</div>
+                <p>{{alertDanger}}</p>
+            </div>
+
+            <div id="alertWarning" ng-show="alertWarning" class="ui yellow message">
+                <i class="close icon" ng-click="alertWarning=null"></i>
+                <div class="header">Warning:</div>
+                <p>{{alertWarning}}</p>
+            </div>
+
+            <div id="alertInfo" ng-show="alertInfo" class="ui info message">
+                <i class="close icon" ng-click="alertInfo=null"></i>
+                <div class="header">Info:</div>
+                <p>{{alertInfo}}</p>
+            </div>
+
+            <div id="alertSuccess" ng-show="alertSuccess" class="ui positive message">
+                <i class="close icon" ng-click="alertSuccess=null"></i>
+                <div class="header">Success:</div>
+                <p>{{alertSuccess}}</p>
+            </div>
+
+            <div id="alertMessage" ng-show="alertMessage.message||alertMessage.header" class="ui message">
+                <i class="close icon" ng-click="alertMessage=null"></i>
+                <!--<i class="close icon" ng-click="alertMessage={}"></i>-->
+                <div class="header" ng-show="alertMessage.header">{{alertMessage.header}}</div>
+                <p ng-show="alertMessage.message">{{alertMessage.message}}</p>
+            </div>
+
+        </div>
+
+        <div id="votingContractData">
+            <!--        <div id="votingContractData" class="ui raised segment">-->
+            Smart contract for voting:<br>
+            <a class="ui image label" ng-href="{{currentNetwork.etherscanLinkPrefix}}address/{{contract._address}}"
+               title="Click to see on etherscan" target="_blank">
+                <img src="img/etherscan/logo-ether.square.png">
+                {{contract._address}}
+            </a>
+        </div>
+
+        <div class="line"></div>
+
+        <div id="tabularMenuCreateLoad" class="ui top attached tabular menu">
+            <a class="item active" data-tab="create">Create Voting</a>
+            <a class="item" data-tab="load">Load Voting</a>
+        </div>
+
+        <div id="create" class="ui bottom attached tab segment active" data-tab="create">
+
+            <!--        <div id="create" class="ui raised segment">-->
+            <!--            <h3>Create Voting</h3>-->
+
+            <form class="ui form">
+
+                <div class="field">
+                    <label>Address of the contract with tokens: </label>
+                    <input type="text" ng-model="createVotingForm.erc20ContractAddress">
+                    See on etherscan:&nbsp;
+                    <a ng-href="{{currentNetwork.etherscanLinkPrefix}}address/{{createVotingForm.erc20ContractAddress}}"
+                       target="_blank">
+                        {{createVotingForm.erc20ContractAddress}}
+                    </a>
+                </div>
+
+                <div class="field">
+                    <label>Proposal Text:</label>
+                    <input type="text" ng-model="createVotingForm.proposalText">
+                </div>
+
+                <div class="field">
+
+                    <label>Calculate results in block:</label>
+                    <div class="ui right labeled input">
+                        <div class="ui label">
+                            block #
+                        </div>
+                        <input type="number" ng-model="createVotingForm.resultsInBlock">
+                    </div>
+
+                    it's about
+                    {{((createVotingForm.resultsInBlock-currentBlockNumber)*15.0)/(60*60) | number : 1}}
+                    hours
+                    ( {{((createVotingForm.resultsInBlock-currentBlockNumber)*15)/(60*60*24) | number : 2}} days)
+                    from last block (last block #
+
+                    <a href="" ng-hide="refreshCurrentBlockNumberIsWorking" ng-click="refreshCurrentBlockNumber()"
+                       title="Click to refresh">
+                        {{currentBlockNumber}}
+                    </a>
+                    <span ng-show="refreshCurrentBlockNumberIsWorking">
+                        <i class="notched circle loading icon"></i>
+                    </span>
+                    )
+                </div>
+
+                <button id="createBtn" class="ui button" type="submit" ng-click="create()"
+                        ng-disabled="createIsWorking">
+                    <span ng-show="createIsWorking">
+                        <i class="notched circle loading icon"></i>&nbsp;&nbsp;
+
+                    </span>
+                    Submit
+                </button>
+
+            </form>
+
+        </div>
+
+        <div id="load" class="ui bottom attached tab segment" data-tab="load">
+
+            <form class="ui form">
+
+                <div class="field">
+                    <label>Address of the contract with tokens: </label>
+                    <input type="text" ng-model="votingLoadForm.forContract">
+                </div>
+
+                <div class="field">
+                    <label>Proposal Id:</label>
+                    <input type="number" ng-model="votingLoadForm.proposalId">
+                </div>
+
+                <button id="loadBtn" class="ui button" type="submit" ng-click="load()" ng-disabled="loadIsWorking">
+                    <span ng-show="loadIsWorking">
+                        <i class="notched circle loading icon"></i>&nbsp;&nbsp;
+                    </span>
+                    Load
+                </button>
+
+            </form>
+
+        </div>
+
+        <div id="voting" class="ui segment">
+
+            <h2 class="ui centered header">
+                Voting &nbsp;&nbsp;
+            </h2>
+
+            <button class="ui mini button" ng-click="voting.copyUrl()"
+                    title="Click to copy direct link to this voting">
+                copy url
+            </button>
+            <br>
+
+            Voting using tokens from smart contract:<br>
+            <a ng-href="{{currentNetwork.etherscanLinkPrefix}}address/{{voting.forContract}}"
+               target="_blank">
+                {{voting.forContract}}
+            </a>
+
+            <!--
+            <br>
+            {{voting.erc20ContractName}}&nbsp;({{voting.erc20TokenSymbol}})
+            -->
+
+            <br>
+            Voting/Proposal ID: <b>{{voting.proposalId}}</b>&nbsp;(of {{voting.votingCounterForContract}})
+            </b><br>
+            Proposal text:<br>
+            <b>{{voting.proposalText}}</b><br>
+            <div ng-show="voting.resultsInBlock&&voting.resultsInBlock<=currentBlockNumber">
+                <br>
+                <em>Voting finished</em><br>
+                FOR: <span style="color: darkgreen">{{voting.votesFor||0}}</span>,&nbsp;&nbsp;
+                AGAINST: <span style="color: darkred">{{voting.votesAgainst||0}}</span>,&nbsp;&nbsp;
+                ALL TOKENS: {{voting.totalSupply}}
+            </div>
+            <div ng-show="voting.resultsInBlock&&voting.resultsInBlock>currentBlockNumber">
+                <em>Voting continues</em>
+            </div>
+            Block to calculate results:
+            <b>
+                <a ng-href="{{currentNetwork.etherscanLinkPrefix}}block/{{voting.resultsInBlock}}"
+                   target="_blank" title="Click to see block information on etherscan">
+                    {{voting.resultsInBlock}}
+                </a>
+            </b>
+            <br>
+            (last block #
+            <a href="" ng-hide="refreshCurrentBlockNumberIsWorking" ng-click="refreshCurrentBlockNumber()"
+               title="Click to refresh">
+                {{currentBlockNumber}}
+            </a>
+            <span ng-show="refreshCurrentBlockNumberIsWorking">
+                <i class="notched circle loading icon"></i>
+            </span>)
+            <br><br>
+            <div ng-show="voting.alreadyVoted">
+                Your address already voted
+                <span ng-show="voting.boolVotedFor" style="color: darkgreen">
+                    <b>FOR</b>
+                </span>
+                <span ng-show="voting.boolVotedAgainst" style="color: darkred">
+                    <b>AGAINST</b>
+                </span>
+                &nbsp;the proposal.
+                <br><br>
+            </div>
+
+            <button id="voteForBtn" class="ui positive button" type="submit" ng-click="voteFor()"
+                    ng-disabled="voting.alreadyVoted||voteForIsWorking||voteAgainstIsWorking||(voting.resultsInBlock&&voting.resultsInBlock<=currentBlockNumber)||(!voting.proposalId)||(!voting.resultsInBlock)">
+                    <span ng-show="voteForIsWorking">
+                        <i class="notched circle loading icon"></i>&nbsp;&nbsp;
+                    </span>
+                Vote for
+            </button>
+
+            <button id="voteAgainstBtn" class="ui negative button" type="submit" ng-click="voteAgainst()"
+                    ng-disabled="voting.alreadyVoted||voteForIsWorking||voteAgainstIsWorking||(voting.resultsInBlock&&voting.resultsInBlock<=currentBlockNumber)||(!voting.proposalId)||(!voting.resultsInBlock)">
+                    <span ng-show="voteAgainstIsWorking">
+                        <i class="notched circle loading icon"></i>&nbsp;&nbsp;
+                    </span>
+                Vote against
+            </button>
+
+        </div>
+
+    </div>
+
+    <div id="eventsSegment" class="ui segment">
+
+        <button class="ui mini button" ng-show="!showEvents"
+                ng-click="showEvents=!showEvents">
+            Click to show last 'events' from voting smart contract
+        </button>
+
+        <button class="ui mini button" ng-show="showEvents"
+                ng-click="showEvents=!showEvents">
+            Click to hide events
+        </button>
+
+        <div id="events" class="ui segment" ng-show="showEvents">
+            <div ng-repeat="event in events">
+
+                <div>
+                    <strong>
+                        <a ng-href="{{currentNetwork.etherscanLinkPrefix}}tx/{{event.transactionHash}}"
+                           title="Click to see transaction on etherscan" target="_blank">
+                            {{event.event}}
+                        </a>:
+                    </strong>
+                    <span ng-show="!showEventDetails" ng-click="showEventDetails=!showEventDetails"
+                          title="Click to show details">
+                        <i class="angle right icon"></i>
+                    </span>
+                    <span ng-show="showEventDetails" ng-click="showEventDetails=!showEventDetails"
+                          title="Click to hide details">
+                        <i class="angle up icon"></i>
+                    </span>
+                </div>
+
+                <div ng-repeat="(key, value) in event.returnValues" ng-show="showEventDetails">
+                    <em>{{key}}</em> : {{value}}
+                </div>
+
+                (block:
+                <a ng-href="{{currentNetwork.etherscanLinkPrefix}}block/{{event.blockNumber}}">
+                    {{event.blockNumber}}
+                </a>
+                )
+                <hr>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="footer" class="ui segment" ng-show="web3">
+        <div>
+            <span ng-show="currentNetwork.nodeInfo">
+                 Node info: {{currentNetwork.nodeInfo}}
+            </span>
+            <br>
+            <!--        You use node:&nbsp {{currentNetwork.node}}-->
+            <a href="https://github.com/ethereum/web3.js" target="_blank">web3.js</a> ver.: {{web3.version}}<br>
+            Network ID:&nbsp{{currentNetwork.network_id }}&nbsp(
+            <a ng-href="{{currentNetwork.etherscanLinkPrefix}}" target="_blank">{{currentNetwork.networkName}}</a>
+            )
+        </div>
+
+        <!--
+        <span ng-show="currentBlockNumber >= 0">
+        <span>Browser session started on block number:</span>
+        <a ng-href="{{currentNetwork.etherscanLinkPrefix}}block/{{currentBlockNumber}}" target="_blank">
+            {{currentBlockNumber}}
+        </a>
+        <br>
+        </span>-->
+
+        <span ng-hide="accountNotDetectedError||!ethereum">
+    ETH account:
+        <a ng-href="{{currentNetwork.etherscanLinkPrefix}}address/{{web3.eth.defaultAccount}}" target="_blank">
+        {{ethereum.selectedAddress}}
+        </a>
+        (ETH
+            <a href="" title="Click to refresh" ng-click="getEthBalanceOfDefaultAccount()"
+               ng-hide="getEthBalanceOfDefaultAccountIsWorking">
+                {{ethBalanceOfDefaultAccount}}
+            </a>
+            <span ng-show="getEthBalanceOfDefaultAccountIsWorking">
+                <i class="notched circle loading icon"></i>
+            </span>
+            )
+        </span>
+        <span ng-show="accountNotDetectedError">
+        No ETH accounts detected
+        </span>
+
+        <div class="line"></div>
+        <i class="cog grey loading icon"></i>
+        <!--        <i class="small grey cog loading icon"></i>-->
+        on <b><a href="https://cryptonomica.net">cryptonomica.net</a></b>
+        <br>
+
+    </div>
+
+</div>

@@ -1,0 +1,21 @@
+
+======= ./contracts/VotingForERC20.sol:ERC20TokensContract =======
+Gas estimation:
+
+======= ./contracts/VotingForERC20.sol:VotingForERC20 =======
+Gas estimation:
+construction:
+   760 + 725600 = 726360
+external:
+   boolVotedAgainst(address,uint256,address):	796
+   boolVotedFor(address,uint256,address):	707
+   create(address,string,uint256):	infinite
+   numberOfVotersAgainst(address,uint256):	699
+   numberOfVotersFor(address,uint256):	678
+   proposalText(address,uint256):	infinite
+   resultsInBlock(address,uint256):	677
+   voteAgainst(address,uint256):	infinite
+   voteFor(address,uint256):	infinite
+   votedAgainst(address,uint256,uint256):	833
+   votedFor(address,uint256,uint256):	744
+   votingCounterForContract(address):	572

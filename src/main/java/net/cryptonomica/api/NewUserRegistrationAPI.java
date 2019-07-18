@@ -203,7 +203,7 @@ public class NewUserRegistrationAPI {
                                         + "Best regards, \n\n"
                                         + "Cryptonomica team\n\n"
                                         + new Date().toString() + "\n\n"
-                                        + "if you think it's wrong or it is an error, please write to " + Constants.supportEmailAddress + "\n"
+                                        + "if you think it's wrong or it is an error, please write to " + Constants.supportEmailAddress + "\n\n"
                         )
         );
         //

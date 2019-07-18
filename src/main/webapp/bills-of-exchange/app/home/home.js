@@ -34,7 +34,7 @@
             // $log.debug("homeCtrl started");
 
             // TODO: for test only:
-            window.myScope = $scope;
+            // window.myScope = $scope;
 
             if ($location.host() === "localhost") {
                 $scope.thisUrl = $location.protocol() + "://" + $location.host() + ":" + $location.port() + "/bills-of-exchange/#!/";
@@ -1016,4 +1016,5 @@
 
             $timeout($rootScope.progressbar.complete(), 1000); // <<< started in app.js
         }]); // end function homeCtl
+
 })();

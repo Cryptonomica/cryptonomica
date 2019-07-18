@@ -1,0 +1,42 @@
+
+body {
+    background-color: #f0f0f0;
+}
+
+.line {
+    border-bottom: dotted 2px #eeeeee;
+    padding-bottom: 0.5em;
+    margin-bottom: 1em;
+}
+
+fieldset {
+    border: 0.1em solid #cccccc;
+}
+
+.redFont {
+    color: red;
+}
+
+a .socialLogo {
+    font-size: 1.4em;
+    color: #777777 !important;
+    /*color: #9c9c9c !important;*/
+    /*color: black !important;*/
+}
+
+a .socialLogo:hover {
+    /*color: white !important;*/
+    color: #60c8fa !important;
+}
+
+.segment {
+    font-size: 100% !important;
+}
+
+input, select, textarea {
+    background-color: #f7f7f7 !important;
+}
+
+.code {
+    font-family: monospace !important;
+}

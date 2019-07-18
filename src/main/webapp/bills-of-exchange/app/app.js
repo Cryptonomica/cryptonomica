@@ -132,4 +132,5 @@
             }; // end of $rootScope.networks
 
         }]);
+
 })();
