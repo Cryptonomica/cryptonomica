@@ -1,14 +1,3 @@
-<!--<style xmlns="http://www.w3.org/1999/html">
-    .segment {
-        font-size: 100% !important;
-    }
-
-    input, select, textarea {
-        background-color: #f7f7f7 !important;
-    }
-</style>-->
-
-
 <div class="ui container">
     <br>
 
@@ -34,16 +23,12 @@
 
         <div id="description" class="ui segment" ng-show="showDescription">
             <p>
-                This smart contract implements voting for tokenholders of ERC20 tokens based on the principle
-                "one token - one vote"
+                This dApp implements voting for tokenholders of ERC20 tokens based on the principle
+                "one token - one vote".
             </p>
             <p>
-                It requires external <a href="app.js" target="_blank">script</a> to count votes.
-            </p>
-
-            <p>
-                Voting can be started for any contract with ERC20 tokens, to start a voting an address have to own at
-                lest one token.
+                Voting can be started for <em>any</em> contract with ERC20 tokens, to start a voting user have to
+                own at least one token in smart contract for which voting has to be created.
             </p>
             <p>To start a voting, voting creator must provide:<br>
                 1) address of a contract with tokens (ERC20),<br>
