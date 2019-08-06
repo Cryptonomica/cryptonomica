@@ -1,0 +1,9 @@
+
+======= ./contracts/CryptonomicaVerificationMockUp.sol:CryptonomicaVerificationMockUp =======
+Gas estimation:
+construction:
+   263 + 219000 = 219263
+external:
+   keyCertificateValidUntil(address):	243
+   revokedOn(address):	260
+   verification(address):	infinite
