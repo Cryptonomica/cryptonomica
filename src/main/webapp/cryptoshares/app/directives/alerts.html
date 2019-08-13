@@ -1,0 +1,35 @@
+<div id="alerts">
+
+    <!--<br>-->
+    <div id="alertDanger" ng-show="alertDanger" class="ui negative message" style="margin-top: 0.5em">
+        <i class="close icon" ng-click="alertDanger=null"></i>
+        <div class="header">Error:</div>
+        <p>{{alertDanger}}</p>
+    </div>
+
+    <div id="alertWarning" ng-show="alertWarning" class="ui yellow message">
+        <i class="close icon" ng-click="alertWarning=null"></i>
+        <div class="header">Warning:</div>
+        <p>{{alertWarning}}</p>
+    </div>
+
+    <div id="alertInfo" ng-show="alertInfo" class="ui info message">
+        <i class="close icon" ng-click="alertInfo=null"></i>
+        <div class="header">Info:</div>
+        <p>{{alertInfo}}</p>
+    </div>
+
+    <div id="alertSuccess" ng-show="alertSuccess" class="ui positive message">
+        <i class="close icon" ng-click="alertSuccess=null"></i>
+        <div class="header">Success:</div>
+        <p>{{alertSuccess}}</p>
+    </div>
+
+    <div id="alertMessage" ng-show="alertMessage.message||alertMessage.header" class="ui message">
+        <i class="close icon" ng-click="alertMessage=null"></i>
+        <!--<i class="close icon" ng-click="alertMessage={}"></i>-->
+        <div class="header" ng-show="alertMessage.header">{{alertMessage.header}}</div>
+        <p ng-show="alertMessage.message">{{alertMessage.message}}</p>
+    </div>
+
+</div>

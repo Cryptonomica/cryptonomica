@@ -1,0 +1,34 @@
+
+======= ./contracts/xEUR-MockUp.sol:ERC677Receiver =======
+Gas estimation:
+
+======= ./contracts/xEUR-MockUp.sol:SafeMath =======
+Gas estimation:
+construction:
+   94 + 17000 = 17094
+internal:
+   add(uint256,uint256):	infinite
+   div(uint256,uint256):	infinite
+   mod(uint256,uint256):	infinite
+   mul(uint256,uint256):	infinite
+   sub(uint256,uint256):	infinite
+
+======= ./contracts/xEUR-MockUp.sol:xEurMockUp =======
+Gas estimation:
+construction:
+   infinite + 633400 = infinite
+external:
+   allowance(address,address):	705
+   approve(address,uint256):	22345
+   approve(address,uint256,uint256):	infinite
+   balanceOf(address):	569
+   creator():	461
+   decimals():	274
+   giveMeTokens(uint256):	22402
+   name():	infinite
+   symbol():	infinite
+   totalSupply():	421
+   transfer(address,uint256):	infinite
+   transferAllAndCall(address,bytes):	infinite
+   transferAndCall(address,uint256,bytes):	infinite
+   transferFrom(address,address,uint256):	infinite

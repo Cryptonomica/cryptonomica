@@ -58,9 +58,9 @@ echo 'sending test request to API:'
 curl -i -H "Content-Type: application/json" -X POST -d '{"message":"echo"}' https://sandbox-cryptonomica.appspot.com/_ah/api/testAPI/v1/echo
 echo # empty line
 
-echo $(date "+%FT%T%Z") : $(whoami)
+echo "$(date "+%FT%T%Z") : $(whoami)"
+
 gcloud app versions list
-mvn clean
 
 ## remove old versions in dev console
 # https://console.cloud.google.com/appengine/versions?project=cryptonomica-server

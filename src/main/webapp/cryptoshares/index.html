@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+
+    <meta charset="UTF-8">
+    <title>[cryptonomica] shares on on blockchain </title>
+
+    <link rel="shortcut icon" href="favicon.ico?"/>
+    <!--    <link rel="shortcut icon" href="favicon.ico"/>-->
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-116604144-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || []; //
+        function gtag() {
+            dataLayer.push(arguments);
+        }//
+        gtag('js', new Date()); //
+        gtag('config', 'UA-116604144-1');
+    </script>
+
+    <!--  \\\\\  -->
+
+    <!-- jQuery -->
+    <!--    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>-->
+    <!--    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>-->
+    <script src="vendors/jquery/jquery-3.4.1.min.js"></script>
+
+    <!-- Semantic UI --->
+    <!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.0/dist/semantic.min.css">-->
+    <link rel="stylesheet" href="vendors/semantic-ui/2.4.1/semantic.min.css">
+
+    <!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.0/dist/semantic.css">-->
+    <!--<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.0/dist/semantic.js"></script>-->
+    <!--    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.0/dist/semantic.js"></script>-->
+    <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>-->
+    <script src="vendors/semantic-ui/2.4.1/semantic.min.js"></script>
+
+    <!-- AngularJS -->
+    <!--    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>-->
+    <script src="vendors/angularjs/angular-1.7.8/angular.min.js"></script>
+
+    <!-- angular-ui-router -->
+    <!-- https://github.com/angular-ui/ui-router/tree/legacy -->
+    <!--    <script src="https://cdn.rawgit.com/angular-ui/ui-router/0.4.3/release/angular-ui-router.min.js"></script>-->
+    <!--    <script src="https://cdn.rawgit.com/angular-ui/ui-router/0.4.3/release/angular-ui-router.js"></script>-->
+    <script src="vendors/ui-router/0.4.3/angular-ui-router.min.js"></script>
+
+    <!-- web3.js -->
+    <!-- https://github.com/ethereum/web3.js/ -->
+    <!--    <script src="vendors/web3.js/web3.js-1.0.0-beta.37/dist/web3.min.js"></script>-->
+    <script src="vendors/web3.js/web3.js-1.2.0/dist/web3.min.js"></script>
+    <!--    <script src="vendors/web3.js/web3.js-1.2.1/dist/web3.min.js"></script>-->
+
+    <!-- angular-md and dependencies -->
+    <!-- https://github.com/yaru22/angular-md -->
+    <!--<script src="vendors/marked/marked.min.js"></script>-->
+    <!--<script src="vendors/angular-md/1.0.0/dist/angular-md.js"></script>-->
+
+    <!-- ngProgress 1.1.2-->
+    <!-- https://github.com/VictorBjelkholm/ngProgress -->
+    <script src="vendors/ngprogress/ngprogress.min.js"></script>
+    <link rel="stylesheet" href="vendors/ngprogress/ngProgress.css">
+
+    <!-- ngClipboard -->
+    <!-- https://github.com/nico-val/ngClipboard -->
+    <script src="vendors/ngClipboard/ngClipboard.js"></script>
+
+    <!-- (*) angular-ui/ui-date (jQuery UI Datepicker for AngularJS) https://github.com/angular-ui/ui-date -->
+    <!--    <link rel="stylesheet" href="vendors/jquery-ui/themes/smoothness/jquery-ui.min.css">-->
+    <!--    <script src="vendors/jquery-ui/jquery-ui.min.js"></script>-->
+    <!--    <script src="vendors/angular-ui-date/date.js"></script>-->
+
+    <!-- Google Charts -->
+    <!-- https://google-developers.appspot.com/chart/interactive/docs/gallery/piechart -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <!-- App scripts -->
+
+    <script src="app/app.js"></script>
+    <script src="app/controllers.js"></script>
+    <script src="app/router.js"></script>
+    <script src="app/directives/directives.js"></script>
+    <script src="app/home/home.js"></script>
+
+    <link rel="stylesheet" href="app/app.css">
+
+</head>
+<body>
+
+<!--<center style="background-color: #9d9d9d">-->
+<!--<h1>eth-sign</h1>-->
+<!--</center>-->
+
+<!-- AngularJS main -->
+<ui-view></ui-view>
+
+</body>
+</html>

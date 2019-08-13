@@ -1,0 +1,1705 @@
+<!--<div>-->
+<div class="ui container">
+
+    <center id="header">
+        <h1 class="ui header" style="margin-top: 0.7em; margin-bottom: 0em">
+            shares on blockchain (cryptoshares)
+        </h1>
+        <div style="font-weight: bold; font-size: 110%;">
+            [ by
+            <a href="https://cryptonomica.net" title="back to cryptonomica home page"
+               target="_blank">cryptonomica.net</a>
+            ]
+        </div>
+        <!--<div class="ui header" style="margin-top: 0.1em;color: #666666">-->
+        <div class="ui header" style="color: #666666;margin-top: 0.3em">
+            Create an open corporation with cryptoshares on the Ethereum blockchain
+        </div>
+    </center>
+
+    <div id="tabularMenu" class="ui top attached tabular menu" style="font-size: 100%;">
+
+        <a id="homeTab" class="item active" data-tab="home">
+            <i class="home icon"></i>&nbsp;
+            <!--            <i class="sitemap icon"></i>&nbsp;-->
+            Home
+        </a>
+        <a id="createTab" class="item" data-tab="create" ng-click="">
+            <i class="edit icon"></i>&nbsp;
+            Create cryptoshares
+        </a>
+
+        <a id="workTab" class="item" data-tab="work">
+            <i class="briefcase icon"></i>&nbsp;
+            Work with cryptoshares
+        </a>
+
+        <a id="helpTab" class="item" data-tab="helpTab">
+            <i class="life ring icon"></i>&nbsp;
+            <!--            <i class="question icon"></i>&nbsp;-->
+            <!-- <i class="info icon"></i>&nbsp;-->
+            Help and support
+        </a>
+
+    </div>
+
+    <div id="homeTabContent" class="ui bottom attached tab segment active" data-tab="home">
+
+        <div>
+            <a class="ui red right ribbon label" ng-show="!production">
+                {{currentNetwork.networkName}}
+            </a>
+            <a class="ui blue right ribbon label" ng-show="production">
+                {{currentNetwork.networkName}}
+            </a>
+        </div>
+        <no-connection-to-node-error></no-connection-to-node-error>
+        <alerts></alerts>
+
+        <p>
+            <b>Cryptoshares factory smart contract address:</b>&nbsp;&nbsp;<br>
+            <a class="ui image label"
+               ng-href="{{currentNetwork.etherscanLinkPrefix}}address/{{factoryContract._address}}"
+               title="Click to see on etherscan" target="_blank">
+                <img src="app/img/etherscan/logo-ether.square.png">
+                {{factoryContract._address}}
+            </a>
+        </p>
+
+        <div>
+            Ethereum accounts verification smart contract address:&nbsp;&nbsp;
+            <a ng-href="{{currentNetwork.etherscanLinkPrefix}}address/{{verificationContract._address}}"
+               target="_blank">
+                {{verificationContract._address}}
+            </a>
+
+            <span ng-show="!production">
+                <br>
+                (for testnets this is a mock up contract for testing, in production
+                <a href="https://cryptonomica.net/#!/verifyEthAddress/">
+                    Cryptonomica Ethereum verification smart contract
+                </a>
+                is used)
+            </span>
+
+            <div>
+                <br>
+                <a href="https://xeuro.online" target="_blank" title="Click to open xEUR website">
+                    xEUR
+                </a>
+                contract address:&nbsp;
+                <a ng-href="{{currentNetwork.etherscanLinkPrefix}}address/{{xEuroContract._address}}"
+                   target="_blank"
+                   title="Click to see on etherscan.io">
+                    <!--                    {{factoryContractData.xEurContractAddress}}-->
+                    {{xEuroContract._address}}
+                </a>
+                <br>
+                <div ng-show="!production">
+                    (for testnets this is a mock up contract where you can get any amount of testnet-xEUR for free, in
+                    production smart contract from
+                    <a href="https://xeuro.online" target="_blank">
+                        xeuro.online
+                    </a> is used
+                    )
+                </div>
+            </div>
+        </div>
+
+        <div class="line"></div>
+
+        <div id="description">
+
+            <h3>Description</h3>
+            <p>
+                'CryptoShares Factory' is a smart contract for creating smart contract for cryptoshares.
+            </p>
+            <p>
+                They can be shares of a real corporation.
+                Every share is an
+                <a href="https://eips.ethereum.org/EIPS/eip-20" target="_blank">ERC20</a>
+                +
+                <a href="https://github.com/Dexaran/ERC223-token-standard" target="_blank">ERC223</a>
+                token.
+            </p>
+            <p>
+                Every smart contracts with cryptoshares created with 'CryptoShares Factory' implement:
+            </p>
+
+            <ol>
+                <li>
+                    Shareholder's identity verification (via
+                    <a href="https://cryptonomica.net" target="_blank">Cryptonomica.net</a>
+                    ) and shareholder's ledger.
+                </li>
+                <li>
+                    Automatic signing of arbitration clause (dispute resolution agreement) by every new shareholder.
+                </li>
+                <li>
+                    Shareholders voting using 'one share - one vote' principle.
+                </li>
+                <li>
+                    Dividends distribution. Dividends can be paid in
+                    <a href="https://xeuro.online" target="_blank">xEUR</a>
+                    tokens and/or in
+                    <a href="https://en.wikipedia.org/wiki/Ethereum#Ether" target="_blank">Ether</a>
+                    .
+                </li>
+            </ol>
+            <p>
+                Smart contract can receive
+                <a href="https://en.wikipedia.org/wiki/Ethereum#Ether" target="_blank">Ether</a>
+                and
+                <a href="https://xeuro.online" target="_blank">xEUR</a>
+                tokens and distribute them to shareholders.
+            </p>
+            <p>
+                Shares can be transferred without restrictions from one Ethereum address to another.
+                But only verified Ethereum address represents shareholder.
+                Every share not owned by registered shareholder address is considered 'in transfer',
+                shares 'in transfer' can not vote and can not receive dividends.
+            </p>
+            <p>
+                'CryptoSharesFactory' charges fee in Ether for creating cryptoshares smart contracts.
+            </p>
+            <p></p>
+        </div>
+
+        <div class="line"></div>
+
+        <div id="news">
+            <h3>News</h3>
+            <p>
+                <b>2019-08-13</b> Test version of this dApp deployed on
+                <a href="https://ropsten.etherscan.io" target="_blank">Ropsten TestNet</a>.
+            </p>
+        </div>
+
+        <div class="line"></div>
+        <!--<br>-->
+    </div>
+
+    <div id="createTabContent" class="ui bottom attached tab segment" data-tab="create">
+
+        <div>
+            <a class="ui red right ribbon label" ng-show="!production">
+                {{currentNetwork.networkName}}
+            </a>
+            <a class="ui blue right ribbon label" ng-show="production">
+                {{currentNetwork.networkName}}
+            </a>
+        </div>
+        <no-connection-to-node-error></no-connection-to-node-error>
+        <alerts></alerts>
+
+        CryptoShares Factory smart contract:<br>
+        <a class="ui image label" ng-href="{{currentNetwork.etherscanLinkPrefix}}address/{{factoryContract._address}}"
+           title="Click to see on etherscan" target="_blank">
+            <img src="app/img/etherscan/logo-ether.square.png">
+            {{factoryContract._address}}
+        </a>
+        <br><br>
+
+        <div class="line"></div>
+
+        <form id="createForm" class="ui form">
+
+            <div class="field">
+                <div class="fields">
+                    <div class="sixteen wide field">
+                        <label>Name for the new organization:</label>
+                        <input type="text" ng-model="createCryptoSharesContractForm.name">
+                    </div>
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="fields">
+                    <div class="eight wide field">
+                        <label>Number of shares to create</label>
+                        <input type="number" ng-model="createCryptoSharesContractForm.totalSupply">
+                    </div>
+                    <div class="eight wide field">
+                        <label>Token symbol</label>
+                        <input type="text" ng-model="createCryptoSharesContractForm.symbol">
+                    </div>
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="fields">
+                    <div class="sixteen wide field">
+                        <label>Period between dividend payouts in seconds:</label>
+                        <input type="number" ng-model="createCryptoSharesContractForm.dividendsPeriod"
+                               ng-change="parseSeconds(createCryptoSharesContractForm.dividendsPeriod)">
+                    </div>
+                </div>
+            </div>
+            <div>
+                {{parseSecondsResult.days}}
+                days
+                {{parseSecondsResult.hours}}
+                hours
+                {{parseSecondsResult.minutes}}
+                minutes
+                {{parseSecondsResult.seconds}}
+                seconds
+            </div>
+
+            <div class="line"></div>
+
+            <div id="factoryDisputeResolutionAgreement">
+                <h5>Dispute resolution agreement (arbitration clause) that will be signed by every new
+                    shareholder:</h5>
+                <div class="ui segment">
+                    {{disputeResolutionAgreement}}
+                </div>
+            </div>
+
+            <div class="line"></div>
+
+            <p>
+                Price for bills of exchange smart contract creation:&nbsp;&nbsp;
+                <a href="" ng-click="getPrice()" title="Click to refresh">
+                    <span ng-show="getPriceIsWorking">
+                        <i class="notched circle loading icon"></i>
+                    </span>
+                    <span ng-show="!getPriceIsWorking">
+                        {{priceETH}}
+                    </span>
+                </a>
+                &nbsp;ETH
+            </p>
+
+            <div class="line"></div>
+
+            <!--            <button class="ui secondary button"-->
+            <button class="ui positive button"
+                    ng-click="createCryptoSharesContract()"
+                    ng-disabled="createCryptoSharesContractIsWorking">
+                <!--
+                <span ng-show="!createCryptoSharesContractIsWorking">
+                    <i class="edit icon"></i>&nbsp;&nbsp;
+                </span>
+               -->
+                <span ng-show="createCryptoSharesContractIsWorking">
+                    <i class="notched circle loading icon"></i>&nbsp;&nbsp;
+                </span>
+                Create new cryptoshares contract&nbsp;&nbsp;
+            </button>
+
+            <button class="ui inverted red button" ng-click="clearCreateCryptoSharesContractForm()"
+                    ng-disabled="createCryptoSharesContractIsWorking">
+                Clear form
+            </button>
+
+            <br><br>
+
+        </form>
+
+    </div> <!-- end of "create" tab -->
+
+    <div id="workTabContent" class="ui bottom attached tab segment" data-tab="work">
+
+        <div>
+            <a class="ui red right ribbon label" ng-show="!production">
+                {{currentNetwork.networkName}}
+            </a>
+            <a class="ui blue right ribbon label" ng-show="production">
+                {{currentNetwork.networkName}}
+            </a>
+        </div>
+        <no-connection-to-node-error></no-connection-to-node-error>
+        <alerts></alerts>
+
+        <div id="numberOfContractsDeployed">
+            Number of cryptoshares smart contracts deployed:&nbsp;&nbsp;
+            <a href="" ng-click="getCryptoSharesContractsCounter()" title="Click to refresh">
+                <span ng-hide="getCryptoSharesContractsCounterIsWorking">
+                    <b>{{factoryContractData.cryptoSharesContractsCounter }}</b>
+                </span>
+                <span ng-show="getCryptoSharesContractsCounterIsWorking">
+                    <i class="notched circle loading icon"></i>
+                </span>
+            </a>
+            <div class="line"></div>
+        </div>
+
+        <form id="changeCryptoSharesContractForm" class="ui form">
+
+            <div class="field">
+                <label>Switch to cryptoshares smart contract #: </label>
+                <div class="ui action input">
+                    <input type="number" min="1" ng-model="cryptoSharesContractNumber">
+                    <button class="ui button" type="submit"
+                            ng-click="switchToCryptosharesContractNumber(cryptoSharesContractNumber)">
+                        <i ng-show="instantiateCryptoSharesContractIsWorking||switchToCryptosharesContractNumberIsWorking"
+                           class="notched circle loading icon"></i>
+                        Switch
+                    </button>
+                </div>
+            </div>
+
+            <div ng-show="instantiateCryptoSharesContractIsWorking||switchToCryptosharesContractNumberIsWorking"
+                 class="ui yellow message">
+                <b><i class="notched circle loading icon"></i></b>
+                Fetching data for smart contract # {{cryptoSharesContractNumber}} from
+                {{factoryContract._address}}
+            </div>
+
+        </form>
+
+        <div id="showContractData"
+             ng-show="cryptoSharesContractData&&cryptoSharesContractData.contractNumberInTheLedger>0">
+            <br>
+
+            <center id="showContractDataHeader">
+                <h2>Cryptoshares smart contract # {{cryptoSharesContractData.contractNumberInTheLedger}}</h2>
+
+                <h4>{{cryptoSharesContractData.name}}</h4>
+
+                <a class="ui image label"
+                   ng-href="{{currentNetwork.etherscanLinkPrefix}}address/{{cryptosharesContract._address}}"
+                   title="Click to see on etherscan" target="_blank">
+                    <img src="app/img/etherscan/logo-ether.square.png">
+                    {{cryptosharesContract._address}}
+                </a>
+            </center>
+
+            <div id="devData" class="ui raised segment" ng-show="devModeOn">
+
+                <h3 ng-click="showDeveloperData=!showDeveloperData">
+                    <span class="redFont">
+                        <b>[dev mode is on]</b>
+                    </span>&nbsp;&nbsp;
+                    <span ng-show="!showDeveloperData" title="Click to show data">
+                        Developer data <i class="angle right icon"></i>
+                    </span>
+                    <span ng-show="showDeveloperData" title="Click to hide data">
+                        Developer data <i class="angle down icon"></i>
+                    </span>
+                </h3>
+
+                <div ng-show="showDeveloperData">
+
+                    <div ng-repeat="(key, value) in cryptoSharesContractData">
+                        <b>{{key}}</b> : {{value}}
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div id="smartContractDataSegment" class="ui raised segment">
+
+                <h3 ng-click="showSmartContractData=!showSmartContractData">
+                    <span ng-show="!showSmartContractData" title="Click to show data">
+                        Smart contract data <i class="angle right icon"></i>
+                    </span>
+                    <span ng-show="showSmartContractData" title="Click to hide data">
+                        Smart contract data <i class="angle down icon"></i>
+                    </span>
+                </h3>
+
+                <div ng-show="showSmartContractData">
+
+                    <div class="ui grid">
+                        <div class="two wide column">
+                            Direct link:
+                        </div>
+                        <div class="four wide column">
+                            <a ng-copyable class="ui label" title="Click to copy a link contract page">
+                                {{thisUrl+cryptoSharesContractData.contractNumberInTheLedger}}
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="ui grid">
+                        <div class="two wide column">
+                            Contract address:
+                        </div>
+                        <div class="four wide column">
+                            <a ng-copyable class="ui label" title="Click to copy address">
+                                {{cryptosharesContract._address}}
+                            </a>
+                        </div>
+                    </div>
+
+                    <br>
+                    <div>
+                        <h4>{{cryptoSharesContractData.name}}</h4>
+
+                        <b>Shares/Token symbol:</b>&nbsp;{{cryptoSharesContractData.symbol}}
+                        <b>Total supply:</b>&nbsp;{{cryptoSharesContractData.totalSupply}}
+                        <br>
+                        Contract balance:
+                        <a href="" ng-click="refreshEthBalanceOfContract()" title="Click to refresh">
+                            <span ng-show="refreshEthBalanceOfContractIsWorking">
+                                <i class="notched circle loading icon"></i>
+                            </span>
+                            <b ng-show="!refreshEthBalanceOfContractIsWorking">
+                                {{cryptoSharesContractData.ethBalanceOfContract | number:5}}
+                            </b>
+                        </a> ETH;
+                        <a href="" ng-click="refreshXEuroBalanceOfContract()" title="Click to refresh">
+                            <span ng-show="refreshXEuroBalanceOfContractIsWorking">
+                                <i class="notched circle loading icon"></i>
+                            </span>
+                            <b ng-show="!refreshXEuroBalanceOfContractIsWorking ">
+                                {{cryptoSharesContractData.xEuroBalanceOfContract}}
+                            </b>
+                        </a> xEUR
+                    </div>
+                    <div class="line"></div>
+                    <b>
+                        Your ETH address:&nbsp;&nbsp;
+                        <a ng-href="{{currentNetwork.etherscanLinkPrefix}}address/{{web3.eth.defaultAccount}}"
+                           target="_blank"
+                           title="Click to see on etherscan.io">
+                            {{web3.eth.defaultAccount}}
+                        </a>
+                    </b>
+                    <br>
+                    Your balance in {{cryptoSharesContractData.symbol}}:&nbsp;&nbsp;
+                    <a href="" ng-click="refreshTokenBalanceOfDefaultAccount()" title="Click to refresh">
+                    <span ng-show="refreshTokenBalanceOfDefaultAccountIsWorking">
+                        <i class="notched circle loading icon"></i>
+                    </span>
+                        <b ng-show="!refreshTokenBalanceOfDefaultAccountIsWorking">
+                            {{cryptoSharesContractData.balanceOfDefaultAccount}}
+                        </b>
+                    </a>
+                    &nbsp;
+                    Your balance in ETH:&nbsp;
+                    <a href="" ng-click="refreshEthBalanceOfDefaultAccount()" title="Click to refresh">
+                    <span ng-show="refreshEthBalanceOfDefaultAccountIsWorking">
+                        <i class="notched circle loading icon"></i>
+                    </span>
+                        <b ng-show="!refreshEthBalanceOfDefaultAccountIsWorking">
+                            {{ethBalanceOfDefaultAccount | number:5}}
+                        </b>
+                    </a>
+                    &nbsp;
+                    Your balance in
+                    <a ng-href="{{currentNetwork.etherscanLinkPrefix}}address/{{xEuroContract._address}}"
+                       target="_blank"
+                       title="Click to see on etherscan.io">
+                        xEUR
+                    </a>:&nbsp;
+                    <a href="" ng-click="refreshXEuroBalanceOfDefaultAccount()" title="Click to refresh">
+                    <span ng-show="refreshXEuroBalanceOfDefaultAccountIsWorking">
+                        <i class="notched circle loading icon"></i>
+                    </span>
+                        <b ng-show="!refreshXEuroBalanceOfDefaultAccountIsWorking">
+                            {{xEuroBalanceOfDefaultAccount}}
+                        </b>
+                    </a>
+
+                    <div class="line"></div>
+
+                    <form id="addFundsToContractForm" class="ui form">
+                        <div class="two fields">
+
+                            <div class="field">
+                                <label>Add ETH to contract: </label>
+                                <div class="ui labeled action input">
+                                    <div class="ui label">ETH:</div>
+                                    <input type="number" min="0" step="0.1" ng-model="addEtherValue">
+                                    <button class="ui button" type="submit" ng-click="addEtherToContract()"
+                                            ng-disabled="addEtherToContractIsWorking">
+                                    <span ng-show="addEtherToContractIsWorking">
+                                         <i class="notched circle loading icon"></i>
+                                    </span>
+                                        Add
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label>Add xEUR to contract: </label>
+                                <div class="ui labeled action input">
+                                    <div class="ui label">xEUR:</div>
+                                    <input type="number" min="0" step="1" ng-model="addXEURValue">
+                                    <button class="ui button" type="submit" ng-click="addXEURToContract()"
+                                            ng-disabled="addXEURToContractIsWorking">
+                                    <span ng-show="addXEURToContractIsWorking">
+                                         <i class="notched circle loading icon"></i>
+                                    </span>
+                                        Add
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+            <div id="disputeResolutionSegment" class="ui raised segment">
+
+                <h3 ng-click="showArbitrationData=!showArbitrationData">
+                    <span ng-show="!showArbitrationData" title="Click to show data">
+                        Dispute resolution <i class="angle right icon"></i>
+                    </span>
+                    <span ng-show="showArbitrationData" title="Click to hide data">
+                        Dispute resolution <i class="angle down icon"></i>
+                    </span>
+                </h3>
+
+                <div ng-show="showArbitrationData">
+                    <h4>Arbitration clause (dispute resolution agreement) text from smart contract:</h4>
+                    <div id="disputeResolutionAgreementText" class="ui segment">
+                        {{cryptoSharesContractData.disputeResolutionAgreement}}
+                    </div>
+                    <div>
+                        Signatures under the dispute resolution agreement:&nbsp;&nbsp;
+                        <b>
+                            <a href="" ng-click="getDisputeResolutionAgreementSignaturesCounter()"
+                               title="Click to refresh">
+                        <span ng-show="getDisputeResolutionAgreementSignaturesCounterIsWorking">
+                            <i class="notched circle loading icon"></i>
+                        </span>
+                                <span ng-show="!getDisputeResolutionAgreementSignaturesCounterIsWorking">
+                            {{cryptoSharesContractData.disputeResolutionAgreementSignaturesCounter}}
+                        </span>
+                            </a>
+                        </b>
+                    </div>
+
+                    <form id="getSignatureByNumber" class="ui form">
+
+                        <div class="field">
+                            <label>Get signature #: </label>
+                            <div class="ui action input">
+                                <input type="number" min="0" ng-model="signatureNumber"
+                                       ng-change="getSignatureNumberError=null">
+                                <div class="ui button"
+                                     ng-click="getSignatureNumber(signatureNumber)"
+                                     ng-disabled="getSignatureNumberIsWorking">
+
+                                    <i ng-show="getSignatureNumberIsWorking"
+                                       class="notched circle loading icon"></i>
+                                    Get
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+
+                            <div ng-show="!getSignatureNumberError&&cryptoSharesContractData.signatures[signatureNumber]">
+                                <b>Signatory represented by: </b>
+                                <a ng-href="{{currentNetwork.etherscanLinkPrefix}}address/{{cryptoSharesContractData.signatures[signatureNumber].signatoryRepresentedBy}}"
+                                   target="_blank"
+                                   title="Click to see on etherscan.io">
+                                    {{cryptoSharesContractData.signatures[signatureNumber].signatoryRepresentedBy}}
+                                </a><br>
+                                <b>Signatory shareholder ID: </b>
+                                {{cryptoSharesContractData.signatures[signatureNumber].shareholderId}}<br>
+                                <b>Signatory name: </b>
+                                {{cryptoSharesContractData.signatures[signatureNumber].signatoryName}}<br>
+                                <b>Registration/ID number: </b>
+                                {{cryptoSharesContractData.signatures[signatureNumber].signatoryRegistrationNumber}}<br>
+                                <b>Signatory legal address:</b>
+                                {{cryptoSharesContractData.signatures[signatureNumber].signatoryAddress}}<br>
+                                <b>Signed on: </b> {{cryptoSharesContractData.signatures[signatureNumber].signedOn |
+                                date:'yyyy-MM-dd HH:mm:ss Z'}}<br>
+                                <!-- <b>Signed on: </b> {{cryptoSharesContractData.signatures[signatureNumber].signedOn |
+                                date:'fullDate'}}<br>
+                                -->
+                            </div>
+
+                            <div ng-show="getSignatureNumberError">
+                                {{getSignatureNumberError}}
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div id="registerAsShareholderSegment" class="ui raised segment">
+
+                <h3 ng-click="showRegisterData=!showRegisterData">
+                    <span ng-show="!showRegisterData" title="Click to show data">
+                        <span ng-show="cryptoSharesContractData.myShareholderData.shareholderID==0">Register as a shareholder</span>
+                        <span ng-show="cryptoSharesContractData.myShareholderData.shareholderID>0">Update your shareholder data</span>
+                        <i class="angle right icon"></i>
+                    </span>
+                    <span ng-show="showRegisterData" title="Click to hide data">
+                        <span ng-show="cryptoSharesContractData.myShareholderData.shareholderID==0">Register as a shareholder</span>
+                        <span ng-show="cryptoSharesContractData.myShareholderData.shareholderID>0">Update your shareholder data</span>
+                        <i class="angle down icon"></i>
+                    </span>
+                </h3>
+
+                <div ng-show="showRegisterData">
+
+                    <center>
+                        <h4>
+                            <span ng-show="cryptoSharesContractData.myShareholderData.shareholderID==0">
+                                Register as a shareholder
+                            </span>
+                            <span ng-show="cryptoSharesContractData.myShareholderData.shareholderID>0">
+                                Update your shareholder data
+                            </span> and sign arbitration agreement:
+                        </h4>
+                        <h5>
+                            To register your address as a shareholder you have to own at least one token and have your
+                            address verified on the
+                            <a href="https://www.cryptonomica.net/#!/verifyEthAddress/" target="_blank">
+                                Cryptonomica smart contract
+                            </a>
+                        </h5>
+                    </center>
+                    <div class="line"></div>
+                    <form id="registerAsShareholderAndSignArbitrationAgreementForm" class="ui form">
+
+                        <div class="field">
+                            <div class="ui checkbox">
+                                <input ng-model="registerAsShareholderAndSignArbitrationAgreementForm.isLegalPerson"
+                                       type="checkbox">
+                                <label>Shareholder is a legal person</label>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label>
+                                Legal name of the shareholder:
+                            </label>
+                            <input type="text"
+                                   ng-model="registerAsShareholderAndSignArbitrationAgreementForm.shareholderName">
+                        </div>
+
+                        <div class="field">
+                            <label>
+                                Shareholder's registration or ID number:
+                            </label>
+                            <input type="text"
+                                   ng-model="registerAsShareholderAndSignArbitrationAgreementForm.shareholderRegistrationNumber">
+                        </div>
+
+                        <div class="field">
+                            <label>
+                                Shareholder's legal address:
+                            </label>
+                            <input type="text"
+                                   ng-model="registerAsShareholderAndSignArbitrationAgreementForm.shareholderAddress">
+                        </div>
+
+                        <div class="field">
+                            <label>
+                                Shareholder represented by (info from
+                                <a ng-href="{{currentNetwork.etherscanLinkPrefix}}address/{{verificationContract._address}}"
+                                   target="_blank"
+                                   title="Click to see on etherscan.io">
+                                    Cryptonomica verification smart contract
+                                </a>
+                                ):
+                            </label>
+                            <input type="text"
+                                   ng-model="registerAsShareholderAndSignArbitrationAgreementForm.representative"
+                                   disabled>
+                        </div>
+
+                        <div class="field">
+                            <label>
+                                Link to signers authority to represent the shareholder (if no representation write 'no
+                                representation'):
+                            </label>
+                            <input type="text"
+                                   ng-model="registerAsShareholderAndSignArbitrationAgreementForm.linkToSignersAuthorityToRepresentTheShareholder">
+                        </div>
+
+                        <div class="field">
+                            <button class="ui primary button"
+                                    ng-click="registerAsShareholderAndSignArbitrationAgreement()"
+                                    ng-disabled="registerAsShareholderAndSignArbitrationAgreementIsWorking">
+
+                            <span ng-show="!registerAsShareholderAndSignArbitrationAgreementIsWorking">
+                                <i class="edit icon"></i>&nbsp;&nbsp;
+                            </span>
+                                <span ng-show="registerAsShareholderAndSignArbitrationAgreementIsWorking">
+                                <i class="notched circle loading icon"></i>&nbsp;&nbsp;
+                            </span>
+                                <span ng-show="cryptoSharesContractData.myShareholderData.shareholderID==0">
+                                Register as a shareholder
+                            </span>
+                                <span ng-show="cryptoSharesContractData.myShareholderData.shareholderID>0">
+                                Update your shareholder data
+                            </span> and sign arbitration agreement
+                            </button>
+                        </div>
+
+                        <div class="field" ng-show="registerAsShareholderAndSignArbitrationAgreementTxReceipt">
+                            <div class="ui info message">
+                                <i class="close icon"
+                                   ng-click="registerAsShareholderAndSignArbitrationAgreementTxReceipt=null"></i>
+                                <div class="header">
+                                    Transaction sent:
+                                </div>
+                                <p>
+                                    <a ng-href="{{currentNetwork.etherscanLinkPrefix}}tx/{{registerAsShareholderAndSignArbitrationAgreementTxReceipt.transactionHash}}"
+                                       title="Click to see on etherscan.io" target="_blank">
+                                        {{registerAsShareholderAndSignArbitrationAgreementTxReceipt.transactionHash}}
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+            <div id="shareholdersLedgerSegment" class="ui raised segment">
+
+                <h3 ng-click="showLedgerData=!showLedgerData">
+                    <span ng-show="!showLedgerData" title="Click to show data">
+                        Shareholder's ledger <i class="angle right icon"></i>
+                    </span>
+                    <span ng-show="showLedgerData" title="Click to hide data">
+                        Shareholder's ledger <i class="angle down icon"></i>
+                    </span>
+                </h3>
+
+                <div ng-show="showLedgerData">
+
+                    <button class="ui mini button" ng-click="getShareholdersLedger()"
+                            ng-disabled="getShareholdersLedgerIsWorking">
+                         <span ng-show="getShareholdersLedgerIsWorking">
+                             <i class="notched circle loading icon"></i>&nbsp;&nbsp;
+                         </span>
+                        Refresh shareholder's ledger
+                    </button>
+                    <!--
+                                        &nbsp;&nbsp;
+                                        <button class="ui button" ng-click="showShareholdersLedger=!showShareholdersLedger"
+                                                ng-disabled="getShareholdersLedgerIsWorking"
+                                                ng-show="cryptoSharesContractData&&cryptoSharesContractData.shareholdersLedger&&cryptoSharesContractData.shareholdersLedger.length>0">
+                                             <span ng-show="showShareholdersLedger">
+                                                 Hide shareholders ledger
+                                             </span>
+                                            <span ng-show="!showShareholdersLedger">
+                                                 Show shareholders ledger
+                                             </span>
+                                        </button>
+                    -->
+
+                    <div>
+                        <br>
+                        <b>{{cryptoSharesContractData.name}}</b>
+                        <br>
+                        Registered shareholders with more then one share:
+                        <b>{{cryptoSharesContractData.shareholdersLedger.length}}</b>
+                        <br>
+                        Shares currently voting/receiving dividends:
+                        <a href="" ng-click="getRegisteredShares()" title="Click to refresh">
+                            <b ng-show="getRegisteredSharesIsWorking">
+                                <i class="notched circle loading icon"></i>
+                            </b>
+                            <b ng-show="!getRegisteredSharesIsWorking">
+                                {{cryptoSharesContractData.registeredShares}}
+                            </b>
+                        </a>
+                        <br>
+                        All issued shares: <b>{{cryptoSharesContractData.totalSupply}}</b>
+                        <br>
+                        All shareholders registered for all time: {{cryptoSharesContractData.shareholdersCounter}}
+                    </div>
+
+                    <div id="piechartSegment" class="ui segment">
+
+                        <h5 ng-click="toggleShowPieChart()">
+                            <span ng-show="!showPieChart" title="Click to show data">
+                                Shares distribution pie chart <i class="angle right icon"></i>
+                            </span>
+                            <span ng-show="showPieChart" title="Click to hide data">
+                                Shares distribution pie chart <i class="angle down icon"></i>
+                            </span>
+                        </h5>
+
+                        <div ng-show="showPieChart">
+                            <div id="piechart"></div>
+                        </div>
+
+                    </div>
+
+                    <div id="shareholdersLedger" class="ui segment"
+                         ng-show="cryptoSharesContractData&&cryptoSharesContractData.shareholdersLedger&&showShareholdersLedger">
+
+                        <div ng-repeat="shareholder in cryptoSharesContractData.shareholdersLedger">
+
+                            <div ng-click="expandShareholderEntity[$index]=!expandShareholderEntity[$index]"
+                                 title="Click to expand/collapse shareholder data">
+
+                                [{{$index + 1}}]&nbsp;&nbsp;
+                                {{shareholder.shareholderName}}&nbsp;&nbsp;
+                                <b>{{shareholder.balanceOf}}</b>&nbsp;&nbsp;
+                                {{cryptoSharesContractData.symbol}}&nbsp;&nbsp;
+
+                                <i class="angle right icon" ng-show="!expandShareholderEntity[$index]"
+                                   title="Click to expand data"></i>
+                                <i class="angle down icon" ng-show="expandShareholderEntity[$index]"
+                                   title="Click to collapse data"></i>
+                            </div>
+
+                            <div ng-show="expandShareholderEntity[$index]">
+                                <b>Shareholder ID:</b> {{shareholder.shareholderID}}<br>
+                                <b>Legal name:</b> {{shareholder.shareholderName}}<br>
+                                <b>Is legal person: </b> {{shareholder.shareholderIsLegalPerson}}<br>
+                                <b>Registration/ID number:</b> {{shareholder.shareholderRegistrationNumber}}<br>
+                                <b>Address:</b> {{shareholder.shareholderAddress}}<br>
+                                <b>ETH address: </b>
+                                <a ng-href="{{currentNetwork.etherscanLinkPrefix}}address/{{shareholder.shareholderEthereumAddress}}"
+                                   target="_blank"
+                                   title="Click to see on etherscan.io">
+                                    {{shareholder.shareholderEthereumAddress}}
+                                </a><br>
+                                <b>Represented by:</b>
+                                {{shareholder.representative.firstName}}&nbsp;
+                                {{shareholder.representative.lastName}}<br>
+                                (<i>identity verified via Cryptonomica smart contract</i>
+                                <a href="https://cryptonomica.net/#!/verifyEthAddress/"
+                                   class="blueFont"
+                                   target="_blank"
+                                   title="Click to see more info about Cryptonomica identity verification for Ethereum">
+                                    <i class="info circle icon"></i></a>:
+                                <a ng-href="{{currentNetwork.etherscanLinkPrefix}}address/{{verificationContract._address}}#readContract"
+                                   target="_blank"
+                                   title="Click to see on etherscan.io">
+                                    {{verificationContract._address}}
+                                </a>
+                                )
+                                <br>
+                                <b>Link to representative authority to represent the shareholder:</b><br>
+                                {{shareholder.linkToSignersAuthorityToRepresentTheShareholder}}<br>
+                            </div>
+
+                        </div>
+                        <div class="line"></div>
+
+                        <!--
+                        <b>Shareholder ID:</b> {{shareholder.shareholderID}}<br>
+                        <b>Shares owned:</b>
+                        {{shareholder.balanceOf}}&nbsp;&nbsp;{{cryptoSharesContractData.symbol}}<br>
+                        <b>Name:</b> {{shareholder.shareholderName}}<br>
+                        <b>Is legal person: </b> {{shareholder.shareholderIsLegalPerson}}<br>
+                        <b>Registration/ID number:</b> {{shareholder.shareholderRegistrationNumber}}<br>
+                        <b>Address:</b> {{shareholder.shareholderAddress}}<br>
+                        <b>ETH address: </b>
+                        <a ng-href="{{currentNetwork.etherscanLinkPrefix}}address/{{shareholder.shareholderEthereumAddress}}"
+                           target="_blank"
+                           title="Click to see on etherscan.io">
+                            {{shareholder.shareholderEthereumAddress}}
+                        </a><br>
+                        <b>Link to signers authority to represent the shareholder:</b><br>
+                        {{shareholder.linkToSignersAuthorityToRepresentTheShareholder}}<br>
+                        <div class="line"></div>
+                        -->
+
+                    </div>
+
+                </div>
+
+                <div ng-show="cryptoSharesContractData.shareholdersLedger&&cryptoSharesContractData.shareholdersLedger.length===0">
+                    No registered shareholders with 1 or more shares.
+                </div>
+
+            </div>
+
+            <div id="votingSegment" class="ui raised segment">
+
+                <h3 ng-click="showVotingData=!showVotingData">
+                    <span ng-show="!showVotingData" title="Click to show data">
+                        Voting <i class="angle right icon"></i>
+                    </span>
+                    <span ng-show="showVotingData" title="Click to hide data">
+                        Voting <i class="angle down icon"></i>
+                    </span>
+                </h3>
+
+                <div ng-show="showVotingData">
+                    <div>
+                        Number of votings in this smart contract:&nbsp;&nbsp;
+                        <b>
+                            <a href="" ng-click="getVotingCounterForContract()" title="Click to refresh">
+                                <span ng-show="getVotingCounterForContractIsWorking">
+                                    <i class="notched circle loading icon"></i>
+                                </span>
+                                <span ng-show="!getVotingCounterForContractIsWorking">
+                                    {{votingCounterForContract}}
+                                </span>
+                            </a>
+                        </b>
+                    </div>
+
+                    <div id="tabularMenuCreateOrLoadVoting" class="ui top attached tabular menu">
+                        <a class="item active" data-tab="createVoting" title="Click to create voting">
+                            Create Voting
+                        </a>
+                        <a class="item" data-tab="loadVoting" title="Click to load voting data">
+                            Load Voting
+                        </a>
+                    </div>
+
+                    <div id="createVoting" class="ui bottom attached tab segment active" data-tab="createVoting">
+
+                        <form id="createVotingForm" class="ui form">
+
+                            <div class="field">
+                                <label>Proposal Text:</label>
+                                <input type="text" ng-model="createVotingForm.proposalText">
+                            </div>
+
+                            <div class="field">
+                                <label>Calculate results in block:</label>
+                                <div class="ui right labeled input">
+                                    <div class="ui label">
+                                        block #
+                                    </div>
+                                    <input type="number" ng-model="createVotingForm.resultsInBlock">
+                                </div>
+
+                                Average block time is ~{{averageBlockTimeInSeconds}} sec,
+                                so it's about
+                                {{((createVotingForm.resultsInBlock-currentBlockNumber)*averageBlockTimeInSeconds*1.0)/(60*60)
+                                | number : 1}}
+                                hours
+                                (
+                                {{((createVotingForm.resultsInBlock-currentBlockNumber)*averageBlockTimeInSeconds)/(60*60*24)
+                                | number : 2}}
+                                days) from last block (last block #
+
+                                <a href="" ng-hide="refreshCurrentBlockNumberIsWorking"
+                                   ng-click="refreshCurrentBlockNumber()"
+                                   title="Click to refresh">
+                                    {{currentBlockNumber}}
+                                </a>
+                                <span ng-show="refreshCurrentBlockNumberIsWorking">
+                                <i class="notched circle loading icon"></i>
+                            </span>)
+                                <br>
+                                See estimate time on etherscan for block:
+                                <a ng-href="{{currentNetwork.etherscanLinkPrefix}}block/{{createVotingForm.resultsInBlock}}"
+                                   target="_blank"
+                                   title="Click to see on etherscan.io">
+                                    {{createVotingForm.resultsInBlock}}
+                                </a>
+                            </div>
+
+                            <button id="createVotingButtor" class="ui primary button" type="submit"
+                                    ng-click="createVoting()"
+                                    ng-disabled="createVotingIsWorking">
+                                <span ng-show="createVotingIsWorking">
+                                    <i class="notched circle loading icon"></i>&nbsp;&nbsp;
+                                </span>
+                                Submit
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                    <div id="loadVoting" class="ui bottom attached tab segment" data-tab="loadVoting">
+
+                        <form id="loadVotingForm" class="ui form">
+
+                            <div class="field">
+                                <label>Proposal Id:</label>
+                                <input type="number" min="1" ng-model="votingLoadForm.proposalId">
+                            </div>
+
+
+                            <div id="noVotingWithThisNumber" ng-show="noVotingWithThisNumber">
+                                There is no proposal/voting with id/number {{voting.proposalId}} in this smart contract.
+                                <br>
+                            </div>
+
+                            <button id="loadVotingButton" class="ui primary button" type="submit"
+                                    ng-click="loadVoting(votingLoadForm.proposalId)"
+                                    ng-disabled="loadVotingIsWorking">
+
+                                <span ng-show="loadVotingIsWorking">
+                                    <i class="notched circle loading icon"></i>&nbsp;&nbsp;
+                                </span>
+                                Load / Update
+                            </button>
+
+                        </form>
+
+                    </div>
+
+
+                    <div id="createVotingMessageSuccess" class="ui positive message"
+                         ng-show="createVotingForm.createVotingMessageSuccess">
+                        <i class="close icon" ng-click="createVotingForm.createVotingMessageSuccess=null"></i>
+                        {{createVotingForm.createVotingMessageSuccess}}
+                    </div>
+
+                    <div id="createVotingMessageError" class="ui negative message"
+                         ng-show="votingLoadForm.createVotingMessageError">
+                        <i class="close icon" ng-click="votingLoadForm.createVotingMessageError=null"></i>
+                        {{votingLoadForm.createVotingMessageError}}
+                    </div>
+
+                    <div id="votingData" class="ui segment"
+                         ng-show="voting&&voting.proposalId&&!loadVotingIsWorking&&!noVotingWithThisNumber">
+
+                        <h4 class="ui centered header">
+                            Voting # {{voting.proposalId}}
+                        </h4>
+
+                        <!--
+                        <button class="ui mini button" ng-click="voting.copyUrl()"
+                                title="Click to copy direct link to this voting">
+                            copy url
+                        </button>
+                        -->
+
+                        Voting/Proposal ID:
+                        <b>
+                            {{voting.proposalId}}</b>&nbsp;(of {{voting.votingCounterForContract}})
+                        </b>
+                        <br>
+                        Proposal text:<br>
+                        <b>{{voting.proposalText}}</b>
+                        <br>
+                        <div ng-show="voting.resultsInBlock&&voting.resultsInBlock<=currentBlockNumber">
+                            <br>
+                            <em>Voting finished</em><br>
+                            <div ng-show="voting&&voting.votingFinished">
+                                FOR: <b style="color: darkgreen">{{voting.votesFor}}</b>,&nbsp;&nbsp;
+                                AGAINST: <b style="color: darkred">{{voting.votesAgainst}}</b>,&nbsp;&nbsp;
+                            </div>
+                        </div>
+                        <div ng-show="voting.resultsInBlock&&voting.resultsInBlock>currentBlockNumber">
+                            <br>
+                            <em>Voting continues</em>
+                        </div>
+                        Block to calculate results:
+                        <b>
+                            <a ng-href="{{currentNetwork.etherscanLinkPrefix}}block/{{voting.resultsInBlock}}"
+                               target="_blank" title="Click to see block information on etherscan">
+                                {{voting.resultsInBlock}}
+                            </a>
+                        </b>
+                        <div ng-show="voting&&!voting.votingFinished">
+                            (last block #
+                            <a href="" ng-hide="refreshCurrentBlockNumberIsWorking"
+                               ng-click="refreshCurrentBlockNumber()"
+                               title="Click to refresh">
+                                {{currentBlockNumber}}
+                            </a>
+                            <span ng-show="refreshCurrentBlockNumberIsWorking">
+                        <i class="notched circle loading icon"></i>
+                    </span>)<br><br>
+                        </div>
+                        <div ng-show="voting&&voting.votingFinished">
+                            Voting shares in block # {{voting.resultsInBlock}}:
+                            <b>{{voting.registeredSharesForBlock}}</b><br>
+                            All shares: <b>{{cryptoSharesContractData.totalSupply}}</b><br>
+                            Shares "in transfer" (not voting) in block # {{voting.resultsInBlock}}:&nbsp;&nbsp;
+                            <b>{{cryptoSharesContractData.totalSupply-voting.registeredSharesForBlock}}</b>
+                            <br><br>
+                        </div>
+
+                        <div ng-show="voting&&voting.alreadyVoted">
+                            Your address already voted
+                            <span ng-show="voting.boolVotedFor" style="color: darkgreen">
+                            <b>FOR</b>
+                        </span>
+                            <span ng-show="voting.boolVotedAgainst" style="color: darkred">
+                            <b>AGAINST</b>
+                        </span>
+                            &nbsp;the proposal.
+                            <br><br>
+                        </div>
+
+                        <div ng-show="!voting.votingFinished">
+                            <div ng-show="cryptoSharesContractData.myShareholderData.shareholderID==0">
+                                To vote you have to be registered as shareholder
+                            </div>
+                            <div ng-show="cryptoSharesContractData.myShareholderData.balanceOf==0">
+                                To vote you have to hold at least one share/token.
+                            </div>
+                            <br>
+                        </div>
+
+                        <button id="voteForBtn" class="ui positive button" type="submit" ng-click="voteFor()"
+                                ng-disabled="voting.alreadyVoted||voteForIsWorking||voteAgainstIsWorking||(voting.resultsInBlock&&voting.resultsInBlock<=currentBlockNumber)||(!voting.proposalId)||(!voting.resultsInBlock)||(cryptoSharesContractData.myShareholderData&&(cryptoSharesContractData.myShareholderData.shareholderID==0||cryptoSharesContractData.myShareholderData.balanceOf==0))">
+                    <span ng-show="voteForIsWorking">
+                        <i class="notched circle loading icon"></i>&nbsp;&nbsp;
+                    </span>
+                            Vote for
+                        </button>
+
+                        <button id="voteAgainstBtn" class="ui negative button" type="submit" ng-click="voteAgainst()"
+                                ng-disabled="voting.alreadyVoted||voteForIsWorking||voteAgainstIsWorking||(voting.resultsInBlock&&voting.resultsInBlock<=currentBlockNumber)||(!voting.proposalId)||(!voting.resultsInBlock)||(cryptoSharesContractData.myShareholderData&&(cryptoSharesContractData.myShareholderData.shareholderID==0||cryptoSharesContractData.myShareholderData.balanceOf==0))">
+                            <span ng-show="voteAgainstIsWorking">
+                                <i class="notched circle loading icon"></i>&nbsp;&nbsp;
+                            </span>
+                            Vote against
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="transfersSegment" class="ui raised segment">
+
+                <h3 ng-click="showTransferData=!showTransferData">
+                    <span ng-show="!showTransferData" title="Click to show data">
+                        Transfers <i class="angle right icon"></i>
+                    </span>
+                    <span ng-show="showTransferData" title="Click to hide data">
+                        Transfers <i class="angle down icon"></i>
+                    </span>
+                </h3>
+
+                <div ng-show="showTransferData">
+                    <div>
+                        Your current balance:&nbsp;
+                        <b>
+                            <a href="" ng-click="refreshTokenBalanceOfDefaultAccount()" title="Click to refresh">
+                            <span ng-show="refreshTokenBalanceOfDefaultAccountIsWorking">
+                                <i class="notched circle loading icon"></i>
+                            </span>
+                                <span ng-show="!refreshTokenBalanceOfDefaultAccountIsWorking">
+                                {{cryptoSharesContractData.balanceOfDefaultAccount}}
+                            </span>
+                            </a>
+                        </b>
+                        &nbsp;{{cryptoSharesContractData.symbol}}
+                    </div>
+
+                    <br>
+                    <form id="transferForm" class="ui form">
+
+                        <div class="field">
+                            <label>Transfer:</label>
+                            <div class="ui left labeled input">
+                                <label for="transferValue" class="ui label">
+                                    {{cryptoSharesContractData.symbol}}
+                                </label>
+                                <input type="number" id="transferValue"
+                                       ng-model="transferValue">
+                            </div>
+                        </div>
+                        <div ng-show="transferValue>cryptoSharesContractData.balanceOfDefaultAccount" class="redFont">
+                            Insufficient funds
+                            <br><br>
+                        </div>
+
+                        <div class="field">
+                            <label>To:</label>
+                            <input type="text" id="transferTo" ng-model="transferTo">
+                        </div>
+                        <div ng-show="!web3.utils.isAddress(transferTo)" class="redFont">
+                            {{transferTo}} is not a valid Ethereum address
+                            <br>
+                        </div>
+
+                        <div class="field">
+                            <label>
+                                (only if receiver is an
+                                <a href="https://github.com/Dexaran/ERC223-token-standard" target="_blank"
+                                   title="Click to read about ERC223">
+                                    ERC223
+                                </a>
+                                compatible contract)&nbsp;&nbsp;Data:
+                            </label>
+                            <div class="ui action input">
+                                <input type="text" id="transferData" ng-model="transferData">
+                                <div class="ui button" ng-click="transferData=null">
+                                    Clear Data
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ui negative message" ng-show="transferError">
+                            <i class="close icon" ng-click="transferError=null"></i>
+                            {{transferError}}
+                        </div>
+
+                        <div id="transferTxHash" ng-show="transferTxHash" class="ui info message">
+                            <i class="close icon" ng-click="transferTxHash=null"></i>
+                            Transaction:&nbsp;
+                            <a ng-href="{{currentNetwork.etherscanLinkPrefix}}tx/{{transferTxHash}}"
+                               title="click to see on etherscan.io" target="_blank">
+                                {{transferTxHash}}
+                            </a>
+                        </div>
+
+                        <div ng-show="showTokenTransferInfo">
+                            <b>{{cryptoSharesContractData.symbol}}</b> is an
+                            <a href="https://github.com/Dexaran/ERC223-token-standard" target="_blank">
+                                ERC223
+                            </a>
+                            compatible token. It can be received on recipient smart contract address only if this
+                            smart contract provides ERC223 compatible
+                            <a href="https://github.com/Dexaran/ERC223-token-standard#erc223-token-standard"
+                               target="_blank">
+                                'tokenFallback'
+                            </a>
+                            function. This ensures that the recipient's contract is informed of the received tokens,
+                            and prevents the loss of tokens due to sending to the addresses of contracts that cannot
+                            work with the received tokens.
+                            <br><br>
+                        </div>
+
+                        <!--                        <button class="ui secondary button"-->
+                        <button class="ui positive button"
+                                type="submit" ng-click="transfer()"
+                                ng-disabled="transferWorking">
+                            <span ng-show="transferWorking">
+                                   <i class="notched circle loading icon"></i>
+                            </span>
+                            Transfer {{transferValue}} {{cryptoSharesContractData.symbol}}
+                        </button>
+                        &nbsp;&nbsp;&nbsp;
+                        <a class="ui label" ng-click="showTokenTransferInfo=!showTokenTransferInfo"
+                           title="Click to to show/hide info">
+                            <i class="info circle icon"></i>
+                            Info
+                        </a>
+                    </form>
+
+                </div>
+
+            </div>
+
+            <div id="dividendsSegment" class="ui raised segment">
+
+                <h3 ng-click="showDividendsData=!showDividendsData">
+                    <span ng-show="!showDividendsData" title="Click to show data">
+                        Dividends <i class="angle right icon"></i>
+                    </span>
+                    <span ng-show="showDividendsData" title="Click to hide data">
+                        Dividends <i class="angle down icon"></i>
+                    </span>
+                </h3>
+
+                <div ng-show="showDividendsData">
+
+                    Dividends period: {{cryptoSharesContractData.dividendsPeriodStr}}<br>
+                    ({{cryptoSharesContractData.dividendsPeriod}} seconds)<br><br>
+
+                    Dividends payout round is running:
+                    <span ng-show="cryptoSharesContractData.dividendsRound.roundIsRunning" class="greenFont">
+                        {{cryptoSharesContractData.dividendsRound.roundIsRunning}}
+                    </span>
+                    <span ng-show="!cryptoSharesContractData.dividendsRound.roundIsRunning" class="redFont">
+                        {{cryptoSharesContractData.dividendsRound.roundIsRunning}}
+                    </span>
+                    <br>
+                    <b>
+                    <span ng-show="cryptoSharesContractData.dividendsRound.roundIsRunning">
+                        Current
+                    </span>
+                        <span ng-show="!cryptoSharesContractData.dividendsRound.roundIsRunning">
+                        Last
+                    </span>
+                        round data:
+                        <br>
+                    </b>
+                    <div ng-show="cryptoSharesContractData.dividendsRoundsCounter>0">
+                        Round #: <b>{{cryptoSharesContractData.dividendsRoundsCounter}}</b>
+                    </div>
+                    <div ng-show="cryptoSharesContractData.dividendsRoundsCounter==0">
+                        No dividend distribution rounds yet
+                    </div>
+                    <br>
+                    <div ng-show="cryptoSharesContractData.dividendsRoundsCounter>0">
+                        Shares registered to receive dividends:
+                        <b>{{cryptoSharesContractData.dividendsRound.registeredShares}}</b>
+                        <br>
+                        Dividends for one share:
+                        <b>{{cryptoSharesContractData.dividendsRound.sumXEurToPayForOneToken}}</b> xEUR,
+                        <b>{{cryptoSharesContractData.dividendsRound.sumEthToPayForOneToken}}</b> ETH
+                        <br>
+                        Shareholders registered to receive dividends:
+                        <b>{{cryptoSharesContractData.dividendsRound.allRegisteredShareholders}}</b>
+
+                        <div ng-show="!cryptoSharesContractData.dividendsRound.roundIsRunning">
+                            The number of shareholders who received dividends:
+                            <b>{{cryptoSharesContractData.dividendsRound.shareholdersCounter}}</b><br>
+                            All registered shareholders in last round:
+                            <b>{{cryptoSharesContractData.dividendsRound.allRegisteredShareholders}}</b><br>
+
+                            <div ng-show="cryptoSharesContractData.dividendsRound.roundStartedOnUnixTime>0">
+                                <b>Round started on: </b>
+                                {{cryptoSharesContractData.dividendsRound.roundStartedOnDate | date : 'fullDate'}}
+                                (Unix time: {{cryptoSharesContractData.dividendsRound.roundStartedOnUnixTime}}) <br>
+                            </div>
+                            <div ng-show="cryptoSharesContractData.dividendsRound.roundFinishedOnUnixTime>0">
+                                <b>Round finished on: </b>
+                                {{cryptoSharesContractData.dividendsRound.roundFinishedOnDate | date : 'fullDate'}}
+                                (Unix time: {{cryptoSharesContractData.dividendsRound.roundFinishedOnUnixTime}}) <br>
+                                <br>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div ng-show="!cryptoSharesContractData.dividendsRound.roundIsRunning&&cryptoSharesContractData.secondsLeftUntilNextRound>=0">
+                        <br> Time left until next dividends payout round:
+                        {{cryptoSharesContractData.timeLeftUntilNextRoundStr}}<br>
+                        ({{cryptoSharesContractData.secondsLeftUntilNextRound}} seconds)&nbsp;&nbsp;
+                        <button class="ui mini button" ng-click="getDividendsRoundData()">
+                            click to refresh
+                        </button>
+                        <br>
+                    </div>
+
+                    <div ng-show="cryptoSharesContractData.shareholdersLedger&&cryptoSharesContractData.shareholdersLedger.length===0">
+                        No registered shareholders with with 1 or more shares, dividends distribution can not be started<br><br>
+                    </div>
+
+                    <div ng-show="cryptoSharesContractData&&cryptoSharesContractData.newDividendsRoundCanBeStarted&&!cryptoSharesContractData.dividendsRound.roundIsRunning">
+                        <button id="startDividendsRoundBtn" class="ui positive button"
+                                ng-click="startDividendsPayments()"
+                                ng-disabled="startDividendsPaymentsIsWorking||cryptoSharesContractData.shareholdersLedger.length===0">
+                            <span ng-show="startDividendsPaymentsIsWorking">
+                                <i class="notched circle loading icon"></i>
+                            </span>
+                            Start next dividends payout round
+                        </button>
+                    </div>
+
+                    <div id="dividendsError" class="ui negative message" ng-show="dividendsError">
+                        <i class="close icon" ng-click="dividendsError=null"></i>
+                        <div class="header">
+                            ERROR:
+                        </div>
+                        <p>
+                            {{dividendsError}}
+                        </p>
+                    </div>
+
+                    <div ng-show="cryptoSharesContractData.dividendsRound.roundIsRunning&&cryptoSharesContractData.dividendsRound.weiForTxFees>0">
+                        <br>This contracts provides reward for those who make dividends distributing transactions.<br>
+                        Current reward for a transaction is:
+                        {{cryptoSharesContractData.dividendsRound.ethForTxFees/cryptoSharesContractData.dividendsRound.allRegisteredShareholders
+                        | number:5}}
+                        ETH
+                    </div>
+                    <br>
+                    <button id="payToNextBtn" class="ui button"
+                            ng-show="cryptoSharesContractData.dividendsRound.roundIsRunning"
+                            ng-click="payDividendsToNext()"
+                            ng-disabled="payDividendsToNextIsWorking">
+                            <span ng-show="payDividendsToNextIsWorking">
+                                <i class="notched circle loading icon"></i>
+                            </span>
+                        Pay to shareholder
+                        {{cryptoSharesContractData.dividendsRound.shareholdersCounter+1}} of
+                        {{cryptoSharesContractData.shareholdersCounter}}
+                    </button>
+
+                    <div ng-show="cryptoSharesContractData.dividendsRound.roundIsRunning">
+                        <hr>
+                        <form class="ui form">
+
+                            <div>
+                                You can provide funds to reward users or bots creating transactions to distribute
+                                dividends.
+                            </div>
+                            <br>
+
+                            <div class="ui labeled action input">
+                                <div class="ui label">
+                                    ETH
+                                </div>
+                                <input type="number" min="0" step="0.1" ng-model="fundDividendsPayoutSumInEther">
+                                <button class="ui button" type="submit" ng-click="fundDividendsPayout()"
+                                        ng-disabled="fundDividendsPayoutIsWorking">
+                                    <span ng-show="fundDividendsPayoutIsWorking">
+                                         <i class="notched circle loading icon"></i>
+                                    </span>
+                                    Fund
+                                </button>
+                            </div>
+
+
+                        </form>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div id="eventsSegment" class="ui raised segment">
+
+                <h3 ng-click="showEventsData=!showEventsData">
+                    <span ng-show="!showEventsData" title="Click to show data">
+                        Smart contract events <i class="angle right icon"></i>
+                    </span>
+                    <span ng-show="showEventsData" title="Click to hide data">
+                        Smart contract events <i class="angle down icon"></i>
+                    </span>
+                </h3>
+
+                <div ng-show="showEventsData">
+
+                    <form id="eventsForm" class="ui form">
+                        <div class="field">
+                            <label>Number of last events to show:</label>
+                            <div class="ui action input">
+                                <input type="number" min="0" id="maxEventsNumber" ng-model="maxEventsNumber">
+                                <div class="ui button" ng-click="watchEvents()">
+                                    Change
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <br><br>
+                    <div id="events">
+                        <div ng-repeat="event in events">
+                            <div>
+                                <strong>
+                                    <a ng-href="{{currentNetwork.etherscanLinkPrefix}}/tx/{{event.transactionHash}}"
+                                       title="Click to see transaction on etherscan" target="_blank">
+                                        {{event.event}}
+                                    </a>
+                                </strong>
+                            </div>
+                            <div ng-repeat="(key, value) in event.returnValues" ng-if="key.length>1">
+                                <!--<div ng-repeat="(key, value) in event.args">-->
+                                <b>{{key}}</b> : {{value}}
+                            </div>
+                            (block:
+                            <a ng-href="{{currentNetwork.etherscanLinkPrefix}}/block/{{event.blockNumber}}"
+                               target="_blank" title="Click to see block on etherscan">
+                                {{event.blockNumber}}
+                            </a>
+                            )
+                            <div class="line"></div>
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+            <div id="legalSegment" class="ui raised segment" ng-show="false">
+
+                <h3 ng-click="showLegalSegment=!showLegalSegment">
+                    <span ng-show="!showLegalSegment" title="Click to show data">
+                        Legal <i class="angle right icon"></i>
+                    </span>
+                    <span ng-show="showLegalSegment" title="Click to hide data">
+                        Legal <i class="angle down icon"></i>
+                    </span>
+                </h3>
+
+                <div ng-show="showLegalSegment">
+
+                    <form class="ui form">
+
+                        <h4>Request info about incorporation</h4>
+
+                        <div class="field">
+                            <label>your email</label>
+                            <input type="email" name="emailaddress">
+                        </div>
+
+                        <div class="field">
+                            <label>your message (optional)</label>
+                            <input type="text" name="message">
+                        </div>
+                        <button class="ui button" type="submit" disabled>
+                            Request
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div id="helpTabContent" class="ui bottom attached tab segment" data-tab="helpTab">
+        <br>
+        <div id="helpDescription">
+            <h3 class="ui header">Description</h3>
+            <p>
+                First legal shares represented by tokens in smart contract on the
+                <a href="http://ethereum.org" target="_blank">
+                    Ethereum
+                </a>
+                blockchain were made by our team in 2016 for
+                <a href="https://github.com/CoinOffering" target="_blank">
+                    CoinOffering Ltd.
+                </a>, a corporation registered in the Republic
+                of the Marshall Islands.
+            </p>
+            <p>
+                See our <b><a href="http://bit.ly/cryptoshares" target="_blank">Pitch Deck</a></b>
+                , and publications:
+            </p>
+            <ul>
+                <li>
+                    <a href="https://www.ccn.com/coinoffering-first-company-legal-cryptoshares-ethereum-blockchain/"
+                       target="_blank">
+                        CoinOffering Links Virtual and Legal Worlds with Shares on the Ethereum Blockchain. By Rebecca
+                        Campbell // Blockchain News
+                    </a>
+                </li>
+
+                <li>
+                    <a href="https://btcmanager.com/coinoffering-issues-cryptoshares-using-ethereum/?q=/coinoffering-issues-cryptoshares-using-ethereum/"
+                       target="_blank">
+                        CoinOffering Issues ‘CryptoShares’ Using Ethereum. By Jamie Holmes // BTCManager
+                    </a>
+                </li>
+
+                <li>
+                    <a href="https://steemit.com/business/@plexray/coinoffering-is-the-very-first-corporation-with-its-shares-on-the-ethereum-blockchain"
+                       target="_blank">
+                        CoinOffering is the very first corporation with its shares on the Ethereum blockchain. //
+                        Steemit
+                    </a>
+                </li>
+
+                <li>
+                    <a href="https://www.reddit.com/r/ethereum/comments/4wrjmh/cryptoshares_are_reality_now/"
+                       target="_blank">
+                        Cryptoshares are reality now // Reddit
+                    </a>
+                </li>
+
+                <li>
+                    <a href="https://www.the-blockchain.com/2016/08/09/coinoffering-becomes-first-company-issue-shares-blockchain/"
+                       target="_blank">
+                        CoinOffering Becomes First Company to Issue Shares in Ethereum Blockchain. By
+                        Richard Kastelein // BlockchainNews
+                    </a>
+                </li>
+
+            </ul>
+            <p>
+                With further cryptoshares development Cryptonomica team
+                <a href="https://www.linkedin.com/pulse/cryptonomica-international-blockchain-hackaton-tlv-viktor-ageyev/">
+                    won the 2nd place</a>
+                on
+                <a href="https://www.blee.pro/intelhackathon" target="_blank">
+                    the International Blockchain Hackathon in Tel Aviv in 2017
+                </a>.
+            </p>
+            <p>
+                This dApp (<a href="https://en.wikipedia.org/wiki/Decentralized_application" target="_blank">decentralized
+                application</a>) is a next and modern version of cryptoshares.
+            </p>
+            <br>
+        </div>
+
+        <div id="helpSoftware">
+            <h3 class="ui header">Software:</h3>
+            <p>
+                This webapp works with
+                <a href="https://metamask.io" target="_blank">
+                    MetaMask
+                </a>
+                browser plugin on desktop (Chrome, Firefox, Opera, Brave) and mobile (Firefox)
+            </p>
+            <br>
+        </div>
+
+        <div id="helpSandbox">
+            <h3 class="ui header">Learn and test this dApp in sandbox</h3>
+            <p>
+                You can learn and test functionality of this dApp (
+                <a href="https://en.wikipedia.org/wiki/Decentralized_application" target="_blank">decentralized
+                    application</a>
+                ) on the Ethereum
+                <a href="https://ropsten.etherscan.io" target="_blank">
+                    Ropsten TestNet
+                </a>.
+            </p>
+            <p>
+                On Ropsten we use mouck-up versions of Cryptonomica Ethereum addresses verification smart contract and
+                xEUR smart contract. </p>
+            <p>
+                On TestNet verification smart contract will return for every Ethereum address 'John Doe' as verified
+                owner of the address. <br>
+                And xEUR smart contract will send you any number of mock-up xEUR, just call its
+                <a href="https://ropsten.etherscan.io/address/0x9a2A6C32352d85c9fcC5ff0f91fCB9CE42c15030#writeContract"
+                   target="_blank">
+                    giveMeTokens
+                </a> function.
+            </p>
+            <br>
+        </div>
+
+        <div id="helpSupport">
+
+            <h3>Support:</h3>
+            <p>Support email: <a href="mailto:support@cryptonomica.net">support@cryptonomica.net</a></p>
+            <br>
+        </div>
+
+        <div id="helpSocial">
+
+            <h3>You can also find us on social media:</h3>
+
+            <p>
+                <a href="https://github.com/Cryptonomica" title="Cryptonomica on Github" target="_blank">
+                    <i class="github icon socialLogo"></i>
+                </a>&nbsp;&nbsp;
+
+                <a href="https://t.me/cryptonomicanet" title="Cryptonomica Telegram Group" target="_blank">
+                    <i class="telegram icon socialLogo"></i>
+                </a>&nbsp;&nbsp;
+
+                <a href="https://www.reddit.com/r/cryptonomica/" title="Cryptonomica on Reddit" target="_blank">
+                    <i class="reddit icon socialLogo"></i>
+                </a>&nbsp;&nbsp;
+
+                <a href="https://www.facebook.com/groups/cryptonomica/" title="Cryptonomica Facebook Group"
+                   target="_blank">
+                    <i class="facebook icon socialLogo"></i>
+                </a>&nbsp;&nbsp;
+
+                <a href="https://angel.co/iacc-1" title="Cryptonomica on AngelList" target="_blank">
+                    <i class="angellist icon socialLogo"></i>
+                </a>&nbsp;&nbsp;
+
+                <a href="https://medium.com/cryptonomica" title="Cryptonomica on Medium"
+                   target="_blank">
+                    <i class="medium icon socialLogo"></i>
+                </a>&nbsp;&nbsp;
+            </p>
+            <br>
+        </div>
+
+    </div>
+
+    <!-- ------------------ -->
+
+    <div id="footer" class="ui segment">
+
+        <span ng-show="web3.eth.defaultAccount">
+                User ETH account detected:&nbsp;&nbsp;
+                <a ng-href="{{currentNetwork.etherscanLinkPrefix}}address/{{web3.eth.defaultAccount}}" target="_blank">
+                    {{web3.eth.defaultAccount}}
+                </a>
+         </span>
+        <br>
+        Network ID:&nbsp{{currentNetwork.network_id}}&nbsp(
+        <a ng-href="{{currentNetwork.etherscanLinkPrefix}}" target="_blank">{{currentNetwork.networkName}}</a>)<br>
+        <a href="https://github.com/ethereum/web3.js" target="_blank">web3.js</a> ver.: {{web3.version}}
+        <div class="line"></div>
+        Webapp last changed on:&nbsp; {{webAppLastChange}}, ver. {{webAppVersion}}
+        <div class="line"></div>
+        <i class="grey cog loading icon"></i>
+        <!--        <i class="small grey cog loading icon"></i>-->
+        on <b><a href="https://cryptonomica.net">cryptonomica.net</a></b>
+        <br>
+    </div>
+    <br>
+
+</div>
