@@ -12,6 +12,15 @@
             templateUrl: 'app/directives/alerts.html'
         };
     });
+
+    // ------------------------------------------------------------------------------
+    d.directive('network-label', function () {
+        return {
+            restrict: 'EA', //E = element, A = attribute, C = class, M = comment
+            // <network-label></network-label>
+            templateUrl: 'app/directives/label.html'
+        };
+    });
     // ------------------------------------------------------------------------------
     d.directive('noConnectionToNodeError', function () {
         return {

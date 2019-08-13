@@ -6,7 +6,7 @@
 
     var app = angular.module('app', [
             'ui.router',
-            'ui.date', // https://github.com/angular-ui/ui-date
+            // 'ui.date', // https://github.com/angular-ui/ui-date
             'ngProgress', // https://github.com/VictorBjelkholm/ngProgress
             'ngClipboard', // https://github.com/nico-val/ngClipboard
             // ---- App :
@@ -51,9 +51,10 @@
 
             // console.log("application started");
             $rootScope.webAppVersion = "0.1";
-            $rootScope.webAppLastChange = "2019-08-03";
+            $rootScope.webAppLastChange = "2019-08-12";
             $rootScope.production = false;
-            $rootScope.devModeOn = true;
+            $rootScope.devModeOn = false;
+            // $rootScope.devModeOn = true;
 
             if ($rootScope.devModeOn) {
                 window.myRootScope = $rootScope;
@@ -61,10 +62,9 @@
 
             console.log("CryptoShares webapp, version", $rootScope.webAppVersion, "of", $rootScope.webAppLastChange);
 
-            $rootScope.labelText = "Ropsten only,  ver. " + $rootScope.webAppVersion + "  "; //  + $rootScope.webAppLastChange;
-            if ($rootScope.devModeOn) {
-                $rootScope.labelText = $rootScope.labelText + " [ DEV mode: ON ]"
-            }
+            // $rootScope.labelText = "Ropsten only,  ver. " + $rootScope.webAppVersion + "  "; //  + $rootScope.webAppLastChange;
+            // $rootScope.labelText = $rootScope.currentNetwork.networkName;
+
             $rootScope.showLabel = true;
 
             $rootScope.progressbar = ngProgressFactory.createInstance();
@@ -96,6 +96,7 @@
             };
 
             $rootScope.dateFromUnixTime = function (unixTime) {
+                unixTime = parseInt(unixTime);
                 return new Date(unixTime * 1000);
             };
 
@@ -109,6 +110,25 @@
                 } else {
                     $log.error(date, "is not a date");
                 }
+                return result;
+            };
+
+            /*
+            * see:
+            * https://stackoverflow.com/a/36099084/1697878
+            * */
+            $rootScope.secondsToDaysHoursMinutesSecondsStr = function (seconds) {
+
+                seconds = parseInt(seconds);
+
+                let days = Math.floor(seconds / (3600 * 24));
+                seconds -= days * 3600 * 24;
+                let hrs = Math.floor(seconds / 3600);
+                seconds -= hrs * 3600;
+                let mnts = Math.floor(seconds / 60);
+                seconds -= mnts * 60;
+                let result = days + " days, " + hrs + " hrs, " + mnts + " min, " + seconds + " sec";
+                // console.log(days+" days, "+hrs+" Hrs, "+mnts+" Minutes, "+seconds+" Seconds");
                 return result;
             };
 

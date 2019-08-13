@@ -1,0 +1,11 @@
+<!--<div ng-show="showLabel&&!noConnectionToNodeError">-->
+<div>
+
+    <a class="ui red right ribbon label" ng-show="!production">
+        {{currentNetwork.networkName}}
+    </a>
+    <a class="ui red blue ribbon label" ng-show="production">
+        {{currentNetwork.networkName}}
+    </a>
+
+</div>

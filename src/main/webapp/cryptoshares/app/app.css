@@ -29,6 +29,14 @@ fieldset {
     color: red;
 }
 
+.greenFont {
+    color: darkgreen;
+}
+
+.blueFont {
+    color: #0d71bb;
+}
+
 a .socialLogo {
     font-size: 1.4em;
     color: #777777 !important;
