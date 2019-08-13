@@ -128,9 +128,9 @@
 
             <ol>
                 <li>
-                    Shareholders identity verification (via
+                    Shareholder's identity verification (via
                     <a href="https://cryptonomica.net" target="_blank">Cryptonomica.net</a>
-                    ) and shareholders ledger.
+                    ) and shareholder's ledger.
                 </li>
                 <li>
                     Automatic signing of arbitration clause (dispute resolution agreement) by every new shareholder.
@@ -170,7 +170,7 @@
         <div id="news">
             <h3>News</h3>
             <p>
-                <b>2019-08-12</b> Test version of this dApp deployed on
+                <b>2019-08-13</b> Test version of this dApp deployed on
                 <a href="https://ropsten.etherscan.io" target="_blank">Ropsten TestNet</a>.
             </p>
         </div>
@@ -754,10 +754,10 @@
 
                 <h3 ng-click="showLedgerData=!showLedgerData">
                     <span ng-show="!showLedgerData" title="Click to show data">
-                        Shareholders ledger <i class="angle right icon"></i>
+                        Shareholder's ledger <i class="angle right icon"></i>
                     </span>
                     <span ng-show="showLedgerData" title="Click to hide data">
-                        Shareholders ledger <i class="angle down icon"></i>
+                        Shareholder's ledger <i class="angle down icon"></i>
                     </span>
                 </h3>
 
@@ -768,7 +768,7 @@
                          <span ng-show="getShareholdersLedgerIsWorking">
                              <i class="notched circle loading icon"></i>&nbsp;&nbsp;
                          </span>
-                        Refresh shareholders ledger
+                        Refresh shareholder's ledger
                     </button>
                     <!--
                                         &nbsp;&nbsp;
@@ -786,6 +786,8 @@
 
                     <div>
                         <br>
+                        <b>{{cryptoSharesContractData.name}}</b>
+                        <br>
                         Registered shareholders with more then one share:
                         <b>{{cryptoSharesContractData.shareholdersLedger.length}}</b>
                         <br>
@@ -798,6 +800,8 @@
                                 {{cryptoSharesContractData.registeredShares}}
                             </b>
                         </a>
+                        <br>
+                        All issued shares: <b>{{cryptoSharesContractData.totalSupply}}</b>
                         <br>
                         All shareholders registered for all time: {{cryptoSharesContractData.shareholdersCounter}}
                     </div>
@@ -1519,51 +1523,158 @@
     </div>
 
     <div id="helpTabContent" class="ui bottom attached tab segment" data-tab="helpTab">
+        <br>
+        <div id="helpDescription">
+            <h3 class="ui header">Description</h3>
+            <p>
+                First legal shares represented by tokens in smart contract on the
+                <a href="http://ethereum.org" target="_blank">
+                    Ethereum
+                </a>
+                blockchain were made by our team in 2016 for
+                <a href="https://github.com/CoinOffering" target="_blank">
+                    CoinOffering Ltd.
+                </a>, a corporation registered in the Republic
+                of the Marshall Islands.
+            </p>
+            <p>
+                See our <b><a href="http://bit.ly/cryptoshares" target="_blank">Pitch Deck</a></b>
+                , and publications:
+            </p>
+            <ul>
+                <li>
+                    <a href="https://www.ccn.com/coinoffering-first-company-legal-cryptoshares-ethereum-blockchain/"
+                       target="_blank">
+                        CoinOffering Links Virtual and Legal Worlds with Shares on the Ethereum Blockchain. By Rebecca
+                        Campbell // Blockchain News
+                    </a>
+                </li>
 
-        <h3>Software:</h3>
-        <p>
-            This webapp works with
-            <a href="https://metamask.io" target="_blank">
-                MetaMask
-            </a>
-            browser plugin on desktop (Chrome, Firefox, Opera, Brave) and mobile (Firefox)
-        </p>
+                <li>
+                    <a href="https://btcmanager.com/coinoffering-issues-cryptoshares-using-ethereum/?q=/coinoffering-issues-cryptoshares-using-ethereum/"
+                       target="_blank">
+                        CoinOffering Issues ‘CryptoShares’ Using Ethereum. By Jamie Holmes // BTCManager
+                    </a>
+                </li>
 
-        <h3>Support:</h3>
+                <li>
+                    <a href="https://steemit.com/business/@plexray/coinoffering-is-the-very-first-corporation-with-its-shares-on-the-ethereum-blockchain"
+                       target="_blank">
+                        CoinOffering is the very first corporation with its shares on the Ethereum blockchain. //
+                        Steemit
+                    </a>
+                </li>
 
-        <p>Support email: <a href="mailto:support@cryptonomica.net">support@cryptonomica.net</a>
+                <li>
+                    <a href="https://www.reddit.com/r/ethereum/comments/4wrjmh/cryptoshares_are_reality_now/"
+                       target="_blank">
+                        Cryptoshares are reality now // Reddit
+                    </a>
+                </li>
 
-        <h3>You can also find us on social media:</h3>
+                <li>
+                    <a href="https://www.the-blockchain.com/2016/08/09/coinoffering-becomes-first-company-issue-shares-blockchain/"
+                       target="_blank">
+                        CoinOffering Becomes First Company to Issue Shares in Ethereum Blockchain. By
+                        Richard Kastelein // BlockchainNews
+                    </a>
+                </li>
 
-        <p>
-            <a href="https://github.com/Cryptonomica" title="Cryptonomica on Github" target="_blank">
-                <i class="github icon socialLogo"></i>
-            </a>&nbsp;&nbsp;
+            </ul>
+            <p>
+                With further cryptoshares development Cryptonomica team
+                <a href="https://www.linkedin.com/pulse/cryptonomica-international-blockchain-hackaton-tlv-viktor-ageyev/">
+                    won the 2nd place</a>
+                on
+                <a href="https://www.blee.pro/intelhackathon" target="_blank">
+                    the International Blockchain Hackathon in Tel Aviv in 2017
+                </a>.
+            </p>
+            <p>
+                This dApp (<a href="https://en.wikipedia.org/wiki/Decentralized_application" target="_blank">decentralized
+                application</a>) is a next and modern version of cryptoshares.
+            </p>
+            <br>
+        </div>
 
-            <a href="https://t.me/cryptonomicanet" title="Cryptonomica Telegram Group" target="_blank">
-                <i class="telegram icon socialLogo"></i>
-            </a>&nbsp;&nbsp;
+        <div id="helpSoftware">
+            <h3 class="ui header">Software:</h3>
+            <p>
+                This webapp works with
+                <a href="https://metamask.io" target="_blank">
+                    MetaMask
+                </a>
+                browser plugin on desktop (Chrome, Firefox, Opera, Brave) and mobile (Firefox)
+            </p>
+            <br>
+        </div>
 
-            <a href="https://www.reddit.com/r/cryptonomica/" title="Cryptonomica on Reddit" target="_blank">
-                <i class="reddit icon socialLogo"></i>
-            </a>&nbsp;&nbsp;
+        <div id="helpSandbox">
+            <h3 class="ui header">Learn and test this dApp in sandbox</h3>
+            <p>
+                You can learn and test functionality of this dApp (
+                <a href="https://en.wikipedia.org/wiki/Decentralized_application" target="_blank">decentralized
+                    application</a>
+                ) on the Ethereum
+                <a href="https://ropsten.etherscan.io" target="_blank">
+                    Ropsten TestNet
+                </a>.
+            </p>
+            <p>
+                On Ropsten we use mouck-up versions of Cryptonomica Ethereum addresses verification smart contract and
+                xEUR smart contract. </p>
+            <p>
+                On TestNet verification smart contract will return for every Ethereum address 'John Doe' as verified
+                owner of the address. <br>
+                And xEUR smart contract will send you any number of mock-up xEUR, just call its
+                <a href="https://ropsten.etherscan.io/address/0x9a2A6C32352d85c9fcC5ff0f91fCB9CE42c15030#writeContract"
+                   target="_blank">
+                    giveMeTokens
+                </a> function.
+            </p>
+            <br>
+        </div>
 
-            <a href="https://www.facebook.com/groups/cryptonomica/" title="Cryptonomica Facebook Group"
-               target="_blank">
-                <i class="facebook icon socialLogo"></i>
-            </a>&nbsp;&nbsp;
+        <div id="helpSupport">
 
-            <a href="https://angel.co/iacc-1" title="Cryptonomica on AngelList" target="_blank">
-                <i class="angellist icon socialLogo"></i>
-            </a>&nbsp;&nbsp;
+            <h3>Support:</h3>
+            <p>Support email: <a href="mailto:support@cryptonomica.net">support@cryptonomica.net</a></p>
+            <br>
+        </div>
 
-            <a href="https://medium.com/cryptonomica" title="Cryptonomica on Medium"
-               target="_blank">
-                <i class="medium icon socialLogo"></i>
-            </a>&nbsp;&nbsp;
-        </p>
+        <div id="helpSocial">
 
-        <br><br>
+            <h3>You can also find us on social media:</h3>
+
+            <p>
+                <a href="https://github.com/Cryptonomica" title="Cryptonomica on Github" target="_blank">
+                    <i class="github icon socialLogo"></i>
+                </a>&nbsp;&nbsp;
+
+                <a href="https://t.me/cryptonomicanet" title="Cryptonomica Telegram Group" target="_blank">
+                    <i class="telegram icon socialLogo"></i>
+                </a>&nbsp;&nbsp;
+
+                <a href="https://www.reddit.com/r/cryptonomica/" title="Cryptonomica on Reddit" target="_blank">
+                    <i class="reddit icon socialLogo"></i>
+                </a>&nbsp;&nbsp;
+
+                <a href="https://www.facebook.com/groups/cryptonomica/" title="Cryptonomica Facebook Group"
+                   target="_blank">
+                    <i class="facebook icon socialLogo"></i>
+                </a>&nbsp;&nbsp;
+
+                <a href="https://angel.co/iacc-1" title="Cryptonomica on AngelList" target="_blank">
+                    <i class="angellist icon socialLogo"></i>
+                </a>&nbsp;&nbsp;
+
+                <a href="https://medium.com/cryptonomica" title="Cryptonomica on Medium"
+                   target="_blank">
+                    <i class="medium icon socialLogo"></i>
+                </a>&nbsp;&nbsp;
+            </p>
+            <br>
+        </div>
 
     </div>
 
