@@ -50,8 +50,8 @@
             $log) {
 
             // console.log("application started");
-            $rootScope.webAppVersion = "0.1";
-            $rootScope.webAppLastChange = "2019-08-12";
+            $rootScope.webAppVersion = "0.1.0";
+            $rootScope.webAppLastChange = "2019-08-13";
             $rootScope.production = false;
             $rootScope.devModeOn = false;
             // $rootScope.devModeOn = true;
