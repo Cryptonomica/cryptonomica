@@ -1,4 +1,4 @@
-pragma solidity 0.5.10;
+pragma solidity 0.5.11;
 
 /*
 * @author Cryptonomica Ltd.(cryptonomica.net), 2019
@@ -178,12 +178,25 @@ contract CryptoShares {
 
     using SafeMath for uint256;
 
+    /*
+    * ID of the contract
+    */
     uint public contractNumberInTheLedger;
+
+    /*
+    * description of the organization or project, can be short text or a link to website, white paper, github/gitlab repo
+    */
+    string public description;
 
     /* ---- Identity verification for shareholders */
 
     CryptonomicaVerification public cryptonomicaVerification;
 
+    /*
+    * @param _address Address to check
+    * keyCertificateValidUntil:  if 0, no key certificate registered for this address.
+    * If key certificate not expired and not revoked, identity verification is valid.
+    */
     function addressIsVerifiedByCryptonomica(address _address) public view returns (bool){
         return cryptonomicaVerification.keyCertificateValidUntil(_address) > now && cryptonomicaVerification.revokedOn(_address) == 0;
     }
@@ -212,7 +225,7 @@ contract CryptoShares {
 
     /**
     * stored address that deployed this smart contract to blockchain
-    * it used only in 'init' function
+    * it used only in 'init' function (only creator can set initial values for the contract)
     */
     address public creator;
 
@@ -228,6 +241,10 @@ contract CryptoShares {
 
     /* --- ERC-20 events */
 
+    /*
+    * We use Transfer as in ERC20, not as in ERC223 (https://github.com/ethereum/EIPs/issues/223)
+    * because wallets and etherscan used to detect tokens transfers using ERC20 Transfer event
+    */
     event Transfer(address indexed from, address indexed to, uint value);
 
     event Approval(address indexed _owner, address indexed spender, uint value);
@@ -257,18 +274,21 @@ contract CryptoShares {
     string public disputeResolutionAgreement;
 
     /**
-    * number of signatures under disputeResolution agreement
+    * Number of signatures under disputeResolution agreement
     */
     uint256 public disputeResolutionAgreementSignaturesCounter;
 
     /**
     * dev: This struct represent a signature under dispute resolution agreement.
     *
+    * @param signatureNumber Signature id. Corresponds to disputeResolutionAgreementSignaturesCounter value.
+    * @param shareholderId Id of the shareholder that made this signature (signatory).
     * @param signatoryRepresentedBy Ethereum address of the person, that signed the agreement
     * @param signatoryName Legal name of the person that signed agreement. This can be a name of a legal or physical person
     * @param signatoryRegistrationNumber Registration number of legal entity, or ID number of physical person
     * @param signatoryAddress Address of the signatory (country/State, ZIP/postal code, city, street, house/building number,
     * apartment/office number)
+    * @param signedOnUnixTime Timestamp of the signature
     */
     struct Signature {
         uint signatureNumber;
@@ -290,13 +310,15 @@ contract CryptoShares {
     mapping(address => mapping(uint => Signature)) public signaturesByAddress;
 
     /**
-    * dev: Event to be emitted when Dispute Resolution agreement was signed by a new person.
+    * dev: Event to be emitted when Dispute Resolution agreement was signed by a new person (we call this person 'signatory')
     *
     * @param signatureNumber Number of the signature (see 'disputeResolutionAgreementSignaturesCounter')
     * @param signatoryRepresentedBy Ethereum address of the person who signed disputeResolution agreement
     * @param signatoryName Name of the person who signed disputeResolution agreement
-    * @param signatoryRegistrationNumber Registration number of legal entity, or ID number of physical person
+    * @param signatoryShareholderId Id of the shareholder that made this signature
+    * @param signatoryRegistrationNumber Registration number of legal entity, or ID number of physical person (string)
     * @param signatoryAddress Address of the signatory (country/State, ZIP/postal code, city, street, house/building number, apartment/office number)
+    * @param signedOnUnixTime Signature timestamp
     */
     event disputeResolutionAgreementSigned(
         uint256 indexed signatureNumber,
@@ -309,6 +331,14 @@ contract CryptoShares {
     );
 
     /**
+    * @dev This is the function to make a signature of the shareholder under arbitration agreement.
+    * The identity of a person (ETH address) who make a signature has to be verified via Cryptonomica.net verification.
+    * This verification identifies the physical person who owns the key of ETH address. It this physical person is
+    * a representative of a legal person or an other physical person, it's a responsibility of a person who makes transaction
+    * (i.e. verified person) to provide correct data of a person he/she represents, if not he/she considered as acting
+    * in his/her own name and not as representative.
+    *
+    * @param _shareholderId Id of the shareholder
     * @param _signatoryName Name of the person who signed disputeResolution agreement
     * @param _signatoryRegistrationNumber Registration number of legal entity, or ID number of physical person
     * @param _signatoryAddress Address of the signatory (country/State, ZIP/postal code, city, street, house/building number, apartment/office number)
@@ -369,6 +399,20 @@ contract CryptoShares {
     */
     mapping(address => uint) public shareholderID;
 
+    /*
+    * @param shareholderID The same as in shareholderID mapping
+    * @param shareholderEthereumAddress Ethereum address of the shareholder
+    * @param shareholderName Legal name of the shareholder, it can be name of the legal person, or fist and last name
+    * for the physical person
+    * @param shareholderRegistrationNumber Registration number of the legal person or personal ID of the physical person
+    * @param shareholderAddress Shareholder's legal address (house number, street, city, zip, country)
+    * @param  shareholderIsLegalPerson True if shareholder is a legal person, false if shareholder is a physical person
+    * @param linkToSignersAuthorityToRepresentTheShareholder Link to ledger/register record or to document that
+    * contains information about person's that manages ETH address  authority to represent the shareholder. If shareholder
+    * is a physical person that represents himself/herself can contain "no representation" string
+    * @param balanceOf This is the same as balanceOf(shareholderEthereumAddress), stored here for convenience
+    * (to get all shareholder's data in one request)
+    */
     struct Shareholder {
         uint shareholderID;                                     // 1
         address payable shareholderEthereumAddress;             // 2
@@ -381,6 +425,7 @@ contract CryptoShares {
     }
 
     mapping(uint => Shareholder) public shareholdersLedgerByIdNumber;
+
     mapping(address => Shareholder) public shareholdersLedgerByEthAddress;
 
     event shareholderAddedOrUpdated(
@@ -497,6 +542,21 @@ contract CryptoShares {
     */
     uint public dividendsPeriod;
 
+    /*
+    * @param roundIsRunning Shows if this dividends payouts round is running.
+    * @param sumWeiToPayForOneToken Sum in wei to pay for one token in this round.
+    * @param sumXEurToPayForOneToken Sum in xEUR to pay for one token in this round.
+    * @param allRegisteredShareholders Number of all shareholder registered in whole smart contract.
+    * history, at the moment this round was started.
+    * @shareholdersCounter Number (id) of shareholder to whom last payment was made.
+    * On the start it will be 0, and on the end of the round shareholdersCounter == allRegisteredShareholders.
+    * @registeredShares Number of shares that will receive dividends in this round, i.e. number of shares,
+    * hold by registered shareholder (that's all shares minus shares 'in transfer')
+    * @param roundStartedOnUnixTime Timestamp.
+    * @param roundFinishedOnUnixTime Timestamp.
+    * @param weiForTxFees Amount in wei deposited for this round to reward those who make transactions to distribute
+    * dividends.
+    */
     struct DividendsRound {
         bool roundIsRunning; //............0
         uint sumWeiToPayForOneToken; //....1
@@ -517,19 +577,22 @@ contract CryptoShares {
     mapping(uint => DividendsRound) public dividendsRound;
 
     /*
-    * @param dividendsRound Number of dividends distribution round
+    * @param dividendsRound Number of dividends distribution round.
     * @param startedBy ETH address that started round (if time to pay dividends, can be started by any ETH address)
-    * @param totalWei Sum in wei that has to be distributed in this round
-    * @param totalXEur Sum in xEUR that has to be distributed in this round
+    * @param totalWei Sum in wei that has to be distributed in this round.
+    * @param totalXEur Sum in xEUR that has to be distributed in this round.
+    * @param sharesToPayDividendsTo The same as 'registeredShares' in struct DividendsRound.
+    * @param sumWeiToPayForOneShare Sum in wei to pay for one token in this round.
+    * @param sumXEurToPayForOneShare Sum in xEUR to pay for one token in this round.
     */
     event DividendsPaymentsStarted(
-        uint indexed dividendsRound,
-        address indexed startedBy,
-        uint totalWei,
-        uint totalXEur,
-        uint sharesToPayDividendsTo,
-        uint sumWeiToPayForOneShare,
-        uint sumXEurToPayForOneShare
+        uint indexed dividendsRound, //..0
+        address indexed startedBy, //...1
+        uint totalWei, //................2
+        uint totalXEur, //...............3
+        uint sharesToPayDividendsTo, //..4
+        uint sumWeiToPayForOneShare, //..5
+        uint sumXEurToPayForOneShare //..6
     );
 
     /**
@@ -564,9 +627,9 @@ contract CryptoShares {
     );
 
     /*
-    * @notice This function starts dividend payout round, and can be started from any address if the time has come.
+    * @notice This function starts dividend payout round, and can be started from ANY address if the time has come.
     */
-    function startDividendsPayments() external returns (bool success) {
+    function startDividendsPayments() public returns (bool success) {
 
         require(
             dividendsRound[dividendsRoundsCounter].roundIsRunning == false,
@@ -615,17 +678,28 @@ contract CryptoShares {
         return true;
     }
 
+    /*
+    * @dev Reward for tx distributing dividends was paid
+    * @dividendsRoundNumber Number (Id) of dividends round.
+    * @dividendsToShareholderNumber Shareholder ID, to whom payment was made by the transaction
+    * @dividendsToShareholderAddress Shareholder ETH address, to whom payment was made by the transaction
+    * @feePaidTo Address (ETH), who received the reward (this is the address who send tx to pay dividends to above
+    * stated shareholder
+    * @feeInWei Amount of the reward paid.
+    * @paymentSuccesful Shows if fee payment was successful (msg.sender.send == true)
+    */
     event FeeForDividendsDistributionTxPaid(
         uint indexed dividendsRoundNumber,
         uint dividendsToShareholderNumber,
         address dividendsToShareholderAddress,
         address indexed feePaidTo,
-        uint feeInWei
+        uint feeInWei,
+        bool feePaymentSuccesful
     );
 
     /*
     * @notice This function pays dividends due to the next shareholder.
-    * dev: This functions have be called by external script.
+    * dev: This functions is intended to be called by external script (bot), but can be also called manually.
     * External script can be run by any person interested in distributing dividends.
     * Script code is open source and published on smart contract's web site and/or on Github.
     * Technically this functions can be run also manually (acceptable option for small number of shareholders)
@@ -686,16 +760,23 @@ contract CryptoShares {
 
         // if the round started shareholdersCounter can not be zero
         // because to start the round we need at least one registered share and thus at least one registered shareholder
+
         uint feeForTxCaller = dividendsRound[dividendsRoundsCounter].weiForTxFees / shareholdersCounter;
 
-        if (feeForTxCaller > 0) {
-            msg.sender.transfer(feeForTxCaller);
+        if (
+            feeForTxCaller > 0
+            && msg.sender == tx.origin // < msg.sender is not a contract (to prevent reentrancy)
+        ) {
+
+            // we use send not transfer (returns false, not fail)
+            bool feePaymentSuccessful = msg.sender.send(feeForTxCaller);
             emit FeeForDividendsDistributionTxPaid(
                 dividendsRoundsCounter,
                 nextShareholderToPayDividends,
                 to,
                 msg.sender,
-                feeForTxCaller
+                feeForTxCaller,
+                feePaymentSuccessful
             );
         }
 
@@ -715,7 +796,11 @@ contract CryptoShares {
     }
 
     /*
-    * interested party can provide funds to pay for dividends distribution
+    * Interested party can provide funds to pay for dividends distribution.
+    * @param forDividendsRound Number (Id) of dividends payout round.
+    * @param sumInWei Sum in wei received.
+    * @param from Address from which sum was received.
+    * @param currentSum Current sum of wei to reward accounts sending dividends distributing transactions.
     */
     event FundsToPayForDividendsDistributionReceived(
         uint indexed forDividendsRound,
@@ -724,7 +809,10 @@ contract CryptoShares {
         uint currentSum
     );
 
-    function fundDividendsPayout() external payable returns (bool success){
+    /*
+    * Function to add funds to reward transactions distributing dividends in this round/
+    */
+    function fundDividendsPayout() public payable returns (bool success){
 
         /* We allow this only for running round */
         require(
@@ -744,6 +832,14 @@ contract CryptoShares {
         return true;
     }
 
+    /*
+    * @dev startDividendsPayments() and fundDividendsPayout() combined for convenience
+    */
+    function startDividendsPaymentsAndFundDividendsPayout() external payable returns (bool success) {
+        startDividendsPayments();
+        return fundDividendsPayout();
+    }
+
     /* ============= ERC20 functions ============ */
 
     /**
@@ -757,7 +853,7 @@ contract CryptoShares {
     * and discussed on https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729 ,
     * clients SHOULD make sure to create user interfaces in such a way that they set the allowance first to 0 before
     * setting it to another value for the same spender.
-    * THOUGH The contract itself shouldn’t enforce it, to allow backwards compatibility with contracts deployed before
+    * THOUGH The contract itself shouldn't enforce it, to allow backwards compatibility with contracts deployed before
     *
     * @param _spender The address which will spend the funds.
     * @param _value The amount of tokens to be spent.
@@ -785,7 +881,7 @@ contract CryptoShares {
     }
 
     /**
-    * dev: Checks and changes balances and allowances for transfer functions
+    * dev: private function that checks and changes balances and allowances for transfer functions
     */
     function _transferFrom(address _from, address _to, uint _value) private returns (bool success) {
 
@@ -813,21 +909,24 @@ contract CryptoShares {
         balanceOf[_from] = balanceOf[_from].sub(_value);
         balanceOf[_to] = balanceOf[_to].add(_value);
 
-        if (shareholdersLedgerByEthAddress[_from].shareholderID > 0) {
+        uint fromId = shareholderID[_from];
+        uint toId = shareholderID[_to];
+
+        if (fromId > 0) {
             shareholdersLedgerByEthAddress[_from].balanceOf = balanceOf[_from];
-            shareholdersLedgerByIdNumber[shareholdersLedgerByEthAddress[_from].shareholderID].balanceOf = balanceOf[_from];
+            shareholdersLedgerByIdNumber[fromId].balanceOf = balanceOf[_from];
         }
 
-        if (shareholdersLedgerByEthAddress[_to].shareholderID > 0) {
+        if (toId > 0) {
             shareholdersLedgerByEthAddress[_to].balanceOf = balanceOf[_to];
-            shareholdersLedgerByIdNumber[shareholdersLedgerByEthAddress[_to].shareholderID].balanceOf = balanceOf[_to];
+            shareholdersLedgerByIdNumber[toId].balanceOf = balanceOf[_to];
         }
 
-        if (shareholdersLedgerByEthAddress[_from].shareholderID > 0 && shareholdersLedgerByEthAddress[_to].shareholderID == 0) {
+        if (fromId > 0 && toId == 0) {
             // shares goes from registered address to unregistered address
             // subtract from 'registeredShares'
             registeredShares = registeredShares.sub(_value);
-        } else if (shareholdersLedgerByEthAddress[_from].shareholderID == 0 && shareholdersLedgerByEthAddress[_to].shareholderID > 0) {
+        } else if (fromId == 0 && toId > 0) {
             // shares goes from unregistered address to registered address
             // add to 'registeredShares'
             registeredShares = registeredShares.add(_value);
@@ -844,7 +943,7 @@ contract CryptoShares {
     }
 
     /*
-    * dev: Calls '.tokenFallback' function if token receiver is a contract
+    * dev: Private function, that calls 'tokenFallback' function if token receiver is a contract.
     */
     function _erc223Call(address _to, uint _value, bytes memory _data) private returns (bool success) {
 
@@ -1098,9 +1197,10 @@ contract CryptoShares {
     /* ============= Contract initialization
     * dev: initializes token: set initial values for erc20 variables
     *      assigns all tokens ('totalSupply') to one address ('tokenOwner')
+    * @param _contractNumberInTheLedger Contract Id.
+    * @param _description Description of the project of organization (short text or just a link)
     * @param _name Name of the token
     * @param _symbol Symbol of the token
-    * @param _totalSupply Amount of tokens to create
     * @param _tokenOwner Address that will initially hold all created tokens
     * @param _dividendsPeriod Period in seconds between finish of the previous dividends round and start of the next.
     *        On test net can be small.
@@ -1108,38 +1208,73 @@ contract CryptoShares {
     *        (can be different for test net, where we use mock up contract)
     * @param _cryptonomicaVerificationContractAddress Address of the Cryptonomica verification smart contract
     *        (can be different for test net, where we use mock up contract)
-    * @param _tokenOwner Address that will get all new created tokens.
+    * @param _disputeResolutionAgreement Text of the arbitration agreement.
     */
     function initToken(
         uint _contractNumberInTheLedger,
+        string calldata _description,
         string calldata _name,
         string calldata _symbol,
-        uint _totalSupply,
         uint _dividendsPeriod,
         address _xEurContractAddress,
         address _cryptonomicaVerificationContractAddress,
-        string calldata _disputeResolutionAgreement,
-        address _tokenOwner
+        string calldata _disputeResolutionAgreement
     ) external returns (bool success) {
 
-        require(msg.sender == creator, "Only creator can initialize token contract");
-        require(_totalSupply > 0, "Number of tokens can not be zero");
-        require(totalSupply == 0, "Contract already initialized");
+        require(
+            msg.sender == creator,
+            "Only creator can initialize token contract"
+        );
+
+        require(
+            totalSupply == 0,
+            "Contract already initialized"
+        );
 
         contractNumberInTheLedger = _contractNumberInTheLedger;
-
+        description = _description;
         name = _name;
         symbol = _symbol;
-        totalSupply = _totalSupply;
-        balanceOf[_tokenOwner] = totalSupply;
-        emit Transfer(address(0), _tokenOwner, _totalSupply);
-
         xEuro = XEuro(_xEurContractAddress);
         cryptonomicaVerification = CryptonomicaVerification(_cryptonomicaVerificationContractAddress);
-
         disputeResolutionAgreement = _disputeResolutionAgreement;
-
         dividendsPeriod = _dividendsPeriod;
+
+        return true;
+    }
+
+    /*
+    * @dev initToken and issueTokens are separate functions because of
+    * 'Stack too deep' exception from compiler
+    * @param _tokenOwner Address that will get all new created tokens.
+    * @param _totalSupply Amount of tokens to create.
+    */
+    function issueTokens(
+        uint _totalSupply,
+        address _tokenOwner
+    ) external returns (bool success){
+
+        require(
+            msg.sender == creator,
+            "Only creator can initialize token contract"
+        );
+
+        require(
+            totalSupply == 0,
+            "Contract already initialized"
+        );
+
+        require(
+            _totalSupply > 0,
+            "Number of tokens can not be zero"
+        );
+
+
+        totalSupply = _totalSupply;
+
+        balanceOf[_tokenOwner] = totalSupply;
+
+        emit Transfer(address(0), _tokenOwner, _totalSupply);
 
         return true;
     }
@@ -1270,9 +1405,20 @@ contract ManagedContract {
     */
     function setWithdrawalAddress(address payable _withdrawalAddress) public onlyAdmin returns (bool success) {
 
-        require(!withdrawalAddressFixed, "Withdrawal address already fixed");
-        require(_withdrawalAddress != address(0), "Wrong address: 0x0");
-        require(_withdrawalAddress != address(this), "Wrong address: contract itself");
+        require(
+            !withdrawalAddressFixed,
+            "Withdrawal address already fixed"
+        );
+
+        require(
+            _withdrawalAddress != address(0),
+            "Wrong address: 0x0"
+        );
+
+        require(
+            _withdrawalAddress != address(this),
+            "Wrong address: contract itself"
+        );
 
         emit WithdrawalAddressChanged(withdrawalAddress, _withdrawalAddress, msg.sender);
 
@@ -1293,16 +1439,23 @@ contract ManagedContract {
     );
 
     /**
-    * @param _withdrawalAddress Address to which funds from this contract will be sent
-    * This function can be called one time only.
+    * @param _withdrawalAddress Address to which funds from this contract will be sent.
+    *
+    * @dev This function can be called one time only.
     */
     function fixWithdrawalAddress(address _withdrawalAddress) external onlyAdmin returns (bool success) {
 
         // prevents event if already fixed
-        require(!withdrawalAddressFixed, "Can't change, address fixed");
+        require(
+            !withdrawalAddressFixed,
+            "Can't change, address fixed"
+        );
 
         // check, to prevent fixing wrong address
-        require(withdrawalAddress == _withdrawalAddress, "Wrong address in argument");
+        require(
+            withdrawalAddress == _withdrawalAddress,
+            "Wrong address in argument"
+        );
 
         withdrawalAddressFixed = true;
 
@@ -1312,10 +1465,10 @@ contract ManagedContract {
     }
 
     /**
-    * @param to address to which ETH was sent
-    * @param sumInWei sum sent (in wei)
-    * @param by who made withdrawal (msg.sender)
-    * @param success if withdrawal was successful
+    * @param to Address to which ETH was sent.
+    * @param sumInWei Sum sent (in wei)
+    * @param by Address, that made withdrawal (msg.sender)
+    * @param success Shows f withdrawal was successful.
     */
     event Withdrawal(
         address indexed to,
@@ -1325,9 +1478,10 @@ contract ManagedContract {
     );
 
     /**
-    * !!! can be called by any user or contract
-    * possible warning: check for reentrancy vulnerability http://solidity.readthedocs.io/en/develop/security-considerations.html#re-entrancy
-    * >>> since we are making a withdrawal to our own contract/address only there is no possible attack using re-entrancy vulnerability
+    * @dev This function can be called by any user or contract.
+    * Possible warning:
+    check for reentrancy vulnerability http://solidity.readthedocs.io/en/develop/security-considerations.html#re-entrancy
+    * Since we are making a withdrawal to our own contract/address only there is no possible attack using reentrancy vulnerability
     */
     function withdrawAllToWithdrawalAddress() external returns (bool success) {
 
@@ -1358,6 +1512,9 @@ contract ManagedContract {
 */
 contract ManagedContractWithPaidService is ManagedContract {
 
+    /*
+    * Price for creating a new smart contract with shares (in wei)
+    */
     uint public price;
 
     /*
@@ -1383,7 +1540,7 @@ contract ManagedContractWithPaidService is ManagedContract {
 }
 
 /*
-* dev: Smart contract to deploy crypto shares smart contracts and maintain a ledger of deployed contracts
+* dev: Smart contract to deploy shares smart contracts and maintain a ledger of deployed contracts.
 */
 contract CryptoSharesFactory is ManagedContractWithPaidService {
 
@@ -1400,13 +1557,20 @@ contract CryptoSharesFactory is ManagedContractWithPaidService {
         address indexed changedBy
     );
 
+    /*
+    * @param _newText New text for arbitration agreement. This will be used for future shares contracts only and
+    * will not change arbitration agreement text in already deployed shares contracts.
+    */
     function changeDisputeResolutionAgreement(string calldata _newText) external onlyAdmin returns (bool success){
+
         disputeResolutionAgreement = _newText;
+
         emit DisputeResolutionAgreementTextChanged(_newText, msg.sender);
+
         return true;
     }
 
-    /* ---- xEUR ---- */
+    /* Address of the smart contract with xEUR tokens (see: https://xeuro.online) */
     address public xEurContractAddress;
 
     /**
@@ -1421,7 +1585,8 @@ contract CryptoSharesFactory is ManagedContractWithPaidService {
     );
 
     /**
-    * @param _newAddress address of new contract to be used
+    * @param _newAddress Address of new contract for xEUR to be used (for the case that this address changes)
+    * This function makes change only for future shares contracts, and does not change shares contract already deployed.
     */
     function changeXEuroContractAddress(address _newAddress) public onlyAdmin returns (bool success) {
 
@@ -1460,7 +1625,7 @@ contract CryptoSharesFactory is ManagedContractWithPaidService {
     uint public cryptoSharesContractsCounter;
 
     /*
-    * Contain information about deployed contract;
+    * This struct contains information about deployed contract;
     */
     struct CryptoSharesContract {
         uint contractId;
@@ -1469,7 +1634,7 @@ contract CryptoSharesFactory is ManagedContractWithPaidService {
         string name; // the same as token name
         string symbol; // the same as token symbol
         uint totalSupply; // the same as token totalSupply
-        uint dividendsPeriod;
+        uint dividendsPeriod; // period between dividends payout rounds, in seconds
     }
 
     event NewCryptoSharesContractCreated(
@@ -1478,32 +1643,49 @@ contract CryptoSharesFactory is ManagedContractWithPaidService {
         string name, // the same as token name
         string symbol, // the same as token symbol
         uint totalSupply, // the same as token totalSupply
-        uint dividendsPeriod
+        uint dividendsPeriod // period between dividends payout rounds, in seconds
     );
 
     mapping(uint => CryptoSharesContract) public cryptoSharesContractsLedger;
 
+    /*
+    * @dev This function creates new shares contracts.
+    * @param _description Description of the project or organization (can be short text or link to web page)
+    * @param _name Name of the token, as required by ERC20.
+    * @param _symbol Symbol for the token, as required by ERC20.
+    * @param _totalSupply Total supply, as required by ERC20.
+    * @param _dividendsPeriodInSeconds Period between dividends payout rounds, in seconds.
+    */
     function createCryptoSharesContract(
+        string calldata _description,
         string calldata _name,
         string calldata _symbol,
         uint _totalSupply,
         uint _dividendsPeriodInSeconds
     ) external payable returns (bool success){
 
-        require(msg.value >= price);
+        require(
+            msg.value >= price,
+            "msg.value is less than price"
+        );
 
         CryptoShares cryptoSharesContract = new CryptoShares();
+
         cryptoSharesContractsCounter++;
 
         cryptoSharesContract.initToken(
             cryptoSharesContractsCounter,
+            _description,
             _name,
             _symbol,
-            _totalSupply,
             _dividendsPeriodInSeconds,
             xEurContractAddress,
             address(cryptonomicaVerification),
-            disputeResolutionAgreement,
+            disputeResolutionAgreement
+        );
+
+        cryptoSharesContract.issueTokens(
+            _totalSupply,
             msg.sender
         );
 
@@ -1530,4 +1712,3 @@ contract CryptoSharesFactory is ManagedContractWithPaidService {
     } // end of function createCryptoSharesContract
 
 }
-

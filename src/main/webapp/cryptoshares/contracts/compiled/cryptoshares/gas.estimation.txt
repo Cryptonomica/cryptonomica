@@ -2,56 +2,59 @@
 ======= ./contracts/CryptoShares.sol:CryptoShares =======
 Gas estimation:
 construction:
-   23838 + 3249000 = 3272838
+   23942 + 3330800 = 3354742
 external:
-   fallback:	231
-   addEtherToContract():	188
+   fallback:	253
+   addEtherToContract():	166
    addressIsVerifiedByCryptonomica(address):	infinite
-   addressSignaturesCounter(address):	679
+   addressSignaturesCounter(address):	591
    allowance(address,address):	683
    approve(address,uint256):	22390
    approve(address,uint256,uint256):	infinite
-   balanceOf(address):	679
-   boolVotedAgainst(uint256,address):	668
-   boolVotedFor(uint256,address):	667
-   contractNumberInTheLedger():	488
+   balanceOf(address):	613
+   boolVotedAgainst(uint256,address):	712
+   boolVotedFor(uint256,address):	734
+   contractNumberInTheLedger():	466
    createVoting(string,uint256):	infinite
    creator():	484
-   cryptonomicaVerification():	483
-   decimals():	341
+   cryptonomicaVerification():	593
+   decimals():	319
+   description():	infinite
    disputeResolutionAgreement():	infinite
    disputeResolutionAgreementSignaturesByNumber(uint256):	infinite
-   disputeResolutionAgreementSignaturesCounter():	465
-   dividendsPeriod():	554
-   dividendsRound(uint256):	2445
+   disputeResolutionAgreementSignaturesCounter():	509
+   dividendsPeriod():	465
+   dividendsRound(uint256):	2489
    dividendsRoundsCounter():	508
-   fundDividendsPayout():	23896
-   initToken(uint256,string,string,uint256,uint256,address,address,string,address):	infinite
+   fundDividendsPayout():	23874
+   initToken(uint256,string,string,string,uint256,address,address,string):	infinite
+   issueTokens(uint256,address):	infinite
    name():	infinite
    numberOfVotersAgainst(uint256):	594
-   numberOfVotersFor(uint256):	595
+   numberOfVotersFor(uint256):	596
    payDividendsToNext():	infinite
    proposalText(uint256):	infinite
    registerAsShareholderAndSignArbitrationAgreement(bool,string,string,string,string):	infinite
    registeredShares():	489
-   resultsInBlock(uint256):	574
-   shareholderID(address):	636
-   shareholdersCounter():	510
+   resultsInBlock(uint256):	552
+   shareholderID(address):	614
+   shareholdersCounter():	554
    shareholdersLedgerByEthAddress(address):	infinite
    shareholdersLedgerByIdNumber(uint256):	infinite
    signaturesByAddress(address,uint256):	infinite
    startDividendsPayments():	infinite
+   startDividendsPaymentsAndFundDividendsPayout():	infinite
    symbol():	infinite
    totalSupply():	533
    transfer(address,uint256):	infinite
    transfer(address,uint256,bytes):	infinite
    transferFrom(address,address,uint256):	infinite
-   voteAgainst(uint256):	64459
-   voteFor(uint256):	64547
-   votedAgainst(uint256,uint256):	677
-   votedFor(uint256,uint256):	722
-   votingCounterForContract():	553
-   xEuro():	504
+   voteAgainst(uint256):	64546
+   voteFor(uint256):	64458
+   votedAgainst(uint256,uint256):	788
+   votedFor(uint256,uint256):	744
+   votingCounterForContract():	487
+   xEuro():	505
 internal:
    _erc223Call(address,uint256,bytes memory):	infinite
    _transferFrom(address,address,uint256):	infinite
@@ -60,26 +63,26 @@ internal:
 ======= ./contracts/CryptoShares.sol:CryptoSharesFactory =======
 Gas estimation:
 construction:
-   infinite + 4633200 = infinite
+   infinite + 4814400 = infinite
 external:
    addAdmin(address):	infinite
    changeCryptonomicaVerificationContractAddress(address):	infinite
    changeDisputeResolutionAgreement(string):	infinite
    changePrice(uint256):	infinite
    changeXEuroContractAddress(address):	infinite
-   createCryptoSharesContract(string,string,uint256,uint256):	infinite
-   cryptoSharesContractsCounter():	465
+   createCryptoSharesContract(string,string,string,uint256,uint256):	infinite
+   cryptoSharesContractsCounter():	487
    cryptoSharesContractsLedger(uint256):	infinite
-   cryptonomicaVerification():	460
+   cryptonomicaVerification():	482
    disputeResolutionAgreement():	infinite
    fixWithdrawalAddress(address):	infinite
-   price():	487
+   price():	420
    removeAdmin(address):	infinite
    setWithdrawalAddress(address):	infinite
    withdrawAllToWithdrawalAddress():	infinite
    withdrawalAddress():	547
-   withdrawalAddressFixed():	516
-   xEurContractAddress():	548
+   withdrawalAddressFixed():	538
+   xEurContractAddress():	460
 
 ======= ./contracts/CryptoShares.sol:CryptonomicaVerification =======
 Gas estimation:
