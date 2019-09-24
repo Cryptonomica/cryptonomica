@@ -76,7 +76,7 @@
             <span ng-show="!production">
                 <br>
                 (for testnets this is a mock up contract for testing, in production
-                <a href="https://cryptonomica.net/#!/verifyEthAddress/">
+                <a href="https://cryptonomica.net/#!/verifyEthAddress/" target="_blank">
                     Cryptonomica Ethereum verification smart contract
                 </a>
                 is used)
@@ -169,10 +169,17 @@
 
         <div id="news">
             <h3>News</h3>
+
             <p>
-                <b>2019-08-13</b> Test version of this dApp deployed on
+                <b>2019-09-25</b> New test version of this dApp deployed on
                 <a href="https://ropsten.etherscan.io" target="_blank">Ropsten TestNet</a>.
             </p>
+
+            <p>
+                <b>2019-08-13</b> First Test version of this dApp deployed on
+                <a href="https://ropsten.etherscan.io" target="_blank">Ropsten TestNet</a>.
+            </p>
+
         </div>
 
         <div class="line"></div>
@@ -207,8 +214,17 @@
             <div class="field">
                 <div class="fields">
                     <div class="sixteen wide field">
-                        <label>Name for the new organization:</label>
+                        <label>Name for the new organization/project:</label>
                         <input type="text" ng-model="createCryptoSharesContractForm.name">
+                    </div>
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="fields">
+                    <div class="sixteen wide field">
+                        <label>Short description or a link:</label>
+                        <input type="text" ng-model="createCryptoSharesContractForm.description">
                     </div>
                 </div>
             </div>
@@ -259,7 +275,7 @@
             <div class="line"></div>
 
             <p>
-                Price for bills of exchange smart contract creation:&nbsp;&nbsp;
+                Price for smart contract creation:&nbsp;&nbsp;
                 <a href="" ng-click="getPrice()" title="Click to refresh">
                     <span ng-show="getPriceIsWorking">
                         <i class="notched circle loading icon"></i>
@@ -1355,6 +1371,23 @@
                     </div>
 
                     <div ng-show="cryptoSharesContractData&&cryptoSharesContractData.newDividendsRoundCanBeStarted&&!cryptoSharesContractData.dividendsRound.roundIsRunning">
+
+                        <div>
+                            <b>(Optionally) You can provide funds to reward users or bots creating transactions to
+                                distribute
+                                dividends:</b>
+                        </div>
+                        <!--<br>-->
+
+                        <div class="ui labeled action input">
+                            <div class="ui label">
+                                ETH
+                            </div>
+                            <input name="fundDividendsPayoutSumInEtherOnStart" type="number" min="0.01" step="0.01"
+                                   ng-model="fundDividendsPayoutSumInEtherOnStart">
+                        </div>
+                        <br><br>
+
                         <button id="startDividendsRoundBtn" class="ui positive button"
                                 ng-click="startDividendsPayments()"
                                 ng-disabled="startDividendsPaymentsIsWorking||cryptoSharesContractData.shareholdersLedger.length===0">
@@ -1363,6 +1396,8 @@
                             </span>
                             Start next dividends payout round
                         </button>
+
+
                     </div>
 
                     <div id="dividendsError" class="ui negative message" ng-show="dividendsError">
@@ -1397,7 +1432,7 @@
 
                     <div ng-show="cryptoSharesContractData.dividendsRound.roundIsRunning">
                         <hr>
-                        <form class="ui form">
+                        <form class="ui form" name="fundDividendsPayoutForm">
 
                             <div>
                                 You can provide funds to reward users or bots creating transactions to distribute
@@ -1409,7 +1444,8 @@
                                 <div class="ui label">
                                     ETH
                                 </div>
-                                <input type="number" min="0" step="0.1" ng-model="fundDividendsPayoutSumInEther">
+                                <input name="fundDividendsPayoutSumInEther" type="number" min="0.01" step="0.01"
+                                       ng-model="fundDividendsPayoutSumInEther">
                                 <button class="ui button" type="submit" ng-click="fundDividendsPayout()"
                                         ng-disabled="fundDividendsPayoutIsWorking">
                                     <span ng-show="fundDividendsPayoutIsWorking">
@@ -1419,6 +1455,13 @@
                                 </button>
                             </div>
 
+                            <div ng-show="!fundDividendsPayoutForm.fundDividendsPayoutSumInEther.$valid"
+                                 class="redFont">
+                                <br>
+                                {{fundDividendsPayoutSumInEther}} is not a valid input<br>
+                                should be a number, maximum number of simbols after comma: 2 (like 0.01 or 1.20)
+                                <br>
+                            </div>
 
                         </form>
                     </div>
@@ -1583,7 +1626,8 @@
             </ul>
             <p>
                 With further cryptoshares development Cryptonomica team
-                <a href="https://www.linkedin.com/pulse/cryptonomica-international-blockchain-hackaton-tlv-viktor-ageyev/">
+                <a href="https://www.linkedin.com/pulse/cryptonomica-international-blockchain-hackaton-tlv-viktor-ageyev/"
+                   target="_blank">
                     won the 2nd place</a>
                 on
                 <a href="https://www.blee.pro/intelhackathon" target="_blank">

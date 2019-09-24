@@ -18,6 +18,7 @@
         '$http',
         '$timeout', // for ngProgressFactory
         '$log',
+        '$window',
         '$location',
         '$state',
         '$stateParams',
@@ -26,6 +27,7 @@
                           $http,
                           $timeout, // for ngProgressFactory
                           $log,
+                          $window,
                           $location,
                           $state,
                           $stateParams
@@ -63,11 +65,14 @@
             })();
 
             (function alerts() {
-                $scope.alertDanger = null;  // red
-                $scope.alertWarning = null; // yellow
-                $scope.alertInfo = null;    // blue
-                $scope.alertSuccess = null; // green
-                $scope.alertMessage = null; // grey
+
+                $scope.clearAlerts = function () {
+                    $scope.alertDanger = null;  // red
+                    $scope.alertWarning = null; // yellow
+                    $scope.alertInfo = null;    // blue
+                    $scope.alertSuccess = null; // green
+                    $scope.alertMessage = null; // grey
+                };
 
                 $scope.setAlertDanger = function (message) {
                     $scope.alertDanger = message;
@@ -106,6 +111,8 @@
                     $scope.goTo("alertMessage");
                 };
 
+                $scope.clearAlerts();
+
             })();
 
             /* -- check user browser */
@@ -132,12 +139,12 @@
                 /* ---- Factory Contract ---- */
                 $scope.factoryContractAbiPath = "contracts/compiled/cryptoshares/CryptoSharesFactory.abi";
                 $scope.factoryContractAddress = {
-                    3: "0xb96858931B6A9FA16B46fAE5f006e4466911c324"
+                    3: "0xc8B8f82Bc122baEE18d28b8f2312640977E5fDAA"
                 };
 
                 // where to start fetching events
                 $scope.factoryContractDeployedOnBlock = {
-                    3: 6180258
+                    3: 6450433
                 };
 
                 /* ---- CryptoShares Contract ---- */
@@ -169,18 +176,56 @@
             })();
 
             (function connect() {
+
+                function setAccountsAndNetworkChangedActions() {
+
+                    // $log.debug("Set up MetaMask accounts and network changed actions");
+
+                    // see:
+                    // https://metamask.github.io/metamask-docs/API_Reference/Ethereum_Provider#ethereum.on(eventname%2C-callback
+                    // networkChanged, returns network ID string.
+                    window.ethereum.on('networkChanged', function (networkID) {
+                        $log.info("Network changed to:", networkID);
+                        $scope.clearAlerts();
+                        $scope.setAlertWarning(
+                            "Network changed to: "
+                            + $rootScope.networks[parseInt(networkID)].networkName
+                            + " (network ID: " + networkID + ")"
+                        );
+                        main();
+                    });
+
+                    // use  ethereum.on('networkChanged' ...) instead of auto refresh
+                    window.ethereum.autoRefreshOnNetworkChange = false;
+
+                    window.ethereum.on('accountsChanged', function (accounts) {
+                        $log.info('ETH account(s) changed to:', accounts);
+                        $scope.clearAlerts();
+                        $scope.setAlertWarning("ETH account set/changed to: " + accounts[0]);
+                        main();
+                    });
+                }
+
+                // setAccountsAndNetworkChangedActions(); // set if MetaMask
+
+
                 // https://github.com/MetaMask/metamask-extension/issues/5699#issuecomment-445480857
                 if (window.ethereum) {
 
-                    // $log.debug("window.ethereum:");
-                    // $log.debug(window.ethereum);
+                    $log.debug("window.ethereum:");
+                    $log.debug(window.ethereum);
 
                     $rootScope.web3 = new Web3(ethereum);
 
-                    // $log.debug('web3: ');
-                    // $log.debug($rootScope.web3);
+                    $log.debug('web3: ');
+                    $log.debug($rootScope.web3);
 
-                    if (typeof window.ethereum.selectedAddress === 'undefined') { // privacy mode on
+                    if (
+                        typeof window.ethereum.selectedAddress === 'undefined'
+                        || window.ethereum.selectedAddress === null
+                    ) {
+
+                        $log.debug("privacy mode on, address not shared");
 
                         (async function () {
                             try {
@@ -193,6 +238,8 @@
                                 // $log.debug("$rootScope.web3.eth.defaultAccount : ");
                                 // $log.debug($rootScope.web3.eth.defaultAccount);
                                 $rootScope.noConnectionToNodeError = false;
+
+                                setAccountsAndNetworkChangedActions();
 
                                 main();
 
@@ -216,19 +263,26 @@
 
                     } else { // privacy mode off or already connected
 
+                        $log.debug("Privacy mode off or already connected");
+
                         $rootScope.noConnectionToNodeError = false;
+
+                        setAccountsAndNetworkChangedActions();
 
                         main();
                     }
 
                 } else if (window.web3) {
+
                     $log.debug("old web3 browser detected");
+
                     $rootScope.noConnectionToNodeError = false;
-                    $rootScope.web3 = new Web3(web3.currentProvider);
+                    $rootScope.web3 = new Web3(window.web3.currentProvider);
                     // Accounts always exposed
 
                     if (!$rootScope.web3.eth.defaultAccount && $rootScope.web3.eth.accounts && $rootScope.web3.eth.accounts[0]) {
                         $rootScope.web3.eth.defaultAccount = $rootScope.web3.eth.accounts[0];
+
                         $log.debug("$rootScope.web3.eth.defaultAccount : ");
                         $log.debug($rootScope.web3.eth.defaultAccount);
                     }
@@ -274,6 +328,7 @@
                         }
 
                         // $log.debug("$rootScope.currentNetwork.networkName:", $rootScope.currentNetwork.networkName);
+
                         $rootScope.$apply(); // needed here
 
                         if ($scope.deployedOnNetworksArray.includes($rootScope.currentNetwork.network_id)) {
@@ -367,6 +422,8 @@
                     $scope.factoryContract.methods.cryptoSharesContractsCounter().call()
                         .then((cryptoSharesContractsCounter) => {
 
+                            // $log.debug(cryptoSharesContractsCounter);
+
                             $scope.factoryContractData.cryptoSharesContractsCounter = cryptoSharesContractsCounter;
 
                             // $log.debug(
@@ -390,6 +447,8 @@
                     $scope.getPriceIsWorking = true;
                     $scope.factoryContract.methods.price().call()
                         .then((price) => {
+
+                            // $log.debug(price);
 
                             $scope.priceWei = parseInt(price);
                             $scope.priceETH = $rootScope.web3.utils.fromWei(price, "ether");
@@ -487,10 +546,11 @@
                 };
 
                 $scope.createCryptoSharesContractForm = {};
+                $scope.createCryptoSharesContractForm.description = "Mock up corporation. See description https://example.com";
                 $scope.createCryptoSharesContractForm.name = "Test Corporation Ltd.";
                 $scope.createCryptoSharesContractForm.symbol = "TST";
-                $scope.createCryptoSharesContractForm.totalSupply = 1000;
-                $scope.createCryptoSharesContractForm.dividendsPeriod = 60 * 60 * 1; // 1 hour
+                $scope.createCryptoSharesContractForm.totalSupply = 100;
+                $scope.createCryptoSharesContractForm.dividendsPeriod = 60 * 10; // 10 min
                 $scope.parseSeconds($scope.createCryptoSharesContractForm.dividendsPeriod);
                 $rootScope.$apply();
 
@@ -514,6 +574,7 @@
 
                     $scope.createCryptoSharesContractTxReceipt = null;
                     $scope.factoryContract.methods.createCryptoSharesContract(
+                        $scope.createCryptoSharesContractForm.description,
                         $scope.createCryptoSharesContractForm.name,
                         $scope.createCryptoSharesContractForm.symbol,
                         $scope.createCryptoSharesContractForm.totalSupply,
@@ -1687,7 +1748,7 @@
                                 $rootScope.secondsToDaysHoursMinutesSecondsStr($scope.cryptoSharesContractData.secondsLeftUntilNextRound)
                         }
 
-                        $scope.startDividendsPaymentsIsWorking = false;
+                        // $scope.startDividendsPaymentsIsWorking = false;
                         $scope.payDividendsToNextIsWorking = false;
 
                         $scope.$apply();
@@ -1759,10 +1820,13 @@
 
                     $scope.startDividendsPaymentsIsWorking = false;
                     $scope.dividendsError = null;
+                    $scope.fundDividendsPayoutSumInEtherOnStart = 0;
+
                     $scope.startDividendsPayments = function () {
 
                         $scope.dividendsError = null;
                         $scope.startDividendsPaymentsIsWorking = true;
+                        // $scope.$apply();
 
                         $scope.cryptosharesContract.methods.registeredShares().call()
                             .then((result) => {
@@ -1810,8 +1874,20 @@
                                     return;
                                 }
 
-                                $scope.cryptosharesContract.methods.startDividendsPayments()
-                                    .send({"from": $rootScope.web3.eth.defaultAccount})
+                                if ($scope.fundDividendsPayoutSumInEtherOnStart > 0) {
+
+                                    const valueInWei = $rootScope.web3.utils.toWei(
+                                        $scope.fundDividendsPayoutSumInEtherOnStart.toString(),
+                                        'ether'
+                                    );
+
+                                    $scope.cryptosharesContract.methods.startDividendsPaymentsAndFundDividendsPayout()
+                                        .send({"from": $rootScope.web3.eth.defaultAccount, "value": valueInWei});
+                                } else {
+                                    $scope.cryptosharesContract.methods.startDividendsPayments()
+                                        .send({"from": $rootScope.web3.eth.defaultAccount});
+                                }
+
                             })
                             .then((receipt) => {
 
@@ -1830,16 +1906,21 @@
                     };
 
                     $scope.fundDividendsPayoutIsWorking = false;
-                    $scope.fundDividendsPayoutSumInEther = 0;
+                    $scope.fundDividendsPayoutSumInEther = 0.01;
                     $scope.fundDividendsPayout = function () {
+
                         $scope.fundDividendsPayoutIsWorking = true;
+
+
+                        // $log.debug("$scope.fundDividendsPayoutSumInEther:", $scope.fundDividendsPayoutSumInEther);
+                        // $log.debug($rootScope.web3.utils.toBN($scope.fundDividendsPayoutSumInEther).toString());
 
                         const valueInWei = $rootScope.web3.utils.toWei(
                             $scope.fundDividendsPayoutSumInEther.toString(),
                             'ether'
                         );
 
-                        $log.debug("value:", valueInWei);
+                        // $log.debug("value:", valueInWei, "Wei");
 
                         $scope.cryptosharesContract.methods.fundDividendsPayout()
                             .send({"from": $rootScope.web3.eth.defaultAccount, "value": valueInWei})
