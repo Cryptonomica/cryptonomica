@@ -132,18 +132,20 @@
             (function setUpContractsData() {
 
                 $scope.deployedOnNetworksArray = [
-                    // 1, // MainNet
+                    1, // MainNet
                     3 // Ropsten
                 ];
 
                 /* ---- Factory Contract ---- */
                 $scope.factoryContractAbiPath = "contracts/compiled/cryptoshares/CryptoSharesFactory.abi";
                 $scope.factoryContractAddress = {
+                    1: "0xE5Cf90B672C14747E3865a981b9f6467FC1BF9E2",
                     3: "0xc8B8f82Bc122baEE18d28b8f2312640977E5fDAA"
                 };
 
                 // where to start fetching events
                 $scope.factoryContractDeployedOnBlock = {
+                    1: 8926546,
                     3: 6450433
                 };
 
