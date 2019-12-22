@@ -105,6 +105,24 @@
             };
             /* ---- */
 
+            $scope.setNationalityFlag = function () {
+                // for using in ng-class in semantic ui flag class
+                // see: https://semantic-ui.com/elements/flag.html
+                if ($scope.onlineVerification
+                    && $scope.onlineVerification.nationality
+                ) {
+                    $scope.nationalityFlag = [$scope.onlineVerification.nationality.toLowerCase(), 'flag']
+                }
+            };
+
+            $scope.setNewNationalityFlag = function () {
+                // for using in ng-class in semantic ui flag class
+                // see: https://semantic-ui.com/elements/flag.html
+                // if ($scope.newNationalityFlag) {
+                $scope.newNationalityFlag = [$scope.newNationality.toLowerCase(), 'flag']
+                // }
+            };
+
             $scope.error = {};
             $scope.getOnlineVerificationError = false;
             $scope.fingerprint = $stateParams.fingerprint;
@@ -143,9 +161,11 @@
                     {"fingerprint": $stateParams.fingerprint}
                 ).then(
                     function (resp) {
+
                         // $log.debug("$scope.getOnlineVerification resp:");
                         // $log.debug(resp);
                         $scope.onlineVerification = resp; // OnlineVerificationView.java
+
                         $log.debug('$scope.onlineVerification:');
                         $log.debug($scope.onlineVerification);
                         $scope.videoUrl = "https://cryptonomica-server.appspot.com/gcs?verificationVideoId=" + $scope.onlineVerification.verificationVideoId;
@@ -173,6 +193,9 @@
                             $log.debug('You are not authorized to view verification data for this key');
                             $scope.alertDanger = 'You are not authorized to view verification data for this key';
                         }
+
+                        /* set flag for nationality */
+                        $scope.setNationalityFlag();
 
                     }, function (error) {
                         $log.error("$scope.getOnlineVerification error:");
@@ -328,6 +351,40 @@
                         "userID": $scope.onlineVerification.cryptonomicaUserId,
                         "firstName": $scope.newFirstName,
                         "lastName": $scope.newLastName
+                    })
+                    .then(function (response) { // BooleanWrapperObject.java
+                        $log.debug(response);
+                        $scope.approveResponse = response.message; // <<< TODO: change mame
+                        $timeout($rootScope.progressbar.complete(), 1000);
+                    })
+                    .catch(function (error) {
+                        $log.debug(error);
+                        $scope.approveResponseError = error;
+                        $timeout($rootScope.progressbar.complete(), 1000);
+                    });
+            }; // end of $scope.changeName() ;
+
+            /* --- Change user nationality (admin) */
+            $scope.newNationality = null;
+            $scope.changeNationality = function () {
+
+                $log.debug(
+                    '$scope.changeNationality started: '
+                    + $scope.newNationality + ' ' + $scope.newLastName
+                    + " for " + $scope.onlineVerification.cryptonomicaUserId
+                );
+
+                if ($rootScope.stringIsNullUndefinedOrEmpty($scope.newNationality)) {
+                    $scope.approveResponseError = "New nationality can not be null or empty";
+                    return;
+                }
+
+                $rootScope.progressbar.start(); // <<<<<<<<<<<
+
+                GApi.executeAuth('onlineVerificationAPI',
+                    'changeNationality', {
+                        "fingerprint": $stateParams.fingerprint,
+                        "newNationality": $scope.newNationality,
                     })
                     .then(function (response) { // BooleanWrapperObject.java
                         $log.debug(response);

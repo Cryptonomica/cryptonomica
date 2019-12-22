@@ -3,6 +3,7 @@ package net.cryptonomica.returns;
 import com.google.gson.Gson;
 import net.cryptonomica.entities.CryptonomicaUser;
 import net.cryptonomica.entities.OnlineVerification;
+import net.cryptonomica.entities.StripePaymentForKeyVerification;
 import net.cryptonomica.entities.VerificationDocument;
 
 import java.io.Serializable;
@@ -34,6 +35,7 @@ public class OnlineVerificationView implements Serializable {
     private String verificationVideoId; // ramdom string 33 char.........11
     private ArrayList<String> verificationDocumentsArray; // ............12
     private String phoneNumber; // +972523333333 ........................13
+    // this is id of an entity StripePaymentForKeyVerification in our DB
     private Long stripePaymentForKeyVerificationId; //...................14
     private Boolean paymentMade; //......................................15
     private Boolean paymentVerified; //..................................16
@@ -50,6 +52,9 @@ public class OnlineVerificationView implements Serializable {
     private String nationality; // ......................................24
     private String promoCodeUsed; //.....................................25
     private String userIdFromKey; //.....................................26
+    // this is Stripe internal payment id
+    private String stripeChargeId; // ...................................27
+    // private StripePaymentForKeyVerification stripePayment; //............27
 
     /* --- Constructors: */
     public OnlineVerificationView() {
@@ -313,6 +318,14 @@ public class OnlineVerificationView implements Serializable {
 
     public void setUserIdFromKey(String userIdFromKey) {
         this.userIdFromKey = userIdFromKey;
+    }
+
+    public String getStripeChargeId() {
+        return stripeChargeId;
+    }
+
+    public void setStripeChargeId(String stripeChargeId) {
+        this.stripeChargeId = stripeChargeId;
     }
 
 }
