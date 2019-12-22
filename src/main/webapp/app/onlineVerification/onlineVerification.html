@@ -141,7 +141,7 @@
 
                                                 <div>
 
-                                                    <form class="ui form">
+                                                    <form id="nationalityForm" class="ui form">
 
                                                         <br>
                                                         <!-- User nationality: -->
@@ -163,11 +163,13 @@
                                                         <!--<div ng-show="nationality.$valid">-->
                                                         <div ng-show="nationality">
                                                             Selected:&nbsp;&nbsp;
-                                                            <b>{{nationality}}</b>&nbsp;
+                                                            {{iso3166codes[nationality]}}
+                                                            (<b>{{nationality}}</b>)&nbsp;
                                                             <i ng-class="flag"></i>
                                                         </div>
                                                         <br>
                                                     </form>
+
                                                     <!-- -->
                                                     <form class="ui form">
                                                         <p>

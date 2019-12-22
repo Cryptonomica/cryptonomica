@@ -358,6 +358,7 @@ public class OnlineVerification implements Serializable { // -- can be returned 
     }
 
     public void setNationality(String nationality) {
+        PGPPublicKeyData.checkNationalityProperty(nationality);
         this.nationality = nationality.toUpperCase();
     }
 

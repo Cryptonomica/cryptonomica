@@ -2,10 +2,7 @@ package net.cryptonomica.testing;
 
 import com.google.gson.Gson;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class TestCountries {
@@ -28,6 +25,24 @@ public class TestCountries {
             dataByCountry.put(countryCodes.get(i), i);
         }
         System.out.println(GSON.toJson(dataByCountry));
+
+        System.out.println("======================");
+        System.out.println("");
+
+        // see:
+        // https://stackoverflow.com/a/14155098
+        Map<String,Locale> codeCoutryNameMap = new HashMap<>();
+
+        for (String countryCode : countryCodes){
+            Locale locale = new Locale("en", countryCode);
+
+            String code = locale.getCountry();
+            String name = locale.getDisplayCountry();
+            // String iso = locale.getISO3Country();
+            // System.out.println(iso + " " + code + " " + name);
+            System.out.println(code + " " + name);
+
+        }
 
     }
 

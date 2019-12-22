@@ -28,9 +28,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 import static net.cryptonomica.service.OfyService.ofy;
@@ -164,6 +162,20 @@ public class OnlineVerificationAPI {
                 verificationDocumentArrayList,
                 pgpPublicKeyData.getUserID()
         );
+
+        if (requester.getCryptonomicaOfficer() != null && requester.getCryptonomicaOfficer()) {
+            if (onlineVerification.getStripePaymentForKeyVerificationId() != null) {
+                StripePaymentForKeyVerification stripePaymentForKeyVerification = ofy()
+                        .load()
+                        .key(Key.create(StripePaymentForKeyVerification.class, onlineVerification.getStripePaymentForKeyVerificationId()))
+                        .now();
+                onlineVerificationView.setStripeChargeId(
+                        stripePaymentForKeyVerification.getChargeId()
+                );
+            }
+
+        }
+
         LOG.warning("onlineVerificationView:");
         LOG.warning(onlineVerificationView.toString());
 
@@ -790,6 +802,84 @@ https://stackoverflow.com/questions/21001371/why-gae-datastore-not-support-multi
         return result;
 
     } // end of changeName() ;
+
+    /* allows admin to change user nationality */
+    @ApiMethod(
+            name = "changeNationality",
+            path = "changeNationality",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    @SuppressWarnings("unused")
+    public BooleanWrapperObject changeNationality(
+            final User googleUser,
+            @Named("fingerprint") String fingerprint,
+            @Named("newNationality") String newNationality
+            // see: https://cloud.google.com/appengine/docs/java/endpoints/exceptions
+    ) throws Exception {
+
+        /* --- Check authorization : CRYPTONOMICA OFFICER ONLY !!! */
+        CryptonomicaUser admin = UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        /* --- check input: */
+        fingerprint = fingerprint.toUpperCase();
+        PGPTools.checkFingerprint(fingerprint);
+
+        newNationality = newNationality.toUpperCase();
+
+        LOG.warning("changeNationality request. Parameters:"
+                + " figerprint: " + fingerprint
+                + " newNationality: " + newNationality
+
+        );
+
+        /* --- load entities to change */
+        PGPPublicKeyData pgpPublicKeyData = PGPTools.getPGPPublicKeyDataFromDataBaseByFingerprint(fingerprint);
+        OnlineVerification onlineVerification = loadOnlineVerification(fingerprint); //
+
+        /* --- change entities*/
+        String oldNationality = onlineVerification.getNationality();
+        onlineVerification.setNationality(newNationality); // setNationality method checks input
+        pgpPublicKeyData.setNationality(newNationality);
+
+        /* --- record changes */
+        CryptonomicaLog cryptonomicaLog = new CryptonomicaLog();
+        cryptonomicaLog.setChangedBy(admin.getUserId());
+        cryptonomicaLog.setChangedByEmail(admin.getEmail().getEmail());
+        cryptonomicaLog.setUserWhoseDataIsChanged(onlineVerification.getCryptonomicaUserId());
+        cryptonomicaLog.setUserWhoseDataIsChangedEmail(onlineVerification.getUserEmail().getEmail());
+        String action =
+                "User nationality for key " + fingerprint + " changed from " + oldNationality + " to " + newNationality;
+        cryptonomicaLog.setAction(action);
+
+        /* --- save entities */
+        ofy().save().entity(onlineVerification).now();
+        ofy().save().entity(pgpPublicKeyData).now();
+        ofy().save().entity(cryptonomicaLog).now();
+
+        /* --- send message to user */
+        final Queue queue = QueueFactory.getDefaultQueue();
+        queue.add(TaskOptions.Builder
+                .withUrl("/_ah/SendGridServlet")
+                .param("email", onlineVerification.getUserEmail().getEmail())
+                .param("emailCC", Constants.adminEmailAddress)
+                .param("messageSubject", Constants.emailSubjectPrefix + "profile changes: nationality changed")
+                .param("messageText",
+                        "Dear " + pgpPublicKeyData.getFirstName().toUpperCase() + " ,\n\n"
+                                + "Following changes were made in your profile: \n"
+                                + action + "\n\n"
+                                + "Should you have any questions, please, do not hesitate to contact us via "
+                                + Constants.supportEmailAddress + "\n\n"
+                                + "Best regards, \n\n"
+                                + "Cryptonomica team\n\n"
+                                + new Date().toString()
+                                + "\n\n"
+                                + "if you think it's wrong or it is an error, "
+                                + "please write to " + Constants.supportEmailAddress + "\n\n"
+                )
+        );
+
+        return new BooleanWrapperObject(true, action);
+    } // end of changeNationality() ;
 
     /* allows admin to change user birth date */
     @ApiMethod(

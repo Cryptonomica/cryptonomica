@@ -82,7 +82,15 @@
                                     </tr>
                                     <tr>
                                         <td>Nationality:</td>
-                                        <td>{{onlineVerification.nationality}}</td>
+                                        <td>
+                                            {{iso3166codes[onlineVerification.nationality]}}
+                                            (<a ng-href="https://en.wikipedia.org/wiki/ISO_3166-2:{{onlineVerification.nationality}}"
+                                                target="_blank">
+                                            {{onlineVerification.nationality}}
+                                        </a>)
+                                            <!--<i class="ae flag"></i>-->
+                                            <i ng-class="nationalityFlag"></i>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Google Account (email):</td>
@@ -103,6 +111,15 @@
                                         <td>Stripe Payment For Key Verification Id:</td>
                                         <td>
                                             {{onlineVerification.stripePaymentForKeyVerificationId}}
+                                            <div ng-show="onlineVerification.stripeChargeId">
+                                                <div ng-show="currentUser.cryptonomicaOfficer">
+                                                    <br>
+                                                    <a ng-href="https://dashboard.stripe.com/payments/{{onlineVerification.stripeChargeId}}"
+                                                       target="_blank">
+                                                        {{onlineVerification.stripeChargeId}}
+                                                    </a>
+                                                </div>
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr>
@@ -206,111 +223,221 @@
 
                                         <fieldset>
 
-                                            <div class="field">
-                                                <h2>Change user name </h2>
-                                                <div>
-                                                    input will be converted to lower case when storing in data base
+                                            <div id="changeUserName" class="field">
+
+                                                <h2 ng-click="showChangeUserNameBlock=!showChangeUserNameBlock">
+                                                    Change user name
+                                                    <span ng-show="showChangeUserNameBlock">
+                                                        <i class="angle down icon"></i>
+                                                    </span>
+                                                    <span ng-show="!showChangeUserNameBlock">
+                                                        <i class="angle right icon"></i>
+                                                    </span>
+                                                </h2>
+
+                                                <div id="changeUserNameBlock" ng-show="showChangeUserNameBlock">
+                                                    <div>
+                                                        input will be converted to lower case when storing in data base
+                                                    </div>
+                                                    <label for="newFirstName">New first name: </label>
+                                                    <input id="newFirstName" type="text" class="form-control"
+                                                           ng-model="newFirstName">
+                                                    <br>
+
+                                                    <label for="newLastName">New last name: </label>
+                                                    <input id="newLastName" type="text" class="form-control"
+                                                           ng-model="newLastName">
+                                                    <br>
+
+                                                    <button ng-click="changeName()"
+                                                            class="ui button" type="submit">
+                                                        Change Name
+                                                    </button>
                                                 </div>
-                                                <label for="newFirstName">New first name: </label>
-                                                <input id="newFirstName" type="text" class="form-control"
-                                                       ng-model="newFirstName">
-                                                <br>
-
-                                                <label for="newLastName">New last name: </label>
-                                                <input id="newLastName" type="text" class="form-control"
-                                                       ng-model="newLastName">
-                                                <br>
-
-                                                <button ng-click="changeName()"
-                                                        class="ui button" type="submit">
-                                                    Change Name
-                                                </button>
                                             </div>
                                             <hr>
 
-                                            <div class="field">
+                                            <div id="changeUserNationality" class="field">
 
-                                                <h2>Change user bithdate </h2>
-                                                <div>
-                                                    Year should be four digits, like 19xx
+                                                <h2 ng-click="showChangeUserNationalityBlock=!showChangeUserNationalityBlock">
+                                                    Change user nationality for this key
+                                                    <span ng-show="showChangeUserNationalityBlock">
+                                                        <i class="angle down icon"></i>
+                                                    </span>
+                                                    <span ng-show="!showChangeUserNationalityBlock">
+                                                        <i class="angle right icon"></i>
+                                                    </span>
+                                                </h2>
+                                                <div id="changeUserNationalityBlock"
+                                                     ng-show="showChangeUserNationalityBlock">
+
+                                                    <div>
+                                                        <span>Current nationality:</span>
+                                                        <a ng-href="https://en.wikipedia.org/wiki/ISO_3166-2:{{onlineVerification.nationality}}"
+                                                           target="_blank">
+                                                            {{onlineVerification.nationality}}
+                                                        </a>
+                                                        <!--<i class="ae flag"></i>-->
+                                                        <i ng-class="nationalityFlag"></i>
+
+                                                    </div>
+
+
+                                                    <br>
+                                                    <!-- User nationality: -->
+                                                    <label for="newNationality">
+                                                        New nationality (according to passport or similar
+                                                        document):
+                                                    </label>
+                                                    <select id="newNationality" name="newNationality"
+                                                            ng-model="newNationality" pvp-country-picker
+                                                            ng-change="setNewNationalityFlag()"
+                                                            class="c-select">
+                                                    </select>
+
+                                                    <div ng-show="newNationality">
+                                                        Selected:&nbsp;&nbsp;
+                                                        {{iso3166codes[newNationality]}}
+                                                        (<b>{{newNationality}}</b>)&nbsp;
+                                                        <i ng-class="newNationalityFlag"></i>
+                                                    </div>
+
+                                                    <button ng-click="changeNationality()"
+                                                            class="ui button" type="submit">
+                                                        Change nationality
+                                                    </button>
                                                 </div>
-
-                                                <label for="newYear">New year: </label>
-                                                <input id="newYear" type="number" class="form-control"
-                                                       ng-model="newYear">
-                                                <br>
-
-                                                <label for="newMonth">New month: </label>
-                                                <input id="newMonth" type="number" class="form-control"
-                                                       ng-model="newMonth">
-                                                <br>
-
-                                                <label for="newDay">New day: </label>
-                                                <input id="newDay" type="number" class="form-control"
-                                                       ng-model="newDay">
-                                                <br>
-
-                                                <button ng-click="changeBirthdate()"
-                                                        class="ui button" type="submit">
-                                                    Change Birthdate
-                                                </button>
-
                                             </div>
                                             <hr>
 
-                                            <div class="field">
-                                                <h2>Add name on card </h2>
+                                            <div id="changeUserBirthdate" class="field">
+
+                                                <h2 ng-click="showChangeUserBirthdateBlock=!showChangeUserBirthdateBlock">
+                                                    Change user bithdate
+                                                    <span ng-show="showChangeUserBirthdateBlock">
+                                                        <i class="angle down icon"></i>
+                                                    </span>
+                                                    <span ng-show="!showChangeUserBirthdateBlock">
+                                                        <i class="angle right icon"></i>
+                                                    </span>
+                                                </h2>
+                                                <div id="changeUserBirthdateBlock"
+                                                     ng-show="showChangeUserBirthdateBlock">
+                                                    <div>
+                                                        Year should be four digits, like 19xx
+                                                    </div>
+
+                                                    <label for="newYear">New year: </label>
+                                                    <input id="newYear" type="number" class="form-control"
+                                                           ng-model="newYear">
+                                                    <br>
+
+                                                    <label for="newMonth">New month: </label>
+                                                    <input id="newMonth" type="number" class="form-control"
+                                                           ng-model="newMonth">
+                                                    <br>
+
+                                                    <label for="newDay">New day: </label>
+                                                    <input id="newDay" type="number" class="form-control"
+                                                           ng-model="newDay">
+                                                    <br>
+
+                                                    <button ng-click="changeBirthdate()"
+                                                            class="ui button" type="submit">
+                                                        Change Birthdate
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <hr>
+
+                                            <div id="addNameOnCard" class="field">
+
+                                                <h2 ng-click="showAddNameOnCardBlock=!showAddNameOnCardBlock"
+                                                    style="margin-bottom: 0px">
+                                                    Add name on card
+                                                    <span ng-show="showAddNameOnCardBlock">
+                                                        <i class="angle down icon"></i>
+                                                    </span>
+                                                    <span ng-show="!showAddNameOnCardBlock">
+                                                        <i class="angle right icon"></i>
+                                                    </span>
+                                                </h2>
                                                 <div>
                                                     Add name that can be used to make payment with credit/debit card
                                                 </div>
 
-                                                <label for="nameOnCard">Name on card (case insensitive): </label>
-                                                <input id="nameOnCard" type="text" class="form-control"
-                                                       ng-model="nameOnCard">
-                                                <br>
+                                                <div id="addNameOnCardBlock" ng-show="showAddNameOnCardBlock">
 
-                                                <button ng-click="addNameOnCard()"
-                                                        class="ui button" type="submit">
-                                                    Add name on card: {{nameOnCard}}
-                                                </button>
+                                                    <label for="nameOnCard">Name on card (case insensitive): </label>
+                                                    <input id="nameOnCard" type="text" class="form-control"
+                                                           ng-model="nameOnCard">
+                                                    <br>
 
+                                                    <button ng-click="addNameOnCard()"
+                                                            class="ui button" type="submit">
+                                                        Add name on card: {{nameOnCard}}
+                                                    </button>
+                                                </div>
                                             </div>
                                             <hr>
 
-                                            <div class="field">
+                                            <div id="removeVideo" class="field">
 
-                                                <h2>Remove video</h2>
-                                                <label for="messageToUser">Message to user: </label>
+                                                <h2 ng-click="showRemoveVideoBlock=!showRemoveVideoBlock">
+                                                    Remove video
+                                                    <span ng-show="showRemoveVideoBlock">
+                                                        <i class="angle down icon"></i>
+                                                    </span>
+                                                    <span ng-show="!showRemoveVideoBlock">
+                                                        <i class="angle right icon"></i>
+                                                    </span>
+                                                </h2>
 
-                                                <input id="messageToUser" type="text" class="form-control"
-                                                       ng-model="messageToUser">
-                                                <br>
+                                                <div id="removeVideoBlock" ng-show="showRemoveVideoBlock">
 
-                                                <button ng-click="removeVideoWithMessage()"
-                                                        class="ui button" type="submit">
-                                                    Remove video and send message to user
-                                                </button>
+                                                    <label for="messageToUser">Message to user: </label>
+                                                    <input id="messageToUser" type="text" class="form-control"
+                                                           ng-model="messageToUser">
+                                                    <br>
+
+                                                    <button ng-click="removeVideoWithMessage()"
+                                                            class="ui button" type="submit">
+                                                        Remove video and send message to user
+                                                    </button>
+                                                </div>
                                             </div>
                                             <hr>
 
-                                            <div class="field">
+                                            <div id="removeDocuments" class="field">
 
-                                                <h2>Remove documents</h2>
-                                                <label for="removeDocumentsMessageToUser">Message to user: </label>
+                                                <h2 ng-click="showRemoveDocumentsBlock=!showRemoveDocumentsBlock">
+                                                    Remove documents
+                                                    <span ng-show="showRemoveDocumentsBlock">
+                                                        <i class="angle down icon"></i>
+                                                    </span>
+                                                    <span ng-show="!showRemoveDocumentsBlock">
+                                                        <i class="angle right icon"></i>
+                                                    </span>
+                                                </h2>
 
-                                                <input id="removeDocumentsMessageToUser" type="text"
-                                                       class="form-control"
-                                                       ng-model="removeDocumentsMessageToUser">
-                                                <br>
+                                                <div id="removeDocumentsBlock" ng-show="showRemoveDocumentsBlock">
 
-                                                <button ng-click="removeDocumentsWithMessage()"
-                                                        class="ui button" type="submit">
-                                                    Remove documents and send message to user
-                                                </button>
+                                                    <label for="removeDocumentsMessageToUser">Message to user: </label>
+
+                                                    <input id="removeDocumentsMessageToUser" type="text"
+                                                           class="form-control"
+                                                           ng-model="removeDocumentsMessageToUser">
+                                                    <br>
+
+                                                    <button ng-click="removeDocumentsWithMessage()"
+                                                            class="ui button" type="submit">
+                                                        Remove documents and send message to user
+                                                    </button>
+                                                </div>
                                             </div>
                                             <hr>
 
-                                            <div class="field">
+                                            <div id="approveVerification" class="field">
 
                                                 <h2 style="background-color: lightgreen">Approve</h2>
 
@@ -332,7 +459,7 @@
 
                                             </div>
 
-                                            <div class="field">
+                                            <div id="deleteOnlineVerificationEntity" class="field">
 
                                                 <h2 style="background-color: lightcoral">Reject/Delete Online
                                                     Verification

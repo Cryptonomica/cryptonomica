@@ -13,10 +13,7 @@ import org.bouncycastle.openpgp.PGPPublicKey;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 @Entity // -> net.cryptonomica.service.OfyService
@@ -225,6 +222,26 @@ public class PGPPublicKeyData implements Serializable {
 
     /* ------- Methods */
 
+
+    public static Boolean checkNationalityProperty(final String nationality) throws IllegalArgumentException {
+
+        if (nationality == null || nationality.isEmpty() || nationality.length() != 2) {
+            throw new IllegalArgumentException(
+                    "Nationality property must contain exactly two letters (ISO 3166), value provided: " + nationality
+            );
+        }
+
+        ArrayList<String> isoCountries = new ArrayList<>(Arrays.asList(Locale.getISOCountries()));
+
+        if (!isoCountries.contains(nationality.toUpperCase())) {
+            throw new IllegalArgumentException(
+                    "Nnationality: " + nationality + " is not a country code defined in ISO 3166"
+            );
+        }
+
+        return Boolean.TRUE;
+    }
+
     public String toJSON() {
         Gson gson = new Gson();
         return gson.toJson(this);
@@ -428,6 +445,7 @@ public class PGPPublicKeyData implements Serializable {
     }
 
     public void setNationality(String nationality) {
+        checkNationalityProperty(nationality);
         this.nationality = nationality.toUpperCase();
     }
 

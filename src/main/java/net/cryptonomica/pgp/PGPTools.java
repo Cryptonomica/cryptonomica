@@ -34,7 +34,7 @@ public class PGPTools {
 
     public static void checkFingerprint(String fingerprint) {
         if (fingerprint == null || fingerprint.equals("") || fingerprint.length() != 40) {
-            throw new IllegalArgumentException("fingerprint is missing or invalid");
+            throw new IllegalArgumentException("Fingerprint is missing or invalid");
         }
     }
 
