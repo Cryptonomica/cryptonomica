@@ -23,7 +23,7 @@
     <properties>
 
         <!-- endpoints.project.id START -->
-        <endpoints.project.id>sandbox-cryptonomica</endpoints.project.id>
+        <endpoints.project.id>cryptonomica-server</endpoints.project.id>
         <!-- endpoints.project.id END -->
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
