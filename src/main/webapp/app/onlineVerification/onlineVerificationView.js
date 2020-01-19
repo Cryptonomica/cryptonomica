@@ -150,8 +150,6 @@
             //
             $scope.acceptTermsAnswer = null;
 
-            $log.debug('checkpoint # 01 ');
-
             //>>> Main Function:
             $scope.getOnlineVerification = function () {
                 $log.debug('$scope.getOnlineVerification() started');
@@ -256,11 +254,61 @@
                         }
                     );
             } else {
-                $log.debug('checkpoint # 04 ');
                 $scope.getPGPPublicKeyByFingerprint(); // >>> this is also 'next step'
             }
 
             /* ---- for Cryptonomica compliance officer : */
+
+            $scope.images = {};
+            $scope.rotateImageRight = function (imageId) {
+                // $log.debug("rotateImageRight clicked for image id:", imageId);
+                if (!$rootScope.stringIsNullUndefinedOrEmpty(imageId)) {
+
+                    const img = document.getElementById(imageId);
+                    const imgModal = document.getElementById(imageId + "modalImage");
+                    // $log.debug(img);
+                    // $log.debug("img.width:", img.width, "img.height:", img.height);
+
+                    if (img) {
+
+                        if (!$scope.images[imageId]) {
+                            $scope.images[imageId] = {};
+                            $scope.images[imageId].rotationsCounter = 0;
+                        }
+
+                        if ($scope.images[imageId].rotationsCounter === 0) {
+                            img.style.transform = "rotate(90deg)";
+                            imgModal.style.transform = "rotate(90deg)";
+                            $scope.images[imageId].rotationsCounter++;
+                        }
+                        else if ($scope.images[imageId].rotationsCounter === 1) {
+                            img.style.transform = "rotate(180deg)";
+                            imgModal.style.transform = "rotate(180deg)";
+                            $scope.images[imageId].rotationsCounter++;
+                        }
+                        else if ($scope.images[imageId].rotationsCounter === 2) {
+                            img.style.transform = "rotate(270deg)";
+                            imgModal.style.transform = "rotate(270deg)";
+                            $scope.images[imageId].rotationsCounter++;
+                        }
+                        else if ($scope.images[imageId].rotationsCounter === 3) {
+                            img.style.transform = "rotate(360deg)";
+                            imgModal.style.transform = "rotate(360deg)";
+                            $scope.images[imageId].rotationsCounter = 0;
+                        }
+                    }
+                }
+            }; // end of $scope.rotateImageRight
+
+            $scope.showModal = function (modalId) {
+                // see: https://semantic-ui.com/modules/modal.html#/definition
+                $('#' + modalId).modal('show');
+            };
+
+            $scope.hideModal = function (modalId) {
+                // see: https://semantic-ui.com/modules/modal.html#/definition
+                $('#' + modalId).modal('hide');
+            };
 
             /* --- remove video and send message to user : */
             $scope.messageToUser = null;

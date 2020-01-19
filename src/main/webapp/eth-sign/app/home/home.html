@@ -12,7 +12,8 @@
 
 <div class="ui container">
 
-    <center>
+    <center id="header">
+
         <h1 class="ui header" style="margin-top: 0.3em; margin-bottom: 0em">
             eth-sign
         </h1>
@@ -24,8 +25,12 @@
         </div>
         <!--<div class="ui header" style="margin-top: 0.1em;color: #666666">-->
         <div class="ui header" style="color: #666666;margin-top: 0.3em">
-            Sign a text using your Ethereum address key and verify signatures
+            Sign a text or file using your Ethereum address key and verify signatures
         </div>
+
+        <no-connection-to-node-error></no-connection-to-node-error>
+        <alerts></alerts>
+
     </center>
 
     <div class="ui top attached tabular menu" style="font-size: 100%;">
@@ -34,10 +39,22 @@
             <!--<i class="edit icon"></i>&nbsp;-->
             Sign Text
         </a>
+
         <a class="item" data-tab="verifyTab">
             <!--<i class="search icon"></i>&nbsp;-->
-            Verify Signature
+            Verify Text Signature
         </a>
+
+        <a class="item" data-tab="signFileTab">
+            <!--<i class="edit icon"></i>&nbsp;-->
+            Sign File
+        </a>
+
+        <a class="item" data-tab="verifyFileSignatureTab">
+            <!--<i class="edit icon"></i>&nbsp;-->
+            Verify File Signature
+        </a>
+
         <a class="item" data-tab="helpTab">
             <!--<i class="question icon"></i>&nbsp;-->
             FAQ
@@ -46,12 +63,6 @@
     </div>
 
     <div id="signTab" class="ui bottom attached tab segment active" data-tab="signTab">
-
-        <!--<div ng-include="'app/home/sign.html'"></div>-->
-
-        <no-connection-to-node-error></no-connection-to-node-error>
-        <alerts></alerts>
-
         <br>
         <form id="signForm" class="ui form">
 
@@ -131,9 +142,6 @@
         <!--<div ng-include="'app/home/verify.html'"></div>-->
         <!-- (!!!) does not work with ng-include -->
 
-        <no-connection-to-node-error></no-connection-to-node-error>
-        <alerts></alerts>
-
         <br>
         <form id="verificationForm" class="ui form">
 
@@ -170,6 +178,9 @@
                             <i class="sync loading icon"></i>&nbsp;
                         </span>
                         Verify Signature
+                    </button>
+                    <button class="ui button" type="submit" ng-click="signatureForVerification=null">
+                        Clear Signature
                     </button>
                 </div>
                 <br><br>
@@ -240,9 +251,218 @@
                         {{signatoryAddress}}
                     </a>
                     is unknown or unverified <br>
-                    (or the signature and the text do not match, or they are not real)<br>
+                    <!--(or the signature and the text do not match, or they are not real)<br>-->
                     If this is a real address, you can offer its owner to register it address via
                     <!--<a href="https://www.cryptonomica.net/#!/verifyEthAddress/">cryptonomica.net</a>-->
+                    <a href="https://cryptonomica.net/#!/verifyEthAddress/" target="_blank">cryptonomica </a>
+                    smart contract.
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+
+    <div id="signFileTab" class="ui bottom attached tab segment" data-tab="signFileTab">
+        <br>
+        <form id="signFileForm" class="ui form">
+
+            <div class="field">
+
+                <h3><i class="file alternate outline icon"></i>&nbsp;File to sign:</h3>
+                <p>
+                    The maximum file size depends on the power of your computer. It is recommended to work with files no
+                    more than 2 megabytes.
+                </p>
+
+                <div class="two fields">
+                    <div class="field">
+                        <!--// onReadFile directive (see app/directives/directives.js)-->
+                        <!--// readFileContent = $scope.readFileContent-->
+                        <!--<input type="file" class="mini ui button" on-read-file="readBinaryFile($fileContent)"/>-->
+
+                        <input id="binaryFileToSignInput" type="file"
+                               class="mini ui button" on-read-binary-file="readBinaryFile($fileContent)"/>
+
+                    </div>
+                    <div class="field"></div>
+                </div>
+
+                <div ng-show="binaryFileToSign">
+
+                    <!--<a ng-href="{{binaryFileToSign.objectURL}}" target="_blank">{{binaryFileToSign.name}}</a><br>-->
+                    File size: {{binaryFileToSign.size | Filesize}}<br>
+                    File type: {{binaryFileToSign.type}}<br>
+                    File last modified: {{binaryFileToSign.lastModifiedDate}}<br>
+
+                    <a ng-href="{{binaryFileToSign.objectURL}}" target="_blank">
+                        <img id="previewBinaryFileToSign" style="width:20em;">
+                    </a>
+
+                    <a ng-href="{{binaryFileToSign.objectURL}}" target="_blank">
+                        <iframe id="previewPdfFileToSign" frameborder="0"
+                                style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:40em;"
+                                allowfullscreen></iframe>
+                    </a>
+
+                    <div class="line"></div>
+                </div>
+
+
+            </div>
+
+            <p ng-show="web3.eth.defaultAccount">
+                Your Ethereum account / key &nbsp;<i class="key icon"></i>&nbsp;
+                <a ng-href="{{currentNetwork.etherscanLinkPrefix}}address/{{web3.eth.defaultAccount}}" target="_blank"
+                   title="Click to see on etherscan">
+                    {{web3.eth.defaultAccount}}
+                </a>
+            </p>
+
+            <button class="ui secondary button" type="submit" ng-click="signBinaryFile()"
+                    ng-disabled="!binaryFileToSign||!binaryFileToSign.fileContent">
+                <i class="edit icon"></i>&nbsp;&nbsp;
+                Sign File &nbsp;&nbsp;
+            </button>
+
+            <button class="ui inverted red button" ng-click="deleteBinaryFile()"
+                    ng-disabled="!binaryFileToSign||!binaryFileToSign.fileContent">
+                Delete file
+            </button>
+
+            <br><br>
+
+            <div class="line" ng-show="binaryFileSignature"></div>
+            <div class="field" ng-show="binaryFileSignature">
+                <label>Signature:</label>
+                <!--<div class="ui action input">-->
+                <input id="binaryFileSignature" type="text" ng-model="binaryFileSignature" disabled>
+                <!--</div>-->
+                <br>
+                <button class="ui button" ng-click="copyFileSignatureToClipboard()">Copy signature to clipboard
+                </button>&nbsp;&nbsp;
+                <button class="ui button" ng-click="saveToFile(binaryFileSignature)">Save signature to file</button>&nbsp;&nbsp;
+                <button class="ui button" ng-click="deleteBinaryFileAndSignature()">Delete signed file and signature
+                </button>
+                <br><br>
+            </div>
+
+        </form>
+
+    </div>
+
+    <div id="verifyFileSignatureTab" class="ui bottom attached tab segment" data-tab="verifyFileSignatureTab">
+
+        <br>
+        <form id="fileSignatureVerificationForm" class="ui form">
+
+            <div class="field">
+                <h3><i class="file alternate outline icon"></i>&nbsp;Signed file:</h3>
+                <div class="field" style="margin-bottom: 0.2em">
+                    <!--// onReadFile directive (see app/directives/directives.js)-->
+                    <!--// readFileContent = $scope.readFileContent-->
+                    <input type="file" class="mini ui button"
+                           on-read-binary-file="readBinaryFileForVerification($fileContent)"/>
+                </div>
+
+            </div>
+
+            <div class="field">
+
+                <label>Signature</label>
+
+                <div class="ui left icon input">
+                    <i class="edit icon"></i>
+                    <input type="text" ng-model="binaryFileSignatureForVerification">
+                </div>
+
+                <div style="margin-top: 0.5em">
+
+                    <button class="ui secondary button" type="submit" ng-click="verifyBinaryFileSignature()">
+                        <span ng-show="verifyBinaryFileSignatureIsWorking">
+                            <i class="sync loading icon"></i>&nbsp;
+                        </span>
+                        Verify Signature
+                    </button>
+                    <button class="ui button" type="submit"
+                            ng-click="binaryFileSignatureForVerification=null">
+                        Clear Signature
+                    </button>
+
+                </div>
+                <br><br>
+
+                <div class="field">
+                    <label>Signed by:</label>
+                    <div class="ui right action left icon input">
+                        <i class="key icon"></i>
+                        <input id="binaryFileSignatoryAddress" type="text" ng-model="binaryFileSignatoryAddress"
+                               disabled>
+                        <button class="ui button" ng-click="copyBinaryFileSignatoryAddressToClipboard()"
+                                ng-disabled="!binaryFileSignatoryAddress">
+                            Copy to clipboard
+                        </button>
+                    </div>
+                </div>
+
+                <div ng-show="binaryFileSignatory">
+
+                    <div ng-show="binaryFileSignatory.verificationAddedOn>0">
+
+                        <div style="font-weight: bold">Signatory:</div>
+
+                        {{binaryFileSignatory.firstName}}&nbsp;{{binaryFileSignatory.lastName}}<br>
+                        birthdate:&nbsp;{{binaryFileSignatory.birthDate | date:'yyyy-MM-dd'}}&nbsp;, nationality:&nbsp;
+                        <a href=""
+                           ng-href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#{{binaryFileSignatory.nationality}}"
+                           target="_blank">
+                            {{binaryFileSignatory.nationality}}
+                        </a><br>
+
+                        OpenPGP public key:&nbsp;
+                        <!--<a href="" ng-href="https://cryptonomica.net/#!/key/{{signatory.fingerprint}}" target="_blank">-->
+                        <a href="" ng-href="https://cryptonomica.net/#!/key/{{binaryFileSignatory.fingerprint}}"
+                           target="_blank">
+                            {{binaryFileSignatory.fingerprint}}
+                            <!--{{signatory.fingerprint}}-->
+                        </a><br>
+
+                        Key certificate valid until:&nbsp;
+                        <span ng-style="binaryFileSignatory.openPGPkeyCertificateExpired && {'color':'red'}">
+                        {{binaryFileSignatory.keyCertificateValidUntilDate | date:'yyyy-MM-dd'}}
+                    </span><br>
+
+                        <span ng-show="binaryFileSignatory.revokedOn>0" style="color: red;">
+                            Key certificate revoked on:&nbsp;{{binaryFileSignatory.revokedOnDate | date:'yyyy-MM-dd'}}
+                    </span>
+                        <br>
+                        <div>
+                            Information provided by
+                            <a href="" ng-href="{{currentNetwork.etherscanLinkPrefix}}address/{{contract._address}}"
+                               target="_blank" title="Click to see on etherscan">
+                                Cryptonomica Verification smart contract
+                            </a><br>
+                            You also can verify your identity and register a key via
+                            <a href="https://www.cryptonomica.net" target="_blank">
+                                Cryptonomica.net
+                            </a>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div ng-show="binaryFileSignatoryAddressUnknown">
+                    <br>
+                    Address
+                    <a ng-href="{{currentNetwork.etherscanLinkPrefix}}address/{{binaryFileSignatoryAddress}}"
+                       target="_blank"
+                       title="Click to see on etherscan">
+                        {{binaryFileSignatoryAddress}}
+                    </a>
+                    is unknown or unverified <br>
+                    <!--(or the signature and the text do not match, or they are not real)<br>-->
+                    If this is a real address, you can offer its owner to register it address via
                     <a href="https://cryptonomica.net/#!/verifyEthAddress/" target="_blank">cryptonomica </a>
                     smart contract.
                 </div>

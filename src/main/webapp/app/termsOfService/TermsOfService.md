@@ -1,7 +1,7 @@
 Software User Agreement and Terms of Service
 ====================================
 
-*Last Revised: September 12, 2018*
+*Last Revised: January 20, 2020*
 
 # General provisions
 
@@ -94,5 +94,5 @@ When referring to document content line numbers of [plain text version](https://
 User can read this Terms and additionally instruction published on Cryptonomica’s [wiki](https://github.com/Cryptonomica/cryptonomica/wiki). 
 For user’s convenience Cryptonomica recommends to start with [Home page](https://www.cryptonomica.net) and Cryptonomica ['White Paper'](https://github.com/Cryptonomica/cryptonomica/wiki/Cryptonomica-White-Paper).
 
-In case of any questions regarding using the Site any User can use Help/Wiki page and/or Submit an Issue page in the Site, address it’s questions to E-mail address: [support@cryptonomica.zendesk.com](support@cryptonomica.zendesk.com).
+In case of any questions regarding using the Site any User can use Help/Wiki page and/or Submit an Issue page in the Site, address it’s questions to E-mail address: [support@cryptonomica.com](support@cryptonomica.com).
 

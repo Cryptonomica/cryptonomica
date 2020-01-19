@@ -30,7 +30,7 @@ router
                     //     }
                     // }
                 })
-                .state('promocode', {
+                .state('promocode', { // this is used to apply promo code
                     url: '/promocode/{promocode}',
                     controller: 'cryptonomica.controller.promocode',
                     // templateUrl: 'app/home/home.html',
@@ -41,6 +41,11 @@ router
                     //         return GoatService.getGoat();
                     //     }
                     // }
+                })
+                .state('viewpromocode', { // this is used to view promo code (for admins only)
+                    url: '/viewpromocode/{promoCodeStr}',
+                    controller: 'cryptonomica.controller.viewpromocode',
+                    templateUrl: 'app/viewpromocode/viewpromocode.html'
                 })
                 .state('registration', {
                     url: '/registration',

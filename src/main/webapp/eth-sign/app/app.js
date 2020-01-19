@@ -10,9 +10,40 @@
             // ---- App :
             'app.ui.router',
             'app.controllers',
-            'app.directives'
+            'app.directives',
+            'filters' // https://jsfiddle.net/yrezgui/34fnp/
         ]
     );
+
+    angular.module('filters', [])
+        .filter('Filesize', function () {
+            return function (size) {
+                if (isNaN(size))
+                    size = 0;
+
+                if (size < 1024)
+                    return size + ' Bytes';
+
+                size /= 1024;
+
+                if (size < 1024)
+                    return size.toFixed(2) + ' Kb';
+
+                size /= 1024;
+
+                if (size < 1024)
+                    return size.toFixed(2) + ' Mb';
+
+                size /= 1024;
+
+                if (size < 1024)
+                    return size.toFixed(2) + ' Gb';
+
+                size /= 1024;
+
+                return size.toFixed(2) + ' Tb';
+            };
+        });
 
     app.config(function ($sceDelegateProvider) {
         $sceDelegateProvider.resourceUrlWhitelist([
@@ -25,6 +56,16 @@
 //     app.config(['$locationProvider', function ($locationProvider) {
 //         $locationProvider.hashPrefix('');
 //     }]);
+
+
+    // https://stackoverflow.com/questions/15606751/angularjs-changes-urls-to-unsafe-in-extension-page
+    app.config([
+        '$compileProvider',
+        function ($compileProvider) {
+            // $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
+            $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|blob):/);
+        }
+    ]);
 
     app.run([
         '$state',
@@ -44,8 +85,8 @@
             $log) {
 
             // console.log("application started");
-            $rootScope.webAppVersion = "1.0.0";
-            $rootScope.webAppLastChange = "2019-04-21";
+            $rootScope.webAppVersion = "1.1.0";
+            $rootScope.webAppLastChange = "2020-01-05";
             console.log("eth-sign webapp, version", $rootScope.webAppVersion, "of", $rootScope.webAppLastChange);
 
             /* === Utility functions === */

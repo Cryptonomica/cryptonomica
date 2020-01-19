@@ -20,9 +20,10 @@ import net.cryptonomica.constants.Constants;
 import net.cryptonomica.entities.*;
 import net.cryptonomica.forms.CreatePromoCodesForm;
 import net.cryptonomica.forms.StripePaymentForm;
-import net.cryptonomica.mail.SendMailService;
 import net.cryptonomica.returns.*;
-import net.cryptonomica.service.*;
+import net.cryptonomica.service.ApiKeysService;
+import net.cryptonomica.service.ApiKeysUtils;
+import net.cryptonomica.service.UserTools;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -682,9 +683,8 @@ public class StripePaymentsAPI {
         }
         for (int i = 1; i < numberOfPromoCodesToCreate; i++) {
 
-            PromoCode promoCode = new PromoCode(createPromoCodesForm.getDiscountInPercent());
-            // promoCode.setDiscountInPercent(createPromoCodesForm.getDiscountInPercent());
-
+            PromoCode promoCode = new PromoCode();
+            promoCode.setDiscountInPercent(createPromoCodesForm.getDiscountInPercent());
             promoCode.setCreatedBy(googleUser.getEmail());
             promoCode.setEntityCreated(new Date());
 
@@ -706,14 +706,12 @@ public class StripePaymentsAPI {
     @SuppressWarnings("unused")
     public PromoCodeStringReturn createPromoCodeWithApiKey(
             final HttpServletRequest httpServletRequest,
-            @Named("serviceName") String serviceName,
-            @Named("apiKeyString") String apiKeyString
+            final @Named("serviceName") String serviceName,
+            final @Named("apiKeyString") String apiKeyString
     ) throws Exception {
 
-        ApiKey apiKey = ApiKeysService
-                .checkApiKey(
-                        httpServletRequest, serviceName, apiKeyString
-                );
+        // this also works if serviceName and apiKeyString were transferred via request headers
+        ApiKey apiKey = ApiKeysService.checkApiKey(httpServletRequest, serviceName, apiKeyString);
 
         if (apiKey.getCreatePromoCodeWithApiKey() == null || !apiKey.getCreatePromoCodeWithApiKey()) {
             throw new UnauthorizedException("API key is not valid for this API method");
@@ -724,9 +722,9 @@ public class StripePaymentsAPI {
             throw new IllegalArgumentException("This API key has no discount for promo codes");
         }
 
-        PromoCode promoCode = new PromoCode(discount);
-
-        promoCode.setCreatedBy(serviceName);
+        PromoCode promoCode = new PromoCode();
+        promoCode.setDiscountInPercent(discount);
+        promoCode.setCreatedBy(apiKey.getServiceName());
         promoCode.setEntityCreated(new Date());
 
         ofy().save().entity(promoCode).now(); //
@@ -827,5 +825,29 @@ public class StripePaymentsAPI {
 
         return result;
     }
+
+    @ApiMethod(
+            name = "getPromoCodeInfo",
+            path = "getPromoCodeInfo",
+            httpMethod = ApiMethod.HttpMethod.GET
+    )
+    @SuppressWarnings("unused")
+    public PromoCode getPromoCodeInfo(
+            final User googleUser,
+            final @Named("promoCodeStr") String promoCodeStr
+    ) throws UnauthorizedException {
+
+        /* (!!!) admins only : */
+        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        Key<PromoCode> promoCodeKey = Key.create(PromoCode.class, promoCodeStr);
+        PromoCode promoCode = ofy()
+                .load()
+                .key(promoCodeKey)
+                .now();
+
+        return promoCode;
+    }
+
 
 }
