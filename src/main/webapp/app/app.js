@@ -75,7 +75,7 @@
                       $location,
                       $log) {
 
-                $rootScope.appVersion = '3.33';
+                $rootScope.appVersion = '3.4.2 (2020-01-19)';
 
                 // (!!!) for debug:
                 // see:
@@ -122,7 +122,6 @@
 
                 $rootScope.gdata = GData;
                 $rootScope.supportEmail = "support@cryptonomica.net";
-                // $rootScope.supportEmail = "support@cryptonomica.zendesk.com";
 
             var SED_START;
             $rootScope.PRODUCTION = true;
@@ -196,7 +195,7 @@
                             })
                         .catch(function (error) {
                             $log.debug("[app.js] user is not logged in:");
-                            $log.debug("error:", error);
+                            $log.debug("[app.js] error:", error);
                             //
                             // $state.go('login'); // an example of action if it's impossible to
                             // authenticate user at startup of the application

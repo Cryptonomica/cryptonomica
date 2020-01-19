@@ -20,6 +20,7 @@ public class ApiKeysService {
         if (serviceName == null || serviceName.isEmpty()) {
             serviceName = httpServletRequest.getHeader("serviceName");
         }
+
         if (serviceName == null || serviceName.isEmpty()) {
             throw new UnauthorizedException("serviceName not provided");
         }
@@ -28,6 +29,7 @@ public class ApiKeysService {
         if (apiKeyString == null || apiKeyString.isEmpty()) {
             apiKeyString = httpServletRequest.getHeader("apiKeyString");
         }
+
         if (apiKeyString == null || apiKeyString.isEmpty()) {
             throw new UnauthorizedException("apiKeyString not provided");
         }

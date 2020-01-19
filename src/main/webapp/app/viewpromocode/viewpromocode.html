@@ -1,0 +1,118 @@
+<div id="contextWrap">
+
+    <!-- left sidebar-->
+    <left-sidebar></left-sidebar>
+
+    <!--right sidebar-->
+    <right-sidebar></right-sidebar>
+
+    <div class="pusher">
+
+        <!--topHeaderMenu -->
+        <top-header-menu></top-header-menu>
+
+        <!-- ==== MAIN SECTION ====  -->
+
+        <div class="mainWrap navslide">
+
+            <div class="ui equal width left aligned padded grid stackable">
+
+                <!--Page Content-->
+
+                <div class="stretched row">
+
+                    <div class="column">
+
+                        <div class="ui segments">
+
+                            <!-- Breadcrumb -->
+                            <div id="breadcrumb" class="ui segment">
+                                <div class="ui breadcrumb">
+                                    <a class="section">Home</a>
+                                    <i class="right angle icon divider"></i>
+                                    <a class="section">Promo codes</a>
+                                    <i class="right angle icon divider"></i>
+                                    <div class="active section">
+                                        {{promoCodeStr}}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Alerts -->
+                            <alerts></alerts>
+
+                            <!-- Main Segment-->
+                            <div id="mainSegment" class="ui segment" ng-show="promoCode">
+
+
+                                <div>
+                                    <table class="ui celled table">
+                                        <tbody>
+                                        <tr>
+                                            <td><b>Promo Code</b></td>
+                                            <td>{{promoCode.promoCode}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Discount in percents</b></td>
+                                            <td>{{promoCode.discountInPercent}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Already used</b></td>
+                                            <td>{{promoCode.used}}</td>
+                                        </tr>
+                                        <tr ng-show="promoCode.validUntil">
+                                            <td><b>Valid Until</b></td>
+                                            <td>{{promoCode.validUntil | date:'medium'}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Promo code created on</b></td>
+                                            <td>{{promoCode.entityCreated | date:'medium'}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Created by</b></td>
+                                            <td>{{promoCode.createdBy}}</td>
+                                        </tr>
+                                        <tr ng-show="promoCode.usedBy">
+                                            <td><b>Used by</b></td>
+                                            <td>{{promoCode.usedBy}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Used for fingerprint</b></td>
+                                            <td>
+                                                <a href="" ui-sref="key({fingerprint:promoCode.usedForFingerprint})">
+                                                    {{promoCode.usedForFingerprint}}
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr ng-show="promoCode.validOnlyForUsers">
+                                            <td><b>Valid only for users</b></td>
+                                            <td>{{promoCode.validOnlyForUsers}}</td>
+                                        </tr>
+                                        </tbody>
+                                        <tr ng-show="promoCode.validOnlyForCountries">
+                                            <td><b>Valid only for countries</b></td>
+                                            <td>{{promoCode.validOnlyForCountries}}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+
+                            </div>
+
+                            <!-- FOOTER -->
+                            <footer-main></footer-main>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

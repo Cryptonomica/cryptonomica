@@ -233,7 +233,9 @@ public class PGPPublicKeyAPI {
         // pgpPublicKeyData.setUserBirthday(cryptonomicaUser.getBirthday()); // < removed 2019-01-19
 
         // -- add @Parent value: ---
-        pgpPublicKeyData.setCryptonomicaUserKey(Key.create(CryptonomicaUser.class, googleUser.getUserId()));
+        pgpPublicKeyData.setCryptonomicaUserKey(
+                Key.create(CryptonomicaUser.class, googleUser.getUserId())
+        );
         // save key
         Key<PGPPublicKeyData> pgpPublicKeyDataKey = ofy().save().entity(pgpPublicKeyData).now();
         // load key from DB and and create return object

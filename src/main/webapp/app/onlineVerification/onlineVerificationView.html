@@ -107,11 +107,14 @@
                                             {{onlineVerification.phoneNumber}}
                                         </td>
                                     </tr>
-                                    <tr>
+
+                                    <tr ng-show="currentUser.cryptonomicaOfficer">
+
                                         <td>Stripe Payment For Key Verification Id:</td>
                                         <td>
                                             {{onlineVerification.stripePaymentForKeyVerificationId}}
                                             <div ng-show="onlineVerification.stripeChargeId">
+
                                                 <div ng-show="currentUser.cryptonomicaOfficer">
                                                     <br>
                                                     <a ng-href="https://dashboard.stripe.com/payments/{{onlineVerification.stripeChargeId}}"
@@ -119,9 +122,23 @@
                                                         {{onlineVerification.stripeChargeId}}
                                                     </a>
                                                 </div>
+
                                             </div>
                                         </td>
                                     </tr>
+
+                                    <tr ng-show="currentUser.cryptonomicaOfficer">
+                                        <td>
+                                            Promo code used:
+                                        </td>
+                                        <td>
+                                            <a ui-sref="viewpromocode({promoCodeStr:onlineVerification.promoCodeUsed})">
+                                                {{onlineVerification.promoCodeUsed}}
+                                            </a>
+                                        </td>
+
+                                    </tr>
+
                                     <tr>
                                         <td>Payment Verified:</td>
                                         <td>
@@ -132,11 +149,11 @@
                                         <td>Verification started:</td>
                                         <td>{{onlineVerification.entityCreated | date}}</td>
                                     </tr>
-                                    <tr>
+                                    <tr ng-show="onlineVerification.verifiedOn">
                                         <td>Verified On:</td>
                                         <td>{{onlineVerification.verifiedOn | date}}</td>
                                     </tr>
-                                    <tr>
+                                    <tr ng-show="onlineVerification.verifiedByFirstNameLastName">
                                         <td>Verified By:</td>
                                         <td>
                                             <a ui-sref="viewprofile({userId: onlineVerification.verifiedById})">
@@ -148,29 +165,85 @@
                                     </tbody>
                                 </table>
 
-                                <!-- Verification Documents -->
+                                <!--<h3>Verification documents:</h3>-->
 
-                                <center>
-                                    <h3>Verification documents:</h3>
-                                </center>
+                                <!-- Modals  -->
 
-                                <div class="ui medium images">
+                                <div id="doc1modal" class="ui modal">
+                                    <div class="image content">
+                                        <img id="doc1modalImage" class="ui image"
+                                             ng-src="https://{{gaeProjectDomain}}/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[0]}}"
+                                             ng-click="hideModal('doc1modal')" style="cursor: zoom-out">
+                                        <button class="ui basic button"
+                                                style="position: absolute;top: 1%;left: 1%"
+                                                ng-click="rotateImageRight('doc1')">
+                                            <i class="redo icon"></i> Rotate
+                                        </button>
+                                    </div>
+                                </div>
 
-                                    <a ng-href="https://cryptonomica.net/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[0]}}"
-                                       class="imageLink"
-                                       target="_blank">
-                                        <img id="doc1"
-                                             ng-src="https://cryptonomica.net/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[0]}}"/>
-                                    </a>
+                                <div id="doc2modal" class="ui modal">
+                                    <div class="image content">
+                                        <img id="doc2modalImage" class="ui image"
+                                             ng-src="https://{{gaeProjectDomain}}/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[1]}}"
+                                             ng-click="hideModal('doc2modal')" style="cursor: zoom-out">
+                                        <button class="ui basic button"
+                                                style="position: absolute;top: 1%;left: 1%"
+                                                ng-click="rotateImageRight('doc2')">
+                                            <i class="redo icon"></i> Rotate
+                                        </button>
+                                    </div>
+                                </div>
 
-                                    <a ng-href="https://cryptonomica.net/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[1]}}"
-                                       class="imageLink"
-                                       target="_blank">
-                                        <img id="doc2"
-                                             ng-src="https://cryptonomica.net/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[1]}}"/>
-                                    </a>
+                                <div class="ui two column grid">
+
+                                    <div class="column">
+                                        <div id="doc1Container" class="ui image">
+                                            <img id="doc1"
+                                                 ng-src="https://{{gaeProjectDomain}}/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[0]}}"
+                                                 ng-click="showModal('doc1modal')" style="cursor: zoom-in"/>
+                                            <button class="ui basic button"
+                                                    style="position: absolute;top: 1%;left: 1%"
+                                                    ng-click="rotateImageRight('doc1')">
+                                                <i class="redo icon"></i> Rotate
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="column">
+                                        <div id="doc2Container" class="ui image">
+                                            <img id="doc2"
+                                                 ng-src="https://{{gaeProjectDomain}}/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[1]}}"
+                                                 ng-click="showModal('doc2modal')" style="cursor: zoom-in"/>
+                                            <button class="ui basic button"
+                                                    style="position: absolute;top: 1%;left: 1%"
+                                                    ng-click="rotateImageRight('doc2')">
+                                                <i class="redo icon"></i> Rotate
+                                            </button>
+                                        </div>
+                                    </div>
 
                                 </div>
+                                <!--
+
+                                                                    <div class="ui medium images">
+
+                                                                        <a ng-href="https://cryptonomica.net/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[0]}}"
+                                                                           class="imageLink"
+                                                                           target="_blank">
+                                                                            <img id="doc1"
+                                                                                 ng-src="https://cryptonomica.net/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[0]}}"/>
+                                                                        </a>
+
+                                                                        <a ng-href="https://cryptonomica.net/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[1]}}"
+                                                                           class="imageLink"
+                                                                           target="_blank">
+                                                                            <img id="doc2"
+                                                                                 ng-src="https://cryptonomica.net/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[1]}}"/>
+                                                                        </a>
+
+                                                                    </div>
+                                -->
 
                                 <hr>
 
@@ -237,7 +310,8 @@
 
                                                 <div id="changeUserNameBlock" ng-show="showChangeUserNameBlock">
                                                     <div>
-                                                        input will be converted to lower case when storing in data base
+                                                        input will be converted to lower case when storing in data
+                                                        base
                                                     </div>
                                                     <label for="newFirstName">New first name: </label>
                                                     <input id="newFirstName" type="text" class="form-control"
@@ -368,7 +442,8 @@
 
                                                 <div id="addNameOnCardBlock" ng-show="showAddNameOnCardBlock">
 
-                                                    <label for="nameOnCard">Name on card (case insensitive): </label>
+                                                    <label for="nameOnCard">Name on card (case
+                                                        insensitive): </label>
                                                     <input id="nameOnCard" type="text" class="form-control"
                                                            ng-model="nameOnCard">
                                                     <br>
@@ -422,7 +497,8 @@
 
                                                 <div id="removeDocumentsBlock" ng-show="showRemoveDocumentsBlock">
 
-                                                    <label for="removeDocumentsMessageToUser">Message to user: </label>
+                                                    <label for="removeDocumentsMessageToUser">Message to
+                                                        user: </label>
 
                                                     <input id="removeDocumentsMessageToUser" type="text"
                                                            class="form-control"
@@ -443,7 +519,8 @@
 
                                                 <div class="ui checkbox">
                                                     <input type="checkbox" ng-model="onlineVerificationApproved">
-                                                    <label><b>Approve data entered for online verification</b></label>
+                                                    <label><b>Approve data entered for online
+                                                        verification</b></label>
                                                 </div>
 
 
