@@ -723,9 +723,11 @@ public class StripePaymentsAPI {
         }
 
         PromoCode promoCode = new PromoCode();
+        promoCode.setPromoCode(RandomStringUtils.randomAlphanumeric(11));
         promoCode.setDiscountInPercent(discount);
         promoCode.setCreatedBy(apiKey.getServiceName());
         promoCode.setEntityCreated(new Date());
+        promoCode.setUsed(Boolean.FALSE);
 
         ofy().save().entity(promoCode).now(); //
 
