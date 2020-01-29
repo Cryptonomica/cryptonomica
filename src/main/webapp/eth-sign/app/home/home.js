@@ -18,11 +18,12 @@
         '$scope',
         '$rootScope',
         '$log',
-        '$state',
+        // '$state',
         function homeCtrl($scope,
                           $rootScope,
                           $log,
-                          $state) {
+                          // $state
+        ) {
 
             // $log.debug("homeCtrl started");
 
