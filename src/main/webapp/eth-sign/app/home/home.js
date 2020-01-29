@@ -4,12 +4,14 @@
 
 // console.log("home.js");
 
-    var controller = angular.module("app.home", []);
+    const debugEnabled = true;
+
+    const controller = angular.module("app.home", []);
 
 // https://docs.angularjs.org/api/ng/provider/$logProvider
     controller.config(function ($logProvider) {
         // $logProvider.debugEnabled(false);
-        $logProvider.debugEnabled(true);
+        $logProvider.debugEnabled(debugEnabled);
     });
 
     controller.controller("app.home", [
@@ -25,10 +27,62 @@
             // $log.debug("homeCtrl started");
 
             // TODO: for test only:
-            window.myScope = $scope;
+            (function () {
+                if (debugEnabled) {
+                    window.scope = $scope;
+                    window.rootScope = $rootScope;
+                }
+            })();
 
-            // activate tabs:
+            // activate tabs (semantic ui):
             $('.menu .item').tab();
+
+            /* --- Alerts */
+            (function alerts() {
+                $scope.alertDanger = null;  // red
+                $scope.alertWarning = null; // yellow
+                $scope.alertInfo = null;    // blue
+                $scope.alertSuccess = null; // green
+                $scope.alertMessage = null; // grey
+
+                $scope.setAlertDanger = function (message) {
+                    $scope.alertDanger = message;
+                    $log.debug("$scope.alertDanger:", $scope.alertDanger);
+                    // $scope.$apply(); // < needed
+                    $scope.goTo("alertDanger");
+                };
+
+                $scope.setAlertWarning = function (message) {
+                    $scope.alertWarning = message;
+                    $log.debug("$scope.alertWarning:", $scope.alertWarning);
+                    // $scope.$apply(); //
+                    $scope.goTo("alertWarning");
+                };
+
+                $scope.setAlertInfo = function (message) {
+                    $scope.alertInfo = message;
+                    $log.debug("$scope.alertInfo:", $scope.alertInfo);
+                    // $scope.$apply();
+                    $scope.goTo("alertInfo");
+                };
+
+                $scope.setAlertSuccess = function (message) {
+                    $scope.alertSuccess = message;
+                    $log.debug("$scope.alertSuccess:", $scope.alertSuccess);
+                    // $scope.$apply();
+                    $scope.goTo("alertSuccess");
+                };
+
+                $scope.setAlertMessage = function (message, header) {
+                    $scope.alertMessage = {};
+                    $scope.alertMessage.header = header;
+                    $scope.alertMessage.message = message;
+                    $log.debug("$scope.alertMessage:", $scope.alertMessage);
+                    // $scope.$apply();
+                    $scope.goTo("alertMessage");
+                };
+
+            })();
 
             (function setContractVariables() {
 
@@ -431,54 +485,6 @@
 
             })();
 
-            /* --- Alerts */
-
-            (function alerts() {
-                $scope.alertDanger = null;  // red
-                $scope.alertWarning = null; // yellow
-                $scope.alertInfo = null;    // blue
-                $scope.alertSuccess = null; // green
-                $scope.alertMessage = null; // grey
-
-                $scope.setAlertDanger = function (message) {
-                    $scope.alertDanger = message;
-                    $log.debug("$scope.alertDanger:", $scope.alertDanger);
-                    // $scope.$apply(); // < needed
-                    $scope.goTo("alertDanger");
-                };
-
-                $scope.setAlertWarning = function (message) {
-                    $scope.alertWarning = message;
-                    $log.debug("$scope.alertWarning:", $scope.alertWarning);
-                    // $scope.$apply(); //
-                    $scope.goTo("alertWarning");
-                };
-
-                $scope.setAlertInfo = function (message) {
-                    $scope.alertInfo = message;
-                    $log.debug("$scope.alertInfo:", $scope.alertInfo);
-                    // $scope.$apply();
-                    $scope.goTo("alertInfo");
-                };
-
-                $scope.setAlertSuccess = function (message) {
-                    $scope.alertSuccess = message;
-                    $log.debug("$scope.alertSuccess:", $scope.alertSuccess);
-                    // $scope.$apply();
-                    $scope.goTo("alertSuccess");
-                };
-
-                $scope.setAlertMessage = function (message, header) {
-                    $scope.alertMessage = {};
-                    $scope.alertMessage.header = header;
-                    $scope.alertMessage.message = message;
-                    $log.debug("$scope.alertMessage:", $scope.alertMessage);
-                    // $scope.$apply();
-                    $scope.goTo("alertMessage");
-                };
-
-            })();
-
             $rootScope.noConnectionToNodeError = true;
 
             $log.debug("window.ethereum:");
@@ -487,7 +493,7 @@
             // https://github.com/MetaMask/metamask-extension/issues/5699#issuecomment-445480857
             if (window.ethereum) {
 
-                $rootScope.web3 = new Web3(ethereum);
+                $rootScope.web3 = new Web3(window.ethereum);
 
                 $log.debug('web3: ');
                 $log.debug($rootScope.web3);
