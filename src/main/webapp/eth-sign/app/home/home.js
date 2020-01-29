@@ -6,7 +6,7 @@
 
     const debugEnabled = true;
 
-    var controller = angular.module("app.home", []);
+    const controller = angular.module("app.home", []);
 
 // https://docs.angularjs.org/api/ng/provider/$logProvider
     controller.config(function ($logProvider) {
