@@ -197,32 +197,47 @@
 
                                 <div class="ui two column grid">
 
-                                    <div class="column">
-                                        <div id="doc1Container" class="ui image">
-                                            <img id="doc1"
-                                                 ng-src="https://{{gaeProjectDomain}}/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[0]}}"
-                                                 ng-click="showModal('doc1modal')" style="cursor: zoom-in"/>
-                                            <button class="ui basic button"
-                                                    style="position: absolute;top: 1%;left: 1%"
-                                                    ng-click="rotateImageRight('doc1')">
-                                                <i class="redo icon"></i> Rotate
-                                            </button>
+                                    <div class="row">
+                                        <div class="column">
+                                            <div id="doc1Container" class="ui image">
+                                                <img id="doc1"
+                                                     ng-src="https://{{gaeProjectDomain}}/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[0]}}"
+                                                     ng-click="showModal('doc1modal')" style="cursor: zoom-in"/>
+                                                <button class="ui basic button"
+                                                        style="position: absolute;top: 1%;left: 1%"
+                                                        ng-click="rotateImageRight('doc1')">
+                                                    <i class="redo icon"></i> Rotate
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="column">
+                                            <div id="doc2Container" class="ui image">
+                                                <img id="doc2"
+                                                     ng-src="https://{{gaeProjectDomain}}/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[1]}}"
+                                                     ng-click="showModal('doc2modal')" style="cursor: zoom-in"/>
+                                                <button class="ui basic button"
+                                                        style="position: absolute;top: 1%;left: 1%"
+                                                        ng-click="rotateImageRight('doc2')">
+                                                    <i class="redo icon"></i> Rotate
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div class="column">
-                                        <div id="doc2Container" class="ui image">
-                                            <img id="doc2"
-                                                 ng-src="https://{{gaeProjectDomain}}/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[1]}}"
-                                                 ng-click="showModal('doc2modal')" style="cursor: zoom-in"/>
-                                            <button class="ui basic button"
-                                                    style="position: absolute;top: 1%;left: 1%"
-                                                    ng-click="rotateImageRight('doc2')">
-                                                <i class="redo icon"></i> Rotate
-                                            </button>
+                                    <div class="row">
+                                        <div class="column">
+                                            <a ng-href="https://{{gaeProjectDomain}}/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[0]}}">
+                                                direct link to image
+                                            </a>
                                         </div>
-                                    </div>
+                                        <div class="column">
+                                            <a ng-href="https://{{gaeProjectDomain}}/docs?verificationDocumentId={{onlineVerification.verificationDocumentsArray[1]}}">
+                                                direct link to image
+                                            </a>
+                                        </div>
 
+                                    </div>
                                 </div>
                                 <!--
 
