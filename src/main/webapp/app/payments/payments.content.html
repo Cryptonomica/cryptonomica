@@ -1,0 +1,232 @@
+<div id="stripePaymentsForm">
+
+    <!-- Payment Alerts: -->
+
+    <div id="paymentAlert">
+
+        <div ng-show="paymentError.message">
+            <div id="alertDanger" class="ui negative message">
+                <i class="close icon" ng-click="paymentError.message=null"></i>
+                <div class="header">Payment Error:</div>
+                <p>{{paymentError.message}}</p>
+            </div>
+            <br>
+        </div>
+
+        <div ng-show="paymentResponse.messageToUser">
+            <div id="alertSuccess" class="ui positive message">
+                <i class="close icon" ng-click="paymentResponse.messageToUser=null"></i>
+                <div class="header">Payment Success:</div>
+                <p>{{paymentResponse.messageToUser}}</p>
+            </div>
+            <br>
+        </div>
+
+    </div>
+
+    <!-- Card -->
+
+    <center id="messageForUser">
+        <h2>Payment Form</h2>
+        <div>
+            We accept Visa, Mastercard and American Express payments from customers worldwide.
+        </div>
+        <div>
+            Payment service provided by <a href="https://stripe.com" target="_blank">Stripe</a>.
+        </div>
+        <div>
+            <b>
+                We do not store CVC and full credit card number (last four digits only)
+            </b>
+            <br><br>
+        </div>
+
+    </center>
+
+    <form id="payment-form" class="ui form">
+
+        <div id="formFieldNameOnCard" class="fields">
+
+            <!--            <div class="two fields">-->
+            <div class="sixteen wide field">
+                <label>Name on card:</label>
+                <input id="nameOnCard"
+                       name="nameOnCard"
+                       ng-model="stripePaymentFormGeneral.nameOnCard"
+                       required
+                       placeholder="Name on card" type="text"
+                       autocomplete="cc-name">
+            </div>
+        </div>
+
+        <div id="formFieldCardNumberExpCVC" class="fields">
+
+            <div class="seven wide field">
+                <label>Card Number:</label>
+                <!-- Payment card numbers can be up to 19 digits -->
+                <!-- https://en.wikipedia.org/wiki/Payment_card_number -->
+                <input id="cardNumber"
+                       name="cardNumber"
+                       ng-model="stripePaymentFormGeneral.cardNumber"
+                       maxlength="19"
+                       placeholder="Card #"
+                       type="text"
+                       required
+                       autocomplete='cc-number'>
+            </div>
+
+            <div class="three wide field">
+                <label>CVC:</label>
+                <input name="cardCVC"
+                       placeholder="CVC"
+                       type="text"
+                       size="3"
+                       maxlength="3"
+                       ng-model="stripePaymentFormGeneral.cardCVC"
+                       required
+                       autocomplete="cc-csc">
+            </div>
+
+            <div class="six wide field">
+                <label>Expiration:</label>
+                <div class="two fields">
+                    <div class="field">
+                        <select id="cardExpMonth"
+                                name="cardExpMonth" class="ui fluid search dropdown"
+                                ng-model="stripePaymentFormGeneral.cardExpMonth"
+                                required
+                                autocomplete="cc-exp-month"
+                                type="text">
+                            <option value="">Month</option>
+                            <option value="01">January</option>
+                            <option value="02">February</option>
+                            <option value="03">March</option>
+                            <option value="04">April</option>
+                            <option value="05">May</option>
+                            <option value="06">June</option>
+                            <option value="07">July</option>
+                            <option value="08">August</option>
+                            <option value="09">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <select id="cardExpYear"
+                                name="cardExpYear"
+                                class="ui fluid search dropdown"
+                                ng-model="stripePaymentFormGeneral.cardExpYear"
+                                type="text"
+                                required
+                                autocomplete="cc-exp-year">
+                            <option value="">Year</option>
+                            <option value="20">2020</option>
+                            <option value="21">2021</option>
+                            <option value="22">2022</option>
+                            <option value="23">2023</option>
+                            <option value="24">2024</option>
+                            <option value="25">2025</option>
+                            <option value="26">2026</option>
+                            <option value="27">2027</option>
+                            <option value="28">2028</option>
+                            <option value="29">2029</option>
+                            <option value="29">2030</option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div id="formFieldPaymentForAndPrice" class="fields">
+
+            <div class="twelve wide field">
+                <label>Payment for:</label>
+                <input id="paymentFor"
+                       type="text"
+                       ng-model="stripePaymentFormGeneral.paymentFor"
+                       placeholder="Payment for ..."
+                       ng-disabled="paymentForChangeDisabled"
+                       required>
+            </div>
+
+            <div class="four wide field">
+                <label>
+                    Price (EUR):
+                </label>
+                <div class="ui labeled input">
+                    <div class="ui label">
+                        €
+                    </div>
+                    <input id="priceInEuro"
+                           name="priceInEuro"
+                           type="number"
+                           min="0"
+                           step="any"
+                           ng-model="stripePaymentFormGeneral.priceInEuro"
+                           ng-disabled="priceChangeDisabled"
+                           required>
+                </div>
+            </div>
+        </div>
+
+        <div id="formFieldEmail" class="two fields">
+
+            <div class="field">
+                <label>
+                    Your email:
+                </label>
+                <div class="ui labeled input">
+                    <input id="cardHolderEmail"
+                           name="cardHolderEmail"
+                           ng-model="stripePaymentFormGeneral.cardHolderEmail"
+                           required
+                           autocomplete="email">
+                </div>
+            </div>
+
+            <div class="field">
+                <label>
+                    Confirm email:
+                </label>
+                <div class="ui labeled input">
+                    <input id="confirmEmail"
+                           name="email"
+                           ng-model="stripePaymentFormGeneral.confirmEmail"
+                           required
+                           autocomplete="email">
+                </div>
+            </div>
+
+        </div>
+
+        <div id="formFieldSubmit" class="fields">
+            <div class="field">
+
+                <button id="submitPaymentBtn"
+                        ng-class="{disabled: submitPaymentWorking}"
+                        ng-click="submitPayment()"
+                        class="ui positive button"
+                        ng-disabled="submitPaymentBtnDisabled"
+                        type="submit">
+                    Submit Payment
+                    <span ng-show="submitPaymentWorking" title="working...">
+                        <br><i class="fa fa-refresh fa-spin fa-fw"></i>
+                    </span>
+                </button>
+
+                <!--                <input id="submitPaymentBtn"
+                                       ng-class="{disabled: submitPaymentWorking}"
+                                       ng-click="submitPayment()"
+                                       class="ui positive button"
+                                       ng-disabled="submitPaymentBtnDisabled"
+                                       type="submit">-->
+
+            </div>
+        </div>
+
+    </form>
+
+</div>

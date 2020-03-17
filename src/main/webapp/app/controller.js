@@ -20,6 +20,7 @@ var controller = angular.module('cryptonomica.controller', [
         'cryptonomica.controller.promocode',
         'cryptonomica.controller.stats',
         'cryptonomica.controller.admin',
-        'cryptonomica.controller.viewpromocode'
+        'cryptonomica.controller.viewpromocode',
+        'cryptonomica.controller.payments'
     ]
 );
