@@ -152,6 +152,11 @@ router
                     controller: 'cryptonomica.controller.stats',
                     templateUrl: 'app/stats/stats.html'
                 })
+                .state('payments', { //
+                    url: '/payments/{paymentTypeCode}',
+                    controller: 'cryptonomica.controller.payments',
+                    templateUrl: 'app/payments/payments.html'
+                })
                 .state('admin', {
                     url: '/admin',
                     controller: 'cryptonomica.controller.admin',

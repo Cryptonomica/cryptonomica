@@ -18,8 +18,10 @@ import com.stripe.model.Charge;
 import com.stripe.net.RequestOptions;
 import net.cryptonomica.constants.Constants;
 import net.cryptonomica.entities.*;
+import net.cryptonomica.forms.CreatePaymentTypeForm;
 import net.cryptonomica.forms.CreatePromoCodesForm;
 import net.cryptonomica.forms.StripePaymentForm;
+import net.cryptonomica.forms.StripePaymentFormGeneral;
 import net.cryptonomica.returns.*;
 import net.cryptonomica.service.ApiKeysService;
 import net.cryptonomica.service.ApiKeysUtils;
@@ -673,6 +675,8 @@ public class StripePaymentsAPI {
             final CreatePromoCodesForm createPromoCodesForm
     ) throws Exception {
 
+        // final CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
+        /* (!!!) admins only : */
         final CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
 
         CreatePromoCodesReturn createPromoCodesReturn = new CreatePromoCodesReturn();
@@ -734,7 +738,6 @@ public class StripePaymentsAPI {
         return new PromoCodeStringReturn(promoCode);
 
     } // end of: createPromoCodes()
-
 
     @ApiMethod(
             name = "getTotalPaymentsWithMyPromocodes",
@@ -851,5 +854,152 @@ public class StripePaymentsAPI {
         return promoCode;
     }
 
+    @ApiMethod(
+            name = "createPaymentType",
+            path = "createPaymentType",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    @SuppressWarnings("unused")
+    public PaymentType createPaymentType(
+            final HttpServletRequest httpServletRequest,
+            final User googleUser,
+            final CreatePaymentTypeForm createPaymentTypeForm
+    ) throws Exception {
+
+        final CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
+
+        PaymentType paymentType = new PaymentType(createPaymentTypeForm);
+        paymentType.setEntityCreatedBy(cryptonomicaUser.getEmail().getEmail());
+        paymentType.setEntityCreatedOn(new Date());
+
+        ofy().save().entity(paymentType).now();
+
+        return paymentType;
+
+    }
+
+    @ApiMethod(
+            name = "getPaymentType",
+            path = "getPaymentType",
+            httpMethod = ApiMethod.HttpMethod.GET
+    )
+    @SuppressWarnings("unused")
+    public PaymentType getPaymentType(
+            final @Named("paymentTypeCode") String paymentTypeCode
+    ) throws Exception {
+
+        Key<PaymentType> paymentTypeKey = Key.create(PaymentType.class, paymentTypeCode);
+        PaymentType paymentType = ofy()
+                .load()
+                .key(paymentTypeKey)
+                .now();
+
+        return paymentType;
+
+    } // end of getPaymentType()
+
+    @ApiMethod(
+            name = "processStripePaymentGeneral",
+            path = "processStripePaymentGeneral",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    @SuppressWarnings("unused")
+    public StripePaymentReturn processStripePaymentGeneral(
+            final HttpServletRequest httpServletRequest,
+            // final User googleUser, // <<<< Here we allow payments from any user
+            final StripePaymentFormGeneral stripePaymentFormGeneral
+    ) throws Exception {
+
+        // Set your secret key: remember to change this to your live secret key in production
+        // See your keys here: https://dashboard.stripe.com/account/apikeys
+        // final String STRIPE_SECRET_KEY = ApiKeysUtils.getApiKey("StripeTestSecretKey");
+        final String STRIPE_SECRET_KEY = ApiKeysUtils.getApiKey("StripeLiveSecretKey");
+
+        /* --- create return object */
+        StripePaymentReturn stripePaymentReturn = new StripePaymentReturn();
+
+        /* --- process payment */
+
+        // see example on:
+        // https://github.com/stripe/stripe-java#usage
+        RequestOptions requestOptions = (new RequestOptions.RequestOptionsBuilder())
+                .setApiKey(STRIPE_SECRET_KEY)
+                .build();
+
+        // --- cardMap
+        Map<String, Object> cardMap = new HashMap<>();
+        cardMap.put("number", stripePaymentFormGeneral.getCardNumber()); // String
+        cardMap.put("exp_month", stripePaymentFormGeneral.getCardExpMonth()); // Integer
+        cardMap.put("exp_year", stripePaymentFormGeneral.getCardExpYear()); // Integer
+        cardMap.put("name", stripePaymentFormGeneral.getNameOnCard());
+
+        //  --- Metadata , see: https://stripe.com/docs/api/java#metadata
+        Map<String, String> metadataMap = new HashMap<String, String>();
+
+        if (stripePaymentFormGeneral.getPaymentTypeCode() != null) {
+            metadataMap.put("paymentTypeCode", stripePaymentFormGeneral.getPaymentTypeCode());
+        }
+
+        //  --- chargeMap
+        Map<String, Object> chargeMap = new HashMap<>();
+        chargeMap.put("card", cardMap);
+        chargeMap.put("metadata", metadataMap);
+
+        //  amount - a positive integer in the smallest currency unit (e.g., 100 cents to charge $1.00
+        chargeMap.put("amount", stripePaymentFormGeneral.getPriceInCents()); //
+
+        // chargeMap.put("currency", "usd");
+        chargeMap.put("currency", "eur");
+        //
+        // https://stripe.com/docs/api/java#create_charge-statement_descriptor
+        // An arbitrary string to be displayed on your customer's credit card statement.
+        // This may be up to 22 characters. As an example, if your website is RunClub and the item you're charging for
+        // is a race ticket, you may want to specify a statement_descriptor of RunClub 5K race ticket.
+        // The statement description may not include <>"' characters, and will appear on your customer's statement in
+        // capital letters. Non-ASCII characters are automatically stripped.
+        // While most banks display this information consistently, some may display it incorrectly or not at all.
+        chargeMap.put(
+                "statement_descriptor",
+                "CRYPTONOMICA"         // 13 characters
+        );
+
+        // https://stripe.com/docs/api/java#create_charge-description
+        // An arbitrary string which you can attach to a charge object.
+        // It is displayed when in the web interface alongside the charge.
+        // Note that if you use Stripe to send automatic email receipts to your customers,
+        // your receipt emails will include the description of the charge(s) that they are describing.
+        chargeMap.put(
+                "description",
+                stripePaymentFormGeneral.getPaymentFor()
+        );
+
+        // https://stripe.com/docs/api/java#create_charge-receipt_email
+        // The email address to send this charge's receipt to.
+        // The receipt will not be sent until the charge is paid.
+        // If this charge is for a customer, the email address specified here will override the customer's email address.
+        // Receipts will not be sent for test mode charges.
+        // If receipt_email is specified for a charge in live mode, a receipt will be sent regardless of your email settings.
+        chargeMap.put("receipt_email", stripePaymentFormGeneral.getCardHolderEmail());
+
+        // -- get Charge object: // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        Charge charge = Charge.create(chargeMap, requestOptions);
+
+        String chargeStr = charge.toString(); // Charge obj has custom toString()
+        LOG.warning("chargeStr: " + chargeStr);
+        String chargeJsonStr = GSON.toJson(charge);
+        LOG.warning("chargeJsonStr: " + chargeJsonStr);
+
+        if (charge.getStatus().equalsIgnoreCase("succeeded")) {
+            stripePaymentReturn.setResult(true);
+            stripePaymentReturn.setMessageToUser("Payment succeeded");
+
+        } else {
+            stripePaymentReturn.setResult(false);
+            stripePaymentReturn.setMessageToUser("Payment not succeeded");
+        }
+
+        return stripePaymentReturn;
+
+    } // end of processStripePayment
 
 }

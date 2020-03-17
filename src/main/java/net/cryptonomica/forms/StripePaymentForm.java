@@ -3,7 +3,7 @@ package net.cryptonomica.forms;
 import java.io.Serializable;
 
 /**
- * form to add an arbitrator
+ * form for payments for verification
  */
 public class StripePaymentForm implements Serializable {
 
@@ -12,7 +12,7 @@ public class StripePaymentForm implements Serializable {
 
     private String cardNumber; // ...................................................1
     private Integer cardExpMonth; // number from 1 to 12) ...........................2
-    private Integer cardExpYear; // number from 2017 to 2030 ........................3
+    private Integer cardExpYear; // number from 2020 to 2030 ........................3
     private Integer cardCVC; // .....................................................4
     private String fingerprint; // ..................................................5
     private String cardHolderFirstName; // as in OpenPGP key certificate ............6

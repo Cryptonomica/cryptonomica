@@ -75,7 +75,7 @@
                       $location,
                       $log) {
 
-                $rootScope.appVersion = '3.4.2 (2020-01-19)';
+                $rootScope.appVersion = '3.5.0 (2020-03-17)';
 
                 // (!!!) for debug:
                 // see:
@@ -124,7 +124,7 @@
                 $rootScope.supportEmail = "support@cryptonomica.net";
 
             var SED_START;
-            $rootScope.PRODUCTION = true;
+            $rootScope.PRODUCTION = false;
             var SED_END;
 
                 var CLIENT;
