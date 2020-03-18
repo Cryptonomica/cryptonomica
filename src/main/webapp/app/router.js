@@ -127,6 +127,11 @@ router
                     controller: 'cryptonomica.controller.openPGPOnline',
                     templateUrl: 'app/openPGPOnline/openPGPOnline.html'
                 })
+                .state('webinars', {
+                    url: '/webinars',
+                    // controller: '',
+                    templateUrl: 'app/webinars/webinars.html'
+                })
                 .state('openPGPSoftware', {
                     url: '/openPGPSoftware',
                     // controller: '',
