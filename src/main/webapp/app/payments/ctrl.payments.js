@@ -4,7 +4,8 @@
 
     var controller_name = "cryptonomica.controller.payments"; // add to controller.js
 
-    const debugEnabled = true;
+    // const debugEnabled = true;
+    const debugEnabled = false;
 
     var controller = angular.module(controller_name, []);
 
@@ -45,7 +46,10 @@
                     $log.debug(controller_name, "started");
                     window.scope = $scope;
                     window.rootScope = $rootScope;
-                    $log.debug("paymentTypeCode : " + $stateParams.paymentTypeCode);
+                    if ($stateParams) {
+                        $log.debug("$stateParams:");
+                        $log.debug($stateParams);
+                    }
                 }
             })();
 

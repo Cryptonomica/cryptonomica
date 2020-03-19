@@ -128,8 +128,8 @@ router
                     templateUrl: 'app/openPGPOnline/openPGPOnline.html'
                 })
                 .state('webinars', {
-                    url: '/webinars',
-                    // controller: '',
+                    url: '/webinars/{webinarCode}',
+                    controller: 'cryptonomica.controller.webinars',
                     templateUrl: 'app/webinars/webinars.html'
                 })
                 .state('openPGPSoftware', {
