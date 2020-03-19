@@ -34,16 +34,28 @@
                                 <div class="ui breadcrumb">
                                     <a class="section" href="" ui-sref-active="active" ui-sref="home">Home</a>
                                     <i class="right angle icon divider"></i>
-                                    <a class="section" href="" ui-sref-active="active"
-                                       ui-sref="admin">Webinars</a>
-                                    <!--<i class="right angle icon divider"></i>-->
+                                    <a ng-show="!webinarCode" class="section" href="" ui-sref-active="active"
+                                       ui-sref="webinars">Webinars</a>
+                                    <a ng-show="webinarCode" class="section" href="/#!/webinars/"
+                                       ui-sref-active="active">Webinars</a>
+                                    <i ng-show="webinarCode" class="right angle icon divider" ng-show="webinarCode"></i>
+                                    <a ng-show="webinarCode==='001'" class="section" href="" ui-sref-active="active"
+                                       ui-sref="webinars">
+                                        [ru] Lawyers certification webinar. March, 2020
+                                    </a>
                                 </div>
                             </div>
 
                             <div class="ui segment">
 
-                                <div ng-include="'/app/webinars/webinars.content.html'"></div>
+                                <div ng-show="!webinarCode">
+                                    <!-- <div ng-include="'/app/webinars/webinars.content.html'"></div>-->
+                                    <md ng-include="'/app/webinars/webinars.list.md'"></md>
+                                </div>
 
+                                <div ng-show="webinarCode==='001'">
+                                    <div ng-include="'/app/webinars/webinar001.html'"></div>
+                                </div>
 
                             </div>
 

@@ -11,8 +11,8 @@
 
 // https://docs.angularjs.org/api/ng/provider/$logProvider
     controller.config(function ($logProvider) {
-            // $logProvider.debugEnabled(false);
-            $logProvider.debugEnabled(true);
+            $logProvider.debugEnabled(false);
+            // $logProvider.debugEnabled(true);
         }
     );
 
