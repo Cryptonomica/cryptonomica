@@ -40,7 +40,7 @@ gcloud endpoints services deploy target/openapi-docs/openapi.json
 # if created already should be a message:
 # ERROR: (gcloud.app.create) The project [cryptonomica-server] already contains an App Engine application in region [us-central].
 # You can deploy your application using `gcloud app deploy`.
-mvn appengine:deploy
+mvn package appengine:deploy -Dapp.deploy.projectId=sandbox-cryptonomica # <<< !!!
 
 # after deploy API should be accessible on
 # https://apis-explorer.appspot.com/apis-explorer/?base=https://cryptonomica-server.appspot.com/_ah/api
@@ -54,7 +54,7 @@ mvn appengine:deploy
 mvn clean
 
 # test:
-echo 'sending test request to API:'
+echo 'sending test request to sandbox-cryptonomica.appspot.com API:'
 curl -i -H "Content-Type: application/json" -X POST -d '{"message":"echo"}' https://sandbox-cryptonomica.appspot.com/_ah/api/testAPI/v1/echo
 echo # empty line
 
