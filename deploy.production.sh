@@ -35,7 +35,8 @@ gcloud endpoints services deploy target/openapi-docs/openapi.json
 # if created already should be a message:
 # ERROR: (gcloud.app.create) The project [cryptonomica-server] already contains an App Engine application in region [us-central].
 # You can deploy your application using `gcloud app deploy`.
-mvn appengine:deploy
+mvn package appengine:deploy -Dapp.deploy.projectId=cryptonomica-server # <<< !!!
+#mvn appengine:deploy
 
 # after deploy API should be accessible on
 # https://apis-explorer.appspot.com/apis-explorer/?base=https://cryptonomica-server.appspot.com/_ah/api

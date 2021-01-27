@@ -23,7 +23,7 @@
     <properties>
 
         <!-- endpoints.project.id START -->
-        <endpoints.project.id>sandbox-cryptonomica</endpoints.project.id>
+        <endpoints.project.id>cryptonomica-server</endpoints.project.id>
         <!-- endpoints.project.id END -->
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -61,12 +61,20 @@
             <!--<version>1.0.11</version>-->
         </dependency>
 
+        <!--        <dependency>-->
+        <!--            <groupId>com.google.appengine</groupId>-->
+        <!--            <artifactId>appengine-api-1.0-sdk</artifactId>-->
+        <!--            &lt;!&ndash;<version>1.9.64</version>&ndash;&gt;-->
+        <!--            <version>1.9.71</version>-->
+        <!--        </dependency>-->
+
         <dependency>
+            <!-- https://mvnrepository.com/artifact/com.google.appengine/appengine-api-1.0-sdk -->
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>
-            <!--<version>1.9.64</version>-->
-            <version>1.9.71</version>
+            <version>1.9.84</version>
         </dependency>
+
 
         <dependency>
             <!--
@@ -195,7 +203,8 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>19.0</version>
+            <version>30.1-jre</version>
+            <!--            <version>19.0</version>-->
         </dependency>
 
         <!-- Apache Commons-->
@@ -295,11 +304,15 @@
 
         <plugins>
             <!-- Endpoints Frameworks v. 2 plugins START  -->
-            <!-- see: https://cloud.google.com/endpoints/docs/frameworks/legacy/v1/java/migrating -->
+            <!-- see: https://cloud.google.com/endpoints/docs/frameworks/legacy/v1/java/migrating
+            <see also: https://cloud.google.com/appengine/docs/standard/java/using-maven#adding_the_maven_plugin_to_an_existing_project_optional
+            maven: https://mvnrepository.com/artifact/com.google.cloud.tools/appengine-maven-plugin
+            -->
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
-                <version>1.3.2</version>
+                <version>2.4.0</version>
+                <!--                <version>1.3.2</version>-->
                 <configuration>
                     <!-- deploy configuration -->
                     <version>${project.version}</version>
@@ -319,7 +332,9 @@
                     <stage.enableJarClasses>true</stage.enableJarClasses>
                 </configuration>
             </plugin>
+
             <plugin>
+                <!-- https://cloud.google.com/endpoints/docs/frameworks/java/maven-endpoints-frameworks-plugin-->
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>endpoints-framework-maven-plugin</artifactId>
                 <version>1.0.3</version>
@@ -344,21 +359,24 @@
                     </webResources>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>versions-maven-plugin</artifactId>
-                <!--<version>2.3</version>-->
-                <version>2.7</version>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>display-dependency-updates</goal>
-                            <goal>display-plugin-updates</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+
+            <!--           2021-01-27 Disabled TODO: check if it works without this plugin -->
+            <!--            <plugin>-->
+            <!--                <groupId>org.codehaus.mojo</groupId>-->
+            <!--                <artifactId>versions-maven-plugin</artifactId>-->
+            <!--                &lt;!&ndash;<version>2.3</version>&ndash;&gt;-->
+            <!--                <version>2.7</version>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <phase>compile</phase>-->
+            <!--                        <goals>-->
+            <!--                            <goal>display-dependency-updates</goal>-->
+            <!--                            <goal>display-plugin-updates</goal>-->
+            <!--                        </goals>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
+
             <!-- Endpoints Frameworks v. 2 plugins END  -->
         </plugins>
 
