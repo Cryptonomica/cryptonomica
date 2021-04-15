@@ -23,7 +23,7 @@
     <properties>
 
         <!-- endpoints.project.id START -->
-        <endpoints.project.id>cryptonomica-server</endpoints.project.id>
+        <endpoints.project.id>sandbox-cryptonomica</endpoints.project.id>
         <!-- endpoints.project.id END -->
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -294,6 +294,25 @@
             <artifactId>mockito-all</artifactId>
             <version>2.0.2-beta</version>
             <scope>test</scope>
+        </dependency>
+
+        <!-- >>> 15-04-2021 -->
+        <!--   to prevent 'package javax.xml.bind does not exist' errors    -->
+        <!-- https://stackoverflow.com/questions/52502189/java-11-package-javax-xml-bind-does-not-exist -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-core</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.3.0</version>
         </dependency>
 
     </dependencies>

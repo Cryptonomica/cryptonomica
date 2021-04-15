@@ -56,7 +56,8 @@
                                     <div class="header">Error:</div>
                                     <p>
                                         This service requires browser with Ethereum blockchain connection.<br>
-                                        Please use browser with MetaMask plugin, Mist browser, or or similar software.
+                                        Please use browser with <a href="https://metamask.io">MetaMask plugin</a>, or or
+                                        similar software.
                                     </p>
                                 </div>
                             </div>
@@ -352,8 +353,9 @@
                                                         <td>Verified on:</td>
                                                         <td>
                                                             {{smartContractData.verificationAddedOnDate |
-                                                            date:'yyyy-MM-dd'}}
-                                                            &nbsp;(Unix time:&nbsp;{{smartContractData.verificationAddedOnUnixTime}})
+                                                        date:'yyyy-MM-dd'}}
+                                                            &nbsp;(Unix
+                                                            time:&nbsp;{{smartContractData.verificationAddedOnUnixTime}})
                                                         </td>
                                                     </tr>
 
@@ -529,7 +531,8 @@
                                             {{ethAccount}}
                                         </a></b>
                                         <br>
-                                        Your Ethereum network: <b><a ng-href="{{etherscanLinkPrefix}}">{{currentNetwork.networkName}}</a>
+                                        Your Ethereum network: <b><a
+                                            ng-href="{{etherscanLinkPrefix}}">{{currentNetwork.networkName}}</a>
                                         (network id: {{currentNetwork.network_id}})</b><br>
                                         Your Ethereum node: <b>{{currentNetwork.node}}</b><br>
                                         last known block:
