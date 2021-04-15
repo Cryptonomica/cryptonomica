@@ -860,9 +860,10 @@
 
                                 // $log.debug("$window.ethereum :");
                                 // $log.debug($window.ethereum);
-                                $rootScope.web3 = new Web3(ethereum);
+                                $rootScope.web3 = new Web3(window.ethereum);
 
-                                if (typeof window.ethereum.selectedAddress === 'undefined') { // privacy mode on
+                                // if (typeof window.ethereum.selectedAddress === 'undefined') { // privacy mode on
+                                if (typeof window.ethereum.selectedAddress === 'undefined' || !window.ethereum.selectedAddress) { // privacy mode on
                                     (async function () {
                                         try {
                                             // Request account access if needed
