@@ -172,7 +172,7 @@
                 // $log.debug('web3: ');
                 // $log.debug($rootScope.web3);
 
-                if (typeof window.ethereum.selectedAddress === 'undefined') { // privacy mode on
+                if (typeof window.ethereum.selectedAddress === 'undefined' || !window.ethereum.selectedAddress) { // privacy mode on
                     (async function () {
                         try {
                             // Request account access if needed

@@ -405,7 +405,8 @@ public class TestAPI {
         return result;
     }
 
-    @SuppressWarnings("unused")
+//    @SuppressWarnings("unused")
+/*
     @ApiMethod(
             name = "testReturnList",
             path = "testReturnList",
@@ -416,7 +417,7 @@ public class TestAPI {
             final com.google.appengine.api.users.User googleUser
     ) throws UnauthorizedException {
 
-        /* --- Check authorization: */
+        *//* --- Check authorization: *//*
         CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaOfficer(googleUser);
 
         ArrayList<Integer> arrayList = new ArrayList<>();
@@ -426,11 +427,10 @@ public class TestAPI {
 
         return arrayList;
     }
+    */
 
-    /* Allows admin to delete user profile.
-     * For example if name in key is completely different from name in passport, or if user requested deletion of the
-     * profile before key verification is finished.
-     * */
+/*
+
     @ApiMethod(
             name = "testConvertToJSON",
             path = "testConvertToJSON",
@@ -443,26 +443,34 @@ public class TestAPI {
             // see: https://cloud.google.com/appengine/docs/java/endpoints/exceptions
     ) throws Exception {
 
-        /* --- Check authorization : CRYPTONOMICA OFFICER ONLY !!! */
+        */
+/* --- Check authorization : CRYPTONOMICA OFFICER ONLY !!! *//*
+
         CryptonomicaUser admin = UserTools.ensureCryptonomicaOfficer(googleUser);
 
 
         ArrayList<String> result = new ArrayList<>();
 
-        /* ---- (1) Delete all OpenPGP public keys: */
+        */
+/* ---- (1) Delete all OpenPGP public keys: *//*
+
         List<PGPPublicKeyData> userKeysList = ofy().load().type(PGPPublicKeyData.class).filter("cryptonomicaUserId", userID).list();
         if (userKeysList != null && !userKeysList.isEmpty()) {
             result.add(userKeysList.get(0).toJSON());
         }
 
-        /* --- (2) Delete all OnlineVerification entities */
+        */
+/* --- (2) Delete all OnlineVerification entities *//*
+
 
         List<OnlineVerification> onlineVerificationList = ofy().load().type(OnlineVerification.class).filter("cryptonomicaUserId", userID).list();
         if (onlineVerificationList != null && !onlineVerificationList.isEmpty()) {
             result.add(onlineVerificationList.get(0).toJSON());
         }
 
-        /* --- (3) Delete profile */
+        */
+/* --- (3) Delete profile *//*
+
         CryptonomicaUser cryptonomicaUser = ofy().load().key(Key.create(CryptonomicaUser.class, userID)).now();
         if (cryptonomicaUser != null) {
             result.add(cryptonomicaUser.toJSON());
@@ -471,6 +479,7 @@ public class TestAPI {
         return result;
 
     } // end of testConvertToJSON();
+*/
 
 
     @SuppressWarnings("unused")

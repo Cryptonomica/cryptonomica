@@ -166,7 +166,11 @@
 
                         $log.debug('$scope.onlineVerification:');
                         $log.debug($scope.onlineVerification);
-                        $scope.videoUrl = "https://cryptonomica-server.appspot.com/gcs?verificationVideoId=" + $scope.onlineVerification.verificationVideoId;
+                        if (sandbox) {
+                            $scope.videoUrl = "https://sandbox-cryptonomica.appspot.com/gcs?verificationVideoId=" + $scope.onlineVerification.verificationVideoId;
+                        } else {
+                            $scope.videoUrl = "https://cryptonomica-server.appspot.com/gcs?verificationVideoId=" + $scope.onlineVerification.verificationVideoId;
+                        }
                         $log.debug('$scope.videoUrl: ' + $scope.videoUrl);
                         $scope.notAllowed = false;
                         $scope.getOnlineVerificationError = false;
@@ -280,18 +284,15 @@
                             img.style.transform = "rotate(90deg)";
                             imgModal.style.transform = "rotate(90deg)";
                             $scope.images[imageId].rotationsCounter++;
-                        }
-                        else if ($scope.images[imageId].rotationsCounter === 1) {
+                        } else if ($scope.images[imageId].rotationsCounter === 1) {
                             img.style.transform = "rotate(180deg)";
                             imgModal.style.transform = "rotate(180deg)";
                             $scope.images[imageId].rotationsCounter++;
-                        }
-                        else if ($scope.images[imageId].rotationsCounter === 2) {
+                        } else if ($scope.images[imageId].rotationsCounter === 2) {
                             img.style.transform = "rotate(270deg)";
                             imgModal.style.transform = "rotate(270deg)";
                             $scope.images[imageId].rotationsCounter++;
-                        }
-                        else if ($scope.images[imageId].rotationsCounter === 3) {
+                        } else if ($scope.images[imageId].rotationsCounter === 3) {
                             img.style.transform = "rotate(360deg)";
                             imgModal.style.transform = "rotate(360deg)";
                             $scope.images[imageId].rotationsCounter = 0;

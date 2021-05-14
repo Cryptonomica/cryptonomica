@@ -82,9 +82,15 @@ public class Web3jFactory {
         // "0xDADfa63d05D01f536930F1150238283Fe917D28c" is used both for Main Net and for Ropsten
         // https://etherscan.io/address/0xDADfa63d05D01f536930F1150238283Fe917D28c
         // https://ropsten.etherscan.io/address/0xdadfa63d05d01f536930f1150238283fe917d28c
-        Credentials credentials = Web3jFactory.getCredentialsObject("0xDADfa63d05D01f536930F1150238283Fe917D28c");
+        Credentials credentials = Web3jFactory.getCredentialsObject(
+                "0xDADfa63d05D01f536930F1150238283Fe917D28c"
+        );
 
-        final BigInteger GAS_PRICE = BigInteger.valueOf(10_000_000_000L);
+        final BigInteger GAS_PRICE = BigInteger.valueOf(10_000_000_000L) // 10 Gwei -> 0.00381195 Ether for .addVerificationData function call (381195 Gas)
+                // 2021-04-21: adjust the gas price, see:
+                // https://etherscan.io/gastracker
+                // https://ethgasstation.info
+                .multiply(BigInteger.valueOf(2)); // -> 10 * 2 = 20 Gwei , see: https://stackoverflow.com/questions/3877765/using-biginteger-multiply-operator
 
         // see example on https://etherscan.io/tx/0x9774a4eef49870a0ae6f9c79235cc58a3bb1764025da3725aad5692ac2e89fe0
         // (Gas Used By Transaction: 381003)

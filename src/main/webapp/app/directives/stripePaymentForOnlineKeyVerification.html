@@ -48,18 +48,69 @@
 
         <div class="fields">
 
+            <script>
+                // https://www.w3schools.com/howto/howto_js_toggle_password.asp
+                function toggleVisibility(inputFieldId, iconId) {
+                    const inputElement = document.getElementById(inputFieldId);
+                    const iconElement = document.getElementById(iconId);
+
+                    if (inputElement.type === "password") {
+                        inputElement.type = "text";
+                        iconElement.className = "eye icon";
+                        iconElement.title = "click to hide";
+                    } else {
+                        inputElement.type = "password";
+                        iconElement.className = "eye slash icon";
+                        iconElement.title = "click to show";
+                    }
+                }
+            </script>
+
             <div class="seven wide field">
+
                 <label>Card Number:</label>
                 <!-- Payment card numbers can be up to 19 digits -->
                 <!-- https://en.wikipedia.org/wiki/Payment_card_number -->
-                <input name="cardNumber" ng-model="stripePaymentForm.cardNumber"
-                       maxlength="19" placeholder="Card #" type="text" autocomplete='cc-number'>
+                <div class="ui fluid labeled input">
+
+                    <div class="ui label" onclick="toggleVisibility('cardNumberInput','showCardNumberIcon')">
+                        <i id="showCardNumberIcon" class="eye slash icon"
+                           title="click to show"></i>
+                    </div>
+
+                    <input id="cardNumberInput"
+                           name="cardNumber"
+                           ng-model="stripePaymentForm.cardNumber"
+                           maxlength="19"
+                           placeholder="Card #"
+                           type="password"
+                           autocomplete='cc-number'>
+                </div>
+
             </div>
+
             <div class="three wide field">
+
                 <label>CVC</label>
-                <input name="cardCVC" placeholder="CVC" type="text" size="3" maxlength="3"
-                       ng-model="stripePaymentForm.cardCVC"
-                       autocomplete='cc-csc'>
+
+                <div class="ui fluid labeled input">
+
+                    <div class="ui label" onclick="toggleVisibility('CvcInput','showCvcIcon')">
+                        <i id="showCvcIcon"
+                           class="eye slash icon"
+                           title="click to show"></i>
+                    </div>
+
+                    <input id="CvcInput"
+                           name="cardCVC"
+                           placeholder="CVC"
+                           type="password"
+                           size="3"
+                           maxlength="3"
+                           ng-model="stripePaymentForm.cardCVC"
+                           autocomplete='cc-csc'>
+                </div>
+
             </div>
 
             <div class="six wide field">

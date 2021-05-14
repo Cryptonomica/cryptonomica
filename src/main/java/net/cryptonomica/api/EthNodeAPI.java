@@ -63,130 +63,6 @@ public class EthNodeAPI {
     private static final Gson GSON = new Gson();
 
     /*------------------------------------------------------------------------*/
-    /* ---------------- for https://tomcatweb3j.cryptonomica.net -------------*/
-    /*------------------------------------------------------------------------*/
-
-    @ApiMethod(
-            name = "getVerificationFromSC",
-            path = "getVerificationFromSC",
-            httpMethod = ApiMethod.HttpMethod.GET
-    )
-    @SuppressWarnings("unused")
-    public VerificationStruct getVerificationDataFromSmartContract(
-            // final HttpServletRequest httpServletRequest,
-            final User googleUser,
-            final @Named("ethereumAcc") String ethereumAcc
-    ) throws IllegalArgumentException, UnauthorizedException {
-
-        // ensure registered user ( - may be later only for verified):
-        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaRegisteredUser(googleUser);
-
-        // check form:
-        LOG.warning("ethereumAcc" + ethereumAcc);
-
-        if (ethereumAcc == null || ethereumAcc.equals("")) {
-            throw new IllegalArgumentException("Provided text is to short or empty");
-        }
-
-        String tomcatWeb3jAPIkey = ofy()
-                .load()
-                .key(Key.create(AppSettings.class, "tomcatweb3jAPIkey"))
-                .now()
-                .getValue();
-
-        String urlHost = "https://tomcatweb3j.cryptonomica.net";
-        String urlPath = "/getVerification";
-        String urlAddress = urlHost + urlPath;
-
-        // HashMap<String, String> queryMap = new HashMap<>();
-        // queryMap.put("address", ethereumAcc);
-        String postRequestBody = "address=" + ethereumAcc;
-
-        HTTPResponse httpResponse = HttpService.postRequestWithAPIkey(
-                urlAddress,
-                postRequestBody,
-                tomcatWeb3jAPIkey
-        );
-
-        // LOG.warning("httpResponse: " + new Gson().toJson(httpResponse));
-
-        byte[] httpResponseContentBytes = httpResponse.getContent();
-        String httpResponseContentString = new String(httpResponseContentBytes, StandardCharsets.UTF_8);
-
-        // Test:
-        // Object resObj = new Gson().fromJson(httpResponseContentString, Object.class); // --- exception
-        // LOG.warning("resObj: " + new Gson().toJson(resObj));
-
-        LOG.warning("httpResponseContentString: " + httpResponseContentString);
-
-        VerificationStruct verificationStruct = GSON.fromJson(httpResponseContentString, VerificationStruct.class);
-
-        /* header:
-        content-type:  application/json;charset=utf-8
-        body:
-        {
-            "fingerprint": "",
-            "keyCertificateValidUntil": 0,
-            "firstName": "",
-            "lastName": "",
-            "birthDate": 0,
-            "nationality": "",
-            "verificationAddedOn": 0,
-            "revokedOn": 0
-        }
-        */
-        return verificationStruct;
-    }
-
-    @ApiMethod(
-            name = "getVerificationFromSCbyFingerprint",
-            path = "getVerificationFromSCbyFingerprint",
-            httpMethod = ApiMethod.HttpMethod.GET
-    )
-    @SuppressWarnings("unused")
-    public StringWrapperObject getVerificationDataFromSmartContractByFingerprint(
-            // final HttpServletRequest httpServletRequest,
-            final User googleUser,
-            final @Named("fingerprint") String fingerprint
-    ) throws IllegalArgumentException, UnauthorizedException {
-
-        // ensure registered user ( - may be later only for verified):
-        CryptonomicaUser cryptonomicaUser = UserTools.ensureCryptonomicaRegisteredUser(googleUser);
-
-        // check form:
-        LOG.warning("fingerprint" + fingerprint);
-
-        if (fingerprint == null || fingerprint.equals("") || fingerprint.length() != 40) {
-            throw new IllegalArgumentException("Provided fingerprint is not valid");
-        }
-
-        String tomcatWeb3jAPIkey = ofy()
-                .load()
-                .key(Key.create(AppSettings.class, "tomcatweb3jAPIkey"))
-                .now()
-                .getValue();
-
-        String urlHost = "https://tomcatweb3j.cryptonomica.net";
-        String urlPath = "/getVerification";
-        String urlAddress = urlHost + urlPath;
-
-        // HashMap<String, String> queryMap = new HashMap<>();
-        // queryMap.put("address", ethereumAcc);
-        String postRequestBody = "fingerprint=" + fingerprint;
-
-        HTTPResponse httpResponse = HttpService.postRequestWithAPIkey(
-                urlAddress,
-                postRequestBody,
-                tomcatWeb3jAPIkey
-        );
-
-        byte[] httpResponseContentBytes = httpResponse.getContent();
-        String httpResponseContentString = new String(httpResponseContentBytes, StandardCharsets.UTF_8);
-        LOG.warning("httpResponseContentString: " + httpResponseContentString);
-        return new StringWrapperObject(httpResponseContentString);
-    }
-
-    /*------------------------------------------------------------------------*/
     /* ---------------- for INFURA  ----------=============================---*/
     /*------------------------------------------------------------------------*/
 
@@ -215,7 +91,15 @@ public class EthNodeAPI {
             throw new IllegalArgumentException("ETH address should begin with '0x' ");
         }
 
-        Web3j web3j = Web3jFactory.getWeb3jObject("mainnet");
+        String ethereumNetworkName;
+        if (Constants.PRODUCTION) {
+            ethereumNetworkName = "mainnet";
+        } else {
+            ethereumNetworkName = "ropsten";
+        }
+
+        Web3j web3j = Web3jFactory.getWeb3jObject(ethereumNetworkName);
+
         CryptonomicaVerification cryptonomicaVerification = Web3jFactory.getCryptonomicaVerificationContract();
 
         String signedString = cryptonomicaVerification.signedString(ethereumAcc).send();
@@ -234,7 +118,7 @@ public class EthNodeAPI {
         }
 
         String unverifiedFingerprint = cryptonomicaVerification.unverifiedFingerprint(ethereumAcc).send();
-        LOG.warning("unverifiedFingerprint from smart conract:");
+        LOG.warning("unverifiedFingerprint from smart contract:");
         LOG.warning(unverifiedFingerprint);
 
         if (unverifiedFingerprint == null || unverifiedFingerprint.isEmpty()) {

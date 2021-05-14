@@ -368,6 +368,9 @@ $(function () {
                     console.log("myPublicKey:");
                     console.log(myPublicKey);
                     document.getElementById("generateKeysOpenPGPjs").disabled = false;
+
+                    readPublicKeyData();
+                    readPrivateKeyData();
                 });
         } catch (e) {
             $("#generateKeyError").text(e);
@@ -483,8 +486,7 @@ $(function () {
     });
 
     // ----- READ PRIVATE KEY - OPENPGP.JS
-    $("#readPrivateKeyDataOpenPGPjs").click(function () {
-
+    function readPrivateKeyData() {
         var privateKey = openpgp.key.readArmored(
             $('#privkeyShow').val()
         );
@@ -510,11 +512,12 @@ $(function () {
         $("#createdPrivate").text(created);
         $("#expPrivate").text(exp);
         $("#bitsSizePrivate").text(bitsSize);
+    }
 
-    });
+    $("#readPrivateKeyDataOpenPGPjs").click(readPrivateKeyData);
 
     // ----- READ PUBLIC KEY - OPENPGP.JS:
-    $("#readPublicKeyDataOpenPGPjs").click(function () {
+    function readPublicKeyData() {
 
         var publicKey = openpgp.key.readArmored(
             $('#pubkeyShow').val()
@@ -580,7 +583,9 @@ $(function () {
         $("#created").text(created);
         $("#exp").text(exp);
         $("#bitsSize").text(bitsSize);
-    });
+    }
+
+    $("#readPublicKeyDataOpenPGPjs").click(readPublicKeyData);
 
 
     $('#signMessage').click(function (event) {

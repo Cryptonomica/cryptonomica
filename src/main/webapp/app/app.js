@@ -75,7 +75,7 @@
                       $location,
                       $log) {
 
-                $rootScope.appVersion = '3.6.0 (2021-04-15)';
+                $rootScope.appVersion = '3.7.0 (2021-05-14)';
 
                 // (!!!) for debug:
                 // see:
@@ -161,6 +161,9 @@
 
                 $log.info('webapp started,  version: ', $rootScope.appVersion);
                 $log.info('production: ', $rootScope.PRODUCTION);
+                if (sandbox) {
+                    $log.info('This is our sandbox application');
+                }
 
                 $rootScope.checkAuth = function () {
                     GAuth.checkAuth()

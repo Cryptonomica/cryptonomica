@@ -2,12 +2,44 @@
     <h2>Phone verification</h2>
 </center>
 
+<script>
+    // https://www.w3schools.com/howto/howto_js_toggle_password.asp
+    function toggleVisibility(inputFieldId, iconId) {
+        const inputElement = document.getElementById(inputFieldId);
+        const iconElement = document.getElementById(iconId);
+
+        if (inputElement.type === "password") {
+            inputElement.type = "tel";
+            iconElement.className = "eye icon";
+            iconElement.title = "click to hide";
+        } else {
+            inputElement.type = "password";
+            iconElement.className = "eye slash icon";
+            iconElement.title = "click to show";
+        }
+    }
+</script>
+
 <form class="ui form">
 
     <!--<fieldset>-->
     <div class="field">
-        <legend>Enter your pnone in international format:</legend>
-        <input type="tel" id="phoneNumber" placeholder="+972523333333" ng-model="phoneNumber" autocomplete="tel">
+
+        <legend>Enter your phone in international format (example: +972523333333):</legend>
+        <div class="ui fluid labeled input">
+
+            <div class="ui label" onclick="toggleVisibility('phoneNumber','showPhoneNumberIcon')">
+                <i id="showPhoneNumberIcon" class="eye slash icon"
+                   title="click to show"></i>
+            </div>
+
+            <input id="phoneNumber"
+                   type="password"
+                   placeholder="+972523333333"
+                   ng-model="phoneNumber"
+                   autocomplete="tel">
+        </div>
+
         <br>
         <button ng-click="sendSms()" class="ui small button">
             Send SMS Message
@@ -18,7 +50,11 @@
     <div class="field">
 
         <legend>Enter 7 digits from received SMS message (check sms from +17349843608) :</legend>
-        <input type="text" id="smsMessage" class="form-control" placeholder="1234567" ng-model="smsMessage">
+        <input id="smsMessage"
+               type="text"
+               class="form-control"
+               placeholder="1234567"
+               ng-model="smsMessage">
         <br>
         <button class="ui small button" ng-click="checkSms()"
                 role="button" type="button" class="btn btn-secondary">

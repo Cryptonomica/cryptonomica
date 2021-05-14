@@ -99,6 +99,7 @@ public class CloudStorageServletVideo extends HttpServlet {
         String fingerprint = req.getHeader("fingerprint"); // $scope.fingerprint = $stateParams.fingerprint;
         String videoUploadKeyReceived = req.getHeader("videoUploadKey"); // from RandomStringUtils.random(33);
 
+
         // --- debug:
         // Returns the length, in bytes, of the request body
         // and made available by the input stream, or -1 if the  length is not known
@@ -116,10 +117,38 @@ public class CloudStorageServletVideo extends HttpServlet {
 
         // TODO >>> rewrite code to not send requests to BD if http request data is invalid;
 
+        final Key<CryptonomicaUser> cryptonomicaUserKey = Key.create(CryptonomicaUser.class, userId);
+
         cryptonomicaUser = ofy()
                 .load()
-                .key(Key.create(CryptonomicaUser.class, userId))
+                .key(cryptonomicaUserKey)
                 .now();
+
+        // --- DEBUG:
+        if (cryptonomicaUser == null) {
+            LOG.warning("cryptonomicaUser is null");
+        } else {
+            LOG.warning(
+                    "cryptonomicaUser.getEmail().getEmail() : "
+                            + cryptonomicaUser.getEmail().getEmail()
+            );
+        }
+
+        final Key<PGPPublicKeyData> pgpPublicKeyDataKey = Key.create(cryptonomicaUserKey, PGPPublicKeyData.class, fingerprint);
+        // --- DEBUG:
+        LOG.warning("pgpPublicKeyDataKey:");
+        LOG.warning(pgpPublicKeyDataKey.toString());
+
+        PGPPublicKeyData pgpPublicKeyDataObject = ofy()
+                .load()
+                .key(pgpPublicKeyDataKey)
+                .now();
+        // --- DEBUG:
+        if (pgpPublicKeyDataObject == null) {
+            LOG.warning("pgpPublicKeyDataObject is null");
+        } else {
+            LOG.warning("pgpPublicKeyDataObject.getFingerprint() : " + pgpPublicKeyDataObject.getFingerprint());
+        }
 
         pgpPublicKeyData = ofy()
                 .load()
