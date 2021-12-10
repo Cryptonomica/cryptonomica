@@ -39,5 +39,7 @@ sed -i '/var SED_START;/,/var SED_END;/c\
             $rootScope.PRODUCTION = true;\
             var SED_END;' ./src/main/webapp/app/app.js
 
-
-
+sed -i '/var SED_START;/,/var SED_END;/c\
+            var SED_START;\
+            $rootScope.PRODUCTION = true;\
+            var SED_END;' ./src/main/webapp/bills-of-exchange/app/app.js

@@ -228,8 +228,8 @@
 
                 let requestUrl;
 
-                if (sandbox) {
-                    requestUrl = 'https://sandbox-cryptonomica.appspot.com/gcs'
+                if (window.sandbox) {
+                    requestUrl = 'https://sandbox-cryptonomica.appspot.com/gcs';
                 } else {
                     requestUrl = "https://cryptonomica.net/gcs";
                 }
@@ -274,7 +274,8 @@
                         if (resp.verificationVideoId) {
 
                             let serverAddress;
-                            if (sandbox) {
+
+                            if (window.sandbox) {
                                 serverAddress = "https://sandbox-cryptonomica.appspot.com";
                             } else {
                                 serverAddress = "https://cryptonomica-server.appspot.com";

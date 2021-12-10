@@ -33,312 +33,366 @@
                                 <!--  -->
                                 <br>
 
-                                <!-- Key options BEGIN -->
-                                <div class="ui form">
+                                <div class="ui top attached tabular menu" style="font-size: 100%;">
 
-                                    <h3>Password for private key:</h3>
-                                    <script>
-                                        // https://www.w3schools.com/howto/howto_js_toggle_password.asp
-                                        function toggleShowPassword() {
-                                            var passphrase = document.getElementById("passphrase");
-                                            var showPasswordIcon = document.getElementById("showPasswordIcon");
-                                            if (passphrase.type === "password") {
-                                                passphrase.type = "text";
-                                                showPasswordIcon.className = "eye icon";
-                                                showPasswordIcon.title = "click to hide password";
-                                            } else {
-                                                passphrase.type = "password";
-                                                showPasswordIcon.className = "eye slash icon";
-                                                showPasswordIcon.title = "click to show password";
-                                            }
-                                        }
-                                    </script>
+                                    <a class="item active" data-tab="createTab">
+                                        <!--<i class="edit icon"></i>&nbsp;-->
+                                        Create keys
+                                    </a>
 
-                                    <div class="ui fluid labeled input">
+                                    <a class="item" data-tab="readKeysTab">
+                                        <!--<i class="edit icon"></i>&nbsp;-->
+                                        Show/read keys
+                                    </a>
 
-                                        <div class="ui label" onclick="toggleShowPassword()">
-                                            <i id="showPasswordIcon"
-                                               class="eye slash icon"
-                                               title="click to show password"></i>
+                                    <a class="item" data-tab="signTextTab">
+                                        <!--<i class="edit icon"></i>&nbsp;-->
+                                        Sign Text
+                                    </a>
+
+                                    <a class="item" data-tab="verifySignatureTab">
+                                        <!--<i class="search icon"></i>&nbsp;-->
+                                        Verify signature / decrypt text
+                                    </a>
+
+                                </div>
+
+                                <div id="createTab" class="ui bottom attached tab segment active" data-tab="createTab">
+
+                                    <div class="ui form">
+                                        <h3>Password for private key:</h3>
+
+                                        <div class="ui fluid labeled input">
+
+                                            <div class="ui label"
+                                                 ng-click="toggleShowPassword('passphrase', 'showPasswordIcon')">
+                                                <i id="showPasswordIcon"
+                                                   class="eye slash icon"
+                                                   title="click to show password"></i>
+                                            </div>
+
+                                            <input id="passphrase"
+                                                   type="password"
+                                                   autocomplete="new-password"
+                                                   ng-model="password">
+
                                         </div>
 
-                                        <input id="passphrase" type="password" autocomplete="new-password">
-                                        <!--<input id="passphrase" type="text" autocomplete="new-password">-->
+                                        <div>
+                                            <strong>
+                                                save the password and your private key in a safe place:
+                                                <span style="color: red">we do not store your password and your private key and will not be able to recover them</span>
+                                            </strong>
+                                        </div>
+
+                                        <h3>Name (fist name + last name exactly as in passport)</h3>
+                                        <div class="ui fluid input">
+                                            <input type="text" id="name" placeholder="John Doe" autocomplete='name'
+                                                   ng-model="createKeyForm.name">
+                                        </div>
+
+                                        <!--                                        <h3>First name:</h3>-->
+                                        <!--                                        <div class="ui fluid input">-->
+                                        <!--                                            <input type="text" id="firstName" placeholder="John" autocomplete='given-name'-->
+                                        <!--                                                   ng-model="createKeyForm.firstName">-->
+                                        <!--                                        </div>-->
+
+                                        <!--                                        <h3>Last name:</h3>-->
+                                        <!--                                        <div class="ui fluid input">-->
+                                        <!--                                            <input type="text" id="lastName" placeholder="Doe" autocomplete='family-name'-->
+                                        <!--                                                   ng-model="createKeyForm.lastName">-->
+                                        <!--                                        </div>-->
+
+                                        <h3>User email:</h3>
+                                        <input type="email" id="userEmail" placeholder="john.doe@gmail.com"
+                                               autocomplete='email' ng-model="createKeyForm.userEmail">
+
+                                        <h3>Valid for one or two years:</h3>
+                                        <div class="ui fluid labeled input">
+                                            <input id="expire_in" type="number" min="1" max="2" placeholder="2"
+                                                   value="2">
+                                            <div class="ui label">
+                                                years
+                                            </div>
+                                        </div>
+
+                                        <h3>Key size (strength) in bits:</h3>
+                                        <div class="ui fluid input">
+                                            <input id="numBits" input type="number" min="2048" max="4096" step="1024"
+                                                   placeholder="2048" value="2048">
+                                        </div>
+
+                                        <!-- Key options END -->
+
+                                        <!--                                    <div class="line"></div>-->
+                                        <!--                                    -->
+                                        <!--                                    <button class="ui button" id="useMockupData">-->
+                                        <!--                                        <i class="fa fa-arrow-up"></i>&nbsp; (for testing only) Use mockup data-->
+                                        <!--                                    </button>-->
+
+                                        <div class="line"></div>
+
+                                        <div id="generateKeyOptionsMessage"></div>
+
+                                        <!-- generate keys buttons-->
+                                        <button class="ui button" id="generateKeysOpenPGPjs">
+                                            <i class="fa fa-key"></i>&nbsp;Generate New Keys
+                                        </button>
+                                        <div id="statusMessage"></div>
+                                        <div id="generateKeyError" style="color: red"></div>
 
                                     </div>
+                                </div>
 
+                                <div id="readKeysTab" class="ui bottom attached tab segment" data-tab="readKeysTab">
+                                    <!-- PUBLIC KEY -->
+                                    <div class="ui form">
 
-                                    <div>
+                                        <h2>Public Key:</h2>
+                                        <button class="ui button" id="savePublicKeyToLocalStorageButton">
+                                            Save to local browser storage
+                                            <br> (for example, to use for registration on this site)
+                                        </button>
+                                        <button class="ui button" id="removePublicKeyFromLocalStorageButton">
+                                            Remove from local browser storage
+                                        </button>
+                                        <div id="publicKeyLocalStorageMessage" style="font-weight: bold"></div>
+                                        <textarea id="pubkeyShow" rows="15" cols="71" ng-model="publicKey"
+                                                  style="font-size: 0.6em"></textarea>
+                                        <br>
+                                        <button class="ui button" id="readPublicKeyDataOpenPGPjs">Read Public Key Data
+                                        </button>
+                                        <button class="ui button" id="savePublicKeyAsFile">Save as file</button>
+                                        <button class="ui button" id="copyPublicKeyToClipboard">Copy to clipboard
+                                        </button>
+                                        <button ng-show="currentUser&&currentUser.registeredCryptonomicaUser"
+                                                class="ui button" id="addPublicKeyToProfile"
+                                                ng-click="addPublicKeyToProfile()">
+                                            Add to profile
+                                        </button>
+
+                                        <div id="keyUploadSuccessMessage" ng-show="keyUploadSuccessMessage"
+                                             class="ui positive message">
+                                            <i class="close icon" ng-click="keyUploadSuccessMessage=null"></i>
+                                            <div class="header">Success:</div>
+                                            <p>{{keyUploadSuccessMessage}}</p>
+                                        </div>
+
+                                        <div id="keyUploadErrorMessage" ng-show="keyUploadErrorMessage"
+                                             class="ui negative message">
+                                            <i class="close icon" ng-click="keyUploadErrorMessage=null"></i>
+                                            <div class="header">Error:</div>
+                                            <p>{{keyUploadErrorMessage}}</p>
+                                        </div>
+
+                                        <table>
+                                            <tr>
+                                                <td>Key ID: &nbsp;</td>
+                                                <td id="keyId"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Fingerprint: &nbsp;</td>
+                                                <td id="fingerprint"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>User ID:</td>
+                                                <td id="userId"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Created:</td>
+                                                <td id="created"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Valid until:</td>
+                                                <td id="exp"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Key size (strength) in bits:</td>
+                                                <td id="bitsSize"></td>
+                                            </tr>
+                                        </table>
+                                        <br>
+                                    </div>
+
+                                    <hr>
+                                    <!-- PRIVATE KEY -->
+                                    <div class="ui form">
+                                        <h2>Private Key:</h2>
+                                        <button class="ui button" id="savePrivateKeyToLocalStorageButton">
+                                            Save to local browser storage
+                                            <br> (for example, to use to sign messages on this site)
+                                        </button>
+                                        <button class="ui button" id="removePrivateKeyFromLocalStorageButton">
+                                            Remove from local browser storage
+                                        </button>
+                                        <div id="privateKeyLocalStorageMessage" style="font-weight: bold"></div>
+                                        <textarea id="privkeyShow" rows="15" cols="71"
+                                                  style="font-size: 0.6em" ng-model="privateKey"></textarea>
+                                        <br>
                                         <strong>
-                                            save the password and your private key in a safe place:
-                                            <span style="color: red">we do not store your password and your private key and will not be able to recover them</span>
+                                            save your private keys in a safe place:
+                                            <span style="color: red">we do not store your private key and will not be able to recover it</span>
                                         </strong>
+                                        <br>
+                                        <button class="ui button" id="savePrivateKeyAsFile">Save as file</button>
+                                        <button class="ui button" id="copyPrivateKeyToClipboard">Copy to clipboard
+                                        </button>
+                                        <button class="ui button" id="readPrivateKeyDataOpenPGPjs">Read Private Key Data
+                                        </button>
+                                        <br>
+                                        <table>
+                                            <tr>
+                                                <td>Key ID: &nbsp;</td>
+                                                <td id="keyIdPrivate"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Fingerprint: &nbsp;</td>
+                                                <td id="fingerprintPrivate"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>User ID:</td>
+                                                <td id="userIdPrivate"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Created:</td>
+                                                <td id="createdPrivate"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Valid until:</td>
+                                                <td id="expPrivate"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Key size (strength) in bits:</td>
+                                                <td id="bitsSizePrivate"></td>
+                                            </tr>
+                                        </table>
                                     </div>
-
-                                    <h3>First name:</h3>
-                                    <div class="ui fluid input">
-                                        <input type="text" id="firstName" placeholder="John" autocomplete='given-name'
-                                               ng-model="createKeyForm.firstName">
-                                    </div>
-
-                                    <h3>Last name:</h3>
-                                    <div class="ui fluid input">
-                                        <input type="text" id="lastName" placeholder="Doe" autocomplete='family-name'
-                                               ng-model="createKeyForm.lastName">
-                                    </div>
-
-                                    <h3>User email:</h3>
-                                    <input type="email" id="userEmail" placeholder="john.doe@gmail.com"
-                                           autocomplete='email' ng-model="createKeyForm.userEmail">
-
-                                    <h3>Valid for (years):</h3>
-                                    <div class="ui fluid input">
-                                        <input id="expire_in" type="number" min="1" max="10" placeholder="1" value="1">
-                                    </div>
-
-                                    <h3>Key size (strength) in bits:</h3>
-                                    <div class="ui fluid input">
-                                        <input id="numBits" input type="number" min="1024" max="4096" step="1024"
-                                               placeholder="2048" value="2048">
-                                    </div>
-
-                                    <!-- Key options END -->
-                                    <div class="line"></div>
-                                    <button class="ui button" id="useMockupData">
-                                        <i class="fa fa-arrow-up"></i>&nbsp; (for testing only) Use mockup data
-                                    </button>
-                                    <div class="line"></div>
-
-                                    <div id="generateKeyOptionsMessage"></div>
-
-                                    <!-- generate keys buttons-->
-                                    <button class="ui button" id="generateKeysOpenPGPjs">
-                                        <i class="fa fa-key"></i>&nbsp;Generate New Keys
-                                    </button>
-                                    <div id="statusMessage"></div>
-                                    <div id="generateKeyError" style="color: red"></div>
 
                                 </div>
 
-                                <!-- PUBLIC KEY -->
-                                <div class="ui form">
-                                    <h3>Public Key:</h3>
-                                    <button class="ui button" id="savePublicKeyToLocalStorageButton">
-                                        Save to local browser storage
-                                        <br> (for example, to use for registration on this site)
-                                    </button>
-                                    <button class="ui button" id="removePublicKeyFromLocalStorageButton">Remove from
-                                        local
-                                        browser storage
-                                    </button>
-                                    <div id="publicKeyLocalStorageMessage" style="font-weight: bold"></div>
-                                    <textarea id="pubkeyShow" rows="15" cols="71" ng-model="publicKey"></textarea>
-                                    <br>
-                                    <button class="ui button" id="readPublicKeyDataOpenPGPjs">Read Public Key Data
-                                    </button>
-                                    <button class="ui button" id="savePublicKeyAsFile">Save as file</button>
-                                    <button class="ui button" id="copyPublicKeyToClipboard">Copy to clipboard</button>
-                                    <button ng-show="currentUser&&currentUser.registeredCryptonomicaUser"
-                                            class="ui button" id="addPublicKeyToProfile"
-                                            ng-click="addPublicKeyToProfile()">
-                                        Add to profile
-                                    </button>
+                                <div id="signTab" class="ui bottom attached tab segment" data-tab="signTextTab">
 
-                                    <div id="keyUploadSuccessMessage" ng-show="keyUploadSuccessMessage"
-                                         class="ui positive message">
-                                        <i class="close icon" ng-click="keyUploadSuccessMessage=null"></i>
-                                        <div class="header">Success:</div>
-                                        <p>{{keyUploadSuccessMessage}}</p>
+
+                                    <div class="ui form">
+
+                                        <h2>Sign text</h2>
+
+                                        <label style="font-weight: bold">
+                                            <i class="fa fa-file-text-o"></i>&nbsp;text to sign:
+                                        </label>
+
+                                        <textarea id="messageText" rows="3" cols="71" ng-model="textToSign"
+                                                  placeholder="This is a test message we want to sign.">
+                                    </textarea>
+
+                                        <br>
+                                        <button class="ui button" id="signMessage" ng-click="signText">
+                                            <i class="fa fa-pencil-square-o"></i>
+                                            Sign
+                                        </button>
+
+                                        <div id="signOrEncryptMessageError"></div>
+
+                                        <label style="font-weight: bold">
+                                            <i class="fa fa-file-text-o"></i>&nbsp;your private key:
+                                        </label>
+                                        <textarea ng-model="privateKey"></textarea>
+
+
+                                        <!-- Signed text -->
+                                        <label style="font-weight: bold">signed text:</label>
+                                        <textarea id="signedMessage" rows="10" cols="71"></textarea>
+
+                                        <!--                                        <div style="color: grey">-->
+                                        <!--                                            Signed text length: <span id="signedMessageLength"></span>-->
+                                        <!--                                            <br>-->
+                                        <!--                                            Signed text hash (SHA256): <span id="signedMessageSHA256"></span>-->
+                                        <!--                                        </div>-->
+
+                                        <button class="ui button" id="checkSignatureButton">
+                                            Check signature
+                                        </button>
+
+                                        <button class="ui button" id="saveSignedMessageAsFile">
+                                            Save as file
+                                        </button>
+                                        <button class="ui button" id="copySignedMessageToClipboard">
+                                            Copy to clipboard
+                                        </button>
+                                        <button class="ui button" id="signedMessageCalculateLengthAndHash">
+                                            Calculate length and hash
+                                        </button>
+
+                                        <div id="checkSignatureResult"></div>
+
+                                        <!-- Encrypted text -->
+                                        <label style="font-weight: bold">encrypted text:</label>
+                                        <textarea id="encryptedText" rows="10" cols="71"></textarea>
+                                        <button class="ui button" id="saveEncryptedTextAsFile">Save as file</button>
+                                        <button class="ui button" id="copyEncryptedTextToClipboard">Copy to clipboard
+                                        </button>
+                                        <br>
+
+                                        <!-- Decrypted message   -->
+
+                                        <button class="ui button" id="decryptButton">
+                                            <i class="fa fa-unlock"></i>&nbsp; decrypt (private key and its password
+                                            required)
+                                        </button>
+                                        <br>
+                                        <textarea id="decryptedText" rows="10" cols="71"></textarea>
+                                        <div id="decryptError"></div>
+                                        <button class="ui button" id="saveDecryptedTextAsFile">Save as file</button>
+                                        <button class="ui button" id="copyDecryptedTextToClipboard">Copy to clipboard
+                                        </button>
+                                        <div class="line"></div>
+                                        <br>
+                                        <!-- <hr>  -->
+                                        All operations with keys on this page are made only in the browser without
+                                        transferring
+                                        data to the server.<br>
+                                        You can view the page code on
+                                        <a href="/app/openPGPOnline/openPGPOnline.js">
+                                            app/openPGPOnline/openPGPOnline.js
+                                        </a>
+                                        <br>
+                                        You can also use
+                                        <a href="https://ageyev.github.io/crypto/openpgp/">ageyev.github.io/crypto/openpgp/
+                                        </a> with the same functionality.
+
+                                        <div class="line"></div>
+
+                                        If you want to read more about digital signatures, encryption and OpenPGP click
+                                        on
+                                        following links:<br>
+
+                                        <a href="https://en.wikipedia.org/wiki/Pretty_Good_Privacy" target="_blank">
+                                            Pretty Good Privacy (PGP) on Wikipedia
+                                        </a> <br>
+                                        <a href="https://futureboy.us/pgp.html" target="_blank">
+                                            GPG Tutorial
+                                        </a><br>
+                                        <a href="https://www.gnupg.org/documentation/manuals/gnupg/" target="_blank">
+                                            The GNU Privacy Guard Manual
+                                        </a><br>
+                                        <a href="http://www.apache.org/dev/openpgp.html" target="_blank">
+                                            OpenPGP on Apache
+                                        </a><br>
+
+                                        <div class="line"></div>
+                                        <br>
+                                        <br>
+                                        <!-- <hr> -->
                                     </div>
-
-                                    <div id="keyUploadErrorMessage" ng-show="keyUploadErrorMessage"
-                                         class="ui negative message">
-                                        <i class="close icon" ng-click="keyUploadErrorMessage=null"></i>
-                                        <div class="header">Error:</div>
-                                        <p>{{keyUploadErrorMessage}}</p>
-                                    </div>
-
-                                    <table>
-                                        <tr>
-                                            <td>Key ID: &nbsp;</td>
-                                            <td id="keyId"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Fingerprint: &nbsp;</td>
-                                            <td id="fingerprint"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>User ID:</td>
-                                            <td id="userId"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Created:</td>
-                                            <td id="created"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Valid until:</td>
-                                            <td id="exp"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Key size (strength) in bits:</td>
-                                            <td id="bitsSize"></td>
-                                        </tr>
-                                    </table>
-                                    <br>
                                 </div>
 
-                                <!-- PRIVATE KEY -->
-                                <div class="ui form">
-                                    <h3>Private Key:</h3>
-                                    <button class="ui button" id="savePrivateKeyToLocalStorageButton">
-                                        Save to local browser storage
-                                        <br> (for example, to use to sign messages on this site)
-                                    </button>
-                                    <button class="ui button" id="removePrivateKeyFromLocalStorageButton">
-                                        Remove from local browser storage
-                                    </button>
-                                    <div id="privateKeyLocalStorageMessage" style="font-weight: bold"></div>
-                                    <textarea id="privkeyShow" rows="15" cols="71"></textarea>
-                                    <br>
-                                    <strong>
-                                        save your private keys in a safe place:
-                                        <span style="color: red">we do not store your private key and will not be able to recover it</span>
-                                    </strong>
-                                    <br>
-                                    <button class="ui button" id="savePrivateKeyAsFile">Save as file</button>
-                                    <button class="ui button" id="copyPrivateKeyToClipboard">Copy to clipboard</button>
-                                    <button class="ui button" id="readPrivateKeyDataOpenPGPjs">Read Private Key Data
-                                    </button>
-                                    <br>
-                                    <table>
-                                        <tr>
-                                            <td>Key ID: &nbsp;</td>
-                                            <td id="keyIdPrivate"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Fingerprint: &nbsp;</td>
-                                            <td id="fingerprintPrivate"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>User ID:</td>
-                                            <td id="userIdPrivate"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Created:</td>
-                                            <td id="createdPrivate"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Valid until:</td>
-                                            <td id="expPrivate"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Key size (strength) in bits:</td>
-                                            <td id="bitsSizePrivate"></td>
-                                        </tr>
-                                    </table>
+                                <div id="verifySignatureTab" class="ui bottom attached tab segment"
+                                     data-tab="verifySignatureTab">
                                 </div>
 
                                 <!-- Use your keys -->
                                 <div class="line"></div>
 
-                                <div class="ui form">
-                                    <h2>Use your keys:</h2>
-                                    <label style="font-weight: bold">
-                                        <i class="fa fa-file-text-o"></i>&nbsp;&nbsp;text to encrypt or sign:
-                                    </label>
-                                    <textarea id="messageText" rows="3" cols="71"
-                                              placeholder="this is a test message we want to encrypt or sign">
-                                    </textarea>
-                                    <br>
-                                    <button class="ui button" id="encrypt">
-                                        <i class="fa fa-lock"></i>&nbsp;Encrypt
-                                    </button>
-                                    <button class="ui button" id="signMessage">
-                                        <i class="fa fa-pencil-square-o"></i>&nbsp;Sign
-                                    </button>
-                                    <div id="signOrEncryptMessageError"></div>
-
-                                    <!-- Signed text -->
-                                    <label style="font-weight: bold">signed text:</label>
-                                    <textarea id="signedMessage" rows="10" cols="71"></textarea>
-                                    <div style="color: grey">
-                                        Signed text length: <span id="signedMessageLength"></span>
-                                        <br>
-                                        Signed text hash (SHA256): <span id="signedMessageSHA256"></span>
-                                    </div>
-                                    <button class="ui button" id="checkSignatureButton">
-                                        Check signature
-                                    </button>
-                                    <button class="ui button" id="saveSignedMessageAsFile">
-                                        Save as file
-                                    </button>
-                                    <button class="ui button" id="copySignedMessageToClipboard">
-                                        Copy to clipboard
-                                    </button>
-                                    <button class="ui button" id="signedMessageCalculateLengthAndHash">
-                                        Calculate length and hash
-                                    </button>
-
-                                    <div id="checkSignatureResult"></div>
-
-                                    <!-- Encrypted text -->
-                                    <label style="font-weight: bold">encrypted text:</label>
-                                    <textarea id="encryptedText" rows="10" cols="71"></textarea>
-                                    <button class="ui button" id="saveEncryptedTextAsFile">Save as file</button>
-                                    <button class="ui button" id="copyEncryptedTextToClipboard">Copy to clipboard
-                                    </button>
-                                    <br>
-
-                                    <!-- Decrypted message   -->
-
-                                    <button class="ui button" id="decryptButton">
-                                        <i class="fa fa-unlock"></i>&nbsp; decrypt (private key and its password
-                                        required)
-                                    </button>
-                                    <br>
-                                    <textarea id="decryptedText" rows="10" cols="71"></textarea>
-                                    <div id="decryptError"></div>
-                                    <button class="ui button" id="saveDecryptedTextAsFile">Save as file</button>
-                                    <button class="ui button" id="copyDecryptedTextToClipboard">Copy to clipboard
-                                    </button>
-                                    <div class="line"></div>
-                                    <br>
-                                    <!-- <hr>  -->
-                                    All operations with keys on this page are made only in the browser without
-                                    transferring
-                                    data to the server.<br>
-                                    You can view the page code on
-                                    <a href="/app/openPGPOnline/openPGPOnline.js">
-                                        app/openPGPOnline/openPGPOnline.js
-                                    </a>
-                                    <br>
-                                    You can also use
-                                    <a href="https://ageyev.github.io/crypto/openpgp/">ageyev.github.io/crypto/openpgp/
-                                    </a> with the same functionality.
-
-                                    <div class="line"></div>
-
-                                    If you want to read more about digital signatures, encryption and OpenPGP click on
-                                    following links:<br>
-
-                                    <a href="https://en.wikipedia.org/wiki/Pretty_Good_Privacy" target="_blank">
-                                        Pretty Good Privacy (PGP) on Wikipedia
-                                    </a> <br>
-                                    <a href="https://futureboy.us/pgp.html" target="_blank">
-                                        GPG Tutorial
-                                    </a><br>
-                                    <a href="https://www.gnupg.org/documentation/manuals/gnupg/" target="_blank">
-                                        The GNU Privacy Guard Manual
-                                    </a><br>
-                                    <a href="http://www.apache.org/dev/openpgp.html" target="_blank">
-                                        OpenPGP on Apache
-                                    </a><br>
-
-                                    <div class="line"></div>
-                                    <br>
-                                    <br>
-                                    <!-- <hr> -->
-                                </div>
                             </div>
                         </div>
 

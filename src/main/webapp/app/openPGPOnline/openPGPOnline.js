@@ -14,6 +14,9 @@ $(function () {
 
     console.log("app.js is loaded");
 
+    // activate tabs (semantic ui):
+    $('.menu .item').tab();
+
     /* Web Storage API , https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API */
     var storageType = 'localStorage'; // or 'sessionStorage'
     var storageAvailable =
@@ -280,10 +283,12 @@ $(function () {
         var opts = {};
         opts.passphrase = document.getElementById("passphrase").value;
 
-        opts.firstName = document.getElementById("firstName").value;
-        opts.lastName = document.getElementById("lastName").value;
+        // opts.firstName = document.getElementById("firstName").value;
+        // opts.lastName = document.getElementById("lastName").value;
+        // opts.name = opts.firstName + " " + opts.lastName;
 
-        opts.name = opts.firstName + " " + opts.lastName;
+        opts.name = document.getElementById("name").value;
+
         opts.userEmail = document.getElementById("userEmail").value;
         opts.userId = opts.name + " <" + opts.userEmail + ">";
         opts.numBits = document.getElementById("numBits").value;
@@ -317,7 +322,7 @@ $(function () {
         $("#bitsSize").text("");
     }
 
-    $("#generateKeysOpenPGPjs").click(function (event) {
+    $("#generateKeysOpenPGPjs").click(function () {
 
         $("#generateKeyError").text("");
 
@@ -371,6 +376,9 @@ $(function () {
 
                     readPublicKeyData();
                     readPrivateKeyData();
+                    // see:
+                    // https://github.com/Semantic-Org/Semantic-UI/issues/3544
+                    $('.ui.menu').find('.item').tab('change tab', 'readKeysTab');
                 });
         } catch (e) {
             $("#generateKeyError").text(e);
@@ -587,78 +595,77 @@ $(function () {
 
     $("#readPublicKeyDataOpenPGPjs").click(readPublicKeyData);
 
-
-    $('#signMessage').click(function (event) {
-
-        $("#signOrEncryptMessageError").text("");
-
-        var messageToSign = $("#messageText").val();
-
-        // TODO: check:
-        messageToSign = messageToSign.trim();
-
-        if (messageToSign.toString().length === 0) {
-            $("#signOrEncryptMessageError").text("Message to sign is empty").css('color', 'red');
-            return;
-        }
-
-        var privateKeyArmored = $("#privkeyShow").val();
-        if (privateKeyArmored.toString().length === 0) {
-            $("#signOrEncryptMessageError").text("Private key is empty").css('color', 'red');
-            return;
-        }
-
-        var passphrase = $("#passphrase").val();
-        if (passphrase.toString().length === 0) {
-            $("#signOrEncryptMessageError").text("Password for private key is empty").css('color', 'red');
-            return;
-        }
-
-        var privateKeyEncrypted;
-        try {
-            privateKeyEncrypted = openpgp.key.readArmored(privateKeyArmored).keys[0];
-            if (typeof privateKeyEncrypted === 'undefined' || privateKeyEncrypted === null) {
-                $("#signOrEncryptMessageError").text("Private key is invalid").css('color', 'red');
-                return;
-            }
-            privateKeyEncrypted.decrypt(passphrase); // boolean
-        } catch (error) {
-            console.log("sign message error:");
-            console.log(error);
-            $("#signOrEncryptMessageError").text(error).css('color', 'red');
-        }
-
-        var privateKeyDecrypted = privateKeyEncrypted;
-
-        var signObj = {
-            data: messageToSign, // cleartext input to be signed
-            privateKeys: privateKeyDecrypted, // array of keys or single key with decrypted secret key data to sign cleartext
-            armor: true // (optional) if the return value should be ascii armored or the message object
-        };
-        var signedMessageObj = {};
-        // see: https://openpgpjs.org/openpgpjs/doc/openpgp.js.html#line285
-        // https://openpgpjs.org/openpgpjs/doc/module-openpgp.html
-        openpgp.sign(signObj)
-            .then(function (res) { //
-                // @return {Promise<String|CleartextMessage>} ASCII armored message or the message of type CleartextMessage
-                signedMessageObj = res;
-
-                console.log(JSON.stringify(signedMessageObj));
-
-                console.log(signedMessageObj.data);
-
-                $("#signedMessage").val(signedMessageObj.data);
-                console.log("signedMessageObj.data.length: ", signedMessageObj.data.length);
-
-                onSignedMessageChange();
-
-            })
-            .catch(function (error) {
-                console.log("sign message error:");
-                console.log(error);
-                ("#signOrEncryptMessageError").text(error).css('color', 'red');
-            });
-    });
+    // $('#signMessage').click(function (event) {
+    //
+    //     $("#signOrEncryptMessageError").text("");
+    //
+    //     var messageToSign = $("#messageText").val();
+    //
+    //     // TODO: check:
+    //     messageToSign = messageToSign.trim();
+    //
+    //     if (messageToSign.toString().length === 0) {
+    //         $("#signOrEncryptMessageError").text("Message to sign is empty").css('color', 'red');
+    //         return;
+    //     }
+    //
+    //     var privateKeyArmored = $("#privkeyShow").val();
+    //     if (privateKeyArmored.toString().length === 0) {
+    //         $("#signOrEncryptMessageError").text("Private key is empty").css('color', 'red');
+    //         return;
+    //     }
+    //
+    //     var passphrase = $("#passphrase").val();
+    //     if (passphrase.toString().length === 0) {
+    //         $("#signOrEncryptMessageError").text("Password for private key is empty").css('color', 'red');
+    //         return;
+    //     }
+    //
+    //     var privateKeyEncrypted;
+    //     try {
+    //         privateKeyEncrypted = openpgp.key.readArmored(privateKeyArmored).keys[0];
+    //         if (typeof privateKeyEncrypted === 'undefined' || privateKeyEncrypted === null) {
+    //             $("#signOrEncryptMessageError").text("Private key is invalid").css('color', 'red');
+    //             return;
+    //         }
+    //         privateKeyEncrypted.decrypt(passphrase); // boolean
+    //     } catch (error) {
+    //         console.log("sign message error:");
+    //         console.log(error);
+    //         $("#signOrEncryptMessageError").text(error).css('color', 'red');
+    //     }
+    //
+    //     var privateKeyDecrypted = privateKeyEncrypted;
+    //
+    //     var signObj = {
+    //         data: messageToSign, // cleartext input to be signed
+    //         privateKeys: privateKeyDecrypted, // array of keys or single key with decrypted secret key data to sign cleartext
+    //         armor: true // (optional) if the return value should be ascii armored or the message object
+    //     };
+    //     var signedMessageObj = {};
+    //     // see: https://openpgpjs.org/openpgpjs/doc/openpgp.js.html#line285
+    //     // https://openpgpjs.org/openpgpjs/doc/module-openpgp.html
+    //     openpgp.sign(signObj)
+    //         .then(function (res) { //
+    //             // @return {Promise<String|CleartextMessage>} ASCII armored message or the message of type CleartextMessage
+    //             signedMessageObj = res;
+    //
+    //             console.log(JSON.stringify(signedMessageObj));
+    //
+    //             console.log(signedMessageObj.data);
+    //
+    //             $("#signedMessage").val(signedMessageObj.data);
+    //             console.log("signedMessageObj.data.length: ", signedMessageObj.data.length);
+    //
+    //             onSignedMessageChange();
+    //
+    //         })
+    //         .catch(function (error) {
+    //             console.log("sign message error:");
+    //             console.log(error);
+    //             ("#signOrEncryptMessageError").text(error).css('color', 'red');
+    //         });
+    // });
 
     /* https://codepen.io/shaikmaqsood/pen/XmydxJ/ */
     function copyToClipboard(element) {

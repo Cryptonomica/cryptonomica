@@ -75,7 +75,7 @@
                       $location,
                       $log) {
 
-                $rootScope.appVersion = '3.7.0 (2021-05-14)';
+                $rootScope.appVersion = '3.7.2 (2021-12-10)';
 
                 // (!!!) for debug:
                 // see:
@@ -123,9 +123,15 @@
                 $rootScope.gdata = GData;
                 $rootScope.supportEmail = "support@cryptonomica.net";
 
-            var SED_START;
-            $rootScope.PRODUCTION = false;
-            var SED_END;
+                var SED_START;
+                $rootScope.PRODUCTION = false;
+                var SED_END;
+
+                if ($rootScope.PRODUCTION) {
+                    window.sanbox = true;
+                } else {
+                    window.sanbox = false;
+                }
 
                 var CLIENT;
                 if ($rootScope.PRODUCTION) {
@@ -161,7 +167,7 @@
 
                 $log.info('webapp started,  version: ', $rootScope.appVersion);
                 $log.info('production: ', $rootScope.PRODUCTION);
-                if (sandbox) {
+                if (!$rootScope.PRODUCTION) {
                     $log.info('This is our sandbox application');
                 }
 
@@ -211,7 +217,7 @@
                     GAuth.login()
                         .then(function (result) {
                             $log.debug('[app.js] google login:');
-                            $log.debug(result);
+                            $log.debug(result); // ? undefined
                             $log.debug("$rootScope.gapi.user : ");
                             $log.debug($rootScope.gapi.user);
                             // >
@@ -483,7 +489,7 @@
                     return publicKey;
                 };
 
-                // returs promise
+                // returns promise
                 // see: https://stackoverflow.com/a/43383990/1697878
                 $rootScope.getHash = function (str, algo = "SHA-256") {
                     let strBuf = new TextEncoder('utf-8').encode(str);

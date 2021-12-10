@@ -166,11 +166,13 @@
 
                         $log.debug('$scope.onlineVerification:');
                         $log.debug($scope.onlineVerification);
-                        if (sandbox) {
-                            $scope.videoUrl = "https://sandbox-cryptonomica.appspot.com/gcs?verificationVideoId=" + $scope.onlineVerification.verificationVideoId;
-                        } else {
+
+                        if ($rootScope.PRODUCTION) { // TODO: move urls to app constants
                             $scope.videoUrl = "https://cryptonomica-server.appspot.com/gcs?verificationVideoId=" + $scope.onlineVerification.verificationVideoId;
+                        } else {
+                            $scope.videoUrl = "https://sandbox-cryptonomica.appspot.com/gcs?verificationVideoId=" + $scope.onlineVerification.verificationVideoId;
                         }
+
                         $log.debug('$scope.videoUrl: ' + $scope.videoUrl);
                         $scope.notAllowed = false;
                         $scope.getOnlineVerificationError = false;
