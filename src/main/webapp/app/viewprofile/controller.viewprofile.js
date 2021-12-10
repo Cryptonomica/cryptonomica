@@ -383,10 +383,16 @@
                             console.log("pgpPublicKeyUploadReturn: ");
                             $log.info(pgpPublicKeyUploadReturn);
                             $scope.keyUploadSuccessMessage = pgpPublicKeyUploadReturn.messageToUser;
+
                             // reload page >
-                            $scope.viewprofile();
+                            // $scope.viewprofile();
                             // $timeout($rootScope.progressbar.complete(), 1000); // < in $scope.viewprofile();
-                        }, function (error) {
+                            $state.go(
+                                'onlineVerification',
+                                {"fingerprint": pgpPublicKeyUploadReturn.pgpPublicKeyGeneralView.fingerprint}
+                            );
+                        },
+                        function (error) {
                             console.log("error: ");
                             $log.info(error);
                             $scope.keyUploadErrorMessage = error.message; // resp.message or resp.error.message - java.lang.Exception:

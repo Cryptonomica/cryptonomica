@@ -226,11 +226,18 @@
 
                 var request = new XMLHttpRequest();
 
+                let requestUrl;
+
+                if (window.sandbox) {
+                    requestUrl = 'https://sandbox-cryptonomica.appspot.com/gcs';
+                } else {
+                    requestUrl = "https://cryptonomica.net/gcs";
+                }
+
                 //request.open("POST", "https://cryptonomica.net/gcs");
-                request.open("POST",
-                    // "https://cryptonomica.net/gcs/cryptonomica-server.appspot.com/testVideo.webm"
-                    // TODO: make changes for sandbox:
-                    "https://cryptonomica.net/gcs"
+                request.open(
+                    "POST",
+                    requestUrl
                 );
 
                 request.setRequestHeader("testHeader", "testHeaderValue");
@@ -266,7 +273,13 @@
                         document.getElementById('serverResponse').innerHTML = request.response + '<br>';
                         if (resp.verificationVideoId) {
 
-                            var serverAddress = "https://cryptonomica-server.appspot.com";
+                            let serverAddress;
+
+                            if (window.sandbox) {
+                                serverAddress = "https://sandbox-cryptonomica.appspot.com";
+                            } else {
+                                serverAddress = "https://cryptonomica-server.appspot.com";
+                            }
 
                             document.getElementById('videoFromServer').setAttribute(
                                 'src',

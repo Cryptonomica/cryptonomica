@@ -17,6 +17,10 @@ sed -i '/<!-- endpoints.project.id START -->/,/<!-- endpoints.project.id END -->
         <endpoints.project.id>cryptonomica-server<\/endpoints.project.id>\
         <!-- endpoints.project.id END -->' ./pom.xml
 
+sed -i '/<!-- sandbox SED_START -->/,/<!-- sandbox SED_END -->/c\
+        <!-- sandbox SED_START -->\
+        <!-- sandbox SED_END -->' ./src/main/webapp/index.html
+
 sed -i '/static Boolean SED_START/,/static Boolean SED_END/c\
     static Boolean SED_START;\
     public static final Boolean PRODUCTION = Boolean.TRUE;\
@@ -35,5 +39,7 @@ sed -i '/var SED_START;/,/var SED_END;/c\
             $rootScope.PRODUCTION = true;\
             var SED_END;' ./src/main/webapp/app/app.js
 
-
-
+sed -i '/var SED_START;/,/var SED_END;/c\
+            var SED_START;\
+            $rootScope.PRODUCTION = true;\
+            var SED_END;' ./src/main/webapp/bills-of-exchange/app/app.js

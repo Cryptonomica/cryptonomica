@@ -69,6 +69,10 @@
                                     Verify your Ethereum address/key with your OpenPGP key
                                 </h2>
 
+                                <div ng-show="!$rootScope.PRODUCTION" style="color: white; background: red">
+                                    This is sandbox, please use Ropsten Test Net only.
+                                </div>
+
                                 <div id="serviceDescription">
                                     <br>
                                     <p>
@@ -79,7 +83,8 @@
                                         <p>
                                             To verify your identity as Ethereum address private key owner (a person
                                             who can send transactions from this address),
-                                            you have to sign a simple message with yor verified OpenPGP key, and
+                                            you have to sign a simple message with yor Cryptonomica verified OpenPGP
+                                            key, and
                                             send this message from your Ethereum address to our smart contract.
                                             Then you request our system to pull this signed message from smart
                                             contract and check it's signature. If signature can be verified,

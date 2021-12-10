@@ -11,15 +11,33 @@
 <div class="ui container">
 
     <center id="header">
+
         <h1 class="ui header" style="margin-top: 0.7em; margin-bottom: 0em">
             bills of exchange on blockchain
         </h1>
-        <div style="font-weight: bold; font-size: 110%;">
+
+        <div ng-show="!PRODUCTION" style="color: white; background: red">
+            sandbox
+        </div>
+
+        <div style="font-weight: bold; font-size: 110%;" ng-show="PRODUCTION">
             [ by
             <a href="https://cryptonomica.net" title="back to cryptonomica home page"
-               target="_blank">cryptonomica.net</a>
+               target="_blank">
+                cryptonomica.net
+            </a>
             ]
         </div>
+
+        <div style="font-weight: bold; font-size: 110%;" ng-show="!PRODUCTION">
+            [ cryptonomica sandbox:
+            <a href="https://sandbox-cryptonomica.appspot.com" title="back to cryptonomica home page"
+               target="_blank">
+                sandbox-cryptonomica.appspot.com
+            </a>
+            ]
+        </div>
+
         <!--<div class="ui header" style="margin-top: 0.1em;color: #666666">-->
         <div class="ui header" style="color: #666666;margin-top: 0.3em">
             Create and use legally binding bills of exchange on the Ethereum blockchain
@@ -76,16 +94,10 @@
                target="_blank">
                 {{verificationContract._address}}
             </a>
-            <!--
-            <span ng-show="!production">
-                <br>
-                (this is a mock up contract for testing, in production
-                <a href="https://cryptonomica.net/#!/verifyEthAddress/">
-                    Cryptonomica Ethereum verification smart contract
-                </a>
-                will be used)
+
+            <span ng-show="!PRODUCTION">
+                <b>(sandbox version of Cryptonomica verification smart contract on Ropsten)</b>
             </span>
-            -->
 
         </p>
 
@@ -179,6 +191,12 @@
         <h3>News</h3>
 
         <p>
+            <b>2021-05-26</b>
+            <a href="https://sandbox-cryptonomica.appspot.com/bills-of-exchange/">Sandbox version</a> of this webapp
+            deployed.
+        </p>
+
+        <p>
             <b>2019-06-10</b> 'Bills of Exchange Factory' dApp deployed on the Ethereum MainNet.
         </p>
 
@@ -217,9 +235,7 @@
         <div class="ui yellow message">
             You can issue or accept bills of exchange, and sign arbitration agreements
             only from Ethereum address verified on
-            <a href="https://cryptonomica.net/#!/verifyEthAddress/">
-                cryptonomica.net
-            </a>
+            <a ng-href="verificationUrl">Cryptonomica</a>
         </div>
         <div class="line"></div>
         {{contractData.description}}
@@ -393,13 +409,36 @@
             </div>
 
             <div class="field">
+
                 <label>
                     Drawer's representative data
                     (from <a href="https://www.cryptonomica.net/#!/verifyEthAddress/" target="_blank">
                     cryptonomica smart contract
                 </a>):
                 </label>
+
+                <div id="verificationMissingErrorAlert" ng-show="verificationMissingError" class="ui negative message"
+                     style="margin-top: 0.1em">
+                    <!--                    <i class="close icon" ng-click="alertDanger=null"></i>-->
+                    <div class="header">Error:</div>
+                    <p>
+                        No verification data found for {{web3.eth.defaultAccount}}<br>
+                        Please <a ng-href="{{verificationUrl}}" target="_blank">verify</a> your address first.
+                    </p>
+                </div>
+
+                <div id="verificationExpiredErrorAlert" ng-show="verificationExpiredError" class="ui negative message"
+                     style="margin-top: 0.1em">
+                    <!--                    <i class="close icon" ng-click="alertDanger=null"></i>-->
+                    <div class="header">Error:</div>
+                    <p>
+                        Verification for {{web3.eth.defaultAccount}} expired<br>
+                        Please <a ng-href="{{verificationUrl}}" target="_blank">verify</a> new Ethereum address.
+                    </p>
+                </div>
+
                 <input type="text" ng-model="signatoryVerificationDataStr" disabled>
+
             </div>
 
             <p>
@@ -710,7 +749,7 @@
                 <div>
                     <b>Signatures under dispute resolution agreement:</b>
                     <div ng-repeat="signature in billsOfExchangeContractData.disputeResolutionAgreementSignatures">
-                        {{$index+1}})&nbsp;
+                        {{$index + 1}})&nbsp;
                         Signatory name: {{signature[1]}}<br>
                         Signed with Ethereum address key:
                         <a href="" ng-copyable title="Click to copy">

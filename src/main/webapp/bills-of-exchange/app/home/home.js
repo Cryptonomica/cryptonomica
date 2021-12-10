@@ -34,33 +34,26 @@
             // $log.debug("homeCtrl started");
 
             // TODO: for test only:
-            // window.myScope = $scope;
+            window.myScope = $scope;
 
             if ($location.host() === "localhost") {
                 $scope.thisUrl = $location.protocol() + "://" + $location.host() + ":" + $location.port() + "/bills-of-exchange/#!/";
+                $scope.thisHost = $location.protocol() + "://" + $location.host() + ":" + $location.port();
             } else {
                 $scope.thisUrl = $location.protocol() + "://" + $location.host() + "/bills-of-exchange/#!/"
+                $scope.thisHost = $location.protocol() + "://" + $location.host();
             }
 
-            $log.debug($scope.thisUrl);
+            $scope.verificationUrl = $scope.thisHost + "/#!/verifyEthAddress/";
+
+            // $log.debug($scope.thisUrl);
             // $log.debug($location.absUrl());
 
             // activate tabs:
             $('.menu .item').tab();
 
             (function setUpContractData() {
-
-                // TODO: after deployment compile smart contract and change data >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-                // $scope.deployedOnNetworkId = 3; // ROPSTEN
-                $scope.deployedOnNetworkId = 1;
-                // TODO: check paths on web
                 $scope.contractAbiPath = "contracts/compiled/bills-of-exchange-factory/BillsOfExchangeFactory.abi";
-                $scope.contractAddress = "0xAA2CB1a1b014b92EDb93B1f163C7CA40a07EEcAa"; // MainNet
-                $scope.contractDeployedOnBlock = "7930560"; // MainNet
-
-                $scope.verificationContractAbiPath = "contracts/compiled/CryptonomicaVerification/CryptonomicaVerification.abi";
-                $scope.verificationContractAddress = "0x846942953c3b2A898F10DF1e32763A823bf6b27f";
-
                 $scope.billsOfExchangeAbiPath = "contracts/compiled/bills-of-exchange-factory/BillsOfExchange.abi"
             })();
 
@@ -75,28 +68,28 @@
 
                 $scope.setAlertDanger = function (message) {
                     $scope.alertDanger = message;
-                    $log.debug("$scope.alertDanger:", $scope.alertDanger);
+                    // $log.debug("$scope.alertDanger:", $scope.alertDanger);
                     // $scope.$apply(); // < needed
                     $scope.goTo("alertDanger");
                 };
 
                 $scope.setAlertWarning = function (message) {
                     $scope.alertWarning = message;
-                    $log.debug("$scope.alertWarning:", $scope.alertWarning);
+                    // $log.debug("$scope.alertWarning:", $scope.alertWarning);
                     // $scope.$apply(); //
                     $scope.goTo("alertWarning");
                 };
 
                 $scope.setAlertInfo = function (message) {
                     $scope.alertInfo = message;
-                    $log.debug("$scope.alertInfo:", $scope.alertInfo);
+                    // $log.debug("$scope.alertInfo:", $scope.alertInfo);
                     // $scope.$apply();
                     $scope.goTo("alertInfo");
                 };
 
                 $scope.setAlertSuccess = function (message) {
                     $scope.alertSuccess = message;
-                    $log.debug("$scope.alertSuccess:", $scope.alertSuccess);
+                    // $log.debug("$scope.alertSuccess:", $scope.alertSuccess);
                     // $scope.$apply();
                     $scope.goTo("alertSuccess");
                 };
@@ -105,7 +98,7 @@
                     $scope.alertMessage = {};
                     $scope.alertMessage.header = header;
                     $scope.alertMessage.message = message;
-                    $log.debug("$scope.alertMessage:", $scope.alertMessage);
+                    // $log.debug("$scope.alertMessage:", $scope.alertMessage);
                     // $scope.$apply();
                     $scope.goTo("alertMessage");
                 };
@@ -134,7 +127,26 @@
                             $scope.setAlertWarning("Unknown Ethereum network. Network ID: " + result);
                         }
 
-                        $log.debug("$rootScope.currentNetwork.networkName:", $rootScope.currentNetwork.networkName);
+                        if (result === 1) {
+                            $scope.deployedOnNetworkId = 1;
+                            $scope.contractAddress = "0xAA2CB1a1b014b92EDb93B1f163C7CA40a07EEcAa"; // MainNet
+                            $scope.contractDeployedOnBlock = "7930560"; // MainNet
+                            $scope.verificationContractAddress = "0x846942953c3b2A898F10DF1e32763A823bf6b27f";
+                            $scope.verificationContractAbiPath = "contracts/compiled/CryptonomicaVerification/CryptonomicaVerification.abi";
+                        } else if (result === 3) { // ROPSTEN
+                            $scope.deployedOnNetworkId = 3;
+                            $scope.contractAddress = "0xcCe70F1c04e0958521e9878e241669479Bbf07Bb";
+                            $scope.contractDeployedOnBlock = "10310658";
+
+                            // Ropsten - CryptonomicaVerificationMockUp.sol
+                            // $scope.verificationContractAddress = "0xe48bc3db5b512d4a3e3cd388be541be7202285b5";
+                            // $scope.verificationContractAbiPath = "contracts/compiled/CryptonomicaVerificationMockUp/CryptonomicaVerificationMockUp.abi";
+
+                            $scope.verificationContractAddress = "0x846942953c3b2A898F10DF1e32763A823bf6b27f";
+                            $scope.verificationContractAbiPath = "contracts/compiled/CryptonomicaVerification/CryptonomicaVerification.abi";
+                        }
+
+                        // $log.debug("$rootScope.currentNetwork.networkName:", $rootScope.currentNetwork.networkName);
                         $rootScope.$apply(); // needed here
 
                     })
@@ -149,7 +161,7 @@
                         function (error, result) {
                             if (!error) {
                                 $rootScope.currentBlockNumber = result;
-                                $log.debug("$rootScope.currentBlockNumber:", $rootScope.currentBlockNumber);
+                                // $log.debug("$rootScope.currentBlockNumber:", $rootScope.currentBlockNumber);
                                 $rootScope.$apply();
                                 // $log.debug("$rootScope.currentBlockNumber: ", $rootScope.currentBlockNumber);
                             } else {
@@ -172,7 +184,7 @@
                 // $log.debug('web3: ');
                 // $log.debug($rootScope.web3);
 
-                if (typeof window.ethereum.selectedAddress === 'undefined') { // privacy mode on
+                if (typeof window.ethereum.selectedAddress === 'undefined' || !window.ethereum.selectedAddress) { // privacy mode on
                     (async function () {
                         try {
                             // Request account access if needed
@@ -216,8 +228,8 @@
 
                 if (!$rootScope.web3.eth.defaultAccount && $rootScope.web3.eth.accounts && $rootScope.web3.eth.accounts[0]) {
                     $rootScope.web3.eth.defaultAccount = $rootScope.web3.eth.accounts[0];
-                    $log.debug("$rootScope.web3.eth.defaultAccount : ");
-                    $log.debug($rootScope.web3.eth.defaultAccount);
+                    // $log.debug("$rootScope.web3.eth.defaultAccount : ");
+                    // $log.debug($rootScope.web3.eth.defaultAccount);
                 }
 
                 main();
@@ -232,6 +244,12 @@
             }
 
             function main() {
+
+                // see:
+                // https://medium.com/metamask/no-longer-reloading-pages-on-network-change-fbf041942b44
+                window.ethereum.on('chainChanged', () => {
+                    document.location.reload()
+                })
 
                 getNetworkInfo();
 
@@ -250,8 +268,16 @@
                             $scope.setAlertWarning("Unknown Ethereum network. Network ID: " + result);
                         }
 
-                        // $log.debug("$rootScope.currentNetwork.networkName:", $rootScope.currentNetwork.networkName);
+                        $rootScope.labelText = $rootScope.currentNetwork.networkName;
                         $rootScope.$apply(); // needed here
+
+                        if (!$rootScope.PRODUCTION && result === 1) {
+                            $scope.setAlertDanger(
+                                "This is a sandbox application please switch to Ropsten Test Net"
+                            );
+                            return;
+                        }
+
                         return $http.get($scope.contractAbiPath);
                     })
                     .then((value) => {
@@ -259,17 +285,24 @@
                         return $http.get($scope.verificationContractAbiPath);
                     })
                     .then((value) => {
+
                         $scope.verificationContractABI = value.data; // ABI
 
-                        if ($rootScope.currentNetwork.network_id === $scope.deployedOnNetworkId) {
+                        if ($rootScope.currentNetwork.network_id === 1 || $rootScope.currentNetwork.network_id === 3) {
+
                             $scope.contract = new $rootScope.web3.eth.Contract( // <<<<<<<<<<<<<<<<<< contract
                                 $scope.contractABI,
                                 $scope.contractAddress
                             );
+
+                            // $log.debug("$scope.contract :");
+                            // $log.debug($scope.contract);
+
                             $scope.verificationContract = new $rootScope.web3.eth.Contract( // <<<<<<<<<<<<<<<<<< contract
                                 $scope.verificationContractABI,
                                 $scope.verificationContractAddress
                             );
+
                             if (window.ethereum && window.ethereum.selectedAddress) {
                                 $scope.contract.from = window.ethereum.selectedAddress;
                                 $scope.verificationContract.from = window.ethereum.selectedAddress;
@@ -280,13 +313,12 @@
                             // $log.debug("$scope.contract:");
                             // $log.debug($scope.contract);
                             $scope.$apply();
-                            $log.debug("contract address: ", $scope.contract._address);
+                            // $log.debug("contract address: ", $scope.contract._address);
                         } else {
                             $scope.setAlertDanger(
                                 "This smart contract does not work on "
                                 + $rootScope.currentNetwork.networkName
-                                + " please change to "
-                                + $rootScope.networks[$scope.deployedOnNetworkId].networkName
+                                + " please change to Ethereum Mainnet or Ropsten Test Network and refresh this page"
                             );
                         }
 
@@ -316,9 +348,6 @@
 
             function setUpContractFunctions() {
 
-                $log.debug("$scope.contract:");
-                $log.debug($scope.contract);
-
                 $scope.contractData = {};
                 // $scope.contractData.billsOfExchangeContractsCounter = 0;
 
@@ -328,7 +357,7 @@
                     $scope.contract.methods.billsOfExchangeContractsCounter().call()
                         .then((billsOfExchangeContractsCounter) => {
                             $scope.contractData.billsOfExchangeContractsCounter = billsOfExchangeContractsCounter;
-                            $log.debug("$scope.contractData.billsOfExchangeContractsCounter:", $scope.contractData.billsOfExchangeContractsCounter);
+                            // $log.debug("$scope.contractData.billsOfExchangeContractsCounter:", $scope.contractData.billsOfExchangeContractsCounter);
                         })
                         .catch((error) => {
                             $log.error("$scope.getBillsOfExchangeContractsCounter :");
@@ -362,9 +391,9 @@
                         .then((price) => {
                             // $log.debug(price);
                             $scope.price = price;
-                            $log.debug("$scope.price: ", $scope.price);
+                            // $log.debug("$scope.price: ", $scope.price);
                             $scope.priceETH = $rootScope.web3.utils.fromWei(price);
-                            $log.debug("$scope.priceETH : ", $scope.priceETH);
+                            // $log.debug("$scope.priceETH : ", $scope.priceETH);
                             return $scope.contract.methods.billsOfExchangeContractsCounter().call();
                         })
                         .then((billsOfExchangeContractsCounter) => {
@@ -379,8 +408,8 @@
                         })
                         .finally(() => {
                             $scope.$apply();
-                            $log.debug("$scope.contractData:");
-                            $log.debug($scope.contractData);
+                            // $log.debug("$scope.contractData:");
+                            // $log.debug($scope.contractData);
                             // $rootScope.progressbar.start();
                             $timeout($rootScope.progressbar.complete(), 1000);
                         })
@@ -445,7 +474,7 @@
                         $scope.billsOfExchange.placeWherePaymentIsToBeMade = $scope.billsOfExchange.placeWhereTheBillIsIssued;
                     }
 
-                    $log.debug($scope.billsOfExchange);
+                    // $log.debug($scope.billsOfExchange);
 
                     $scope.newBillsOfExchangeContracCreationReceipt = null;
                     $scope.contract.methods.createBillsOfExchange(
@@ -471,17 +500,17 @@
                                 + receipt.events[0].address
                             );
 
-                            $log.debug("receipt.events:");
-                            $log.debug(receipt.events);
-                            $log.debug("receipt.events[0]:");
-                            $log.debug(receipt.events[0]);
-                            $log.debug(receipt.events[0].address);
+                            // $log.debug("receipt.events:");
+                            // $log.debug(receipt.events);
+                            // $log.debug("receipt.events[0]:");
+                            // $log.debug(receipt.events[0]);
+                            // $log.debug(receipt.events[0].address);
 
-                            $log.debug(
-                                $rootScope.currentNetwork.etherscanLinkPrefix
-                                + "address/"
-                                + receipt.events[0].address
-                            );
+                            // $log.debug(
+                            //     $rootScope.currentNetwork.etherscanLinkPrefix
+                            //     + "address/"
+                            //     + receipt.events[0].address
+                            // );
 
                             return $http.get($scope.billsOfExchangeAbiPath);
 
@@ -523,7 +552,7 @@
                     }
 
                     // $log.debug("$scope.atSightCheckbox :", $scope.atSightCheckbox);
-                    $log.debug($scope.billsOfExchange);
+                    // $log.debug($scope.billsOfExchange);
 
                     $scope.newBillsOfExchangeContracCreationReceipt = null;
                     $scope.contract.methods.createAndAcceptBillsOfExchange(
@@ -549,17 +578,17 @@
                                 + receipt.events[0].address
                             );
 
-                            $log.debug("receipt.events:");
-                            $log.debug(receipt.events);
-                            $log.debug("receipt.events[0]:");
-                            $log.debug(receipt.events[0]);
-                            $log.debug(receipt.events[0].address);
+                            // $log.debug("receipt.events:");
+                            // $log.debug(receipt.events);
+                            // $log.debug("receipt.events[0]:");
+                            // $log.debug(receipt.events[0]);
+                            // $log.debug(receipt.events[0].address);
 
-                            $log.debug(
-                                $rootScope.currentNetwork.etherscanLinkPrefix
-                                + "address/"
-                                + receipt.events[0].address
-                            );
+                            // $log.debug(
+                            //     $rootScope.currentNetwork.etherscanLinkPrefix
+                            //     + "address/"
+                            //     + receipt.events[0].address
+                            // );
 
                             return $http.get($scope.billsOfExchangeAbiPath);
 
@@ -593,10 +622,22 @@
                     // $timeout($rootScope.progressbar.complete(), 1000);
                     $scope.verificationContract.methods.verification($rootScope.web3.eth.defaultAccount).call()
                         .then((result) => {
+
                             $scope.signatoryVerificationData = result;
                             $log.debug("$scope.signatoryVerificationData:");
                             $log.debug($scope.signatoryVerificationData);
+
+                            let keyCertificateValidUntil;
+                            if (!result.keyCertificateValidUntil || result.keyCertificateValidUntil === "0") {
+                                $scope.verificationMissingError = true;
+                                return;
+                            } else if (!result.keyCertificateValidUntil || parseInt(result.keyCertificateValidUntil) < Date.now()) {
+                                $scope.verificationExpiredError = true;
+                                return;
+                            }
+
                             if (result.firstName && result.lastName && result.birthDate && result.nationality) {
+
                                 let birthDate = $rootScope.dateFromUnixTime(result.birthDate);
 
                                 $scope.signatoryVerificationDataStr =
@@ -605,6 +646,11 @@
                                     + "birthdate: " + result.birthDate
                                     // + birthDate.getFullYear() + "-" + birthDate.getMonth() + "-" + birthDate.getDay()
                                     + ", nationality: " + result.nationality;
+                            } else {
+                                $scope.setAlertDanger(
+                                    "Incomplete verification data for "
+                                    + $rootScope.web3.eth.defaultAccount
+                                );
                             }
                         })
                         .catch((error) => {

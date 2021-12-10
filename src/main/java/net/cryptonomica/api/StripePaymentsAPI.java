@@ -527,7 +527,8 @@ public class StripePaymentsAPI {
         }
         // first check for null:
         if (pgpPublicKeyData.getPaid() != null && pgpPublicKeyData.getPaid()) {
-            throw new Exception("Verification of key " + fingerprint + " already paid");
+//            throw new Exception("Verification of key " + fingerprint + " already paid");
+            throw new Exception("Payment code has already been verified ");
         }
         //
         StripePaymentForKeyVerification stripePaymentForKeyVerification = null;

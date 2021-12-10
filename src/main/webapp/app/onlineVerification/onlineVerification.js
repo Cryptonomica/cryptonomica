@@ -575,11 +575,14 @@
                     .then(
                         function (paymentResponse) {
                             $scope.paymentResponse = paymentResponse;
+                            $scope.alertSuccess = paymentResponse.messageToUser;
                             console.log("$scope.paymentResponse: ");
                             $log.info($scope.paymentResponse);
                             $scope.submitPaymentWorking = false;
                             $timeout($rootScope.progressbar.complete(), 1000);
-                        }, function (paymentError) {
+                            $scope.getOnlineVerification();
+                        },
+                        function (paymentError) {
                             $scope.paymentError = paymentError;
                             console.log("$scope.paymentError: ");
                             $log.info($scope.paymentError);
@@ -607,7 +610,9 @@
                             console.log("$scope.paymentVerificationResponse: ");
                             $log.info($scope.paymentVerificationResponse);
                             $timeout($rootScope.progressbar.complete(), 1000);
-                        }, function (paymentVerificationError) {
+                            $scope.getOnlineVerification();
+                        },
+                        function (paymentVerificationError) {
                             $scope.paymentVerificationError = paymentVerificationError;
                             console.log("$scope.paymentVerificationError: ");
                             $log.info($scope.paymentVerificationError);
@@ -619,7 +624,7 @@
             /* ---- Accept terms : */
             $scope.acceptTermsAnswer = false;
             $scope.acceptTerms = function () {
-                $log.debug('$scope.acceptTerms strarted');
+                $log.debug('$scope.acceptTerms started');
                 $rootScope.progressbar.start(); // <<<<<<<<<<<
                 $scope.acceptTermsSuccess = null;
                 $scope.acceptTermsError = null;
@@ -635,13 +640,15 @@
                             $log.debug(acceptTermsResponse);
                             $scope.acceptTermsResponce = acceptTermsResponse;
                             if (acceptTermsResponse.result) {
-                                $scope.acceptTermsSuccess = "Terms accepted!"
+                                $scope.acceptTermsSuccess = "Terms accepted!";
+                                $scope.getOnlineVerification();
                             } else {
                                 $scope.acceptTermsError
                                     = "Terms not accepted! We can not proceed with online verification"
                             }
                             $timeout($rootScope.progressbar.complete(), 1000);
-                        }, function (acceptTermsError) {
+                        },
+                        function (acceptTermsError) {
                             $log.debug(acceptTermsError);
                             $scope.acceptTermsError = acceptTermsError.message;
                             $timeout($rootScope.progressbar.complete(), 1000);
@@ -652,7 +659,7 @@
             /* ---- Approve OnlineVerification (for Cryptonomica complience officer) : */
             $scope.onlineVerificationApproved = null;
             $scope.approve = function () {
-                $log.debug('$$scope.approve strarted');
+                $log.debug('$scope.approve started');
                 $rootScope.progressbar.start(); // <<<<<<<<<<<
                 $scope.approveSuccess = null;
                 $scope.approveError = null;

@@ -4,7 +4,8 @@
 
 // console.log("home.js");
 
-    const debugEnabled = true;
+    const debugEnabled = false;
+    // const debugEnabled = true;
 
     const controller = angular.module("app.home", []);
 
@@ -27,7 +28,7 @@
 
             // $log.debug("homeCtrl started");
 
-            // TODO: for test only:
+            // for test only:
             (function () {
                 if (debugEnabled) {
                     window.scope = $scope;

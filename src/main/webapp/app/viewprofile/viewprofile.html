@@ -61,11 +61,11 @@
                                     {{userProfileGeneralView.lastName | titleCase}}
                                 </h3>
 
-                                <a ng-href="{{userProfileGeneralView.userCurrentImageLink || 'https://placehold.it/100x100?text=No+Image-Uploaded'}}">
-                                    <img ng-src="{{userProfileGeneralView.userCurrentImageLink || 'https://placehold.it/100x100?text=No+Image-Uploaded'}}"
-                                         style="height: 200px"
-                                         class="pull-xs-left">
-                                </a>
+                                <!--                                <a ng-href="{{userProfileGeneralView.userCurrentImageLink || 'https://placehold.it/100x100?text=No+Image-Uploaded'}}">-->
+                                <!--                                    <img ng-src="{{userProfileGeneralView.userCurrentImageLink || 'https://placehold.it/100x100?text=No+Image-Uploaded'}}"-->
+                                <!--                                         style="height: 200px"-->
+                                <!--                                         class="pull-xs-left">-->
+                                <!--                                </a>-->
 
                                 <br>
                                 <table class="ui celled table">
@@ -106,52 +106,64 @@
                                         <td>{{userProfileGeneralView.arbitrator}}</td>
                                     </tr>
                                     <tr ng-show="userProfileGeneralView.cryptonomicaOfficer">
-                                        <td>Is a IACC officer:</td>
+                                        <td>Is a Cryptonomica officer:</td>
                                         <td>{{userProfileGeneralView.cryptonomicaOfficer}}</td>
                                     </tr>
                                     </tbody>
                                 </table>
 
-                                <h4>User PGP public keys:</h4>
+                                <h2>User PGP public keys:</h2>
+                                <form>
+
+                                    <input id="hideExpiredCheckbox" type="checkbox"
+                                           class="form-control"
+                                           ng-model="hideExpiredCheckbox">
+                                    <label for="deleteUserProfileCheckbox">
+                                        Hide expired
+                                    </label>
+                                </form>
+
                                 <!-- TODO: show if key is expired, verified -->
                                 <div ng-hide="userProfileGeneralView.pgpPublicKeyGeneralViews">
                                     No keys uploaded for this user
                                 </div>
                                 <!-- ArrayList<PGPPublicKeyGeneralView> pgpPublicKeyGeneralViews; -->
 
-                                <table class="ui celled table"
+                                <table class="ui celled table" ng-hide="hideExpiredCheckbox && key.expired"
                                        ng-repeat="key in userProfileGeneralView.pgpPublicKeyGeneralViews">
                                     <thead>
                                     <tr>
-                                        <th>keyID</th>
+                                        <th>fingerprint:</th>
                                         <th>
-                                            <a href=""
-                                               title="Show key info"
-                                               ui-sref="key({fingerprint:key.fingerprint})">
-                                                {{key.keyID}}
-                                            </a>
-                                        </th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td>fingerprint</td>
-                                        <td>
                                             <a href=""
                                                title="Show key info"
                                                ui-sref="key({fingerprint:key.fingerprint})"
                                                ng-style="key.verifiedOnline && {'color':' #006600'}">
                                                 {{key.fingerprint}}
                                             </a>
-
-                                        </td>
+                                        </th>
                                     </tr>
+
+                                    <!--                                    <tr>-->
+                                    <!--                                        <th>keyID</th>-->
+                                    <!--                                        <th>-->
+                                    <!--                                            <a href=""-->
+                                    <!--                                               title="Show key info"-->
+                                    <!--                                               ui-sref="key({fingerprint:key.fingerprint})">-->
+                                    <!--                                                {{key.keyID}}-->
+                                    <!--                                            </a>-->
+                                    <!--                                        </th>-->
+                                    <!--                                    </tr>-->
+
+                                    </thead>
+                                    <tbody>
+
                                     <tr>
-                                        <td>created</td>
+                                        <td>created:</td>
                                         <td>{{key.created}}</td>
                                     </tr>
                                     <tr>
-                                        <td>expires</td>
+                                        <td>expires:</td>
                                         <td ng-style="key.expired && {'color':'red', 'font-weight':'bold'}">
                                             <span ng-show="key.expired">expired: </span>
                                             {{key.exp}}
