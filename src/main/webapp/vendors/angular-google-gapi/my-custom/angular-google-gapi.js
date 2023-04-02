@@ -4,7 +4,7 @@
  * @version v0.1.2
  * @link https://github.com/maximepvrt/angular-google-gapi
  *
- * modified:
+ * modified :
  * 2023-03-25 vi
  */
 
