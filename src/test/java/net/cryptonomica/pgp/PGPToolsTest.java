@@ -1,5 +1,6 @@
 package net.cryptonomica.pgp;
 
+import org.bouncycastle.openpgp.PGPPublicKey;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,6 +13,7 @@ import static org.junit.Assert.*;
  *
  */
 public class PGPToolsTest {
+
     static private final String armoredPublicPGPkeyBlockWRONG = "a;sdlfkjasdfasdfkieadf;lkj;lkj";
 
     static private final String armoredPublicPGPkeyBlockRSA = "-----BEGIN PGP PUBLIC KEY BLOCK-----\n" +
@@ -45,6 +47,22 @@ public class PGPToolsTest {
             "=XyhJ\n" +
             "-----END PGP PUBLIC KEY BLOCK-----";
 
+    static private final String armoredPublicPGPkeyBlock_Yubikey_EdDSA_ECDH = "-----BEGIN PGP PUBLIC KEY BLOCK-----\n" +
+            "Version: OpenPGP.js v4.10.10\n" +
+            "Comment: https://openpgpjs.org\n" +
+            "\n" +
+            "xjMEYKI7zxYJKwYBBAHaRw8BAQdAfiqiA1J9kBtEnmVHH726DwvXOXlmPAu4\n" +
+            "qu/6HlD08zLNJ2pvaG5AYnJhZHNoYXcud29yayA8am9obkBicmFkc2hhdy53\n" +
+            "b3JrPsKPBBAWCgAgBQJgojvPBgsJBwgDAgQVCAoCBBYCAQACGQECGwMCHgEA\n" +
+            "IQkQlNY/+WMOsJoWIQTAHyc7lx9tPt5ygtKU1j/5Yw6wmjz3AP9MxzznNJW9\n" +
+            "sBqbQzqlXSMxnSgfHSIK8Bvew3iqku51PgEAwA0mTCN8h/q+kE6E2eqt0j48\n" +
+            "0moas+dGkZM1Rh9I7A3OOARgojvPEgorBgEEAZdVAQUBAQdAY1GuM5B/s1z6\n" +
+            "MtBSF8xS5j/7A7ioqsEIVNPi77a0BGQDAQgHwngEGBYIAAkFAmCiO88CGwwA\n" +
+            "IQkQlNY/+WMOsJoWIQTAHyc7lx9tPt5ygtKU1j/5Yw6wmtAwAP0e5aaqLUQP\n" +
+            "NKN0GPaJyiHrYbboP7yaWQgdSc5pKZm/sgEApVqCPrBdM1/ojQSgEq3ixj21\n" +
+            "1mLaZYv9fH3Ha+1FtAs=\n" +
+            "=mm4c\n" +
+            "-----END PGP PUBLIC KEY BLOCK-----";
 
     @Before
     public void setUp() throws Exception {
@@ -62,7 +80,22 @@ public class PGPToolsTest {
     }
 
     @Test
-    public void readPublicKeyFromString() throws Exception {
+    public void readPublicKeyYubikey() throws Exception {
+        PGPPublicKey pgpPublicKey = PGPTools.readPublicKeyFromString(armoredPublicPGPkeyBlock_Yubikey_EdDSA_ECDH);
+        PrintablePGPPublicKey printablePGPPublicKey = new PrintablePGPPublicKey(pgpPublicKey);
+        // see: https://stackoverflow.com/questions/17731234/how-to-test-that-no-exception-is-thrown
+    }
+
+    @Test
+    public void compareStrings() throws Exception {
+        assertEquals(
+                "john@bradshaw.work",
+                "john@bradshaw.work"
+        );
+    }
+
+    @Test
+    public void readPublicKeyFromStringRSA() throws Exception {
         // 1
         try {
             PGPTools.readPublicKeyFromString(armoredPublicPGPkeyBlockWRONG);
