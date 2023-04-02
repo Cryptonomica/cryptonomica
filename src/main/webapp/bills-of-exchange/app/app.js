@@ -52,7 +52,11 @@
             // console.log("application started");
             $rootScope.webAppVersion = "1.1";
             $rootScope.webAppLastChange = "2021-05-26";
-            $rootScope.production = false;
+
+            const currentUrl = window.location.href
+                .toString().toLowerCase(); // it can be not in lowercase in browser window
+            $rootScope.production = !currentUrl.includes('sandbox');
+
             console.log("bills of exchange webapp, version", $rootScope.webAppVersion, "of", $rootScope.webAppLastChange);
             // $rootScope.billsOfExchangeFactoryContractAddress = "";
             // $rootScope.billsOfExchangeFactoryContractDeployedOnBlock = "";

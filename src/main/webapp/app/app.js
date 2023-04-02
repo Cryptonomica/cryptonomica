@@ -75,12 +75,14 @@
                       $location,
                       $log) {
 
-                $rootScope.appVersion = '3.7.2 (2021-12-10)';
+                $rootScope.appVersion = '3.7.2 (2021-12-10) test';
 
                 // (!!!) for debug:
                 // see:
                 // https://stackoverflow.com/questions/13743058/how-do-i-access-the-scope-variable-in-browsers-console-using-angularjs
-                // window.my$rootScope = $rootScope;
+                // $log.info('$rootScope');
+                // $log.info($rootScope);
+                window.myRootScope = $rootScope;
 
                 /* --- UI */
                 $rootScope.sidebarVisible = true;
@@ -123,9 +125,9 @@
                 $rootScope.gdata = GData;
                 $rootScope.supportEmail = "support@cryptonomica.net";
 
-                var SED_START;
-                $rootScope.PRODUCTION = false;
-                var SED_END;
+            var SED_START;
+            $rootScope.PRODUCTION = false;
+            var SED_END;
 
                 if ($rootScope.PRODUCTION) {
                     window.sanbox = true;
