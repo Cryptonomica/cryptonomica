@@ -5,7 +5,7 @@
 
     <prerequisites>
         <!-- shows error without this, and warning with this -->
-        <maven>3.6.3</maven>
+        <maven>3.9.1</maven>
     </prerequisites>
 
     <!-- see: -->
