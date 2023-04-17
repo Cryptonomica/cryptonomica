@@ -402,7 +402,7 @@ contract CryptoShares {
     /*
     * @param shareholderID The same as in shareholderID mapping
     * @param shareholderEthereumAddress Ethereum address of the shareholder
-    * @param shareholderName Legal name of the shareholder, it can be name of the legal person, or fist and last name
+    * @param shareholderName Legal name of the shareholder, it can be name of the legal person, or first and last name
     * for the physical person
     * @param shareholderRegistrationNumber Registration number of the legal person or personal ID of the physical person
     * @param shareholderAddress Shareholder's legal address (house number, street, city, zip, country)
